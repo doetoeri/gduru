@@ -1,0 +1,942 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Duru - 고촌고 1학년 8반</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Firebase Compat SDK -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+
+    <!-- React 18 & ReactDOM 18 -->
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700;900&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+            background-color: #E5E9F0;
+            color: #1E293B;
+            -webkit-tap-highlight-color: transparent;
+            overflow-x: hidden;
+        }
+
+        .tactile-card {
+            background: linear-gradient(145deg, #EEF2F6, #D8DFE8);
+            border: 1.5px solid rgba(255, 255, 255, 0.9);
+            box-shadow:
+                6px 8px 18px rgba(163, 177, 198, 0.55),
+                -6px -6px 18px rgba(255, 255, 255, 0.95),
+                inset 1px 1px 2px rgba(255, 255, 255, 0.9);
+            border-radius: 28px;
+        }
+
+        .tactile-pill-btn {
+            background: linear-gradient(180deg, #F1F5F9 0%, #D8DFE8 100%);
+            border: 3px solid #CBD5E1;
+            outline: 1.5px solid #F1F5F9;
+            box-shadow:
+                inset 0px 2.5px 5px rgba(0, 0, 0, 0.1),
+                inset 0px -2.5px 5px rgba(255, 255, 255, 0.95),
+                0px 5px 12px rgba(148, 163, 184, 0.45);
+            border-radius: 9999px;
+            transition: all 0.1s cubic-bezier(0.2, 0.8, 0.2, 1);
+            color: #475569;
+            font-weight: 800;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+
+        .tactile-pill-btn:hover {
+            background: linear-gradient(180deg, #F8FAFC 0%, #D1D5DB 100%);
+            box-shadow:
+                inset 0px 1.5px 3px rgba(0, 0, 0, 0.08),
+                inset 0px -2.5px 5px rgba(255, 255, 255, 0.98),
+                0px 6px 15px rgba(148, 163, 184, 0.55);
+            transform: translateY(-1px);
+        }
+
+        .tactile-pill-btn:active, .tactile-pill-btn-active {
+            background: linear-gradient(180deg, #CBD5E1 0%, #94A3B8 100%);
+            border-color: #94A3B8;
+            outline-color: #CBD5E1;
+            box-shadow:
+                inset 0px 4px 8px rgba(0, 0, 0, 0.24),
+                inset 0px -1px 2px rgba(255, 255, 255, 0.4),
+                0px 1px 2px rgba(255, 255, 255, 0.5);
+            transform: translateY(1.5px);
+            color: #1E293B;
+        }
+
+        .tactile-pill-btn-primary {
+            background: linear-gradient(180deg, #93C5FD 0%, #2563EB 100%);
+            border: 3px solid #1D4ED8;
+            outline: 1.5px solid #93C5FD;
+            box-shadow:
+                inset 0px 2.5px 5px rgba(0, 0, 0, 0.15),
+                inset 0px -2.5px 5px rgba(255, 255, 255, 0.45),
+                0px 5px 12px rgba(37, 99, 235, 0.35);
+            border-radius: 9999px;
+            transition: all 0.1s cubic-bezier(0.2, 0.8, 0.2, 1);
+            color: white;
+            font-weight: 800;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+
+        .tactile-pill-btn-primary:hover:not(:disabled) {
+            background: linear-gradient(180deg, #A1CFFF 0%, #1D4ED8 100%);
+            box-shadow:
+                inset 0px 1.5px 3px rgba(0, 0, 0, 0.1),
+                inset 0px -2.5px 5px rgba(255, 255, 255, 0.5),
+                0px 6px 15px rgba(37, 99, 235, 0.45);
+            transform: translateY(-1px);
+        }
+
+        .tactile-pill-btn-primary:active:not(:disabled) {
+            background: linear-gradient(180deg, #2563EB 0%, #1E3A8A 100%);
+            border-color: #1E3A8A;
+            outline-color: #2563EB;
+            box-shadow:
+                inset 0px 4px 8px rgba(0, 0, 0, 0.3),
+                inset 0px -1px 2px rgba(255, 255, 255, 0.25),
+                0px 1.5px 3px rgba(255, 255, 255, 0.2);
+            transform: translateY(1.5px);
+        }
+
+        .tactile-plate {
+            background: linear-gradient(145deg, #EEF2F6, #D8DFE8);
+            border: 1.5px solid rgba(255, 255, 255, 0.85);
+            box-shadow:
+                8px 10px 24px rgba(163, 177, 198, 0.55),
+                -8px -8px 24px rgba(255, 255, 255, 0.95),
+                inset 1px 1px 2px rgba(255, 255, 255, 0.9);
+            border-radius: 32px;
+        }
+
+        .debossed-well {
+            background: #E2E8F0;
+            border-radius: 24px;
+            box-shadow:
+                inset 3.5px 3.5px 8px rgba(163, 177, 198, 0.8),
+                inset -3.5px -3.5px 8px rgba(255, 255, 255, 0.95),
+                1px 1.5px 2px rgba(255, 255, 255, 0.75);
+            border: 1px solid rgba(255, 255, 255, 0.45);
+        }
+
+        .tactile-nav-container {
+            background: linear-gradient(145deg, #EEF2F6, #D8DFE8);
+            border: 2px solid rgba(255, 255, 255, 0.9);
+            box-shadow:
+                0px 10px 32px rgba(163, 177, 198, 0.45),
+                inset 1px 1.5px 3px rgba(255, 255, 255, 0.9);
+            border-radius: 40px;
+            transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+        }
+
+        .tactile-nav-btn {
+            border-radius: 32px;
+            transition: all 0.2s cubic-bezier(0.2, 0.8, 0.2, 1);
+            color: #64748B;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            cursor: pointer;
+        }
+
+        .tactile-nav-btn-active {
+            background: #E2E8F0;
+            box-shadow:
+                inset 3.5px 3.5px 8px rgba(163, 177, 198, 0.85),
+                inset -3.5px -3.5px 8px rgba(255, 255, 255, 0.95);
+            color: #2563EB;
+            transform: translateY(1.5px);
+        }
+
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+
+        .live-badge { display: flex; align-items: center; gap: 6px; background: white; padding: 6px 12px; border-radius: 100px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+        .pulse-dot { width: 6px; height: 6px; background: #2563EB; border-radius: 50%; animation: pulse 1.5s infinite; }
+        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.3; } 100% { opacity: 1; } }
+
+        .loader { width: 20px; height: 20px; border: 3px solid #E5E5EA; border-top-color: #2563EB; border-radius: 50%; animation: spin 1s linear infinite; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        .hidden-text { max-height: 0; opacity: 0; margin-top: 0; pointer-events: none; }
+    </style>
+</head>
+<body class="selection:bg-blue-100">
+
+    <div id="root" class="min-h-screen flex flex-col max-w-2xl mx-auto relative pb-32"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect, useRef } = React;
+
+        const Icons = {
+            Home: () => <svg width="22" height="22" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24"><path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>,
+            Clock: () => <svg width="22" height="22" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24"><path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>,
+            Meal: () => <svg width="22" height="22" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24"><path d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>,
+            Class: () => <svg width="22" height="22" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24"><path d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 002-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>,
+            Trash: () => <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>,
+            Eye: () => <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>,
+            Plus: () => <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>,
+            Folder: () => <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>,
+            Search: () => <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>,
+            Alert: () => <svg className="w-12 h-12 text-amber-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+        };
+
+        // --- 고촌고등학교 NEIS API 세팅 ---
+        const NEIS_URL = 'https://open.neis.go.kr/hub';
+        const ATPT_CODE = 'J10';       // 경기도교육청
+        const SCHUL_CODE = '7531375';  // 고촌고등학교 (정확한 코드)
+        const NEIS_API_KEY = '4b9aa5aa974e4963ab8714cfb9850e41';
+
+        // [FIX] allorigins 프록시를 먼저 시도 (직접 URL은 브라우저 CORS로 항상 실패)
+        const CORS_PROXIES = [
+            (url) => `https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`,
+            (url) => `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(url)}`,
+            (url) => url,
+        ];
+
+        const finalConfig = {
+            apiKey: "AIzaSyAP8WRXAjmPdmATfWKnCrCRQNH0ftbBV9w",
+            authDomain: "duru108.firebaseapp.com",
+            projectId: "duru108",
+            storageBucket: "duru108.firebasestorage.app",
+            messagingSenderId: "669255987956",
+            appId: "1:669255987956:web:7479e73d084a2faafb24a1"
+        };
+        const appId = 'duru-stable-v1';
+
+        firebase.initializeApp(finalConfig);
+        const db = firebase.firestore();
+        const auth = firebase.auth();
+
+        function triggerDeviceFeedback(type) {
+            if ('vibrate' in navigator) {
+                try {
+                    if (type === 'click') navigator.vibrate(20);
+                    else if (type === 'success') navigator.vibrate([30, 40, 30]);
+                    else if (type === 'delete') navigator.vibrate([80, 50, 80]);
+                } catch (e) {}
+            }
+        }
+
+        // [FIX] pIndex=1, pSize=100 기본 추가 (NEIS API 필수 페이지네이션 파라미터)
+        async function fetchNEIS(endpoint, params) {
+            const query = Object.entries(params)
+                .map(([k, v]) => `${k}=${encodeURIComponent(v)}`)
+                .join('&');
+            const targetUrl = `${NEIS_URL}/${endpoint}?KEY=${NEIS_API_KEY}&Type=json&pIndex=1&pSize=100&${query}`;
+
+            for (const proxyFn of CORS_PROXIES) {
+                try {
+                    const res = await fetch(proxyFn(targetUrl), { signal: AbortSignal.timeout(8000) });
+                    if (!res.ok) continue;
+                    const data = await res.json();
+                    if (data) return data;
+                } catch (e) {
+                    console.warn('NEIS 프록시 실패, 다음 시도...', e.message);
+                }
+            }
+            throw new Error('NEIS 통신망 전체 타임아웃');
+        }
+
+        // [FIX] 급식 메뉴 파싱: 알레르기 번호 "(1.2.5.)" 패턴 완전 제거
+        function parseMealMenu(raw) {
+            return raw
+                .replace(/<br\/>/gi, ',')
+                .replace(/\([^)]*\)/g, '')   // (1.2.5.) 형태 괄호 제거
+                .split(',')
+                .map(s => s.trim())
+                .filter(s => s.length > 0)
+                .join(', ');
+        }
+
+        function getDates() {
+            const now = new Date();
+            const kst = new Date(now.getTime() + (9 * 60 * 60 * 1000));
+            const f = (d) => {
+                const year = d.getUTCFullYear();
+                const month = String(d.getUTCMonth() + 1).padStart(2, '0');
+                const date = String(d.getUTCDate()).padStart(2, '0');
+                return `${year}-${month}-${date}`;
+            };
+            return { tdStr: f(kst), tmStr: f(new Date(kst.getTime() + 86400000)) };
+        }
+
+        function App() {
+            const [activeTab, setActiveTab] = useState('home');
+            const [isLoading, setIsLoading] = useState(true);
+            const [statusText, setStatusText] = useState('CONNECTING');
+            const [notiPermission, setNotiPermission] = useState('default');
+            const [isScrolled, setIsScrolled] = useState(false);
+
+            const [announcements, setAnnouncements] = useState([]);
+            const [schedules, setSchedules] = useState([]);
+            const [materials, setMaterials] = useState([]);
+            const [planner, setPlanner] = useState([]);
+            const [memos, setMemos] = useState({});
+            const [meals, setMeals] = useState({});
+            const [timetables, setTimetables] = useState({});
+
+            const [showModal, setShowModal] = useState(false);
+            const [modalType, setModalType] = useState('');
+            const [modalTargetId, setModalTargetId] = useState('');
+            const [val1, setVal1] = useState('');
+            const [val2, setVal2] = useState('');
+            const [attachedFile, setAttachedFile] = useState('');
+
+            const [customDialog, setCustomDialog] = useState(null);
+
+            const dates = getDates();
+            const [timetablePivotDate, setTimetablePivotDate] = useState(dates.tdStr);
+            const [mealPivotDate, setMealPivotDate] = useState(dates.tdStr);
+
+            const triggeredFetches = useRef(new Set());
+
+            useEffect(() => {
+                const handleScroll = () => setIsScrolled(window.scrollY > 40);
+                window.addEventListener('scroll', handleScroll);
+                return () => window.removeEventListener('scroll', handleScroll);
+            }, []);
+
+            const setTab = (tab) => {
+                setActiveTab(tab);
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            };
+
+            useEffect(() => {
+                if ('Notification' in window) setNotiPermission(Notification.permission);
+            }, []);
+
+            const requestPermission = () => {
+                if ('Notification' in window) {
+                    Notification.requestPermission().then(perm => {
+                        setNotiPermission(perm);
+                        if (perm === 'granted') {
+                            new Notification('Duru 알림 연동 완료 🔔', { body: '고촌고 1-8반 스마트 안내가 백그라운드에서도 원활히 울립니다.' });
+                        }
+                    });
+                }
+            };
+
+            useEffect(() => {
+                let lastTime = '';
+                const interval = setInterval(() => {
+                    const now = new Date();
+                    const timeStr = `${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
+                    if (timeStr === lastTime) return;
+
+                    if ('Notification' in window && Notification.permission === 'granted') {
+                        if (timeStr === '08:40') {
+                            lastTime = timeStr;
+                            const todayEvts = schedules.filter(s => s.date === dates.tdStr);
+                            const msg = todayEvts.length ? todayEvts.map(e => `• ${e.title}`).join(', ') : '오늘 예정된 학급 공동 일정이 없습니다.';
+                            new Notification('📆 오늘 1-8반 학급일정', { body: msg });
+                        }
+                        if (timeStr === '12:35') {
+                            lastTime = timeStr;
+                            const todayMeal = meals[dates.tdStr] || '등록된 오늘의 점심 정보가 없습니다.';
+                            new Notification('🍱 DURU 급식 배달왔습니다!', { body: todayMeal });
+                        }
+                        const alarmTimes = {
+                            '09:55': { next: 2, label: '2교시' },
+                            '10:55': { next: 3, label: '3교시' },
+                            '11:55': { next: 4, label: '4교시' },
+                            '13:35': { next: 5, label: '5교시' },
+                            '14:35': { next: 6, label: '6교시' },
+                            '15:35': { next: 7, label: '7교시' }
+                        };
+                        if (alarmTimes[timeStr]) {
+                            lastTime = timeStr;
+                            const slot = alarmTimes[timeStr];
+                            const memo = memos[dates.tdStr + '_' + slot.next] || '';
+                            const todayTime = timetables[dates.tdStr] || [];
+                            const subj = todayTime[slot.next - 1] || '수업';
+                            const msg = memo ? `💡 다음 ${slot.label} [${subj}] 메모: ${memo}` : `다음 시간은 [${subj}] 수업입니다! 즐거운 하루 보내세요!`;
+                            new Notification(`🔔 곧 ${slot.label} 수업이 시작됩니다!`, { body: msg });
+                        }
+                    }
+                }, 30000);
+                return () => clearInterval(interval);
+            }, [schedules, meals, memos, timetables]);
+
+            useEffect(() => {
+                const initAuth = async () => {
+                    try {
+                        await auth.signInAnonymously();
+                        setStatusText('LIVE');
+                    } catch (e) {
+                        setStatusText('AUTH ERROR');
+                    }
+                    setIsLoading(false);
+                };
+                initAuth();
+
+                const unsubscribeAuth = auth.onAuthStateChanged(user => {
+                    if (user) {
+                        const pub = (col) => db.collection('artifacts').doc(appId).collection('public').doc('data').collection(col);
+                        const priv = (col) => db.collection('artifacts').doc(appId).collection('users').doc(user.uid).collection(col);
+
+                        pub('announcements').onSnapshot(s => {
+                            setAnnouncements(s.docs.map(d => ({ id: d.id, ...d.data() })).sort((a,b)=>b.at-a.at));
+                        });
+                        pub('schedules').onSnapshot(s => {
+                            setSchedules(s.docs.map(d => ({ id: d.id, ...d.data() })).sort((a,b)=>new Date(a.date)-new Date(b.date)));
+                        });
+                        pub('materials').onSnapshot(s => {
+                            setMaterials(s.docs.map(d => ({ id: d.id, ...d.data() })).sort((a,b)=>b.at-a.at));
+                        });
+                        pub('memos').onSnapshot(s => {
+                            const temp = {};
+                            s.docs.forEach(d => temp[d.id] = d.data().content);
+                            setMemos(temp);
+                        });
+                        pub('meals').onSnapshot(s => {
+                            const temp = {};
+                            s.docs.forEach(d => temp[d.id] = d.data().menu);
+                            setMeals(temp);
+                        });
+                        pub('timetables').onSnapshot(s => {
+                            const temp = {};
+                            s.docs.forEach(d => temp[d.id] = d.data().periods);
+                            setTimetables(temp);
+                        });
+                        priv('planner').onSnapshot(s => {
+                            setPlanner(s.docs.map(d => ({ id: d.id, ...d.data() })).sort((a,b)=>b.at-a.at));
+                        });
+                    }
+                });
+                return () => unsubscribeAuth();
+            }, []);
+
+            // [FIX] MMEAL_SC_CODE: '2' 추가 (중식 지정), 파싱 개선, null 안전 처리
+            const syncMeal = async (dateStr) => {
+                if (meals[dateStr] || triggeredFetches.current.has('meal_' + dateStr)) return;
+                triggeredFetches.current.add('meal_' + dateStr);
+
+                try {
+                    const ymd = dateStr.replace(/-/g, '');
+                    const data = await fetchNEIS('mealServiceDietInfo', {
+                        ATPT_OFCDC_SC_CODE: ATPT_CODE,
+                        SD_SCHUL_CODE: SCHUL_CODE,
+                        MMEAL_SC_CODE: '2',  // 중식(점심)만 조회
+                        MLSV_YMD: ymd
+                    });
+
+                    const rows = data?.mealServiceDietInfo?.[1]?.row;
+                    if (rows && rows.length > 0) {
+                        const clean = parseMealMenu(rows[0].DDISH_NM);
+                        await db.collection('artifacts').doc(appId)
+                            .collection('public').doc('data')
+                            .collection('meals').doc(dateStr)
+                            .set({ menu: clean, at: Date.now() });
+                    }
+                } catch (e) {
+                    console.error('Meal fetch error:', dateStr, e.message);
+                }
+            };
+
+            // [FIX] hisTimetable null 안전 처리 및 에러 방어
+            const syncTimetable = async (dateStr) => {
+                if (timetables[dateStr] || triggeredFetches.current.has('time_' + dateStr)) return;
+                triggeredFetches.current.add('time_' + dateStr);
+
+                try {
+                    // 해당 주 월~금 범위 계산
+                    const current = new Date(dateStr + 'T00:00:00');
+                    const dayOfWeek = current.getDay() || 7; // 일요일=0 → 7로 변환
+                    const mon = new Date(current); mon.setDate(current.getDate() - dayOfWeek + 1);
+                    const fri = new Date(current); fri.setDate(current.getDate() - dayOfWeek + 5);
+
+                    const formatYMD = (d) =>
+                        `${d.getFullYear()}${String(d.getMonth()+1).padStart(2,'0')}${String(d.getDate()).padStart(2,'0')}`;
+
+                    const data = await fetchNEIS('hisTimetable', {
+                        ATPT_OFCDC_SC_CODE: ATPT_CODE,
+                        SD_SCHUL_CODE: SCHUL_CODE,
+                        GRADE: '1',
+                        CLASS_NM: '8',
+                        TI_FROM_YMD: formatYMD(mon),
+                        TI_TO_YMD: formatYMD(fri)
+                    });
+
+                    const rows = data?.hisTimetable?.[1]?.row;
+                    if (rows && rows.length > 0) {
+                        const tempMap = {};
+                        rows.forEach(item => {
+                            const ymd = item.ALL_TI_YMD;
+                            const formattedDate = `${ymd.substring(0,4)}-${ymd.substring(4,6)}-${ymd.substring(6,8)}`;
+                            const periodIdx = parseInt(item.PERIO) - 1;
+                            // [FIX] 과목명에서 특수문자/숫자 제거 (한글·영문만 유지)
+                            const subject = item.ITRT_CNTNT.replace(/[^가-힣a-zA-Z\s]/g, '').trim();
+
+                            if (!tempMap[formattedDate]) tempMap[formattedDate] = Array(7).fill('-');
+                            if (periodIdx >= 0 && periodIdx < 7) tempMap[formattedDate][periodIdx] = subject;
+                        });
+
+                        for (const [dayStr, periods] of Object.entries(tempMap)) {
+                            const snap = await db.collection('artifacts').doc(appId)
+                                .collection('public').doc('data')
+                                .collection('timetables').doc(dayStr).get();
+                            if (!snap.exists) {
+                                await db.collection('artifacts').doc(appId)
+                                    .collection('public').doc('data')
+                                    .collection('timetables').doc(dayStr)
+                                    .set({ periods, at: Date.now() });
+                            }
+                        }
+                    } else {
+                        // NEIS에 해당 주 시간표 미등록 시 기본값 입력
+                        const snap = await db.collection('artifacts').doc(appId)
+                            .collection('public').doc('data')
+                            .collection('timetables').doc(dateStr).get();
+                        if (!snap.exists) {
+                            await db.collection('artifacts').doc(appId)
+                                .collection('public').doc('data')
+                                .collection('timetables').doc(dateStr)
+                                .set({ periods: ['국어', '수학', '영어', '통합사회', '통합과학', '체육', '자율'], at: Date.now() });
+                        }
+                    }
+                } catch (e) {
+                    console.error('Timetable fetch error:', dateStr, e.message);
+                }
+            };
+
+            useEffect(() => {
+                if (auth.currentUser) {
+                    syncMeal(mealPivotDate);
+                    syncTimetable(timetablePivotDate);
+                }
+            }, [meals, timetables, timetablePivotDate, mealPivotDate]);
+
+            const togglePlanner = async (id, done) => {
+                triggerDeviceFeedback('click');
+                const user = auth.currentUser;
+                if (!user) return;
+                await db.collection('artifacts').doc(appId).collection('users').doc(user.uid).collection('planner').doc(id).update({ done });
+            };
+
+            const deleteDoc = async (col, id, isPrivate = false) => {
+                triggerDeviceFeedback('delete');
+                const user = auth.currentUser;
+                if (!user) return;
+                setCustomDialog({
+                    type: 'confirm',
+                    message: '이 데이터를 영구히 삭제할까요? 같은 반 친구들 화면에서도 즉시 지워집니다.',
+                    onConfirm: async () => {
+                        triggerDeviceFeedback('delete');
+                        const ref = isPrivate
+                            ? db.collection('artifacts').doc(appId).collection('users').doc(user.uid).collection(col)
+                            : db.collection('artifacts').doc(appId).collection('public').doc('data').collection(col);
+                        await ref.doc(id).delete();
+                        setCustomDialog(null);
+                    }
+                });
+            };
+
+            const openInputModal = (type, targetId = '') => {
+                triggerDeviceFeedback('click');
+                setModalType(type);
+                setModalTargetId(targetId);
+                if (type === 'MEMO') setVal1(memos[targetId] || '');
+                else if (type === 'MEAL') setVal1(meals[targetId] || '');
+                else if (type === 'TIME') setVal1((timetables[targetId] || ['국어', '수학', '영어', '사회', '과학', '체육', '자율']).join(', '));
+                else setVal1('');
+                setVal2('');
+                setAttachedFile('');
+                setShowModal(true);
+            };
+
+            const handleFileSelect = (e) => {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = (event) => { setAttachedFile(event.target.result); triggerDeviceFeedback('success'); };
+                    reader.readAsDataURL(file);
+                }
+            };
+
+            const submitInput = async () => {
+                const user = auth.currentUser;
+                if (!user) return;
+                triggerDeviceFeedback('success');
+                const pub = (col) => db.collection('artifacts').doc(appId).collection('public').doc('data').collection(col);
+                const priv = (col) => db.collection('artifacts').doc(appId).collection('users').doc(user.uid).collection(col);
+                try {
+                    if (modalType === 'NOTICE') await pub('announcements').add({ title: val1, content: val2, image: attachedFile, at: Date.now() });
+                    else if (modalType === 'PLAN_ADD') await priv('planner').add({ text: val1, done: false, date: dates.tdStr, at: Date.now() });
+                    else if (modalType === 'SCHED') await pub('schedules').add({ title: val1, date: val2, at: Date.now() });
+                    else if (modalType === 'FILE') await pub('materials').add({ title: val1, subject: val2, file: attachedFile, at: Date.now() });
+                    else if (modalType === 'MEMO') await pub('memos').doc(modalTargetId).set({ content: val1, at: Date.now() });
+                    else if (modalType === 'MEAL') await pub('meals').doc(modalTargetId).set({ menu: val1, at: Date.now() });
+                    else if (modalType === 'TIME') await pub('timetables').doc(modalTargetId).set({ periods: val1.split(',').map(s=>s.trim()), at: Date.now() });
+                } catch (e) { console.error(e); }
+                setShowModal(false);
+            };
+
+            const calcDday = (targetDate) => {
+                const today = new Date(); today.setHours(0,0,0,0);
+                const diff = Math.ceil((new Date(targetDate) - today) / 86400000);
+                if (diff === 0) return 'D-Day';
+                return diff > 0 ? `D-${diff}` : `D+${Math.abs(diff)}`;
+            };
+
+            if (isLoading) {
+                return (
+                    <div className="flex flex-col items-center justify-center h-screen bg-[#E5E9F0]">
+                        <div className="tactile-plate p-10 flex flex-col items-center gap-8 border border-white/60">
+                            <div className="relative w-28 h-28 mx-auto flex items-center justify-center">
+                                <div className="absolute inset-0 rounded-full border-4 border-[#E2E8F0] border-t-[#2563EB] animate-spin"></div>
+                                <div className="tactile-pill-btn w-20 h-20 flex items-center justify-center pointer-events-none" style={{ padding: 0 }}>
+                                    <span className="text-xl font-black text-[#1E293B] tracking-tighter">DURU</span>
+                                </div>
+                            </div>
+                            <div className="flex flex-col items-center gap-2 text-center">
+                                <h2 className="text-sm font-black text-[#1E293B] tracking-[0.2em]">DURU SYSTEM</h2>
+                                <p className="text-[10px] font-bold text-slate-500 flex items-center gap-1.5 justify-center">
+                                    <span className="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse"></span>
+                                    고촌고 기판 가동 및 부팅 중...
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                );
+            }
+
+            return (
+                <div className="min-h-screen flex flex-col max-w-2xl mx-auto relative pb-32">
+                    <header className="sticky top-0 z-40 bg-[#E5E9F0]/90 backdrop-blur-xl px-6 pt-12 pb-4 flex items-center justify-between">
+                        <h1 className="text-[30px] font-[900] tracking-tight text-slate-800">Duru</h1>
+                        <div className="flex items-center gap-2">
+                            <button onClick={() => { triggerDeviceFeedback('click'); setTab('tester'); }} className="btn-press flex items-center justify-center bg-white px-[12px] py-[6px] rounded-[100px] shadow-[0_2px_8px_rgba(0,0,0,0.05)]">
+                                <span className="text-[11px] font-[900] text-[#5C5C5C]">TESTER</span>
+                            </button>
+                            <div id="status-badge" className="live-badge">
+                                <div className="pulse-dot" style={{ backgroundColor: statusText === 'LIVE' ? '#10B981' : '#F59E0B' }}></div>
+                                <span className="text-[11px] font-[900]" style={{ color: statusText === 'LIVE' ? '#10B981' : '#F59E0B' }}>{statusText}</span>
+                            </div>
+                        </div>
+                    </header>
+
+                    {notiPermission !== 'granted' && (
+                        <div className="mx-5 mb-5 p-4 bg-white rounded-3xl shadow flex items-center justify-between border border-white/50 animate-in fade-in">
+                            <span className="text-xs font-[800] text-slate-600">🔔 등교알림, 다음시간 메모 스마트 알림</span>
+                            <button onClick={() => { triggerDeviceFeedback('success'); requestPermission(); }} className="tactile-pill-btn-primary px-4 py-2 text-[11px] font-black shadow-lg">알림 허용</button>
+                        </div>
+                    )}
+
+                    <main id="content" className="px-5 space-y-8 mt-4">
+                        {activeTab === 'home' && (
+                            <>
+                                <div className="tactile-card p-8 animate-in fade-in">
+                                    <div className="flex justify-between items-center mb-6">
+                                        <h2 className="font-[900] text-[24px]">학급 알림</h2>
+                                        <button onClick={() => openInputModal('NOTICE')} className="tactile-pill-btn px-4 py-2 text-xs">알림 쓰기</button>
+                                    </div>
+                                    <div className="space-y-4">
+                                        {announcements.length ? announcements.map(a => (
+                                            <div key={a.id} className="debossed-well p-6 relative">
+                                                <h3 className="font-[900] text-[17px] text-slate-800 pr-10">{a.title}</h3>
+                                                <p className="text-[14px] text-slate-600 mt-2 font-[600] leading-relaxed whitespace-pre-wrap">{a.content}</p>
+                                                {a.image && <img src={a.image} className="mt-4 rounded-xl max-h-56 object-cover w-full border border-white/30 shadow" />}
+                                                <button
+                                                    onClick={() => deleteDoc('announcements', a.id)}
+                                                    className="absolute top-4 right-4 tactile-pill-btn p-2 text-red-500 hover:bg-red-50"
+                                                    style={{ minWidth: '32px', minHeight: '32px', padding: '6px' }}
+                                                >
+                                                    <Icons.Trash />
+                                                </button>
+                                            </div>
+                                        )) : <p className="text-center text-gray-400 py-6 font-[600]">등록된 학급 공지사항이 없습니다.</p>}
+                                    </div>
+                                </div>
+
+                                <div className="tactile-card p-8 text-center bg-gradient-to-br from-blue-50 to-white min-h-[140px] flex flex-col justify-center border border-white/40">
+                                    <p className="text-[12px] font-[900] text-blue-600 mb-1 tracking-widest uppercase">다가오는 주요 학급 일정</p>
+                                    <div className="font-[900] text-[22px] text-slate-800">
+                                        {schedules.filter(s => new Date(s.date) >= new Date(dates.tdStr))[0]?.title ?? '예정된 일정이 없습니다'}
+                                    </div>
+                                    {schedules.filter(s => new Date(s.date) >= new Date(dates.tdStr))[0] && (
+                                        <p className="text-[13px] font-[800] text-blue-600 mt-2 bg-blue-100 inline-block px-3 py-1 rounded-full mx-auto">
+                                            {calcDday(schedules.filter(s => new Date(s.date) >= new Date(dates.tdStr))[0].date)} ({schedules.filter(s => new Date(s.date) >= new Date(dates.tdStr))[0].date})
+                                        </p>
+                                    )}
+                                </div>
+
+                                <div className="tactile-card p-8">
+                                    <div className="flex justify-between items-center mb-6">
+                                        <h3 className="font-[900] text-[22px]">오늘의 점심 🍱</h3>
+                                        <button onClick={() => { triggerDeviceFeedback('click'); setTab('meal'); }} className="tactile-pill-btn px-3.5 py-1.5 text-xs">상세 보기</button>
+                                    </div>
+                                    <div className="debossed-well p-6 flex flex-wrap justify-center gap-2">
+                                        {meals[dates.tdStr] ? meals[dates.tdStr].split(',').map((m, idx) => (
+                                            <span key={idx} className="bg-white px-4 py-1.5 rounded-full text-[14px] font-[900] shadow-sm text-slate-800">{m.trim()}</span>
+                                        )) : <p className="text-gray-400 font-[800] py-4 text-center w-full">급식을 분석하고 있거나 미기입 상태입니다.</p>}
+                                    </div>
+                                </div>
+                            </>
+                        )}
+
+                        {activeTab === 'time' && (
+                            <div className="animate-in fade-in">
+                                <div className="debossed-well p-2 flex flex-col gap-3 mb-6">
+                                    <div className="flex justify-between items-center px-2 pt-1">
+                                        <span className="text-xs font-black text-slate-500">시간표 조회 날짜</span>
+                                        <span className="text-xs font-black text-blue-600 bg-white px-2 py-1 rounded-md shadow-sm border">{timetablePivotDate}</span>
+                                    </div>
+                                    <input
+                                        type="date"
+                                        value={timetablePivotDate}
+                                        onChange={(e) => { triggerDeviceFeedback('click'); setTimetablePivotDate(e.target.value); }}
+                                        className="w-full bg-white border-2 border-slate-300 rounded-xl p-3 text-sm font-bold text-center outline-none"
+                                    />
+                                </div>
+                                <div className="space-y-4">
+                                    <div className="flex justify-between items-center">
+                                        <button onClick={() => openInputModal('TIME', timetablePivotDate)} className="tactile-pill-btn px-4 py-2 text-xs flex items-center gap-1.5"><Icons.Plus />과목 일괄 변경</button>
+                                        <button onClick={() => { triggerDeviceFeedback('click'); setTimetablePivotDate(dates.tdStr); }} className="tactile-pill-btn px-4 py-2 text-xs">오늘로 이동</button>
+                                    </div>
+                                    {(timetables[timetablePivotDate] || ['국어', '수학', '영어', '사회', '과학', '체육', '자율']).map((t, idx) => (
+                                        <div key={idx} className="tactile-card p-6 flex items-center justify-between transition-all hover:translate-y-[-2px]">
+                                            <div className="flex items-center gap-6">
+                                                <div className="w-12 h-12 debossed-well flex items-center justify-center font-[900] text-[22px] text-blue-600" style={{ borderRadius: '18px' }}>{idx+1}</div>
+                                                <div>
+                                                    <h4 className="font-[900] text-[19px] text-slate-800">{t}</h4>
+                                                    {memos[timetablePivotDate+'_'+(idx+1)] && <p className="text-[13px] text-blue-600 font-[900] mt-1">💡 메모: {memos[timetablePivotDate+'_'+(idx+1)]}</p>}
+                                                </div>
+                                            </div>
+                                            <button onClick={() => openInputModal('MEMO', timetablePivotDate + '_' + (idx+1))} className="tactile-pill-btn p-2">
+                                                <Icons.Plus />
+                                            </button>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                        )}
+
+                        {activeTab === 'meal' && (
+                            <div className="animate-in fade-in space-y-6">
+                                <div className="debossed-well p-2 flex flex-col gap-3">
+                                    <div className="flex justify-between items-center px-2 pt-1">
+                                        <span className="text-xs font-black text-slate-500">급식 식단 조회 일자</span>
+                                        <span className="text-xs font-black text-emerald-600 bg-white px-2 py-1 rounded-md shadow-sm border">{mealPivotDate}</span>
+                                    </div>
+                                    <input
+                                        type="date"
+                                        value={mealPivotDate}
+                                        onChange={(e) => { triggerDeviceFeedback('click'); setMealPivotDate(e.target.value); }}
+                                        className="w-full bg-white border-2 border-slate-300 rounded-xl p-3 text-sm font-bold text-center outline-none"
+                                    />
+                                </div>
+
+                                <div className="tactile-card p-8">
+                                    <div className="flex justify-between items-center mb-6">
+                                        <h2 className="text-[20px] font-black text-slate-800">지정일 급식 메뉴 🍱</h2>
+                                        <div className="flex gap-2">
+                                            <button onClick={() => openInputModal('MEAL', mealPivotDate)} className="tactile-pill-btn px-3 py-1.5 text-xs">수정</button>
+                                            <button onClick={() => { triggerDeviceFeedback('click'); setMealPivotDate(dates.tdStr); }} className="tactile-pill-btn px-3 py-1.5 text-xs">오늘</button>
+                                        </div>
+                                    </div>
+                                    <div className="debossed-well p-8 flex flex-wrap justify-center gap-2">
+                                        {meals[mealPivotDate] ? meals[mealPivotDate].split(',').map((it, idx) => (
+                                            <span key={idx} className="bg-white px-5 py-2 rounded-full text-[15px] font-[900] shadow-sm text-slate-800">{it.trim()}</span>
+                                        )) : <p className="text-gray-400 font-[800] py-6 text-center w-full">급식 데이터를 탐색하는 중이거나 오늘 자 급식 메뉴가 없습니다.</p>}
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+
+                        {activeTab === 'class' && (
+                            <div className="space-y-8 pb-10 animate-in fade-in">
+                                <div className="tactile-card p-8">
+                                    <div className="flex justify-between items-center mb-6">
+                                        <h2 className="text-[22px] font-[900]">내 플래너 (개인)</h2>
+                                        <button onClick={() => openInputModal('PLAN_ADD')} className="tactile-pill-btn w-9 h-9 font-bold text-xl">+</button>
+                                    </div>
+                                    <div className="space-y-4">
+                                        {planner.length ? planner.map(t => (
+                                            <div key={t.id} className="bg-white border border-slate-200 rounded-[24px] p-5 flex items-center justify-between shadow-sm">
+                                                <button onClick={() => togglePlanner(t.id, !t.done)} className="flex items-center gap-4 flex-1 text-left">
+                                                    <div className={`w-7 h-7 rounded-full border-2 flex items-center justify-center ${t.done ? 'bg-blue-600 border-blue-600 text-white' : 'border-slate-300 text-transparent'}`}>✓</div>
+                                                    <span className={`font-[900] text-[16px] ${t.done ? 'line-through text-gray-400' : ''}`}>{t.text}</span>
+                                                </button>
+                                                <button onClick={() => deleteDoc('planner', t.id, true)} className="text-red-400 p-2 font-bold text-lg">×</button>
+                                            </div>
+                                        )) : <p className="text-center text-gray-400 py-6 font-[800]">오늘 해결할 미션을 생성하세요.</p>}
+                                    </div>
+                                </div>
+
+                                <div className="tactile-card p-8">
+                                    <div className="flex justify-between items-center mb-6">
+                                        <h2 className="text-[22px] font-[900]">통합 학급 일정</h2>
+                                        <button onClick={() => openInputModal('SCHED')} className="tactile-pill-btn px-4 py-2 text-sm">일정 등록</button>
+                                    </div>
+                                    <div className="space-y-4">
+                                        {schedules.length ? schedules.map(s => (
+                                            <div key={s.id} className="debossed-well p-5 flex justify-between items-center relative group">
+                                                <div>
+                                                    <h3 className="font-[900] text-slate-800">{s.title}</h3>
+                                                    <p className="text-[12px] font-[800] text-slate-500 mt-1">{s.date} • <span className="text-blue-600 font-black">{calcDday(s.date)}</span></p>
+                                                </div>
+                                                <button onClick={() => deleteDoc('schedules', s.id)} className="text-red-500 p-2 text-lg font-black">×</button>
+                                            </div>
+                                        )) : <p className="text-center text-gray-400 py-6 font-[600]">예정된 공통 일정이 없습니다.</p>}
+                                    </div>
+                                </div>
+
+                                <div className="tactile-card p-8">
+                                    <div className="flex justify-between items-center mb-6">
+                                        <h2 className="text-[22px] font-[900]">스캔 자료 보관함</h2>
+                                        <button onClick={() => openInputModal('FILE')} className="tactile-pill-btn px-4 py-2 text-sm">자료 보관</button>
+                                    </div>
+                                    <div className="grid gap-4">
+                                        {materials.length ? materials.map(m => (
+                                            <div key={m.id} className="debossed-well p-5 flex items-center justify-between border border-white">
+                                                <div className="flex-1 min-w-0">
+                                                    <h3 className="font-[900] text-slate-800 truncate">{m.title}</h3>
+                                                    <p className="text-[12px] font-[800] text-slate-500">{m.subject}</p>
+                                                    {m.file && (
+                                                        <a href={m.file} download={`${m.title}.jpg`} onClick={() => triggerDeviceFeedback('success')} className="inline-block mt-3 bg-white border px-3 py-1.5 rounded-full text-[11px] font-black text-blue-600 shadow-sm hover:bg-slate-50">
+                                                            📥 학습지 보관본 받기
+                                                        </a>
+                                                    )}
+                                                </div>
+                                                <button onClick={() => deleteDoc('materials', m.id)} className="text-red-500 p-2 text-lg font-black shrink-0">×</button>
+                                            </div>
+                                        )) : <p className="text-center text-gray-400 py-6 font-[600]">다 같이 볼 공유 학습지가 비어있습니다.</p>}
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+
+                        {activeTab === 'tester' && (
+                            <div className="tactile-card p-10 text-center flex flex-col justify-center items-center min-h-[400px] animate-in fade-in">
+                                <div className="w-20 h-20 bg-slate-900 rounded-3xl flex items-center justify-center text-white mb-6 animate-pulse"><Icons.Class /></div>
+                                <h2 className="text-2xl font-[900] tracking-tight">Duru Developer Mode</h2>
+                                <p className="text-sm font-[600] text-gray-400 mt-2 max-w-sm leading-relaxed">
+                                    이 화면은 /tester 라우팅 진입 시 활성화되는 개발자 전용 패널입니다.
+                                </p>
+                                <div className="mt-6 debossed-well p-4 text-left text-xs font-mono text-slate-600 w-full max-w-sm">
+                                    <p className="font-black text-slate-800 mb-2">NEIS API 상태</p>
+                                    <p>학교: 고촌고등학교</p>
+                                    <p>교육청: 경기도 (J10)</p>
+                                    <p>학교코드: {SCHUL_CODE}</p>
+                                    <p>학년/반: 1학년 8반</p>
+                                    <p className="mt-2 text-blue-600">캐시 키 수: {triggeredFetches.current.size}개</p>
+                                </div>
+                                <button onClick={() => { triggerDeviceFeedback('success'); triggeredFetches.current.clear(); setCustomDialog({ type: 'alert', message: '데이터 캐시 동기화 초기화 완료!\n다음 탭 이동 시 NEIS API를 재조회합니다.' }); }} className="tactile-pill-btn-primary mt-6 font-black text-xs px-5 py-3 shadow-lg">나이스 OpenAPI 강제 재동기</button>
+                            </div>
+                        )}
+                    </main>
+
+                    <div id="floating-bar"
+                         className="fixed left-1/2 -translate-x-1/2 bottom-6 transition-all duration-300 z-50"
+                         style={{ width: isScrolled ? '240px' : 'calc(100% - 40px)' }}
+                    >
+                        <nav className="tactile-nav-container flex items-center justify-between p-2 transition-all duration-300"
+                             style={{ height: isScrolled ? '58px' : '76px' }}
+                        >
+                            {[
+                                { id: 'home', label: '홈', Icon: Icons.Home },
+                                { id: 'time', label: '시간표', Icon: Icons.Clock },
+                                { id: 'meal', label: '급식', Icon: Icons.Meal },
+                                { id: 'class', label: '학급', Icon: Icons.Class },
+                            ].map(({ id, label, Icon }) => (
+                                <button key={id} onClick={() => setTab(id)} className={`tactile-nav-btn flex-1 flex flex-col items-center justify-center h-full btn-press relative transition-all ${activeTab === id ? 'tactile-nav-btn-active' : ''}`}>
+                                    <div className="relative z-10"><Icon /></div>
+                                    <span className={`nav-text text-[11px] font-[900] mt-1 relative z-10 transition-all duration-300 ${isScrolled ? 'hidden-text' : ''}`}>{label}</span>
+                                </button>
+                            ))}
+                        </nav>
+                    </div>
+
+                    {showModal && (
+                        <div className="fixed inset-0 z-[100] modal-bg flex items-end md:items-center justify-center p-0 md:p-6">
+                            <div className="tactile-card w-full max-w-md p-8 m-4 animate-in slide-in-from-bottom duration-300">
+                                <h3 className="text-[22px] font-[900] mb-8 text-center font-black">
+                                    {{NOTICE:'새 공지', SCHED:'일정 등록', FILE:'자료 공유', PLAN_ADD:'할 일 추가', MEMO:'수업 메모', MEAL:'식단 입력', TIME:'시간표 편집'}[modalType]}
+                                </h3>
+                                <div className="space-y-4">
+                                    {(modalType === 'PLAN_ADD' || modalType === 'MEMO' || modalType === 'MEAL' || modalType === 'TIME') && (
+                                        <input value={val1} onChange={e=>setVal1(e.target.value)} placeholder={modalType==='MEAL'?'메뉴들을 쉼표로 구분':(modalType==='TIME'?'과목들을 쉼표로 구분':'내용 입력')} className="w-full debossed-well p-5 text-sm font-bold text-slate-800" />
+                                    )}
+                                    {modalType === 'NOTICE' && (
+                                        <>
+                                            <input value={val1} onChange={e=>setVal1(e.target.value)} placeholder="제목" className="w-full debossed-well p-5 text-sm font-bold text-slate-800" />
+                                            <textarea value={val2} onChange={e=>setVal2(e.target.value)} placeholder="상세 내용" className="w-full debossed-well p-5 min-h-[100px] text-sm font-bold resize-none text-slate-800"></textarea>
+                                            <div className="p-5 border-2 border-dashed border-[#CBD5E1] rounded-[24px] bg-[#E2E8F0] flex flex-col items-center justify-center gap-2 cursor-pointer relative">
+                                                <span className="text-sm font-[800] text-gray-500">🖼️ 알림 포스터 첨부</span>
+                                                <input type="file" accept="image/*" className="absolute inset-0 opacity-0 cursor-pointer" onChange={handleFileSelect} />
+                                            </div>
+                                        </>
+                                    )}
+                                    {modalType === 'SCHED' && (
+                                        <>
+                                            <input value={val1} onChange={e=>setVal1(e.target.value)} placeholder="일정 이름" className="w-full debossed-well p-5 text-sm font-bold text-slate-800" />
+                                            <input type="date" value={val2} onChange={e=>setVal2(e.target.value)} className="w-full debossed-well p-5 text-sm font-bold text-slate-500" />
+                                        </>
+                                    )}
+                                    {modalType === 'FILE' && (
+                                        <>
+                                            <input value={val1} onChange={e=>setVal1(e.target.value)} placeholder="자료 이름" className="w-full debossed-well p-5 text-sm font-bold text-slate-800" />
+                                            <input value={val2} onChange={e=>setVal2(e.target.value)} placeholder="과목 명" className="w-full debossed-well p-5 text-sm font-bold text-slate-800" />
+                                            <div className="p-5 border-2 border-dashed border-[#CBD5E1] rounded-[24px] bg-[#E2E8F0] flex flex-col items-center justify-center gap-2 cursor-pointer relative">
+                                                <span className="text-sm font-[800] text-gray-500">📄 학습지 스캔본 선택</span>
+                                                <input type="file" accept="image/*" className="absolute inset-0 opacity-0 cursor-pointer" onChange={handleFileSelect} />
+                                            </div>
+                                        </>
+                                    )}
+                                </div>
+                                <div className="flex gap-4 mt-8">
+                                    <button onClick={() => { triggerDeviceFeedback('click'); setShowModal(false); }} className="flex-1 tactile-pill-btn py-5 font-[900] text-lg btn-press">취소</button>
+                                    <button onClick={submitInput} className="flex-1 tactile-pill-btn-primary py-5 text-lg shadow-lg btn-press">확인</button>
+                                </div>
+                            </div>
+                        </div>
+                    )}
+
+                    {customDialog && (
+                        <div className="fixed inset-0 z-[110] modal-bg flex items-center justify-center p-4">
+                            <div className="tactile-card w-full max-w-xs p-6 flex flex-col text-center border border-white/60 shadow-2xl relative animate-in zoom-in-95">
+                                <div className="w-16 h-16 bg-amber-50 rounded-full mx-auto mb-4 flex items-center justify-center border border-amber-100 shadow-inner">
+                                    <Icons.Alert />
+                                </div>
+                                <h3 className="text-lg font-black text-slate-800 mb-2">Duru 안내</h3>
+                                <p className="text-xs font-bold text-slate-500 leading-relaxed mb-6 whitespace-pre-wrap">{customDialog.message}</p>
+                                <div className="flex gap-3">
+                                    {customDialog.type === 'confirm' ? (
+                                        <>
+                                            <button onClick={() => { triggerDeviceFeedback('click'); setCustomDialog(null); }} className="tactile-pill-btn flex-1 py-3 text-xs">취소</button>
+                                            <button onClick={customDialog.onConfirm} className="tactile-pill-btn-primary flex-1 py-3 text-xs">확인</button>
+                                        </>
+                                    ) : (
+                                        <button onClick={() => { triggerDeviceFeedback('click'); setCustomDialog(null); }} className="tactile-pill-btn-primary w-full py-3 text-xs">확인</button>
+                                    )}
+                                </div>
+                            </div>
+                        </div>
+                    )}
+
+                </div>
+            );
+        }
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</html>
