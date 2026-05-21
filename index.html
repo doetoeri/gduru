@@ -4,6 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Duru - 고촌고 1학년 8반</title>
+    <!-- PWA -->
+    <link rel="manifest" href="./duru-manifest.json">
+    <meta name="theme-color" content="#6366F1">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Duru">
+    <link rel="apple-touch-icon" href="./duru-icon-192.png">
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
@@ -238,6 +246,19 @@ function App() {
 
     const synced = useRef(new Set());
     const [syncState, setSyncState] = useState({}); // dateStr → 'loading'|'done'|'error'
+    const [installPrompt, setInstallPrompt] = useState(null);
+
+    // 알림 스케줄링용 refs (setInterval에서 최신 state 접근)
+    const schedulesRef   = useRef([]);
+    const mealsRef       = useRef({});
+    const memosRef       = useRef({});
+    const timetablesRef  = useRef({});
+    const firedRef       = useRef({});
+
+    useEffect(() => { schedulesRef.current  = schedules;  }, [schedules]);
+    useEffect(() => { mealsRef.current      = meals;      }, [meals]);
+    useEffect(() => { memosRef.current      = memos;      }, [memos]);
+    useEffect(() => { timetablesRef.current = timetables; }, [timetables]);
 
     // 반응형 감지
     useEffect(() => {
@@ -257,9 +278,68 @@ function App() {
         window.scrollTo({ top: 0, behavior: 'smooth' });
     };
 
-    // 알림 권한
+    // 알림 권한 + SW 등록 + PWA 설치 프롬프트
     useEffect(() => {
         if ('Notification' in window) setNotiPerm(Notification.permission);
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('./duru-sw.js').catch(() => {});
+        }
+        const handler = (e) => { e.preventDefault(); setInstallPrompt(e); };
+        window.addEventListener('beforeinstallprompt', handler);
+        return () => window.removeEventListener('beforeinstallprompt', handler);
+    }, []);
+
+    // 알림 발송 헬퍼
+    const fireNotif = (title, body) => {
+        if (!('Notification' in window) || Notification.permission !== 'granted') return;
+        const opts = { body, icon: './duru-icon-192.png', badge: './duru-icon-192.png' };
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.getRegistration().then(reg => {
+                if (reg) reg.showNotification(title, opts).catch(() => { try { new Notification(title, opts); } catch(e){} });
+                else { try { new Notification(title, opts); } catch(e){} }
+            }).catch(() => { try { new Notification(title, opts); } catch(e){} });
+        } else {
+            try { new Notification(title, opts); } catch(e) {}
+        }
+    };
+
+    // ── 예약 알림 스케줄러 ──
+    // 08:40 → 오늘 학급일정 / 09:25·10:25·11:25·14:05·15:05 → 다음교시 메모 / 13:15 → 급식메뉴
+    const NOTIF_SCHEDULE = [
+        { hhmm: '08:40', type: 'schedule' },
+        { hhmm: '09:25', type: 'memo', periodIdx: 1 },
+        { hhmm: '10:25', type: 'memo', periodIdx: 2 },
+        { hhmm: '11:25', type: 'memo', periodIdx: 3 },
+        { hhmm: '13:15', type: 'meal' },
+        { hhmm: '14:05', type: 'memo', periodIdx: 5 },
+        { hhmm: '15:05', type: 'memo', periodIdx: 6 },
+    ];
+    useEffect(() => {
+        const tick = () => {
+            if (!('Notification' in window) || Notification.permission !== 'granted') return;
+            const todayKey = getKSTDateStr();
+            const now = new Date();
+            const hhmm = `${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
+            for (const n of NOTIF_SCHEDULE) {
+                const key = `${todayKey}_${n.hhmm}`;
+                if (hhmm !== n.hhmm || firedRef.current[key]) continue;
+                firedRef.current[key] = true;
+                if (n.type === 'schedule') {
+                    const list = schedulesRef.current.filter(s => s.date === todayKey);
+                    if (list.length) fireNotif('📅 오늘 학급 일정', list.map(s => s.title).join(', '));
+                } else if (n.type === 'meal') {
+                    const menu = mealsRef.current[todayKey];
+                    if (menu) fireNotif('🍱 오늘 점심 급식', menu);
+                } else if (n.type === 'memo') {
+                    const memo = memosRef.current[`${todayKey}_${n.periodIdx + 1}`];
+                    if (memo) fireNotif(`📝 ${n.periodIdx + 1}교시 메모`, memo);
+                }
+            }
+        };
+        const id = setInterval(tick, 30000);
+        tick();
+        return () => clearInterval(id);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     // Firebase 실시간 연결
@@ -666,6 +746,10 @@ function App() {
                             <button onClick={() => Notification.requestPermission().then(p => setNotiPerm(p))}
                                 className="tactile-pill-btn-primary px-3 py-2 text-[10px] font-black w-full">알림 허용</button>
                         )}
+                        {installPrompt && (
+                            <button onClick={() => { installPrompt.prompt(); installPrompt.userChoice.then(() => setInstallPrompt(null)); }}
+                                className="tactile-pill-btn px-3 py-2 text-[10px] font-black w-full text-indigo-600">앱으로 설치</button>
+                        )}
                     </div>
                 </aside>
             )}
@@ -691,12 +775,22 @@ function App() {
                     </div>
                 </header>
 
-                {/* 알림 허용 바 (모바일) */}
-                {!isDesktop && notiPerm !== 'granted' && (
-                    <div className="mx-5 mb-4 p-3 bg-white rounded-2xl shadow flex items-center justify-between border border-white/50">
-                        <span className="text-xs font-[800] text-slate-600">🔔 스마트 알림 활성화</span>
-                        <button onClick={() => Notification.requestPermission().then(p => setNotiPerm(p))}
-                            className="tactile-pill-btn-primary px-4 py-1.5 text-[11px] font-black">허용</button>
+                {/* 알림 허용 / 앱 설치 바 (모바일) */}
+                {!isDesktop && (notiPerm !== 'granted' || installPrompt) && (
+                    <div className="mx-5 mb-4 p-3 bg-white rounded-2xl shadow flex items-center justify-between gap-2 border border-white/50">
+                        <span className="text-xs font-[800] text-slate-600 truncate">
+                            {notiPerm !== 'granted' ? '🔔 스마트 알림 활성화' : '📲 앱으로 설치하기'}
+                        </span>
+                        <div className="flex gap-2 shrink-0">
+                            {notiPerm !== 'granted' && (
+                                <button onClick={() => Notification.requestPermission().then(p => setNotiPerm(p))}
+                                    className="tactile-pill-btn-primary px-4 py-1.5 text-[11px] font-black">알림 허용</button>
+                            )}
+                            {installPrompt && (
+                                <button onClick={() => { installPrompt.prompt(); installPrompt.userChoice.then(() => setInstallPrompt(null)); }}
+                                    className="tactile-pill-btn px-4 py-1.5 text-[11px] font-black text-indigo-600">앱 설치</button>
+                            )}
+                        </div>
                     </div>
                 )}
 
