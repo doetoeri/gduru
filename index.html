@@ -261,8 +261,9 @@ function App() {
     const [announcements, setAnnouncements] = useState([]);
     const [schedules, setSchedules]         = useState([]);
     const [materials, setMaterials]         = useState([]);
-    const [planner, setPlanner]             = useState([]);
     const [messages, setMessages]           = useState([]); // 학급톡톡 상태
+    const [links, setLinks]                 = useState([]); // 바로가기 버튼 상태
+    const [planner, setPlanner]             = useState([]);
     const [memos, setMemos]                 = useState({});
     const [meals, setMeals]                 = useState({});
     const [timetables, setTimetables]       = useState({});
@@ -389,6 +390,7 @@ function App() {
             pubCol('schedules').onSnapshot(s => setSchedules(s.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>new Date(a.date)-new Date(b.date))));
             pubCol('materials').onSnapshot(s => setMaterials(s.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>b.at-a.at)));
             pubCol('messages').onSnapshot(s => setMessages(s.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>b.at-a.at)));
+            pubCol('links').onSnapshot(s => setLinks(s.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>a.at-b.at)));
             pubCol('memos').onSnapshot(s => { const t={}; s.docs.forEach(d=>t[d.id]=d.data().content); setMemos(t); });
             pubCol('meals').onSnapshot(s => { const t={}; s.docs.forEach(d=>t[d.id]=d.data().menu); setMeals(t); });
             pubCol('timetables').onSnapshot(s => { const t={}; s.docs.forEach(d=>t[d.id]=d.data().periods); setTimetables(t); });
@@ -537,6 +539,10 @@ function App() {
                 if(!val2.trim()) return;
                 await pubCol('messages').add({author:val1.trim()||'익명', content:val2.trim(), at:Date.now()});
             }
+            else if (modalType==='LINK') {
+                if(!val1.trim() || !val2.trim()) return;
+                await pubCol('links').add({title:val1.trim(), url:val2.trim(), at:Date.now()});
+            }
         } catch(e) { console.error(e); }
         setShowModal(false);
     };
@@ -637,6 +643,26 @@ function App() {
                             <span key={i} className="bg-white px-3 py-1.5 rounded-full text-[13px] font-[900] shadow-sm">{m.trim()}</span>
                         )) : <p className="text-gray-400 font-bold text-sm py-2">급식 조회 중...</p>}
                     </div>
+                </div>
+            </div>
+
+            {/* ✨ 신기능: 바로가기 (서브도메인/외부링크 바로가기 버튼 추가) */}
+            <div className="tactile-card p-6">
+                <div className="flex justify-between items-center mb-4">
+                    <h2 className="font-[900] text-[20px]">바로가기 🔗</h2>
+                    <button onClick={() => openModal('LINK')} className="tactile-pill-btn px-3 py-1.5 text-xs">추가</button>
+                </div>
+                <div className="flex flex-wrap gap-2.5">
+                    {links.length ? links.map(l => (
+                        <div key={l.id} className="flex items-center bg-white rounded-[20px] border-2 border-slate-200 shadow-sm pr-1 transition-all hover:border-blue-300">
+                            <a href={l.url} target={l.url.startsWith('/') ? '_self' : '_blank'} rel="noopener noreferrer" className="px-4 py-2.5 text-[14px] font-[900] text-slate-700 hover:text-blue-600 transition-colors">
+                                {l.title}
+                            </a>
+                            <button onClick={() => deleteDoc('links', l.id)} className="w-8 h-8 flex items-center justify-center text-slate-300 hover:text-red-500 font-black text-lg rounded-full transition-colors pb-0.5">
+                                ×
+                            </button>
+                        </div>
+                    )) : <p className="text-[13px] text-slate-400 font-bold w-full py-2">등록된 바로가기가 없습니다.</p>}
                 </div>
             </div>
 
@@ -1046,7 +1072,7 @@ function App() {
                 <div className="fixed inset-0 z-[100] bg-black/20 backdrop-blur-sm flex items-end md:items-center justify-center p-0 md:p-6">
                     <div className="tactile-card w-full max-w-md p-7 m-4">
                         <h3 className="text-[20px] font-[900] mb-6 text-center">
-                            {{NOTICE:'새 공지',SCHED:'일정 등록',FILE:'자료 공유',PLAN:'할 일 추가',MEMO:'수업 메모',MEAL:'식단 입력',TIME:'시간표 편집', MSG:'학급 톡톡 쓰기'}[modalType]}
+                            {{NOTICE:'새 공지',SCHED:'일정 등록',FILE:'자료 공유',PLAN:'할 일 추가',MEMO:'수업 메모',MEAL:'식단 입력',TIME:'시간표 편집', MSG:'학급 톡톡 쓰기', LINK:'바로가기 추가'}[modalType]}
                         </h3>
                         <div className="space-y-3">
                             {['PLAN','MEMO','MEAL','TIME'].includes(modalType) && (
@@ -1080,6 +1106,11 @@ function App() {
                             {modalType==='MSG' && <>
                                 <input value={val1} onChange={e=>setVal1(e.target.value)} placeholder="닉네임 (비워두면 익명)" className="w-full debossed-well p-4 text-sm font-bold outline-none"/>
                                 <textarea value={val2} onChange={e=>setVal2(e.target.value)} placeholder="친구들에게 전할 말이나 건의사항을 남겨주세요." className="w-full debossed-well p-4 min-h-[100px] text-sm font-bold resize-none outline-none"/>
+                            </>}
+                            {/* ✨ 바로가기 모달 입력 필드 */}
+                            {modalType==='LINK' && <>
+                                <input value={val1} onChange={e=>setVal1(e.target.value)} placeholder="버튼 이름 (예: 성적확인)" className="w-full debossed-well p-4 text-sm font-bold outline-none"/>
+                                <input value={val2} onChange={e=>setVal2(e.target.value)} placeholder="연결할 주소 (예: /grades 또는 https://...)" className="w-full debossed-well p-4 text-sm font-bold outline-none"/>
                             </>}
                         </div>
                         <div className="flex gap-3 mt-6">
