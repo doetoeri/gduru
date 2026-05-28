@@ -412,7 +412,6 @@
     <!-- 공통 알림 모달 -->
     <div id="customModal" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 flex items-center justify-center p-4 opacity-0 pointer-events-none transition-opacity duration-300">
         <div class="tactile-card w-full max-w-sm p-8 flex flex-col items-center text-center transform scale-95 transition-transform duration-300" id="modalCard">
-            <!-- ID를 i 태그가 아닌 부모 div에 부여하여 덮어쓰기 시 에러 방지 -->
             <div id="modalIconContainer" class="w-16 h-16 rounded-full debossed-well flex items-center justify-center mb-4">
                 <i data-lucide="bell" class="w-8 h-8 text-blue-500"></i>
             </div>
@@ -448,11 +447,11 @@
     <!-- Firebase SDK & 비즈니스 로직 -->
     <script type="module">
         // ==========================================
-        // Firebase CDN 연동 구성 (v11.6.1)
+        // Firebase CDN 연동 구성 (v11.6.1) - 삭제 기능과 실시간 동기화 포함
         // ==========================================
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { getFirestore, collection, doc, setDoc, getDoc, getDocs } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        import { getFirestore, collection, doc, setDoc, getDoc, onSnapshot, deleteDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
         // ==========================================
         // [설정] 제공해주신 Firebase Project 전용 설정
@@ -504,7 +503,6 @@
                     try {
                         await signInWithCustomToken(auth, __initial_auth_token);
                     } catch (tokenErr) {
-                        // 커스텀 토큰이 일치하지 않는 예외 발생 시, 익명 로그인(Anonymous Sign-In)으로 안전하게 전환합니다.
                         console.warn("커스텀 토큰 인증 실패 (mismatch), 익명 로그인으로 안전하게 우회합니다:", tokenErr);
                         await signInAnonymously(auth);
                     }
@@ -514,6 +512,7 @@
             } catch (err) {
                 console.error("Firebase 인증에 완전히 실패했습니다", err);
                 window.showModal("인증 오류", "클라우드 서비스 인증에 실패했습니다. Firebase Console 권한 설정을 점검해 주세요.", "alert-circle", "text-red-500");
+                hideLoading();
             }
         };
 
@@ -522,30 +521,46 @@
         onAuthStateChanged(auth, (user) => {
             authUser = user;
             if (user) {
-                // 로그인 완료 시 Firebase 데이터베이스 초기 동기화 진행
-                syncDatabaseCounters();
+                // 로그인 완료 시 Firebase 데이터베이스 실시간 동기화 시작
+                syncDatabaseCountersRealtime();
             }
         });
 
         // ==========================================
-        // DB 카운트 수렴 및 실시간 연동
+        // DB 실시간 동기화 (Real-time Sync)
         // ==========================================
-        async function syncDatabaseCounters() {
+        function syncDatabaseCountersRealtime() {
             if (!authUser) return;
             try {
                 // Rule 1 준수: artifacts/appId/public/data/submittedQuestions
                 const qColRef = collection(db, 'artifacts', appId, 'public', 'data', 'submittedQuestions');
-                const qSnap = await getDocs(qColRef);
-                submittedQuestions.length = 0;
-                qSnap.forEach(doc => {
-                    submittedQuestions.push(doc.data());
+                
+                // onSnapshot을 통해 데이터가 추가/삭제 될 때마다 실시간으로 화면을 새로고침합니다.
+                onSnapshot(qColRef, (qSnap) => {
+                    submittedQuestions.length = 0;
+                    qSnap.forEach(doc => {
+                        submittedQuestions.push(doc.data());
+                    });
+                    
+                    // 최신 등록 순 정렬
+                    submittedQuestions.sort((a, b) => b.createdAt - a.createdAt);
+                    
+                    // 메인 화면 카운트 실시간 업데이트
+                    const countEl = document.getElementById('homeQCount');
+                    if (countEl) countEl.textContent = submittedQuestions.length;
+
+                    // 만약 관리자 패널 화면을 보고 있다면, 문제 목록도 실시간으로 다시 그립니다.
+                    if (document.getElementById('screen-admin').classList.contains('active')) {
+                        window.renderAdminQuestionSelector();
+                    }
+                    
+                    hideLoading(); // 최초 로딩 가림 처리
+                }, (error) => {
+                    console.error("실시간 카운터 동기화 실패", error);
+                    hideLoading();
                 });
-                // 최신 등록 순 정렬 (메모리 정렬로 복합 쿼리 방지 - Rule 2)
-                submittedQuestions.sort((a, b) => b.createdAt - a.createdAt);
-                document.getElementById('homeQCount').textContent = submittedQuestions.length;
             } catch (err) {
-                console.error("카운터 동기화 실패", err);
-            } finally {
+                console.error("동기화 설정 중 오류", err);
                 hideLoading();
             }
         }
@@ -562,11 +577,9 @@
         };
 
         window.goHome = function() {
-            showLoading();
-            syncDatabaseCounters().then(() => {
-                document.getElementById('testCodeInput').value = '';
-                window.switchScreen('screen-home');
-            });
+            document.getElementById('testCodeInput').value = '';
+            window.switchScreen('screen-home');
+            // 실시간 동기화는 백그라운드에서 이미 돌아가고 있습니다!
         };
 
         // ==========================================
@@ -579,7 +592,6 @@
             document.getElementById('modalTitle').textContent = title;
             document.getElementById('modalMessage').textContent = message;
             
-            // i 태그 대신 고정된 컨테이너 div를 찾아 안쪽 내용을 업데이트하도록 수정
             const iconContainer = document.getElementById('modalIconContainer');
             if (iconContainer) {
                 iconContainer.innerHTML = `<i data-lucide="${icon}" class="w-8 h-8 ${iconColor}"></i>`;
@@ -696,23 +708,15 @@
         };
 
         // ==========================================
-        // 2. [기능] 관리자 조립 패널 (Firebase Query & Sync)
+        // 2. [기능] 관리자 조립 패널 (Real-time 반영)
         // ==========================================
-        window.goToAdminPanel = async function() {
-            showLoading();
+        window.goToAdminPanel = function() {
             document.getElementById('adminExamTitle').value = '';
             adminSelectedQIds.clear();
             window.updateSelectedQCountUI();
 
-            try {
-                await syncDatabaseCounters();
-                window.renderAdminQuestionSelector();
-                window.switchScreen('screen-admin');
-            } catch (err) {
-                console.error("관리자 패널 로딩 실패", err);
-            } finally {
-                hideLoading();
-            }
+            window.renderAdminQuestionSelector();
+            window.switchScreen('screen-admin');
         };
 
         window.renderAdminQuestionSelector = function() {
@@ -738,12 +742,21 @@
                 }
 
                 card.innerHTML = `
-                    <div class="flex items-center justify-between pointer-events-none">
-                        <span class="text-xs font-bold bg-blue-100 text-blue-600 px-2.5 py-1 rounded-full">
+                    <div class="flex items-center justify-between">
+                        <span class="text-xs font-bold bg-blue-100 text-blue-600 px-2.5 py-1 rounded-full pointer-events-none">
                             출제자: ${q.author}
                         </span>
-                        <div class="w-6 h-6 rounded-full border-2 border-slate-400 flex items-center justify-center check-indicator">
-                            ${adminSelectedQIds.has(q.id) ? '<i data-lucide="check" class="w-4 h-4 text-blue-600"></i>' : ''}
+                        
+                        <div class="flex gap-2 items-center">
+                            <!-- [새로운 기능] 문제 삭제 버튼 -->
+                            <button onclick="window.deleteQuestion('${q.id}', event)" class="p-1.5 text-slate-400 hover:text-red-500 transition-colors z-10" title="문제 삭제하기">
+                                <i data-lucide="trash-2" class="w-5 h-5"></i>
+                            </button>
+                            
+                            <!-- 선택 체크박스 아이콘 -->
+                            <div class="w-6 h-6 rounded-full border-2 border-slate-400 flex items-center justify-center check-indicator pointer-events-none">
+                                ${adminSelectedQIds.has(q.id) ? '<i data-lucide="check" class="w-4 h-4 text-blue-600"></i>' : ''}
+                            </div>
                         </div>
                     </div>
                     <p class="font-bold text-slate-800 text-sm sm:text-base pointer-events-none mt-1">
@@ -751,6 +764,7 @@
                     </p>
                 `;
 
+                // 카드 여백 클릭 시 선택 처리
                 card.onclick = () => window.toggleSelectQuestionInAdmin(q.id);
                 listContainer.appendChild(card);
             });
@@ -758,8 +772,10 @@
             lucide.createIcons();
         };
 
+        // 문제 선택 토글
         window.toggleSelectQuestionInAdmin = function(qId) {
             const card = document.getElementById(`admin-card-${qId}`);
+            if (!card) return;
             
             if (adminSelectedQIds.has(qId)) {
                 adminSelectedQIds.delete(qId);
@@ -773,8 +789,32 @@
             window.renderAdminQuestionSelector();
         };
 
+        // UI 선택된 문제 수 텍스트 갱신
         window.updateSelectedQCountUI = function() {
             document.getElementById('selectedCountInfo').textContent = `${adminSelectedQIds.size}개 선택됨`;
+        };
+
+        // [새로운 기능] 데이터베이스에서 문제 삭제하기
+        window.deleteQuestion = async function(qId, event) {
+            event.stopPropagation(); // 부모 카드 영역의 클릭(문제 선택 토글) 방지
+            
+            showLoading();
+            try {
+                // Rule 1 준수: artifacts/appId/public/data/submittedQuestions/qId
+                await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'submittedQuestions', qId));
+                
+                // 만약 삭제한 문제가 선택된 상태였다면 해제
+                adminSelectedQIds.delete(qId); 
+                window.updateSelectedQCountUI();
+                
+                // 실시간 onSnapshot이 UI를 알아서 갱신해줍니다. 
+                window.showModal("삭제 완료", "선택하신 문제가 보관함에서 지워졌습니다.", "trash-2", "text-red-500");
+            } catch (err) {
+                console.error("문제 삭제 실패: ", err);
+                window.showModal("오류 발생", "문제를 삭제하지 못했습니다. 다시 시도해 주세요.", "alert-circle", "text-red-500");
+            } finally {
+                hideLoading();
+            }
         };
 
         window.assembleExamPaper = async function() {
