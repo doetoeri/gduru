@@ -1,0 +1,981 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Duru Tester - 3D Haptic UI</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts: Noto Sans KR -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <style>
+        /* ==================================================
+           핵심 CSS (3D 플라스틱 햅틱 디자인)
+           ================================================== */
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+            background-color: #E5E9F0;
+            color: #1E293B;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .tactile-card {
+            background: linear-gradient(145deg, #EEF2F6, #D8DFE8);
+            border: 1.5px solid rgba(255, 255, 255, 0.9);
+            box-shadow: 
+                6px 8px 18px rgba(163, 177, 198, 0.55), 
+                -6px -6px 18px rgba(255, 255, 255, 0.95),
+                inset 1px 1px 2px rgba(255, 255, 255, 0.9);
+            border-radius: 28px;
+        }
+
+        .debossed-well {
+            background: #E2E8F0;
+            border-radius: 24px;
+            box-shadow: 
+                inset 3.5px 3.5px 8px rgba(163, 177, 198, 0.8), 
+                inset -3.5px -3.5px 8px rgba(255, 255, 255, 0.95),
+                1px 1.5px 2px rgba(255, 255, 255, 0.75);
+            border: 1px solid rgba(255, 255, 255, 0.45);
+        }
+
+        .tactile-pill-btn {
+            background: linear-gradient(180deg, #F1F5F9 0%, #D8DFE8 100%);
+            border: 3px solid #CBD5E1; 
+            outline: 1.5px solid #F1F5F9; 
+            box-shadow: 
+                inset 0px 2.5px 5px rgba(0, 0, 0, 0.1),
+                inset 0px -2.5px 5px rgba(255, 255, 255, 0.95),
+                0px 5px 12px rgba(148, 163, 184, 0.45);
+            border-radius: 9999px;
+            transition: all 0.1s cubic-bezier(0.2, 0.8, 0.2, 1);
+            color: #475569;
+            font-weight: 800;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+        .tactile-pill-btn:hover {
+            background: linear-gradient(180deg, #F8FAFC 0%, #D1D5DB 100%);
+            box-shadow: 
+                inset 0px 1.5px 3px rgba(0, 0, 0, 0.08),
+                inset 0px -2.5px 5px rgba(255, 255, 255, 0.98),
+                0px 6px 15px rgba(148, 163, 184, 0.55);
+            transform: translateY(-1px);
+        }
+        .tactile-pill-btn:active {
+            background: linear-gradient(180deg, #CBD5E1 0%, #94A3B8 100%);
+            border-color: #94A3B8;
+            outline-color: #CBD5E1;
+            box-shadow: 
+                inset 0px 4px 8px rgba(0, 0, 0, 0.24),
+                inset 0px -1px 2px rgba(255, 255, 255, 0.4),
+                0px 1px 2px rgba(255, 255, 255, 0.5);
+            transform: translateY(1.5px);
+            color: #1E293B;
+        }
+
+        .tactile-pill-btn-primary {
+            background: linear-gradient(180deg, #93C5FD 0%, #2563EB 100%);
+            border: 3px solid #1D4ED8;
+            outline: 1.5px solid #93C5FD;
+            box-shadow: 
+                inset 0px 2.5px 5px rgba(0, 0, 0, 0.15),
+                inset 0px -2.5px 5px rgba(255, 255, 255, 0.45),
+                0px 5px 12px rgba(37, 99, 235, 0.35);
+            border-radius: 9999px;
+            transition: all 0.1s cubic-bezier(0.2, 0.8, 0.2, 1);
+            color: white;
+            font-weight: 800;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+        .tactile-pill-btn-primary:hover {
+            background: linear-gradient(180deg, #A1CFFF 0%, #1D4ED8 100%);
+            box-shadow: 
+                inset 0px 1.5px 3px rgba(0, 0, 0, 0.1),
+                inset 0px -2.5px 5px rgba(255, 255, 255, 0.5),
+                0px 6px 15px rgba(37, 99, 235, 0.45);
+            transform: translateY(-1px);
+        }
+        .tactile-pill-btn-primary:active {
+            background: linear-gradient(180deg, #2563EB 0%, #1E3A8A 100%);
+            border-color: #1E3A8A;
+            outline-color: #2563EB;
+            box-shadow: 
+                inset 0px 4px 8px rgba(0, 0, 0, 0.3),
+                inset 0px -1px 2px rgba(255, 255, 255, 0.25),
+                0px 1.5px 3px rgba(255, 255, 255, 0.2);
+            transform: translateY(1.5px);
+        }
+
+        /* 선택된 상태 */
+        .option-selected {
+            background: linear-gradient(180deg, #93C5FD 0%, #3B82F6 100%) !important;
+            color: white !important;
+            border-color: #2563EB !important;
+            outline-color: #93C5FD !important;
+        }
+
+        .admin-q-selected {
+            border: 3.5px solid #2563EB !important;
+            background: linear-gradient(145deg, #E0F2FE, #BAE6FD) !important;
+            box-shadow: 0px 4px 12px rgba(37, 99, 235, 0.15) !important;
+        }
+
+        /* 로딩 딤 오버레이 */
+        .loading-overlay {
+            background: rgba(229, 233, 240, 0.85);
+            backdrop-filter: blur(4px);
+        }
+
+        /* 화면 전환 */
+        .screen { display: none; }
+        .screen.active { display: block; animation: fadeIn 0.4s ease-out; }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body class="min-h-screen flex items-center justify-center p-4 sm:p-8">
+
+    <!-- 글로벌 로딩 디스플레이 -->
+    <div id="loadingOverlay" class="fixed inset-0 z-50 flex flex-col items-center justify-center loading-overlay transition-opacity duration-300">
+        <div class="inline-flex items-center justify-center w-16 h-16 rounded-full debossed-well mb-4 animate-bounce">
+            <i data-lucide="cloud-lightning" class="w-8 h-8 text-blue-600"></i>
+        </div>
+        <p class="text-slate-600 font-extrabold text-lg">Duru 클라우드와 통신 중...</p>
+    </div>
+
+    <main class="w-full max-w-2xl mx-auto">
+        
+        <!-- ==========================================
+             1. 메인 홈 화면 (대시보드)
+             ========================================== -->
+        <div id="screen-home" class="screen active">
+            <div class="tactile-card p-6 sm:p-10 flex flex-col gap-8">
+                <header class="text-center space-y-2">
+                    <div class="inline-flex items-center justify-center w-16 h-16 rounded-full debossed-well mb-4">
+                        <i data-lucide="check-square" class="w-8 h-8 text-blue-600"></i>
+                    </div>
+                    <h1 class="text-3xl sm:text-4xl font-extrabold tracking-tight text-slate-800">Duru Tester</h1>
+                    <p class="text-slate-500 font-medium">친구들의 지혜를 모아 만드는 우리들만의 시험지 조립소!</p>
+                </header>
+
+                <div class="h-px w-full bg-slate-300 shadow-[0_1px_1px_rgba(255,255,255,1)]"></div>
+
+                <!-- 시험 풀기 섹션 -->
+                <section class="space-y-4">
+                    <label class="block text-slate-700 font-bold ml-2">발급된 시험 코드 입력</label>
+                    <div class="debossed-well flex items-center px-5 py-4 transition-colors focus-within:ring-2 focus-within:ring-blue-400">
+                        <i data-lucide="key-round" class="w-5 h-5 text-slate-400 mr-3"></i>
+                        <input type="text" id="testCodeInput" placeholder="예: DURU-1234" 
+                               class="w-full bg-transparent border-none outline-none text-slate-700 placeholder-slate-400 font-bold text-lg uppercase">
+                    </div>
+
+                    <button onclick="startTest()" class="tactile-pill-btn-primary w-full py-4 px-6 text-lg">
+                        <i data-lucide="play" class="w-5 h-5 mr-2"></i>
+                        온라인 시험 치르기
+                    </button>
+                </section>
+
+                <div class="h-px w-full bg-slate-300 shadow-[0_1px_1px_rgba(255,255,255,1)]"></div>
+
+                <!-- 메뉴 버튼 레이아웃 -->
+                <section class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <button onclick="goToSubmitQuestion()" class="tactile-pill-btn py-5 px-6 text-base text-blue-600 flex flex-col items-center gap-2">
+                        <i data-lucide="edit-3" class="w-6 h-6 text-blue-500"></i>
+                        <span>① 친구용: 문제 제출하기</span>
+                    </button>
+
+                    <button onclick="openPasswordGate()" class="tactile-pill-btn py-5 px-6 text-base text-slate-700 flex flex-col items-center gap-2">
+                        <i data-lucide="wrench" class="w-6 h-6 text-amber-500"></i>
+                        <span>② 관리자용: 시험지 조립하기</span>
+                    </button>
+                </section>
+                
+                <footer class="text-center">
+                    <p class="text-xs text-slate-400 font-bold tracking-wider">
+                        현재 보관된 누적 문제 수: <span id="homeQCount" class="text-blue-500">0</span>개
+                    </p>
+                </footer>
+            </div>
+        </div>
+
+        <!-- ==========================================
+             2. 문제 제출 화면 (친구들이 개별 등록)
+             ========================================== -->
+        <div id="screen-submit-q" class="screen">
+            <div class="tactile-card p-6 sm:p-10 flex flex-col gap-6">
+                <header class="flex justify-between items-center mb-2">
+                    <h2 class="text-2xl font-extrabold text-slate-800">친구의 문제 제출처</h2>
+                    <button onclick="goHome()" class="tactile-pill-btn px-4 py-2 text-sm">
+                        <i data-lucide="arrow-left" class="w-4 h-4 mr-1"></i> 뒤로
+                    </button>
+                </header>
+
+                <div class="space-y-2">
+                    <label class="block text-slate-700 font-bold ml-2">출제자 이름 (친구명)</label>
+                    <div class="debossed-well flex items-center px-4 py-3">
+                        <i data-lucide="user" class="w-5 h-5 text-slate-400 mr-2"></i>
+                        <input type="text" id="submitAuthor" placeholder="예: 민수, 지윤" 
+                               class="w-full bg-transparent border-none outline-none text-slate-700 placeholder-slate-400 font-bold">
+                    </div>
+                </div>
+
+                <div class="space-y-2">
+                    <label class="block text-slate-700 font-bold ml-2">문제 내용</label>
+                    <div class="debossed-well px-4 py-3">
+                        <input type="text" id="submitQuestionText" placeholder="예: 지구의 대기 중 가장 흔한 기체 원소는?" 
+                               class="w-full bg-transparent border-none outline-none text-slate-700 placeholder-slate-400 font-bold">
+                    </div>
+                </div>
+
+                <div class="space-y-3">
+                    <label class="block text-slate-700 font-bold ml-2">보기 입력 및 정답 체크</label>
+                    <div class="flex flex-col gap-3">
+                        <div class="flex items-center gap-3">
+                            <input type="radio" name="submitCorrect" value="0" id="correct-radio-0" checked
+                                   class="w-6 h-6 text-blue-600 bg-slate-100 border-slate-300 focus:ring-blue-500 cursor-pointer">
+                            <label for="correct-radio-0" class="text-xs font-bold text-slate-400 shrink-0">보기 1</label>
+                            <div class="debossed-well px-4 py-2 flex-1">
+                                <input type="text" class="submit-option w-full bg-transparent border-none outline-none text-slate-700 font-medium placeholder-slate-400" placeholder="보기 1번 텍스트">
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <input type="radio" name="submitCorrect" value="1" id="correct-radio-1"
+                                   class="w-6 h-6 text-blue-600 bg-slate-100 border-slate-300 focus:ring-blue-500 cursor-pointer">
+                            <label for="correct-radio-1" class="text-xs font-bold text-slate-400 shrink-0">보기 2</label>
+                            <div class="debossed-well px-4 py-2 flex-1">
+                                <input type="text" class="submit-option w-full bg-transparent border-none outline-none text-slate-700 font-medium placeholder-slate-400" placeholder="보기 2번 텍스트">
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <input type="radio" name="submitCorrect" value="2" id="correct-radio-2"
+                                   class="w-6 h-6 text-blue-600 bg-slate-100 border-slate-300 focus:ring-blue-500 cursor-pointer">
+                            <label for="correct-radio-2" class="text-xs font-bold text-slate-400 shrink-0">보기 3</label>
+                            <div class="debossed-well px-4 py-2 flex-1">
+                                <input type="text" class="submit-option w-full bg-transparent border-none outline-none text-slate-700 font-medium placeholder-slate-400" placeholder="보기 3번 텍스트">
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <input type="radio" name="submitCorrect" value="3" id="correct-radio-3"
+                                   class="w-6 h-6 text-blue-600 bg-slate-100 border-slate-300 focus:ring-blue-500 cursor-pointer">
+                            <label for="correct-radio-3" class="text-xs font-bold text-slate-400 shrink-0">보기 4</label>
+                            <div class="debossed-well px-4 py-2 flex-1">
+                                <input type="text" class="submit-option w-full bg-transparent border-none outline-none text-slate-700 font-medium placeholder-slate-400" placeholder="보기 4번 텍스트">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="space-y-2">
+                    <label class="block text-slate-700 font-bold ml-2">오답 해설 및 팁 (생략 가능)</label>
+                    <div class="debossed-well px-4 py-3">
+                        <textarea id="submitExplanation" class="w-full bg-transparent border-none outline-none text-slate-700 font-medium placeholder-slate-400 resize-none h-20" placeholder="친구들이 이 문제를 틀렸을 때 보여줄 설명글을 입력해주세요."></textarea>
+                    </div>
+                </div>
+
+                <button onclick="submitSingleQuestion()" class="tactile-pill-btn-primary w-full py-4 px-6 text-lg">
+                    <i data-lucide="check" class="w-5 h-5 mr-2"></i>
+                    보관함에 문제 제출하기
+                </button>
+            </div>
+        </div>
+
+        <!-- ==========================================
+             3. 관리자 조립소 화면
+             ========================================== -->
+        <div id="screen-admin" class="screen">
+            <div class="tactile-card p-6 sm:p-10 flex flex-col gap-6">
+                <header class="flex justify-between items-center mb-2">
+                    <div class="flex items-center gap-2">
+                        <div class="w-8 h-8 rounded-full bg-amber-100 flex items-center justify-center">
+                            <i data-lucide="wrench" class="w-4 h-4 text-amber-500"></i>
+                        </div>
+                        <h2 class="text-2xl font-extrabold text-slate-800">시험지 조립 작업대</h2>
+                    </div>
+                    <button onclick="goHome()" class="tactile-pill-btn px-4 py-2 text-sm">
+                        <i data-lucide="home" class="w-4 h-4 mr-1"></i> 홈으로
+                    </button>
+                </header>
+
+                <div class="space-y-3 bg-slate-200/50 p-5 rounded-3xl border border-slate-300">
+                    <h3 class="font-bold text-slate-700 ml-1 flex items-center gap-1">
+                        <i data-lucide="info" class="w-4 h-4 text-blue-500"></i> 새 시험지 명세
+                    </h3>
+                    <div class="space-y-2">
+                        <label class="block text-xs font-bold text-slate-500 ml-2">시험지 타이틀</label>
+                        <div class="debossed-well flex items-center px-4 py-3 bg-white">
+                            <input type="text" id="adminExamTitle" placeholder="예: 민수와 주형이의 화학 상식 배틀" 
+                                   class="w-full bg-transparent border-none outline-none text-slate-800 font-bold placeholder-slate-400">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="space-y-3">
+                    <div class="flex justify-between items-center px-1">
+                        <label class="block text-slate-700 font-bold">보관함 속 문제 선택하기</label>
+                        <span class="text-xs font-bold text-slate-400" id="selectedCountInfo">0개 선택됨</span>
+                    </div>
+
+                    <div id="adminSubmittedQList" class="flex flex-col gap-4 max-h-[350px] overflow-y-auto pr-1">
+                        <!-- 동적으로 등록된 문제 목록이 카드로 뿌려짐 -->
+                    </div>
+                </div>
+
+                <button onclick="assembleExamPaper()" class="tactile-pill-btn-primary w-full py-4 px-6 text-lg">
+                    <i data-lucide="sparkles" class="w-5 h-5 mr-2"></i>
+                    선택한 문제들로 시험지 조립하기
+                </button>
+            </div>
+        </div>
+
+        <!-- ==========================================
+             4. 문제 풀이 화면
+             ========================================== -->
+        <div id="screen-test" class="screen">
+            <div class="tactile-card p-6 sm:p-10 flex flex-col gap-6">
+                <div class="flex justify-between items-center mb-2">
+                    <h2 id="testTitle" class="text-xl font-bold text-slate-800 truncate pr-4">시험 제목</h2>
+                    <div class="debossed-well px-4 py-2 font-bold text-blue-600 shrink-0">
+                        <span id="questionCounter">0 / 0</span>
+                    </div>
+                </div>
+
+                <div class="debossed-well p-6 sm:p-8">
+                    <h3 id="questionText" class="text-xl sm:text-2xl font-bold text-slate-800 leading-snug">
+                        문제 로드 중...
+                    </h3>
+                </div>
+
+                <div id="optionsContainer" class="flex flex-col gap-4 mt-2">
+                    <!-- 보기가 추가되는 영역 -->
+                </div>
+
+                <div class="flex gap-4 mt-4">
+                    <button onclick="goHome()" class="tactile-pill-btn py-4 px-6">
+                        <i data-lucide="x" class="w-5 h-5"></i>
+                    </button>
+                    <button id="nextBtn" onclick="nextQuestion()" class="tactile-pill-btn-primary flex-1 py-4 px-6 text-lg">
+                        다음 문제
+                        <i data-lucide="arrow-right" class="w-5 h-5 ml-2"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==========================================
+             5. 결과 및 오답 노트 화면
+             ========================================== -->
+        <div id="screen-result" class="screen">
+            <div class="tactile-card p-6 sm:p-10 flex flex-col gap-8">
+                <header class="text-center space-y-4">
+                    <h1 class="text-3xl font-extrabold text-slate-800">채점 결과</h1>
+                    <div class="w-32 h-32 mx-auto rounded-full debossed-well flex items-center justify-center">
+                        <span id="finalScore" class="text-5xl font-black text-blue-600">0</span>
+                    </div>
+                    <p id="scoreMessage" class="text-lg font-bold text-slate-500"></p>
+                </header>
+
+                <div class="h-px w-full bg-slate-300 shadow-[0_1px_1px_rgba(255,255,255,1)]"></div>
+
+                <section>
+                    <h2 class="text-xl font-bold text-slate-700 mb-4 ml-2">오답 노트 분석</h2>
+                    <div id="wrongAnswersContainer" class="flex flex-col gap-4">
+                        <!-- 오답 내역 추가되는 영역 -->
+                    </div>
+                </section>
+
+                <button onclick="goHome()" class="tactile-pill-btn py-4 px-6 text-lg w-full mt-4">
+                    <i data-lucide="home" class="w-5 h-5 mr-2"></i>
+                    홈으로 돌아가기
+                </button>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- 공통 알림 모달 -->
+    <div id="customModal" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 flex items-center justify-center p-4 opacity-0 pointer-events-none transition-opacity duration-300">
+        <div class="tactile-card w-full max-w-sm p-8 flex flex-col items-center text-center transform scale-95 transition-transform duration-300" id="modalCard">
+            <div class="w-16 h-16 rounded-full debossed-well flex items-center justify-center mb-4">
+                <i id="modalIcon" data-lucide="bell" class="w-8 h-8 text-blue-500"></i>
+            </div>
+            <h3 id="modalTitle" class="text-xl font-bold text-slate-800 mb-2">알림</h3>
+            <p id="modalMessage" class="text-slate-600 font-medium mb-8 whitespace-pre-line text-sm sm:text-base leading-relaxed">메시지 내용</p>
+            <button onclick="closeModal()" class="tactile-pill-btn-primary py-3 px-8 w-full text-lg">
+                확인
+            </button>
+        </div>
+    </div>
+
+    <!-- 관리자 비밀번호 게이트 모달 -->
+    <div id="passwordModal" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 flex items-center justify-center p-4 opacity-0 pointer-events-none transition-opacity duration-300">
+        <div class="tactile-card w-full max-w-sm p-8 flex flex-col items-center transform scale-95 transition-transform duration-300" id="passwordCard">
+            <div class="w-16 h-16 rounded-full debossed-well flex items-center justify-center mb-4">
+                <i data-lucide="lock" class="w-8 h-8 text-amber-500"></i>
+            </div>
+            <h3 class="text-xl font-bold text-slate-800 mb-2 text-center">관리자 인증</h3>
+            <p class="text-slate-500 font-medium text-sm text-center mb-6">시험지 조립실 입장을 위한 비밀번호를 입력해 주세요.</p>
+            
+            <div class="debossed-well w-full flex items-center px-4 py-3 mb-6 bg-[#E2E8F0]">
+                <input type="password" id="adminPasswordInput" placeholder="비밀번호 입력 (기본: 1234)" 
+                       class="w-full bg-transparent border-none outline-none text-slate-700 text-center font-bold tracking-widest">
+            </div>
+
+            <div class="flex gap-3 w-full">
+                <button onclick="closePasswordGate()" class="tactile-pill-btn py-3 px-4 text-sm font-bold flex-1">취소</button>
+                <button onclick="checkAdminPassword()" class="tactile-pill-btn-primary py-3 px-4 text-sm font-bold flex-1">입장</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Firebase SDK & 비즈니스 로직 -->
+    <script type="module">
+        // ==========================================
+        // Firebase CDN 연동 구성 (v11.6.1)
+        // ==========================================
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, collection, doc, setDoc, getDoc, getDocs } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        // ==========================================
+        // [설정] 제공해주신 Firebase Project 전용 설정
+        // ==========================================
+        const ADMIN_PASSWORD = "1234"; // 🔑 관리자 페이지 입장 비밀번호 (필요에 따라 변경 가능)
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyDC6tQ3FMdYZ7uNUgLxKfOYELt8FEZ83bg",
+            authDomain: "durutester.firebaseapp.com",
+            projectId: "durutester",
+            storageBucket: "durutester.firebasestorage.app",
+            messagingSenderId: "1093780593477",
+            appId: "1:1093780593477:web:b7fdfdc6e099e7aedffc2c",
+            measurementId: "G-42B55E1VDL"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'duru-tester-default';
+
+        // ==========================================
+        // 클라이언트 상태 관리 변수
+        // ==========================================
+        const submittedQuestions = []; 
+        let adminSelectedQIds = new Set();
+        let currentTestData = null;
+        let currentQuestionIndex = 0;
+        let userAnswers = [];
+        let authUser = null;
+
+        // 아이콘 초기화
+        lucide.createIcons();
+
+        // 로딩 바 제어
+        const loadingOverlay = document.getElementById('loadingOverlay');
+        function showLoading() {
+            loadingOverlay.classList.remove('opacity-0', 'pointer-events-none');
+        }
+        function hideLoading() {
+            loadingOverlay.classList.add('opacity-0', 'pointer-events-none');
+        }
+
+        // Firebase Auth 인증 처리 (규정 규칙 3 준수 및 토큰 예외 처리 추가)
+        const initAuth = async () => {
+            showLoading();
+            try {
+                if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+                    try {
+                        await signInWithCustomToken(auth, __initial_auth_token);
+                    } catch (tokenErr) {
+                        // 커스텀 토큰이 일치하지 않는 예외 발생 시, 익명 로그인(Anonymous Sign-In)으로 안전하게 전환합니다.
+                        console.warn("커스텀 토큰 인증 실패 (mismatch), 익명 로그인으로 안전하게 우회합니다:", tokenErr);
+                        await signInAnonymously(auth);
+                    }
+                } else {
+                    await signInAnonymously(auth);
+                }
+            } catch (err) {
+                console.error("Firebase 인증에 완전히 실패했습니다", err);
+                window.showModal("인증 오류", "클라우드 서비스 인증에 실패했습니다. Firebase Console 권한 설정을 점검해 주세요.", "alert-circle", "text-red-500");
+            }
+        };
+
+        initAuth();
+
+        onAuthStateChanged(auth, (user) => {
+            authUser = user;
+            if (user) {
+                // 로그인 완료 시 Firebase 데이터베이스 초기 동기화 진행
+                syncDatabaseCounters();
+            }
+        });
+
+        // ==========================================
+        // DB 카운트 수렴 및 실시간 연동
+        // ==========================================
+        async function syncDatabaseCounters() {
+            if (!authUser) return;
+            try {
+                // Rule 1 준수: artifacts/appId/public/data/submittedQuestions
+                const qColRef = collection(db, 'artifacts', appId, 'public', 'data', 'submittedQuestions');
+                const qSnap = await getDocs(qColRef);
+                submittedQuestions.length = 0;
+                qSnap.forEach(doc => {
+                    submittedQuestions.push(doc.data());
+                });
+                // 최신 등록 순 정렬 (메모리 정렬로 복합 쿼리 방지 - Rule 2)
+                submittedQuestions.sort((a, b) => b.createdAt - a.createdAt);
+                document.getElementById('homeQCount').textContent = submittedQuestions.length;
+            } catch (err) {
+                console.error("카운터 동기화 실패", err);
+            } finally {
+                hideLoading();
+            }
+        }
+
+        // ==========================================
+        // 화면 조작 함수 전역 노출
+        // ==========================================
+        window.switchScreen = function(screenId) {
+            document.querySelectorAll('.screen').forEach(screen => {
+                screen.classList.remove('active');
+            });
+            document.getElementById(screenId).classList.add('active');
+            window.scrollTo(0, 0);
+        };
+
+        window.goHome = function() {
+            showLoading();
+            syncDatabaseCounters().then(() => {
+                document.getElementById('testCodeInput').value = '';
+                window.switchScreen('screen-home');
+            });
+        };
+
+        // ==========================================
+        // 모달 관리
+        // ==========================================
+        const modal = document.getElementById('customModal');
+        const modalCard = document.getElementById('modalCard');
+        
+        window.showModal = function(title, message, icon = 'bell', iconColor = 'text-blue-500') {
+            document.getElementById('modalTitle').textContent = title;
+            document.getElementById('modalMessage').textContent = message;
+            
+            const iconContainer = document.getElementById('modalIcon').parentElement;
+            iconContainer.innerHTML = `<i data-lucide="${icon}" class="w-8 h-8 ${iconColor}"></i>`;
+            lucide.createIcons();
+
+            modal.classList.remove('opacity-0', 'pointer-events-none');
+            modalCard.classList.remove('scale-95');
+            modalCard.classList.add('scale-100');
+        };
+
+        window.closeModal = function() {
+            modal.classList.add('opacity-0', 'pointer-events-none');
+            modalCard.classList.remove('scale-100');
+            modalCard.classList.add('scale-95');
+        };
+
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) window.closeModal();
+        });
+
+        // ==========================================
+        // 자격 인증 게이트 모달 제어
+        // ==========================================
+        const passModal = document.getElementById('passwordModal');
+        const passCard = document.getElementById('passwordCard');
+
+        window.openPasswordGate = function() {
+            document.getElementById('adminPasswordInput').value = '';
+            passModal.classList.remove('opacity-0', 'pointer-events-none');
+            passCard.classList.remove('scale-95');
+            passCard.classList.add('scale-100');
+        };
+
+        window.closePasswordGate = function() {
+            passModal.classList.add('opacity-0', 'pointer-events-none');
+            passCard.classList.remove('scale-100');
+            passCard.classList.add('scale-95');
+        };
+
+        window.checkAdminPassword = function() {
+            const inputVal = document.getElementById('adminPasswordInput').value;
+            if (inputVal === ADMIN_PASSWORD) {
+                window.closePasswordGate();
+                window.goToAdminPanel();
+            } else {
+                window.showModal("인증 실패", "관리자 비밀번호가 맞지 않습니다.\n코드를 다시 확인해 주세요.", "lock", "text-red-500");
+            }
+        };
+
+        // ==========================================
+        // 1. [기능] 친구의 문제 제출 연동 (Firebase Write)
+        // ==========================================
+        window.goToSubmitQuestion = function() {
+            document.getElementById('submitAuthor').value = '';
+            document.getElementById('submitQuestionText').value = '';
+            document.getElementById('submitExplanation').value = '';
+            
+            const options = document.querySelectorAll('.submit-option');
+            options.forEach(opt => opt.value = '');
+            
+            document.getElementById('correct-radio-0').checked = true;
+            window.switchScreen('screen-submit-q');
+        };
+
+        window.submitSingleQuestion = async function() {
+            if (!authUser) {
+                window.showModal("오류", "Firebase 클라우드 서버와 연결이 불안정합니다. 잠시 후 시도해주세요.");
+                return;
+            }
+
+            const author = document.getElementById('submitAuthor').value.trim();
+            const text = document.getElementById('submitQuestionText').value.trim();
+            const explanation = document.getElementById('submitExplanation').value.trim();
+            
+            const optionsInputs = document.querySelectorAll('.submit-option');
+            const options = Array.from(optionsInputs).map(inp => inp.value.trim());
+            const correctAnswer = parseInt(document.querySelector('input[name="submitCorrect"]:checked').value);
+
+            if (!author || !text || options.some(opt => opt === "")) {
+                window.showModal("입력 부족", "모든 입력란과 보기를 공란 없이 적어주세요.", "alert-circle", "text-red-500");
+                return;
+            }
+
+            showLoading();
+            const newQId = `q-${Date.now()}`;
+
+            try {
+                // Rule 1 준수: artifacts/appId/public/data/submittedQuestions/newQId
+                const qDocRef = doc(db, 'artifacts', appId, 'public', 'data', 'submittedQuestions', newQId);
+                await setDoc(qDocRef, {
+                    id: newQId,
+                    author: author,
+                    text: text,
+                    options: options,
+                    correctAnswer: correctAnswer,
+                    explanation: explanation || "정답 및 해설이 등록되지 않았습니다.",
+                    createdAt: Date.now()
+                });
+
+                window.showModal(
+                    "제출 완료 🎉", 
+                    `보관함에 ${author}님의 문제가 성공적으로 저장되었습니다!\n조립소에서 골라 한 판의 시험지로 엮어보세요.`, 
+                    "gift", 
+                    "text-green-500"
+                );
+                window.goHome();
+            } catch (err) {
+                console.error("데이터 기록 에러: ", err);
+                window.showModal("오류 발생", "클라우드 데이터 저장에 실패했습니다. 규칙 및 연결 설정을 점검해 주세요.", "alert-circle", "text-red-500");
+            } finally {
+                hideLoading();
+            }
+        };
+
+        // ==========================================
+        // 2. [기능] 관리자 조립 패널 (Firebase Query & Sync)
+        // ==========================================
+        window.goToAdminPanel = async function() {
+            showLoading();
+            document.getElementById('adminExamTitle').value = '';
+            adminSelectedQIds.clear();
+            window.updateSelectedQCountUI();
+
+            try {
+                await syncDatabaseCounters();
+                window.renderAdminQuestionSelector();
+                window.switchScreen('screen-admin');
+            } catch (err) {
+                console.error("관리자 패널 로딩 실패", err);
+            } finally {
+                hideLoading();
+            }
+        };
+
+        window.renderAdminQuestionSelector = function() {
+            const listContainer = document.getElementById('adminSubmittedQList');
+            listContainer.innerHTML = '';
+
+            if (submittedQuestions.length === 0) {
+                listContainer.innerHTML = `
+                    <div class="debossed-well p-8 text-center text-slate-500 font-bold">
+                        보관함에 제출된 문제가 하나도 없어요.<br><span class="text-xs font-normal">친구들에게 문제 제출을 제안해 보세요!</span>
+                    </div>
+                `;
+                return;
+            }
+
+            submittedQuestions.forEach((q, idx) => {
+                const card = document.createElement('div');
+                card.id = `admin-card-${q.id}`;
+                card.className = "debossed-well p-4 cursor-pointer transition-all flex flex-col gap-2 relative bg-white border border-slate-300";
+                
+                if (adminSelectedQIds.has(q.id)) {
+                    card.classList.add('admin-q-selected');
+                }
+
+                card.innerHTML = `
+                    <div class="flex items-center justify-between pointer-events-none">
+                        <span class="text-xs font-bold bg-blue-100 text-blue-600 px-2.5 py-1 rounded-full">
+                            출제자: ${q.author}
+                        </span>
+                        <div class="w-6 h-6 rounded-full border-2 border-slate-400 flex items-center justify-center check-indicator">
+                            ${adminSelectedQIds.has(q.id) ? '<i data-lucide="check" class="w-4 h-4 text-blue-600"></i>' : ''}
+                        </div>
+                    </div>
+                    <p class="font-bold text-slate-800 text-sm sm:text-base pointer-events-none mt-1">
+                        ${idx + 1}. ${q.text}
+                    </p>
+                `;
+
+                card.onclick = () => window.toggleSelectQuestionInAdmin(q.id);
+                listContainer.appendChild(card);
+            });
+
+            lucide.createIcons();
+        };
+
+        window.toggleSelectQuestionInAdmin = function(qId) {
+            const card = document.getElementById(`admin-card-${qId}`);
+            
+            if (adminSelectedQIds.has(qId)) {
+                adminSelectedQIds.delete(qId);
+                card.classList.remove('admin-q-selected');
+            } else {
+                adminSelectedQIds.add(qId);
+                card.classList.add('admin-q-selected');
+            }
+
+            window.updateSelectedQCountUI();
+            window.renderAdminQuestionSelector();
+        };
+
+        window.updateSelectedQCountUI = function() {
+            document.getElementById('selectedCountInfo').textContent = `${adminSelectedQIds.size}개 선택됨`;
+        };
+
+        window.assembleExamPaper = async function() {
+            if (!authUser) return;
+            const title = document.getElementById('adminExamTitle').value.trim();
+            if (!title) {
+                window.showModal("입력 부족", "조립할 시험지 타이틀을 작성해 주세요.", "alert-circle", "text-red-500");
+                return;
+            }
+            if (adminSelectedQIds.size === 0) {
+                window.showModal("선택 부족", "출제된 문제 중에서 조립할 문제를 최소 1개 이상 선택해 주세요.", "alert-circle", "text-red-500");
+                return;
+            }
+
+            showLoading();
+            const selectedObjects = submittedQuestions.filter(q => adminSelectedQIds.has(q.id));
+            const generatedCode = "DURU-" + Math.floor(1000 + Math.random() * 9000);
+
+            try {
+                // Rule 1 준수: artifacts/appId/public/data/activeExams/generatedCode
+                const examDocRef = doc(db, 'artifacts', appId, 'public', 'data', 'activeExams', generatedCode);
+                await setDoc(examDocRef, {
+                    title: title,
+                    questions: selectedObjects,
+                    createdAt: Date.now()
+                });
+
+                window.showModal(
+                    "조립 완공 성공! 🚀", 
+                    `시험지 코드가 새로 활성화되었습니다.\n\n코드: [ ${generatedCode} ]\n\n이 코드를 친구들에게 전달해 풀게 해보세요!`,
+                    "sparkles",
+                    "text-yellow-500"
+                );
+
+                window.goHome();
+            } catch (err) {
+                console.error("시험지 저장 에러: ", err);
+                window.showModal("오류 발생", "시험지 생성 중 실패했습니다.", "alert-circle", "text-red-500");
+            } finally {
+                hideLoading();
+            }
+        };
+
+        // ==========================================
+        // 3. [기능] 모의시험 응시 프로세스 (Firebase Read)
+        // ==========================================
+        window.startTest = async function() {
+            if (!authUser) return;
+            const codeInput = document.getElementById('testCodeInput').value.trim().toUpperCase();
+            
+            if (!codeInput) {
+                window.showModal("알림", "시험 코드를 입력해 주세요.");
+                return;
+            }
+
+            showLoading();
+
+            try {
+                // Rule 1 준수: artifacts/appId/public/data/activeExams/codeInput
+                const examDocRef = doc(db, 'artifacts', appId, 'public', 'data', 'activeExams', codeInput);
+                const docSnap = await getDoc(examDocRef);
+
+                if (docSnap.exists()) {
+                    currentTestData = docSnap.data();
+                    currentQuestionIndex = 0;
+                    userAnswers = new Array(currentTestData.questions.length).fill(null);
+                    
+                    document.getElementById('testTitle').textContent = currentTestData.title;
+                    window.renderQuestion();
+                    window.switchScreen('screen-test');
+                } else {
+                    window.showModal(
+                        "시험지 부재", 
+                        "입력하신 코드로 구성된 시험지가 없습니다.\n정확한 코드인지 다시 확인해 주세요.", 
+                        "alert-circle", 
+                        "text-red-500"
+                    );
+                }
+            } catch (err) {
+                console.error("시험지 로드 오류: ", err);
+                window.showModal("오류 발생", "네트워크 환경 또는 권한 세팅을 검토해 주세요.", "alert-circle", "text-red-500");
+            } finally {
+                hideLoading();
+            }
+        };
+
+        window.renderQuestion = function() {
+            const qData = currentTestData.questions[currentQuestionIndex];
+            
+            document.getElementById('questionCounter').textContent = 
+                `${currentQuestionIndex + 1} / ${currentTestData.questions.length}`;
+            
+            document.getElementById('questionText').innerHTML = `
+                <span class="text-xs font-bold text-blue-500 bg-blue-50 px-2 py-1 rounded-md inline-block mb-2">출제자: ${qData.author}</span>
+                <p class="mt-1">${qData.text}</p>
+            `;
+
+            const optionsContainer = document.getElementById('optionsContainer');
+            optionsContainer.innerHTML = ''; 
+
+            qData.options.forEach((optText, index) => {
+                const btn = document.createElement('button');
+                btn.className = 'tactile-pill-btn w-full py-4 px-6 text-left justify-start text-base sm:text-lg relative font-bold whitespace-normal break-words';
+                btn.textContent = `${index + 1}. ${optText}`;
+                
+                if (userAnswers[currentQuestionIndex] === index) {
+                    btn.classList.add('option-selected');
+                }
+
+                btn.onclick = () => window.selectOption(index);
+                optionsContainer.appendChild(btn);
+            });
+
+            const nextBtn = document.getElementById('nextBtn');
+            if (currentQuestionIndex === currentTestData.questions.length - 1) {
+                nextBtn.innerHTML = `최종 제출 <i data-lucide="check" class="w-5 h-5 ml-2"></i>`;
+            } else {
+                nextBtn.innerHTML = `다음 문제 <i data-lucide="arrow-right" class="w-5 h-5 ml-2"></i>`;
+            }
+            lucide.createIcons();
+        };
+
+        window.selectOption = function(selectedIndex) {
+            userAnswers[currentQuestionIndex] = selectedIndex;
+            
+            const buttons = document.getElementById('optionsContainer').children;
+            Array.from(buttons).forEach((btn, index) => {
+                if (index === selectedIndex) {
+                    btn.classList.add('option-selected');
+                } else {
+                    btn.classList.remove('option-selected');
+                }
+            });
+        };
+
+        window.nextQuestion = function() {
+            if (userAnswers[currentQuestionIndex] === null) {
+                window.showModal("알림", "정답 보기를 체크한 다음 진행해 주세요.", "alert-circle", "text-orange-500");
+                return;
+            }
+
+            if (currentQuestionIndex < currentTestData.questions.length - 1) {
+                currentQuestionIndex++;
+                window.renderQuestion();
+            } else {
+                window.calculateResults();
+            }
+        };
+
+        window.calculateResults = function() {
+            let correctCount = 0;
+            const wrongAnswersHtml = [];
+
+            currentTestData.questions.forEach((qData, index) => {
+                const userChoice = userAnswers[index];
+                if (userChoice === qData.correctAnswer) {
+                    correctCount++;
+                } else {
+                    wrongAnswersHtml.push(`
+                        <div class="debossed-well p-5 space-y-3 border-l-4 border-l-red-400">
+                            <div class="flex items-center justify-between">
+                                <h3 class="font-bold text-slate-800 text-base sm:text-lg">Q${index + 1}. ${qData.text}</h3>
+                                <span class="text-xs font-bold text-slate-400">출제: ${qData.author}</span>
+                            </div>
+                            <div class="text-sm font-semibold">
+                                <p class="text-red-500 line-through mb-1">내 선택: ${qData.options[userChoice]}</p>
+                                <p class="text-blue-600">정답: ${qData.options[qData.correctAnswer]}</p>
+                            </div>
+                            <div class="bg-slate-200/50 p-3 rounded-xl mt-2 text-sm text-slate-700 font-medium shadow-[inset_1px_1px_3px_rgba(0,0,0,0.05)]">
+                                💡 <strong>출제자의 해설:</strong> ${qData.explanation}
+                            </div>
+                        </div>
+                    `);
+                }
+            });
+
+            const score = Math.round((correctCount / currentTestData.questions.length) * 100);
+            
+            document.getElementById('finalScore').textContent = score;
+            const msgEl = document.getElementById('scoreMessage');
+            if(score === 100) {
+                msgEl.textContent = "최고의 실력입니다! 만점 기록 완료 🎉";
+                msgEl.className = "text-lg font-bold text-blue-600";
+            } else if(score >= 70) {
+                msgEl.textContent = "조금만 오답 노트를 복습하면 완벽해요! 👍";
+                msgEl.className = "text-lg font-bold text-green-600";
+            } else {
+                msgEl.textContent = "오답 해설을 보며 개념을 쑥쑥 키워보세요! 💪";
+                msgEl.className = "text-lg font-bold text-orange-500";
+            }
+
+            const wrongContainer = document.getElementById('wrongAnswersContainer');
+            if (wrongAnswersHtml.length > 0) {
+                wrongContainer.innerHTML = wrongAnswersHtml.join('');
+            } else {
+                wrongContainer.innerHTML = `
+                    <div class="debossed-well p-6 text-center text-slate-500 font-bold">
+                        틀린 문제가 한 개도 없습니다! 완벽한 승리입니다 🏆
+                    </div>
+                `;
+            }
+
+            window.switchScreen('screen-result');
+        };
+
+    </script>
+</body>
+</html>
