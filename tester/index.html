@@ -157,7 +157,7 @@
         <div class="inline-flex items-center justify-center w-16 h-16 rounded-full debossed-well mb-4 animate-bounce">
             <i data-lucide="cloud-lightning" class="w-8 h-8 text-blue-600"></i>
         </div>
-        <p class="text-slate-600 font-extrabold text-lg">Duru 클라우드와 통신 중...</p>
+        <p class="text-slate-600 font-extrabold text-lg">Duru 클라우드와 동기화 중...</p>
     </div>
 
     <main class="w-full max-w-2xl mx-auto">
@@ -166,36 +166,55 @@
              1. 메인 홈 화면 (대시보드)
              ========================================== -->
         <div id="screen-home" class="screen active">
-            <div class="tactile-card p-6 sm:p-10 flex flex-col gap-8">
+            <div class="tactile-card p-6 sm:p-10 flex flex-col gap-6">
                 <header class="text-center space-y-2">
-                    <div class="inline-flex items-center justify-center w-16 h-16 rounded-full debossed-well mb-4">
+                    <div class="inline-flex items-center justify-center w-16 h-16 rounded-full debossed-well mb-2">
                         <i data-lucide="check-square" class="w-8 h-8 text-blue-600"></i>
                     </div>
                     <h1 class="text-3xl sm:text-4xl font-extrabold tracking-tight text-slate-800">Duru Tester</h1>
-                    <p class="text-slate-500 font-medium">친구들의 지혜를 모아 만드는 우리들만의 시험지 조립소!</p>
+                    <p class="text-slate-500 font-medium text-sm sm:text-base">친구들의 지혜를 모아 만드는 우리들만의 시험지 조립소!</p>
                 </header>
 
-                <div class="h-px w-full bg-slate-300 shadow-[0_1px_1px_rgba(255,255,255,1)]"></div>
+                <div class="h-px w-full bg-slate-300 shadow-[0_1px_1px_rgba(255,255,255,1)] my-2"></div>
 
-                <!-- 시험 풀기 섹션 -->
-                <section class="space-y-4">
-                    <label class="block text-slate-700 font-bold ml-2">발급된 시험 코드 입력</label>
-                    <div class="debossed-well flex items-center px-5 py-4 transition-colors focus-within:ring-2 focus-within:ring-blue-400">
-                        <i data-lucide="key-round" class="w-5 h-5 text-slate-400 mr-3"></i>
-                        <input type="text" id="testCodeInput" placeholder="예: DURU-1234" 
-                               class="w-full bg-transparent border-none outline-none text-slate-700 placeholder-slate-400 font-bold text-lg uppercase">
+                <!-- 실시간 라이브 시험지 목록 (새로운 연동 기능) -->
+                <section class="space-y-3">
+                    <div class="flex items-center justify-between ml-2">
+                        <h2 class="text-slate-700 font-bold flex items-center">
+                            <span class="relative flex h-3 w-3 mr-2">
+                                <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+                                <span class="relative inline-flex rounded-full h-3 w-3 bg-red-500"></span>
+                            </span>
+                            실시간 조립 완료된 시험지
+                        </h2>
                     </div>
-
-                    <button onclick="startTest()" class="tactile-pill-btn-primary w-full py-4 px-6 text-lg">
-                        <i data-lucide="play" class="w-5 h-5 mr-2"></i>
-                        온라인 시험 치르기
-                    </button>
+                    
+                    <div id="liveExamsContainer" class="flex flex-col gap-3 max-h-60 overflow-y-auto pr-1 hide-scroll">
+                        <!-- 실시간 동기화된 시험지들이 이곳에 나타납니다 -->
+                        <div class="debossed-well p-6 text-center text-slate-500 font-bold text-sm">
+                            로딩 중이거나 아직 조립된 시험지가 없습니다.<br>관리자에게 조립을 요청해 보세요!
+                        </div>
+                    </div>
                 </section>
 
-                <div class="h-px w-full bg-slate-300 shadow-[0_1px_1px_rgba(255,255,255,1)]"></div>
+                <div class="h-px w-full bg-slate-300 shadow-[0_1px_1px_rgba(255,255,255,1)] my-2"></div>
+
+                <!-- 시험 코드 직접 입력 섹션 -->
+                <section class="space-y-3">
+                    <div class="flex gap-2">
+                        <div class="debossed-well flex-1 flex items-center px-4 py-3 transition-colors focus-within:ring-2 focus-within:ring-blue-400">
+                            <i data-lucide="key-round" class="w-5 h-5 text-slate-400 mr-2"></i>
+                            <input type="text" id="testCodeInput" placeholder="비공개 시험 코드 입력" 
+                                   class="w-full bg-transparent border-none outline-none text-slate-700 placeholder-slate-400 font-bold uppercase">
+                        </div>
+                        <button onclick="startTest()" class="tactile-pill-btn-primary px-6 text-sm shrink-0">
+                            풀기
+                        </button>
+                    </div>
+                </section>
 
                 <!-- 메뉴 버튼 레이아웃 -->
-                <section class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <section class="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-2">
                     <button onclick="goToSubmitQuestion()" class="tactile-pill-btn py-5 px-6 text-base text-blue-600 flex flex-col items-center gap-2">
                         <i data-lucide="edit-3" class="w-6 h-6 text-blue-500"></i>
                         <span>① 친구용: 문제 제출하기</span>
@@ -207,9 +226,9 @@
                     </button>
                 </section>
                 
-                <footer class="text-center">
+                <footer class="text-center mt-2">
                     <p class="text-xs text-slate-400 font-bold tracking-wider">
-                        현재 보관된 누적 문제 수: <span id="homeQCount" class="text-blue-500">0</span>개
+                        현재 보관함에 누적된 문제 수: <span id="homeQCount" class="text-blue-500">0</span>개
                     </p>
                 </footer>
             </div>
@@ -332,7 +351,7 @@
                         <span class="text-xs font-bold text-slate-400" id="selectedCountInfo">0개 선택됨</span>
                     </div>
 
-                    <div id="adminSubmittedQList" class="flex flex-col gap-4 max-h-[350px] overflow-y-auto pr-1">
+                    <div id="adminSubmittedQList" class="flex flex-col gap-4 max-h-[350px] overflow-y-auto pr-1 hide-scroll">
                         <!-- 동적으로 등록된 문제 목록이 카드로 뿌려짐 -->
                     </div>
                 </div>
@@ -447,7 +466,7 @@
     <!-- Firebase SDK & 비즈니스 로직 -->
     <script type="module">
         // ==========================================
-        // Firebase CDN 연동 구성 (v11.6.1) - 삭제 기능과 실시간 동기화 포함
+        // Firebase CDN 연동 구성 (v11.6.1) - 삭제 기능과 완전 실시간 동기화 포함
         // ==========================================
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
@@ -456,7 +475,7 @@
         // ==========================================
         // [설정] 제공해주신 Firebase Project 전용 설정
         // ==========================================
-        const ADMIN_PASSWORD = "1234"; // 🔑 관리자 페이지 입장 비밀번호 (필요에 따라 변경 가능)
+        const ADMIN_PASSWORD = "1234"; // 🔑 관리자 페이지 입장 비밀번호
 
         const firebaseConfig = {
             apiKey: "AIzaSyDC6tQ3FMdYZ7uNUgLxKfOYELt8FEZ83bg",
@@ -471,7 +490,9 @@
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const db = getFirestore(app);
-        const appId = typeof __app_id !== 'undefined' ? __app_id : 'duru-tester-default';
+        
+        // 💡 중요: 기기 및 호스팅 환경(Canvas vs GitHub)에 관계없이 동일한 DB 공간을 참조하도록 고정
+        const appId = 'duru-tester-global'; 
 
         // ==========================================
         // 클라이언트 상태 관리 변수
@@ -486,6 +507,9 @@
         // 아이콘 초기화
         lucide.createIcons();
 
+        // 커스텀 스크롤 숨기기 유틸 적용
+        document.head.insertAdjacentHTML("beforeend", `<style>.hide-scroll::-webkit-scrollbar { display: none; } .hide-scroll { -ms-overflow-style: none; scrollbar-width: none; }</style>`);
+
         // 로딩 바 제어
         const loadingOverlay = document.getElementById('loadingOverlay');
         function showLoading() {
@@ -495,7 +519,7 @@
             loadingOverlay.classList.add('opacity-0', 'pointer-events-none');
         }
 
-        // Firebase Auth 인증 처리 (규정 규칙 3 준수 및 토큰 예외 처리 추가)
+        // Firebase Auth 인증 처리 (토큰 예외 처리 포함)
         const initAuth = async () => {
             showLoading();
             try {
@@ -503,15 +527,15 @@
                     try {
                         await signInWithCustomToken(auth, __initial_auth_token);
                     } catch (tokenErr) {
-                        console.warn("커스텀 토큰 인증 실패 (mismatch), 익명 로그인으로 안전하게 우회합니다:", tokenErr);
+                        console.warn("커스텀 토큰 인증 실패 (mismatch), 익명 로그인으로 우회합니다:", tokenErr);
                         await signInAnonymously(auth);
                     }
                 } else {
                     await signInAnonymously(auth);
                 }
             } catch (err) {
-                console.error("Firebase 인증에 완전히 실패했습니다", err);
-                window.showModal("인증 오류", "클라우드 서비스 인증에 실패했습니다. Firebase Console 권한 설정을 점검해 주세요.", "alert-circle", "text-red-500");
+                console.error("Firebase 인증에 실패했습니다", err);
+                window.showModal("인증 오류", "네트워크 환경을 점검해 주세요.", "alert-circle", "text-red-500");
                 hideLoading();
             }
         };
@@ -521,44 +545,57 @@
         onAuthStateChanged(auth, (user) => {
             authUser = user;
             if (user) {
-                // 로그인 완료 시 Firebase 데이터베이스 실시간 동기화 시작
+                // 로그인 완료 시 Firebase 데이터베이스 완벽 실시간 동기화 시작
                 syncDatabaseCountersRealtime();
             }
         });
 
         // ==========================================
-        // DB 실시간 동기화 (Real-time Sync)
+        // DB 실시간 동기화 (모든 기기 실시간 연동)
         // ==========================================
         function syncDatabaseCountersRealtime() {
             if (!authUser) return;
             try {
-                // Rule 1 준수: artifacts/appId/public/data/submittedQuestions
+                // 1. [문제 보관함] 실시간 동기화
                 const qColRef = collection(db, 'artifacts', appId, 'public', 'data', 'submittedQuestions');
                 
-                // onSnapshot을 통해 데이터가 추가/삭제 될 때마다 실시간으로 화면을 새로고침합니다.
                 onSnapshot(qColRef, (qSnap) => {
                     submittedQuestions.length = 0;
                     qSnap.forEach(doc => {
                         submittedQuestions.push(doc.data());
                     });
                     
-                    // 최신 등록 순 정렬
                     submittedQuestions.sort((a, b) => b.createdAt - a.createdAt);
                     
-                    // 메인 화면 카운트 실시간 업데이트
                     const countEl = document.getElementById('homeQCount');
                     if (countEl) countEl.textContent = submittedQuestions.length;
 
-                    // 만약 관리자 패널 화면을 보고 있다면, 문제 목록도 실시간으로 다시 그립니다.
+                    // 관리자 패널 활성화 상태라면 목록을 즉시 갱신
                     if (document.getElementById('screen-admin').classList.contains('active')) {
                         window.renderAdminQuestionSelector();
                     }
-                    
-                    hideLoading(); // 최초 로딩 가림 처리
                 }, (error) => {
-                    console.error("실시간 카운터 동기화 실패", error);
+                    console.error("문제 실시간 동기화 실패", error);
+                });
+
+                // 2. [시험지 목록] 실시간 동기화 (메인 화면용)
+                const examColRef = collection(db, 'artifacts', appId, 'public', 'data', 'activeExams');
+                
+                onSnapshot(examColRef, (eSnap) => {
+                    const exams = [];
+                    eSnap.forEach(doc => {
+                        exams.push({ id: doc.id, ...doc.data() });
+                    });
+                    
+                    exams.sort((a, b) => b.createdAt - a.createdAt);
+                    window.renderLiveExams(exams);
+
+                    hideLoading(); // 최초 데이터 수신 완료 후 로딩 해제
+                }, (error) => {
+                    console.error("시험지 실시간 동기화 실패", error);
                     hideLoading();
                 });
+
             } catch (err) {
                 console.error("동기화 설정 중 오류", err);
                 hideLoading();
@@ -566,7 +603,7 @@
         }
 
         // ==========================================
-        // 화면 조작 함수 전역 노출
+        // 화면 조작 및 렌더링 함수 전역 노출
         // ==========================================
         window.switchScreen = function(screenId) {
             document.querySelectorAll('.screen').forEach(screen => {
@@ -579,7 +616,36 @@
         window.goHome = function() {
             document.getElementById('testCodeInput').value = '';
             window.switchScreen('screen-home');
-            // 실시간 동기화는 백그라운드에서 이미 돌아가고 있습니다!
+        };
+
+        // 홈 화면: 실시간 라이브 시험지 렌더링
+        window.renderLiveExams = function(exams) {
+            const container = document.getElementById('liveExamsContainer');
+            if (!container) return;
+            
+            if (exams.length === 0) {
+                container.innerHTML = `<div class="debossed-well p-6 text-center text-slate-500 font-bold text-sm">아직 조립된 시험지가 없습니다.<br>관리자에게 조립을 요청해 보세요!</div>`;
+                return;
+            }
+
+            container.innerHTML = exams.map(exam => `
+                <div class="debossed-well p-4 flex justify-between items-center bg-white border border-slate-200">
+                    <div class="flex-1 min-w-0 pr-3">
+                        <h3 class="font-bold text-slate-800 text-base truncate">${exam.title}</h3>
+                        <p class="text-xs text-slate-400 font-bold mt-1">코드: ${exam.id} | ${exam.questions ? exam.questions.length : 0}문항</p>
+                    </div>
+                    <button onclick="window.startTestWithCode('${exam.id}')" class="tactile-pill-btn-primary py-2 px-4 text-sm font-bold shrink-0">
+                        풀기 <i data-lucide="play" class="w-4 h-4 ml-1 inline"></i>
+                    </button>
+                </div>
+            `).join('');
+            lucide.createIcons();
+        };
+
+        // 홈 화면: 목록에서 즉시 풀기
+        window.startTestWithCode = function(code) {
+            document.getElementById('testCodeInput').value = code;
+            window.startTest();
         };
 
         // ==========================================
@@ -680,7 +746,6 @@
             const newQId = `q-${Date.now()}`;
 
             try {
-                // Rule 1 준수: artifacts/appId/public/data/submittedQuestions/newQId
                 const qDocRef = doc(db, 'artifacts', appId, 'public', 'data', 'submittedQuestions', newQId);
                 await setDoc(qDocRef, {
                     id: newQId,
@@ -748,12 +813,11 @@
                         </span>
                         
                         <div class="flex gap-2 items-center">
-                            <!-- [새로운 기능] 문제 삭제 버튼 -->
+                            <!-- 문제 삭제 버튼 -->
                             <button onclick="window.deleteQuestion('${q.id}', event)" class="p-1.5 text-slate-400 hover:text-red-500 transition-colors z-10" title="문제 삭제하기">
                                 <i data-lucide="trash-2" class="w-5 h-5"></i>
                             </button>
                             
-                            <!-- 선택 체크박스 아이콘 -->
                             <div class="w-6 h-6 rounded-full border-2 border-slate-400 flex items-center justify-center check-indicator pointer-events-none">
                                 ${adminSelectedQIds.has(q.id) ? '<i data-lucide="check" class="w-4 h-4 text-blue-600"></i>' : ''}
                             </div>
@@ -764,7 +828,6 @@
                     </p>
                 `;
 
-                // 카드 여백 클릭 시 선택 처리
                 card.onclick = () => window.toggleSelectQuestionInAdmin(q.id);
                 listContainer.appendChild(card);
             });
@@ -772,7 +835,6 @@
             lucide.createIcons();
         };
 
-        // 문제 선택 토글
         window.toggleSelectQuestionInAdmin = function(qId) {
             const card = document.getElementById(`admin-card-${qId}`);
             if (!card) return;
@@ -789,25 +851,20 @@
             window.renderAdminQuestionSelector();
         };
 
-        // UI 선택된 문제 수 텍스트 갱신
         window.updateSelectedQCountUI = function() {
             document.getElementById('selectedCountInfo').textContent = `${adminSelectedQIds.size}개 선택됨`;
         };
 
-        // [새로운 기능] 데이터베이스에서 문제 삭제하기
         window.deleteQuestion = async function(qId, event) {
-            event.stopPropagation(); // 부모 카드 영역의 클릭(문제 선택 토글) 방지
+            event.stopPropagation(); 
             
             showLoading();
             try {
-                // Rule 1 준수: artifacts/appId/public/data/submittedQuestions/qId
                 await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'submittedQuestions', qId));
                 
-                // 만약 삭제한 문제가 선택된 상태였다면 해제
                 adminSelectedQIds.delete(qId); 
                 window.updateSelectedQCountUI();
                 
-                // 실시간 onSnapshot이 UI를 알아서 갱신해줍니다. 
                 window.showModal("삭제 완료", "선택하신 문제가 보관함에서 지워졌습니다.", "trash-2", "text-red-500");
             } catch (err) {
                 console.error("문제 삭제 실패: ", err);
@@ -834,7 +891,6 @@
             const generatedCode = "DURU-" + Math.floor(1000 + Math.random() * 9000);
 
             try {
-                // Rule 1 준수: artifacts/appId/public/data/activeExams/generatedCode
                 const examDocRef = doc(db, 'artifacts', appId, 'public', 'data', 'activeExams', generatedCode);
                 await setDoc(examDocRef, {
                     title: title,
@@ -873,7 +929,6 @@
             showLoading();
 
             try {
-                // Rule 1 준수: artifacts/appId/public/data/activeExams/codeInput
                 const examDocRef = doc(db, 'artifacts', appId, 'public', 'data', 'activeExams', codeInput);
                 const docSnap = await getDoc(examDocRef);
 
