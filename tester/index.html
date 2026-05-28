@@ -412,8 +412,9 @@
     <!-- 공통 알림 모달 -->
     <div id="customModal" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 flex items-center justify-center p-4 opacity-0 pointer-events-none transition-opacity duration-300">
         <div class="tactile-card w-full max-w-sm p-8 flex flex-col items-center text-center transform scale-95 transition-transform duration-300" id="modalCard">
-            <div class="w-16 h-16 rounded-full debossed-well flex items-center justify-center mb-4">
-                <i id="modalIcon" data-lucide="bell" class="w-8 h-8 text-blue-500"></i>
+            <!-- ID를 i 태그가 아닌 부모 div에 부여하여 덮어쓰기 시 에러 방지 -->
+            <div id="modalIconContainer" class="w-16 h-16 rounded-full debossed-well flex items-center justify-center mb-4">
+                <i data-lucide="bell" class="w-8 h-8 text-blue-500"></i>
             </div>
             <h3 id="modalTitle" class="text-xl font-bold text-slate-800 mb-2">알림</h3>
             <p id="modalMessage" class="text-slate-600 font-medium mb-8 whitespace-pre-line text-sm sm:text-base leading-relaxed">메시지 내용</p>
@@ -578,9 +579,12 @@
             document.getElementById('modalTitle').textContent = title;
             document.getElementById('modalMessage').textContent = message;
             
-            const iconContainer = document.getElementById('modalIcon').parentElement;
-            iconContainer.innerHTML = `<i data-lucide="${icon}" class="w-8 h-8 ${iconColor}"></i>`;
-            lucide.createIcons();
+            // i 태그 대신 고정된 컨테이너 div를 찾아 안쪽 내용을 업데이트하도록 수정
+            const iconContainer = document.getElementById('modalIconContainer');
+            if (iconContainer) {
+                iconContainer.innerHTML = `<i data-lucide="${icon}" class="w-8 h-8 ${iconColor}"></i>`;
+                lucide.createIcons();
+            }
 
             modal.classList.remove('opacity-0', 'pointer-events-none');
             modalCard.classList.remove('scale-95');
