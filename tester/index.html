@@ -160,13 +160,15 @@
         <p class="text-slate-600 font-extrabold text-lg">Duru 클라우드와 동기화 중...</p>
     </div>
 
-    <main class="w-full max-w-2xl mx-auto">
+    <!-- 확장된 너비(max-w-5xl) 적용으로 태블릿/PC 반응형 개선 -->
+    <main class="w-full max-w-5xl mx-auto">
         
         <!-- ==========================================
              1. 메인 홈 화면 (대시보드)
              ========================================== -->
         <div id="screen-home" class="screen active">
-            <div class="tactile-card p-6 sm:p-10 flex flex-col gap-6">
+            <div class="tactile-card p-6 sm:p-10 flex flex-col gap-8">
+                <!-- 헤더 영역 -->
                 <header class="text-center space-y-2">
                     <div class="inline-flex items-center justify-center w-16 h-16 rounded-full debossed-well mb-2">
                         <i data-lucide="check-square" class="w-8 h-8 text-blue-600"></i>
@@ -175,80 +177,88 @@
                     <p class="text-slate-500 font-medium text-sm sm:text-base">친구들의 지혜를 모아 만드는 우리들만의 시험지 조립소!</p>
                 </header>
 
-                <div class="h-px w-full bg-slate-300 shadow-[0_1px_1px_rgba(255,255,255,1)] my-2"></div>
+                <div class="h-px w-full bg-slate-300 shadow-[0_1px_1px_rgba(255,255,255,1)]"></div>
 
-                <!-- 실시간 라이브 시험지 목록 -->
-                <section class="space-y-3">
-                    <div class="flex items-center justify-between ml-2">
-                        <h2 class="text-slate-700 font-bold flex items-center">
-                            <span class="relative flex h-3 w-3 mr-2">
-                                <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
-                                <span class="relative inline-flex rounded-full h-3 w-3 bg-red-500"></span>
-                            </span>
-                            실시간 조립 완료된 시험지
-                        </h2>
-                    </div>
+                <!-- 2단 그리드 레이아웃 적용 (태블릿 이상에서 분리) -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12">
                     
-                    <div id="liveExamsContainer" class="flex flex-col gap-3 max-h-52 overflow-y-auto pr-1 hide-scroll">
-                        <!-- 실시간 동기화된 시험지들이 이곳에 나타납니다 -->
-                        <div class="debossed-well p-6 text-center text-slate-500 font-bold text-sm">
-                            로딩 중이거나 아직 조립된 시험지가 없습니다.<br>관리자에게 조립을 요청해 보세요!
-                        </div>
+                    <!-- [좌측 그리드]: 라이브 시험지 및 접속 -->
+                    <div class="flex flex-col gap-6">
+                        <!-- 실시간 라이브 시험지 목록 -->
+                        <section class="space-y-3 flex-1">
+                            <div class="flex items-center justify-between ml-2">
+                                <h2 class="text-slate-700 font-bold flex items-center">
+                                    <span class="relative flex h-3 w-3 mr-2">
+                                        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+                                        <span class="relative inline-flex rounded-full h-3 w-3 bg-red-500"></span>
+                                    </span>
+                                    실시간 조립 완료된 시험지
+                                </h2>
+                            </div>
+                            
+                            <div id="liveExamsContainer" class="flex flex-col gap-3 max-h-60 overflow-y-auto pr-1 hide-scroll">
+                                <!-- 실시간 동기화된 시험지들이 이곳에 나타납니다 -->
+                                <div class="debossed-well p-6 text-center text-slate-500 font-bold text-sm">
+                                    로딩 중이거나 아직 조립된 시험지가 없습니다.<br>관리자에게 조립을 요청해 보세요!
+                                </div>
+                            </div>
+                        </section>
+
+                        <!-- 시험 코드 직접 입력 섹션 -->
+                        <section class="space-y-3">
+                            <label class="block text-slate-700 font-bold ml-2">비공개 시험 코드 입력</label>
+                            <div class="flex flex-col sm:flex-row gap-3">
+                                <div class="debossed-well flex-1 flex items-center px-4 py-3 transition-colors focus-within:ring-2 focus-within:ring-blue-400">
+                                    <i data-lucide="key-round" class="w-5 h-5 text-slate-400 mr-2"></i>
+                                    <input type="text" id="testCodeInput" placeholder="예: DURU-1234" 
+                                           class="w-full bg-transparent border-none outline-none text-slate-700 placeholder-slate-400 font-bold uppercase">
+                                </div>
+                                <button onclick="startTest()" class="tactile-pill-btn-primary px-8 py-3 text-base shrink-0 w-full sm:w-auto">
+                                    시험 입장
+                                </button>
+                            </div>
+                        </section>
                     </div>
-                </section>
 
-                <div class="h-px w-full bg-slate-300 shadow-[0_1px_1px_rgba(255,255,255,1)] my-2"></div>
+                    <!-- [우측 그리드]: 액션 메뉴 및 기록 -->
+                    <div class="flex flex-col gap-8">
+                        <!-- 메뉴 버튼 레이아웃 -->
+                        <section class="grid grid-cols-2 gap-3 sm:gap-4">
+                            <button onclick="goToSubmitQuestion()" class="tactile-pill-btn p-4 sm:p-5 text-sm sm:text-base text-blue-600 flex flex-col items-center gap-2 h-full text-center">
+                                <i data-lucide="edit-3" class="w-6 h-6 sm:w-8 sm:h-8 text-blue-500"></i>
+                                <span>① 친구용<br>문제 제출하기</span>
+                            </button>
 
-                <!-- 시험 코드 직접 입력 섹션 -->
-                <section class="space-y-3">
-                    <div class="flex gap-2">
-                        <div class="debossed-well flex-1 flex items-center px-4 py-3 transition-colors focus-within:ring-2 focus-within:ring-blue-400">
-                            <i data-lucide="key-round" class="w-5 h-5 text-slate-400 mr-2"></i>
-                            <input type="text" id="testCodeInput" placeholder="비공개 시험 코드 입력" 
-                                   class="w-full bg-transparent border-none outline-none text-slate-700 placeholder-slate-400 font-bold uppercase">
-                        </div>
-                        <button onclick="startTest()" class="tactile-pill-btn-primary px-6 text-sm shrink-0">
-                            풀기
-                        </button>
+                            <button onclick="openPasswordGate()" class="tactile-pill-btn p-4 sm:p-5 text-sm sm:text-base text-slate-700 flex flex-col items-center gap-2 h-full text-center">
+                                <i data-lucide="wrench" class="w-6 h-6 sm:w-8 sm:h-8 text-amber-500"></i>
+                                <span>② 관리자용<br>시험지 조립소</span>
+                            </button>
+                        </section>
+
+                        <!-- 내 시험 기록 -->
+                        <section class="space-y-3 flex-1 flex flex-col">
+                            <div class="flex items-center justify-between ml-2">
+                                <h2 class="text-slate-700 font-bold flex items-center">
+                                    <i data-lucide="history" class="w-4 h-4 mr-2 text-blue-500"></i>
+                                    내 시험 응시 기록
+                                </h2>
+                                <button onclick="window.clearMyRecords()" class="text-xs font-bold text-red-400 hover:text-red-500 transition-colors">
+                                    기록 지우기
+                                </button>
+                            </div>
+                            <div id="myRecordsContainer" class="flex flex-col gap-3 max-h-48 overflow-y-auto pr-1 hide-scroll">
+                                <!-- 기록이 여기에 렌더링됨 -->
+                            </div>
+                        </section>
+                        
+                        <footer class="text-center mt-auto">
+                            <p class="text-xs text-slate-400 font-bold tracking-wider">
+                                현재 보관함에 누적된 전체 출제 문제 수: <span id="homeQCount" class="text-blue-500">0</span>개
+                            </p>
+                        </footer>
                     </div>
-                </section>
 
-                <!-- 메뉴 버튼 레이아웃 -->
-                <section class="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-2">
-                    <button onclick="goToSubmitQuestion()" class="tactile-pill-btn py-5 px-6 text-base text-blue-600 flex flex-col items-center gap-2">
-                        <i data-lucide="edit-3" class="w-6 h-6 text-blue-500"></i>
-                        <span>① 친구용: 문제 제출하기</span>
-                    </button>
-
-                    <button onclick="openPasswordGate()" class="tactile-pill-btn py-5 px-6 text-base text-slate-700 flex flex-col items-center gap-2">
-                        <i data-lucide="wrench" class="w-6 h-6 text-amber-500"></i>
-                        <span>② 관리자용: 시험지 조립하기</span>
-                    </button>
-                </section>
-
-                <div class="h-px w-full bg-slate-300 shadow-[0_1px_1px_rgba(255,255,255,1)] my-2"></div>
-
-                <!-- [신규 기능] 내 시험 기록 (로컬 스토리지 연동) -->
-                <section class="space-y-3">
-                    <div class="flex items-center justify-between ml-2">
-                        <h2 class="text-slate-700 font-bold flex items-center">
-                            <i data-lucide="history" class="w-4 h-4 mr-2 text-blue-500"></i>
-                            내 시험 응시 기록
-                        </h2>
-                        <button onclick="window.clearMyRecords()" class="text-xs font-bold text-red-400 hover:text-red-500 transition-colors">
-                            기록 지우기
-                        </button>
-                    </div>
-                    <div id="myRecordsContainer" class="flex flex-col gap-3 max-h-40 overflow-y-auto pr-1 hide-scroll">
-                        <!-- 기록이 여기에 렌더링됨 -->
-                    </div>
-                </section>
-                
-                <footer class="text-center mt-2">
-                    <p class="text-xs text-slate-400 font-bold tracking-wider">
-                        현재 보관함에 누적된 출제 문제 수: <span id="homeQCount" class="text-blue-500">0</span>개
-                    </p>
-                </footer>
+                </div>
             </div>
         </div>
 
@@ -256,7 +266,7 @@
              2. 문제 제출 화면 (친구들이 개별 등록)
              ========================================== -->
         <div id="screen-submit-q" class="screen">
-            <div class="tactile-card p-6 sm:p-10 flex flex-col gap-6">
+            <div class="tactile-card p-6 sm:p-10 flex flex-col gap-6 max-w-3xl mx-auto">
                 <header class="flex justify-between items-center mb-2">
                     <h2 class="text-2xl font-extrabold text-slate-800">친구의 문제 제출처</h2>
                     <button onclick="goHome()" class="tactile-pill-btn px-4 py-2 text-sm">
@@ -297,13 +307,14 @@
 
                 <div class="space-y-3" id="submitType4">
                     <label class="block text-slate-700 font-bold ml-2">보기 입력 및 정답 체크</label>
-                    <div class="flex flex-col gap-3">
+                    <!-- 보기도 2단 그리드로 반응형 처리 -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <div class="flex items-center gap-3">
                             <input type="radio" name="submitCorrect" value="0" id="correct-radio-0" checked
                                    class="w-6 h-6 text-blue-600 bg-slate-100 border-slate-300 focus:ring-blue-500 cursor-pointer">
                             <label for="correct-radio-0" class="text-xs font-bold text-slate-400 shrink-0">보기 1</label>
                             <div class="debossed-well px-4 py-2 flex-1">
-                                <input type="text" class="submit-option w-full bg-transparent border-none outline-none text-slate-700 font-medium placeholder-slate-400" placeholder="보기 1번 텍스트">
+                                <input type="text" class="submit-option w-full bg-transparent border-none outline-none text-slate-700 font-medium placeholder-slate-400" placeholder="보기 1번">
                             </div>
                         </div>
                         <div class="flex items-center gap-3">
@@ -311,7 +322,7 @@
                                    class="w-6 h-6 text-blue-600 bg-slate-100 border-slate-300 focus:ring-blue-500 cursor-pointer">
                             <label for="correct-radio-1" class="text-xs font-bold text-slate-400 shrink-0">보기 2</label>
                             <div class="debossed-well px-4 py-2 flex-1">
-                                <input type="text" class="submit-option w-full bg-transparent border-none outline-none text-slate-700 font-medium placeholder-slate-400" placeholder="보기 2번 텍스트">
+                                <input type="text" class="submit-option w-full bg-transparent border-none outline-none text-slate-700 font-medium placeholder-slate-400" placeholder="보기 2번">
                             </div>
                         </div>
                         <div class="flex items-center gap-3">
@@ -319,7 +330,7 @@
                                    class="w-6 h-6 text-blue-600 bg-slate-100 border-slate-300 focus:ring-blue-500 cursor-pointer">
                             <label for="correct-radio-2" class="text-xs font-bold text-slate-400 shrink-0">보기 3</label>
                             <div class="debossed-well px-4 py-2 flex-1">
-                                <input type="text" class="submit-option w-full bg-transparent border-none outline-none text-slate-700 font-medium placeholder-slate-400" placeholder="보기 3번 텍스트">
+                                <input type="text" class="submit-option w-full bg-transparent border-none outline-none text-slate-700 font-medium placeholder-slate-400" placeholder="보기 3번">
                             </div>
                         </div>
                         <div class="flex items-center gap-3">
@@ -327,7 +338,7 @@
                                    class="w-6 h-6 text-blue-600 bg-slate-100 border-slate-300 focus:ring-blue-500 cursor-pointer">
                             <label for="correct-radio-3" class="text-xs font-bold text-slate-400 shrink-0">보기 4</label>
                             <div class="debossed-well px-4 py-2 flex-1">
-                                <input type="text" class="submit-option w-full bg-transparent border-none outline-none text-slate-700 font-medium placeholder-slate-400" placeholder="보기 4번 텍스트">
+                                <input type="text" class="submit-option w-full bg-transparent border-none outline-none text-slate-700 font-medium placeholder-slate-400" placeholder="보기 4번">
                             </div>
                         </div>
                     </div>
@@ -369,7 +380,7 @@
              [신규 기능] 문제 수정 화면 (관리자용)
              ========================================== -->
         <div id="screen-edit-q" class="screen">
-            <div class="tactile-card p-6 sm:p-10 flex flex-col gap-6">
+            <div class="tactile-card p-6 sm:p-10 flex flex-col gap-6 max-w-3xl mx-auto">
                 <header class="flex justify-between items-center mb-2">
                     <h2 class="text-2xl font-extrabold text-slate-800">문제 수정하기</h2>
                     <button onclick="window.goToAdminPanel()" class="tactile-pill-btn px-4 py-2 text-sm">
@@ -410,7 +421,7 @@
 
                 <div class="space-y-3" id="editType4">
                     <label class="block text-slate-700 font-bold ml-2">보기 입력 및 정답 체크</label>
-                    <div class="flex flex-col gap-3">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <div class="flex items-center gap-3">
                             <input type="radio" name="editCorrect" value="0" id="edit-correct-radio-0" class="w-6 h-6 text-blue-600 bg-slate-100 border-slate-300 focus:ring-blue-500 cursor-pointer">
                             <label for="edit-correct-radio-0" class="text-xs font-bold text-slate-400 shrink-0">보기 1</label>
@@ -486,57 +497,82 @@
                         </div>
                         <h2 class="text-2xl font-extrabold text-slate-800">시험지 조립 작업대</h2>
                     </div>
-                    <button onclick="goHome()" class="tactile-pill-btn px-4 py-2 text-sm">
+                    <button onclick="goHome()" class="tactile-pill-btn px-4 py-2 text-sm shrink-0">
                         <i data-lucide="home" class="w-4 h-4 mr-1"></i> 홈으로
                     </button>
                 </header>
 
-                <div class="space-y-3 bg-slate-200/50 p-5 rounded-3xl border border-slate-300">
-                    <h3 class="font-bold text-slate-700 ml-1 flex items-center gap-1">
-                        <i data-lucide="info" class="w-4 h-4 text-blue-500"></i> 새 시험지 명세
-                    </h3>
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
                     
-                    <div class="space-y-2">
-                        <label class="block text-xs font-bold text-slate-500 ml-2">시험지 타이틀</label>
-                        <div class="debossed-well flex items-center px-4 py-3 bg-white">
-                            <input type="text" id="adminExamTitle" placeholder="예: 1학기 기말고사 통합 모의평가" 
-                                   class="w-full bg-transparent border-none outline-none text-slate-800 font-bold placeholder-slate-400">
+                    <!-- [좌측]: 새 시험지 조립 영역 -->
+                    <div class="flex flex-col gap-6">
+                        <div class="space-y-3 bg-slate-200/50 p-5 rounded-3xl border border-slate-300">
+                            <h3 class="font-bold text-slate-700 ml-1 flex items-center gap-1">
+                                <i data-lucide="info" class="w-4 h-4 text-blue-500"></i> 새 시험지 명세
+                            </h3>
+                            
+                            <div class="space-y-2">
+                                <label class="block text-xs font-bold text-slate-500 ml-2">시험지 타이틀</label>
+                                <div class="debossed-well flex items-center px-4 py-3 bg-white">
+                                    <input type="text" id="adminExamTitle" placeholder="예: 1학기 기말고사 통합 모의평가" 
+                                           class="w-full bg-transparent border-none outline-none text-slate-800 font-bold placeholder-slate-400">
+                                </div>
+                            </div>
+
+                            <div class="space-y-2 pt-2 border-t border-slate-200 mt-3">
+                                <label class="block text-xs font-bold text-slate-500 ml-2">과목 선택</label>
+                                <div class="debossed-well flex items-center px-4 py-3 bg-white relative">
+                                    <select id="adminExamSubject" class="w-full bg-transparent border-none outline-none text-slate-800 font-bold appearance-none cursor-pointer">
+                                        <option value="국어">국어</option>
+                                        <option value="영어">영어</option>
+                                        <option value="수학">수학</option>
+                                        <option value="사회">사회</option>
+                                        <option value="과학">과학</option>
+                                        <option value="역사">역사</option>
+                                        <option value="정보">정보</option>
+                                    </select>
+                                    <i data-lucide="chevron-down" class="w-4 h-4 text-slate-400 absolute right-4 pointer-events-none"></i>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="space-y-3 flex-1 flex flex-col">
+                            <div class="flex justify-between items-center px-1">
+                                <label class="block text-slate-700 font-bold">보관함 속 문제 선택하기</label>
+                                <span class="text-xs font-bold text-slate-400" id="selectedCountInfo">0개 선택됨</span>
+                            </div>
+
+                            <div id="adminSubmittedQList" class="flex flex-col gap-4 max-h-[400px] overflow-y-auto pr-1 hide-scroll border-b border-slate-300 pb-2">
+                                <!-- 동적으로 등록된 문제 목록이 카드로 뿌려짐 -->
+                            </div>
+                        </div>
+
+                        <button onclick="assembleExamPaper()" class="tactile-pill-btn-primary w-full py-4 px-6 text-lg mt-auto">
+                            <i data-lucide="sparkles" class="w-5 h-5 mr-2"></i>
+                            선택한 문제들로 시험지 조립하기
+                        </button>
+                    </div>
+
+                    <!-- [우측]: 발급된 시험지 관리 영역 (신규 기능) -->
+                    <div class="flex flex-col gap-4 bg-slate-200/30 p-5 rounded-3xl border border-slate-300">
+                        <div class="flex justify-between items-center mb-1">
+                            <h3 class="font-bold text-slate-700 flex items-center gap-2">
+                                <i data-lucide="folder-open" class="w-5 h-5 text-amber-500"></i> 발급된 시험지 관리
+                            </h3>
+                        </div>
+                        <p class="text-xs text-slate-500 font-medium leading-relaxed">
+                            활성화된 시험지 목록입니다. 삭제 시 해당 코드를 통한 시험 입장이 더 이상 불가합니다.
+                        </p>
+                        
+                        <div id="adminLiveExamsList" class="flex flex-col gap-3 max-h-[500px] overflow-y-auto pr-1 hide-scroll">
+                            <!-- 관리용 시험지 목록 렌더링 -->
+                            <div class="debossed-well p-6 text-center text-slate-400 font-bold text-sm">
+                                관리할 수 있는 활성 시험지가 없습니다.
+                            </div>
                         </div>
                     </div>
-
-                    <!-- [신규 기능] 과목 선택 드롭다운 -->
-                    <div class="space-y-2 pt-2 border-t border-slate-200 mt-3">
-                        <label class="block text-xs font-bold text-slate-500 ml-2">과목 선택</label>
-                        <div class="debossed-well flex items-center px-4 py-3 bg-white relative">
-                            <select id="adminExamSubject" class="w-full bg-transparent border-none outline-none text-slate-800 font-bold appearance-none cursor-pointer">
-                                <option value="국어">국어</option>
-                                <option value="영어">영어</option>
-                                <option value="수학">수학</option>
-                                <option value="사회">사회</option>
-                                <option value="과학">과학</option>
-                                <option value="역사">역사</option>
-                                <option value="정보">정보</option>
-                            </select>
-                            <i data-lucide="chevron-down" class="w-4 h-4 text-slate-400 absolute right-4 pointer-events-none"></i>
-                        </div>
-                    </div>
+                    
                 </div>
-
-                <div class="space-y-3">
-                    <div class="flex justify-between items-center px-1">
-                        <label class="block text-slate-700 font-bold">보관함 속 문제 선택하기</label>
-                        <span class="text-xs font-bold text-slate-400" id="selectedCountInfo">0개 선택됨</span>
-                    </div>
-
-                    <div id="adminSubmittedQList" class="flex flex-col gap-4 max-h-[300px] overflow-y-auto pr-1 hide-scroll">
-                        <!-- 동적으로 등록된 문제 목록이 카드로 뿌려짐 -->
-                    </div>
-                </div>
-
-                <button onclick="assembleExamPaper()" class="tactile-pill-btn-primary w-full py-4 px-6 text-lg">
-                    <i data-lucide="sparkles" class="w-5 h-5 mr-2"></i>
-                    선택한 문제들로 시험지 조립하기
-                </button>
             </div>
         </div>
 
@@ -544,9 +580,8 @@
              4. 문제 풀이 화면
              ========================================== -->
         <div id="screen-test" class="screen">
-            <div class="tactile-card p-6 sm:p-10 flex flex-col gap-6">
+            <div class="tactile-card p-6 sm:p-10 flex flex-col gap-6 max-w-4xl mx-auto">
                 <div class="flex justify-between items-center mb-2">
-                    <!-- 과목과 타이틀이 함께 렌더링 됩니다 -->
                     <h2 id="testTitle" class="text-lg font-bold text-slate-800 truncate pr-4 leading-tight">
                         시험 제목
                     </h2>
@@ -561,12 +596,13 @@
                     </h3>
                 </div>
 
-                <div id="optionsContainer" class="flex flex-col gap-4 mt-2">
+                <!-- 옵션 컨테이너: 태블릿 크기 이상에서는 2x2 그리드 배열 -->
+                <div id="optionsContainer" class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-2">
                     <!-- 보기가 추가되는 영역 -->
                 </div>
 
                 <div class="flex gap-4 mt-4">
-                    <button onclick="goHome()" class="tactile-pill-btn py-4 px-6">
+                    <button onclick="goHome()" class="tactile-pill-btn py-4 px-6 shrink-0">
                         <i data-lucide="x" class="w-5 h-5"></i>
                     </button>
                     <button id="nextBtn" onclick="nextQuestion()" class="tactile-pill-btn-primary flex-1 py-4 px-6 text-lg">
@@ -581,7 +617,7 @@
              5. 결과 및 오답 노트 화면
              ========================================== -->
         <div id="screen-result" class="screen">
-            <div class="tactile-card p-6 sm:p-10 flex flex-col gap-8">
+            <div class="tactile-card p-6 sm:p-10 flex flex-col gap-8 max-w-4xl mx-auto">
                 <header class="text-center space-y-4">
                     <h1 class="text-3xl font-extrabold text-slate-800">채점 결과</h1>
                     <div class="w-32 h-32 mx-auto rounded-full debossed-well flex items-center justify-center">
@@ -725,9 +761,7 @@
         onAuthStateChanged(auth, (user) => {
             authUser = user;
             if (user) {
-                // 로그인 완료 시 Firebase 데이터베이스 완벽 실시간 동기화 시작
                 syncDatabaseCountersRealtime();
-                // [신규 기능] 로컬 스토리지에 저장된 나의 과거 응시 기록 불러오기
                 window.renderMyRecords();
             }
         });
@@ -759,7 +793,7 @@
                     console.error("문제 실시간 동기화 실패", error);
                 });
 
-                // 2. [시험지 목록] 실시간 동기화 (메인 화면용)
+                // 2. [시험지 목록] 실시간 동기화 (메인/관리자 화면용)
                 const examColRef = collection(db, 'artifacts', appId, 'public', 'data', 'activeExams');
                 
                 onSnapshot(examColRef, (eSnap) => {
@@ -769,7 +803,10 @@
                     });
                     
                     exams.sort((a, b) => b.createdAt - a.createdAt);
+                    
+                    // 홈 화면 및 관리자 화면 각각 렌더링
                     window.renderLiveExams(exams);
+                    window.renderAdminExamsManageList(exams);
 
                     hideLoading(); 
                 }, (error) => {
@@ -796,7 +833,7 @@
 
         window.goHome = function() {
             document.getElementById('testCodeInput').value = '';
-            window.renderMyRecords(); // 돌아올 때 최신 로컬 기록 갱신
+            window.renderMyRecords(); 
             window.switchScreen('screen-home');
         };
 
@@ -826,6 +863,44 @@
             lucide.createIcons();
         };
 
+        // 관리자 화면: 발급된 시험지 관리 목록 렌더링 [신규 기능]
+        window.renderAdminExamsManageList = function(exams) {
+            const container = document.getElementById('adminLiveExamsList');
+            if (!container) return;
+
+            if (exams.length === 0) {
+                container.innerHTML = `<div class="debossed-well p-6 text-center text-slate-400 font-bold text-sm">관리할 수 있는 활성 시험지가 없습니다.</div>`;
+                return;
+            }
+
+            container.innerHTML = exams.map(exam => `
+                <div class="debossed-well p-3 px-4 flex justify-between items-center bg-white border border-slate-200">
+                    <div class="flex-1 min-w-0 pr-2">
+                        <h3 class="font-bold text-slate-700 text-sm truncate">[${exam.subject || '미지정'}] ${exam.title}</h3>
+                        <p class="text-xs text-slate-400 font-bold mt-0.5">${exam.id}</p>
+                    </div>
+                    <button onclick="window.deleteExamFromAdmin('${exam.id}')" class="tactile-pill-btn p-2 shrink-0 text-red-500 border-red-200 hover:bg-red-50" title="시험지 삭제">
+                        <i data-lucide="trash-2" class="w-4 h-4"></i>
+                    </button>
+                </div>
+            `).join('');
+            lucide.createIcons();
+        };
+
+        // 관리자: 발급된 시험지 삭제 실행 [신규 기능]
+        window.deleteExamFromAdmin = async function(examId) {
+            showLoading();
+            try {
+                await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'activeExams', examId));
+                window.showModal("시험지 삭제", `[${examId}] 코드를 가진 시험지가 삭제되었습니다.`, "trash-2", "text-red-500");
+            } catch (err) {
+                console.error("시험지 삭제 실패:", err);
+                window.showModal("오류 발생", "시험지 삭제 중 문제가 발생했습니다.", "alert-circle", "text-red-500");
+            } finally {
+                hideLoading();
+            }
+        };
+
         // 홈 화면: 목록에서 즉시 풀기
         window.startTestWithCode = function(code) {
             document.getElementById('testCodeInput').value = code;
@@ -833,7 +908,7 @@
         };
 
         // ==========================================
-        // [신규 기능] 로컬 스토리지 시험 기록 관리
+        // 로컬 스토리지 시험 기록 관리
         // ==========================================
         window.renderMyRecords = function() {
             const container = document.getElementById('myRecordsContainer');
@@ -846,7 +921,6 @@
                 return;
             }
 
-            // 최신 응시일 순으로 정렬
             records.sort((a, b) => b.date - a.date);
 
             container.innerHTML = records.map(r => {
@@ -1023,7 +1097,7 @@
         // ==========================================
         window.goToAdminPanel = function() {
             document.getElementById('adminExamTitle').value = '';
-            document.getElementById('adminExamSubject').value = '국어'; // 기본 과목 설정
+            document.getElementById('adminExamSubject').value = '국어'; 
             adminSelectedQIds.clear();
             window.updateSelectedQCountUI();
 
@@ -1210,7 +1284,7 @@
         window.assembleExamPaper = async function() {
             if (!authUser) return;
             const title = document.getElementById('adminExamTitle').value.trim();
-            const subject = document.getElementById('adminExamSubject').value; // 과목 불러오기
+            const subject = document.getElementById('adminExamSubject').value; 
 
             if (!title) {
                 window.showModal("입력 부족", "조립할 시험지 타이틀을 작성해 주세요.", "alert-circle", "text-red-500");
@@ -1228,8 +1302,9 @@
             try {
                 const examDocRef = doc(db, 'artifacts', appId, 'public', 'data', 'activeExams', generatedCode);
                 await setDoc(examDocRef, {
+                    id: generatedCode, // ID 명시적 추가
                     title: title,
-                    subject: subject, // DB에 과목 정보 저장
+                    subject: subject, 
                     questions: selectedObjects,
                     createdAt: Date.now()
                 });
@@ -1273,7 +1348,6 @@
                     currentQuestionIndex = 0;
                     userAnswers = new Array(currentTestData.questions.length).fill(null);
                     
-                    // 제목 렌더링 시 과목 표시 연동
                     document.getElementById('testTitle').innerHTML = `
                         <span class="text-blue-500 mr-1 text-sm block sm:inline-block">[${currentTestData.subject || '미지정'}]</span>
                         <span class="block sm:inline-block mt-0.5 sm:mt-0">${currentTestData.title}</span>
@@ -1313,22 +1387,23 @@
 
             const isOX = qData.options.length === 2 && qData.options[0] === "O" && qData.options[1] === "X";
 
+            // 태블릿 이상에서 4지선다형은 2x2 그리드 배열 적용
             if (isOX) {
-                optionsContainer.className = 'flex flex-row gap-4 mt-2';
+                optionsContainer.className = 'grid grid-cols-2 gap-4 mt-2';
             } else {
-                optionsContainer.className = 'flex flex-col gap-4 mt-2';
+                optionsContainer.className = 'grid grid-cols-1 md:grid-cols-2 gap-4 mt-4';
             }
 
             qData.options.forEach((optText, index) => {
                 const btn = document.createElement('button');
                 
                 if (isOX) {
-                    btn.className = 'tactile-pill-btn flex-1 py-8 text-4xl relative font-black transition-colors';
+                    btn.className = 'tactile-pill-btn w-full py-10 sm:py-12 text-4xl sm:text-5xl relative font-black transition-colors';
                     btn.textContent = optText;
                     if (optText === "O") btn.classList.add('text-blue-600');
                     if (optText === "X") btn.classList.add('text-red-500');
                 } else {
-                    btn.className = 'tactile-pill-btn w-full py-4 px-6 text-left justify-start text-base sm:text-lg relative font-bold whitespace-normal break-words';
+                    btn.className = 'tactile-pill-btn w-full py-4 px-6 text-left justify-start text-base sm:text-lg relative font-bold whitespace-normal break-words h-full';
                     btn.textContent = `${index + 1}. ${optText}`;
                 }
                 
@@ -1389,7 +1464,7 @@
                         <div class="debossed-well p-5 space-y-3 border-l-4 border-l-red-400">
                             <div class="flex items-center justify-between">
                                 <h3 class="font-bold text-slate-800 text-base sm:text-lg">Q${index + 1}. ${qData.text}</h3>
-                                <span class="text-xs font-bold text-slate-400">출제: ${qData.author}</span>
+                                <span class="text-xs font-bold text-slate-400 shrink-0 ml-2">출제: ${qData.author}</span>
                             </div>
                             <div class="text-sm font-semibold">
                                 <p class="text-red-500 line-through mb-1">내 선택: ${qData.options[userChoice]}</p>
@@ -1405,7 +1480,7 @@
 
             const score = Math.round((correctCount / currentTestData.questions.length) * 100);
             
-            // [기능 연동] 시험 결과를 로컬 스토리지에 저장
+            // 시험 결과를 로컬 스토리지에 저장
             const testCodeUsed = document.getElementById('testCodeInput').value.trim().toUpperCase();
             const record = {
                 testId: testCodeUsed,
