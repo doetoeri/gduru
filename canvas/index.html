@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Spatial Window App</title>
+    <link rel="manifest" href="manifest.json">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <style>
+        body, html { margin: 0; padding: 0; overflow: hidden; width: 100%; height: 100%; font-family: -apple-system, BlinkMacSystemFont, sans-serif; background: #0f0f16; color: #fff; touch-action: none; }
+        #canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: block; }
+        #ui { position: absolute; top: env(safe-area-inset-top, 20px); left: 20px; z-index: 10; background: rgba(15, 15, 22, 0.85); padding: 20px; border-radius: 16px; backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 10px 30px rgba(0,0,0,0.5); max-width: 280px; }
+        h3 { margin: 0 0 10px 0; font-size: 18px; letter-spacing: -0.5px; }
+        .btn { display: block; w_idth: 100%; background: #3b82f6; color: white; border: none; padding: 12px; border-radius: 8px; cursor: pointer; font-size: 14px; font-weight: 600; margin-bottom: 8px; transition: background 0.2s; -webkit-tap-highlight-color: transparent; }
+        .btn:active { background: #1d4ed8; }
+        .btn-secondary { background: #374151; }
+        .btn-secondary:active { background: #1f2937; }
+        .info { font-size: 12px; margin-top: 6px; color: #9ca3af; font-variant-numeric: tabular-nums; }
+        #peer-id-box { word-break: break-all; background: rgba(255,255,255,0.05); padding: 8px; border-radius: 6px; margin-top: 5px; font-family: monospace; display: none;}
+    </style>
+    <script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
+</head>
+<body>
+    <div id="ui">
+        <h3>Spatial Window</h3>
+        <button class="btn" id="btn-role" onclick="toggleRole()">모드: 메인 허브 (태블릿)</button>
+        <button class="btn btn-secondary" id="btn-connect" onclick="connectToHub()" style="display:none;">허브에 연결하기</button>
+        <button class="btn btn-secondary" id="btn-sensor" onclick="initSensor()" style="display:none;">공간 센서 켜기</button>
+        <div class="info" id="status">상태: 라이브러리 로딩 중...</div>
+        <div id="peer-id-box" class="info"></div>
+        <div class="info" id="coords">가상 좌표: (0, 0)</div>
+    </div>
+    <canvas id="canvas"></canvas>
+
+    <script src="app.js"></script>
+</body>
+</html>
