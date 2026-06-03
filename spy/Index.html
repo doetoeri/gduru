@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BLIND ININK: S-Pen Intelligence Decrypter</title>
+    <style>
+        :root {
+            --bg-color: #05070a;
+            --panel-bg: #0d1117;
+            --accent-green: #00ff66;
+            --accent-red: #ff3333;
+            --accent-blue: #00e5ff;
+            --text-color: #e2e8f0;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: 'Courier New', Courier, monospace;
+            overflow: hidden;
+            height: 100vh;
+            display: flex;
+        }
+
+        /* 메인 워크스페이스 */
+        #workspace {
+            flex: 1;
+            position: relative;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            cursor: none; /* 실제 커서를 숨기고 커스텀 레이더 출력 */
+        }
+
+        /* 보안 문서 컨테이너 */
+        #document-container {
+            width: 90%;
+            max-width: 800px;
+            background: #090d14;
+            border: 1px solid #1f293d;
+            border-radius: 8px;
+            padding: 40px;
+            position: relative;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+            line-height: 1.8;
+            font-size: 1.15rem;
+            word-break: keep-all;
+        }
+
+        .doc-header {
+            border-bottom: 2px dashed #1f293d;
+            padding-bottom: 15px;
+            margin-bottom: 30px;
+            color: #566885;
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.9rem;
+        }
+
+        /* 암호화 처리된 단어 기본 스타일 */
+        .crypt {
+            background-color: #111;
+            color: transparent;
+            transition: all 0.2s ease;
+            position: relative;
+            padding: 0 4px;
+            border-radius: 3px;
+            display: inline-block;
+        }
+
+        /* 3단계 디코딩 상태 스타일링 */
+        .crypt.level-1 { /* High Hover: 블랙아웃 */
+            background-color: #111;
+            color: transparent;
+        }
+
+        .crypt.level-2 { /* Mid Hover: 암호 해독 */
+            background-color: rgba(0, 255, 102, 0.15);
+            color: var(--accent-green);
+            text-shadow: 0 0 8px var(--accent-green);
+        }
+
+        .crypt.level-3 { /* Low Hover / Touch: 메타데이터 노출 */
+            background-color: rgba(255, 51, 51, 0.2);
+            color: var(--accent-red);
+            text-shadow: 0 0 8px var(--accent-red);
+        }
+
+        /* 커스텀 S펜 호버링 링 (디코더 스포트라이트) */
+        #spy-decoder {
+            position: absolute;
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            border: 2px dashed var(--accent-green);
+            pointer-events: none;
+            transform: translate(-50%, -50%);
+            transition: width 0.1s ease, height 0.1s ease, border-color 0.1s ease;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+        }
+
+        #spy-decoder::before {
+            content: '';
+            width: 4px;
+            height: 4px;
+            background: var(--accent-green);
+            border-radius: 50%;
+        }
+
+        #spy-decoder .depth-indicator {
+            position: absolute;
+            bottom: -25px;
+            font-size: 0.75rem;
+            color: var(--accent-green);
+            background: rgba(5, 7, 10, 0.8);
+            padding: 2px 6px;
+            border-radius: 4px;
+            border: 1px solid currentColor;
+            white-space: nowrap;
+        }
+
+        /* 오른쪽 제어 및 텔레메트리 패널 */
+        #telemetry-panel {
+            width: 350px;
+            background-color: var(--panel-bg);
+            border-left: 1px solid #1f293d;
+            padding: 25px;
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+            z-index: 101;
+        }
+
+        h2, h3 {
+            color: var(--accent-blue);
+            font-weight: normal;
+            letter-spacing: 1px;
+        }
+
+        h2 { border-bottom: 1px solid #1f293d; padding-bottom: 10px; font-size: 1.3rem;}
+
+        .telemetry-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .data-box {
+            background: #05070a;
+            border: 1px solid #1f293d;
+            padding: 12px;
+            border-radius: 6px;
+        }
+
+        .data-box label {
+            display: block;
+            font-size: 0.75rem;
+            color: #566885;
+            margin-bottom: 5px;
+        }
+
+        .data-box span {
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: var(--text-color);
+        }
+
+        /* 기기 상태 표시등 */
+        .status-tag {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            background: #222;
+        }
+        .status-tag.active {
+            background: rgba(0, 242, 254, 0.2);
+            color: var(--accent-blue);
+            border: 1px solid var(--accent-blue);
+        }
+
+        /* 시뮬레이터 슬라이더 컨테이너 */
+        .simulator-zone {
+            border-top: 1px solid #1f293d;
+            padding-top: 20px;
+        }
+
+        .slider-ui {
+            width: 100%;
+            margin-top: 10px;
+            accent-color: var(--accent-blue);
+        }
+
+        /* 락다운 비상 스크린 */
+        #lockdown-screen {
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            background: rgba(20, 0, 0, 0.95);
+            z-index: 999;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+
+        #lockdown-screen.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .lockdown-box {
+            text-align: center;
+            border: 2px solid var(--accent-red);
+            padding: 40px;
+            background: #000;
+            box-shadow: 0 0 30px var(--accent-red);
+            border-radius: 8px;
+        }
+
+        .lockdown-box h1 {
+            color: var(--accent-red);
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+            animation: blink 1s infinite;
+        }
+
+        .btn-reset {
+            margin-top: 20px;
+            background: transparent;
+            border: 1px solid var(--accent-red);
+            color: var(--accent-red);
+            padding: 10px 20px;
+            cursor: pointer;
+            font-family: inherit;
+        }
+        .btn-reset:hover {
+            background: var(--accent-red);
+            color: #000;
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="workspace">
+        <div id="spy-decoder">
+            <div class="depth-indicator" id="depth-txt">HIGH HOVER</div>
+        </div>
+
+        <div id="document-container">
+            <div class="doc-header">
+                <span>CLASSIFIED: LEVEL 4 SECURITY</span>
+                <span>DOC_ID: #SPEN-7739X</span>
+            </div>
+            
+            <p>
+                본 문서는 국외 기밀 작전 정보를 담고 있습니다. 2026년 6월부로 발효된 프로토콜에 의거, 승인되지 않은 접근 시 터치 락다운이 실행됩니다.
+            </p>
+            <br>
+            <p>
+                작전 코드명 <span class="crypt" data-secret="네오 매트릭스 (Neo Matrix)" data-meta="[소속: 알파 팀 / 승인 등급: TOP SECRET]">█████████████████</span>은(는) 다가오는 금요일 자정에 개시됩니다. 
+                접선지는 런던 중심부에 위치한 <span class="crypt" data-secret="킹스 크로스역 9번 플랫폼 뒤편" data-meta="[좌표: 51.5322° N, 0.1242° W]">████████████████████████</span> 이며, 현장 요원은 
+                반드시 S펜을 호버링하여 암호 구조를 해독해야 합니다.
+            </p>
+            <br>
+            <p>
+                확보해야 할 핵심 타겟의 자산은 <span class="crypt" data-secret="양자 암호화 드라이브 키" data-meta="[형태: 나노 크리스탈 캡슐]">██████████████████</span>입니다. 만약 정보 유출 위험이 감지되어 화면을 강하게 
+                <span style="color: var(--accent-red); font-weight: bold;">터치(클릭)</span>할 경우 즉시 데이터가 격리되며 시스템이 임시 폐쇄 처리됩니다.
+            </p>
+        </div>
+    </div>
+
+    <div id="telemetry-panel">
+        <h2>S-PEN TELEMETRY</h2>
+        
+        <div>
+            <h3>INPUT TYPE</h3>
+            <div style="margin-top: 8px;">
+                <span id="tag-pen" class="status-tag">S-PEN DETECTED</span>
+                <span id="tag-mouse" class="status-tag active">MOUSE EMU</span>
+            </div>
+        </div>
+
+        <div>
+            <h3>REAL-TIME COORDINATE</h3>
+            <div class="telemetry-grid" style="margin-top:8px;">
+                <div class="data-box"><label>POINTER X</label><span id="val-x">0.00</span></div>
+                <div class="data-box"><label>POINTER Y</label><span id="val-y">0.00</span></div>
+            </div>
+        </div>
+
+        <div>
+            <h3>Z-AXIS SENSING</h3>
+            <div class="telemetry-grid" style="margin-top:8px;">
+                <div class="data-box"><label>HOVER DEPTH</label><span id="val-depth" style="color:var(--accent-green);">18 mm</span></div>
+                <div class="data-box"><label>PRESSURE</label><span id="val-pressure">0.00</span></div>
+            </div>
+            <div class="telemetry-grid" style="margin-top:10px;">
+                <div class="data-box"><label>TILT X</label><span id="val-tiltx">0°</span></div>
+                <div class="data-box"><label>TILT Y</label><span id="val-tilty">0°</span></div>
+            </div>
+        </div>
+
+        <div class="simulator-zone">
+            <h3>HOVER SIMULATOR</h3>
+            <p style="font-size:0.75rem; color:#566885; margin-top:5px;">
+                S펜이 없는 환경의 경우 아래 슬라이더(마우스 휠 대체 가능)로 호버링 높이를 조절해 보세요.
+            </p>
+            <input type="range" id="sim-height" class="slider-ui" min="1" max="30" value="18">
+            <div style="display:flex; justify-content:space-between; font-size:0.75rem; margin-top:5px; color:#566885;">
+                <span>0mm (터치)</span>
+                <span>15mm (해독)</span>
+                <span>30mm (원거리)</span>
+            </div>
+        </div>
+    </div>
+
+    <div id="lockdown-screen">
+        <div class="lockdown-box">
+            <h1>SECURITY LOCKDOWN</h1>
+            <p>터치 입력 감지로 인해 데이터 보호 프로토콜이 작동되었습니다.</p>
+            <p style="color:#566885; font-size:0.85rem; margin-top:10px;">터치 패널을 우회하여 호버 기술로만 보안을 해제하십시오.</p>
+            <button class="btn-reset" onclick="liftLockdown()">시스템 복구 (RESET)</button>
+        </div>
+    </div>
+
+    <script>
+        const workspace = document.getElementById('workspace');
+        const decoder = document.getElementById('spy-decoder');
+        const depthTxt = document.getElementById('depth-txt');
+        const simHeight = document.getElementById('sim-height');
+        
+        // 텔레메트리 엘리먼트
+        const valX = document.getElementById('val-x');
+        const valY = document.getElementById('val-y');
+        const valDepth = document.getElementById('val-depth');
+        const valPressure = document.getElementById('val-pressure');
+        const valTiltX = document.getElementById('val-tiltx');
+        const valTiltY = document.getElementById('val-tilty');
+        const tagPen = document.getElementById('tag-pen');
+        const tagMouse = document.getElementById('tag-mouse');
+        const lockdownScreen = document.getElementById('lockdown-screen');
+
+        let isLockdown = false;
+        let currentZHeight = 18; // 기본 설정 높이 (18mm)
+        
+        // Web Audio API 기믹 (호버 사운드 피드백)
+        let audioCtx = null;
+        let oscillator = null;
+
+        function initAudio() {
+            if (!audioCtx) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                oscillator = audioCtx.createOscillator();
+                const gainNode = audioCtx.createGain();
+                
+                oscillator.type = 'sine';
+                oscillator.frequency.setValueAtTime(200, audioCtx.currentTime); 
+                gainNode.gain.setValueAtTime(0.01, audioCtx.currentTime); // 아주 미세하게 주파수음 설정
+                
+                oscillator.connect(gainNode);
+                gainNode.connect(audioCtx.destination);
+                oscillator.start();
+            }
+        }
+
+        // 마우스 및 S펜 실시간 무브먼트 이벤트 처리
+        workspace.addEventListener('pointermove', (e) => {
+            if (isLockdown) return;
+            initAudio();
+
+            // 1. 기본 텔레메트리 정보 매핑
+            valX.innerText = e.clientX.toFixed(1);
+            valY.innerText = e.clientY.toFixed(1);
+            valPressure.innerText = e.pressure.toFixed(2);
+            valTiltX.innerText = Math.round(e.tiltX) + '°';
+            valTiltY.innerText = Math.round(e.tiltY) + '°';
+
+            // 커스텀 디코더 가상 조준경 위치 동기화
+            decoder.style.left = e.clientX + 'px';
+            decoder.style.top = e.clientY + 'px';
+
+            // 2. 입력 장치 분기 분석 (S펜 인식)
+            if (e.pointerType === 'pen') {
+                tagPen.classList.add('active');
+                tagMouse.classList.remove('active');
+                
+                // 실제 디바이스에서 호버 거리 판정 가공
+                // 하드웨어 펜이 화면 근처에 있을 때 pressure는 0이지만 실시간 좌표 연동됨
+                if (e.buttons === 0) {
+                    // 실제 웹 API에서는 Z축 유추를 tilt나 무브 정밀도로 가공하거나 가상 조합함
+                    // 여기서는 하드웨어 펜 감지 시 미드 영역으로 기본 수렴 유도
+                    currentZHeight = 10 + (Math.abs(e.tiltX) / 10); 
+                    simHeight.value = currentZHeight;
+                } else {
+                    currentZHeight = 0; // 터치 시 0
+                }
+            } else {
+                tagPen.classList.remove('active');
+                tagMouse.classList.add('active');
+                // 일반 마우스인 경우 슬라이더 값 가져옴
+                currentZHeight = parseFloat(simHeight.value);
+            }
+
+            processZAxisLogic(currentZHeight, e.clientX, e.clientY);
+        });
+
+        // 슬라이더 조작 시 가상 변경 프로세스
+        simHeight.addEventListener('input', (e) => {
+            currentZHeight = parseFloat(e.target.value);
+            // 정중앙 가상 좌표 기반으로 시뮬레이션 작동
+            const rect = workspace.getBoundingClientRect();
+            processZAxisLogic(currentZHeight, rect.left + rect.width/2, rect.top + rect.height/2);
+        });
+
+        // 마우스 휠로 호버링 3D 높낮이 제어 기능 보완
+        workspace.addEventListener('wheel', (e) => {
+            e.preventDefault();
+            let change = e.deltaY > 0 ? 1 : -1;
+            let nextVal = Math.min(Math.max(parseInt(simHeight.value) + change, 1), 30);
+            simHeight.value = nextVal;
+            currentZHeight = nextVal;
+            processZAxisLogic(currentZHeight, e.clientX, e.clientY);
+        }, { passive: false });
+
+
+        // 3단계 호버링 핵심 분기 기술 매트릭스
+        function processZAxisLogic(zHeight, pointerX, pointerY) {
+            valDepth.innerText = zHeight.toFixed(1) + " mm";
+            
+            // 주파수 음역대 가변 (호버가 깊어질수록 고주파 알람음 효과)
+            if (oscillator) {
+                oscillator.frequency.setValueAtTime(600 - (zHeight * 12), audioCtx.currentTime);
+            }
+
+            let currentLevel = 1;
+            
+            if (zHeight > 15) {
+                // [LEVEL 1: High Hover] 정보 차단 단계
+                currentLevel = 1;
+                depthTxt.innerText = "HIGH HOVER (REDACTED)";
+                depthTxt.style.color = "var(--text-color)";
+                decoder.style.borderColor = "#1f293d";
+                decoder.style.width = "160px";
+                decoder.style.height = "160px";
+            } 
+            else if (zHeight > 4 && zHeight <= 15) {
+                // [LEVEL 2: Mid Hover] 디코더 실시간 락온 해독 단계
+                currentLevel = 2;
+                depthTxt.innerText = "MID HOVER (DECRYPTING...)";
+                depthTxt.style.color = "var(--accent-green)";
+                decoder.style.borderColor = "var(--accent-green)";
+                decoder.style.width = "110px";
+                decoder.style.height = "110px";
+            } 
+            else {
+                // [LEVEL 3: Low Hover / Touch Close] 메타데이터 극비 탐지 단계
+                currentLevel = 3;
+                depthTxt.innerText = "LOW HOVER (WARN: METADATA)";
+                depthTxt.style.color = "var(--accent-red)";
+                decoder.style.borderColor = "var(--accent-red)";
+                decoder.style.width = "70px";
+                decoder.style.height = "70px";
+            }
+
+            // 커서 근처에 있는 암호 단어 복호화 계산기 (기하학적 바운딩 박스 충돌 체크)
+            const cryptElements = document.querySelectorAll('.crypt');
+            cryptElements.forEach(el => {
+                const rect = el.getBoundingClientRect();
+                
+                // 단어와 포인터 사이의 거리 계산
+                const elX = rect.left + rect.width / 2;
+                const elY = rect.top + rect.height / 2;
+                const distance = Math.hypot(pointerX - elX, pointerY - elY);
+
+                // 디코더 반경 내부(80px 내)에 들어올 시 쉐이더 상태 변화 기믹
+                if (distance < 85) {
+                    el.className = `crypt level-${currentLevel}`;
+                    if (currentLevel === 2) {
+                        el.innerText = el.getAttribute('data-secret');
+                    } else if (currentLevel === 3) {
+                        el.innerText = el.getAttribute('data-meta');
+                    }
+                } else {
+                    // 범위를 벗어나면 다시 블랙박스 블라인드 처리
+                    el.className = 'crypt';
+                    el.innerText = "██████████████████";
+                }
+            });
+        }
+
+        // 터치 락다운 트리거 (S펜을 꾹 누르거나, 실수로 화면 터치 시)
+        workspace.addEventListener('pointerdown', (e) => {
+            // 시뮬레이터 조작 UI 클릭 시 예외 처리
+            if(e.target.closest('#telemetry-panel')) return;
+
+            isLockdown = true;
+            lockdownScreen.classList.add('active');
+            if (audioCtx) audioCtx.suspend();
+        });
+
+        function liftLockdown() {
+            isLockdown = false;
+            lockdownScreen.classList.remove('active');
+            simHeight.value = 18;
+            currentZHeight = 18;
+            if (audioCtx) audioCtx.resume();
+        }
+    </script>
+</body>
+</html>
+
