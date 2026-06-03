@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SmartEditor: S-Pen Multi-Layer Processor</title>
+    <title>Advanced SmartEditor: S-Pen Multi-Layer</title>
     <style>
         :root {
             --bg-color: #f8f9fa;
@@ -16,67 +16,93 @@
             --layer-green: #10b981;
         }
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
 
         body {
             background-color: var(--bg-color);
             color: var(--text-main);
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
             display: flex;
             height: 100vh;
             overflow: hidden;
         }
 
-        /* 왼쪽 가상 워드프로세서 본체 */
+        /* 메인 워크스페이스 구조 */
         #main-container {
             flex: 1;
             display: flex;
             flex-direction: column;
             height: 100%;
             position: relative;
+            transition: all 0.3s ease;
         }
 
-        /* 상단 툴바 디스플레이 */
+        /* 상단 통합 제어 툴바 */
         #toolbar {
-            height: 55px;
+            height: 60px;
             background: var(--editor-bg);
             border-bottom: 1px solid var(--border-color);
             display: flex;
             align-items: center;
             padding: 0 20px;
-            gap: 15px;
+            gap: 12px;
             font-size: 0.9rem;
-            color: var(--text-muted);
+            z-index: 5;
         }
 
-        .toolbar-btn {
+        .mode-badge {
+            font-weight: bold;
             padding: 4px 8px;
-            border: 1px solid transparent;
             border-radius: 4px;
-            background: transparent;
-            color: var(--text-main);
-            font-weight: 500;
-        }
-        .toolbar-btn.active {
             background: #e9ecef;
-            border-color: var(--border-color);
         }
 
-        /* 문서 워크스페이스 */
+        .btn {
+            padding: 6px 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            background: #fff;
+            color: var(--text-main);
+            cursor: pointer;
+            font-weight: 500;
+            font-size: 0.85rem;
+        }
+        .btn:hover { background: #f8f9fa; }
+        .btn.active {
+            background: var(--text-main);
+            color: #fff;
+            border-color: var(--text-main);
+        }
+
+        .layer-selector {
+            display: flex;
+            background: #e9ecef;
+            padding: 3px;
+            border-radius: 6px;
+            gap: 2px;
+        }
+        .layer-btn {
+            padding: 4px 10px;
+            border: none;
+            background: transparent;
+            font-size: 0.8rem;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .layer-btn.active[data-target="orig"] { background: #fff; color: #000; font-weight: bold;}
+        .layer-btn.active[data-target="l2"] { background: var(--layer-blue); color: #fff; font-weight: bold;}
+        .layer-btn.active[data-target="l3"] { background: var(--layer-green); color: #fff; font-weight: bold;}
+
+        /* 문서 편집용 종이 구역 */
         #workspace {
             flex: 1;
-            padding: 40px;
+            padding: 40px 20px;
             overflow-y: auto;
             display: flex;
             justify-content: center;
             position: relative;
         }
 
-        /* 실제 A4 형태의 에디터 페이퍼 */
         #editor-paper {
             width: 100%;
             max-width: 760px;
@@ -84,144 +110,105 @@
             background: var(--editor-bg);
             border: 1px solid var(--border-color);
             border-radius: 4px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.02);
             padding: 60px 50px;
-            line-height: 1.8;
+            line-height: 1.9;
             font-size: 1.05rem;
-            outline: none; /* 포커스 테두리 제거 */
-            color: #333;
+            outline: none;
         }
 
-        #editor-paper h1 {
-            font-size: 2rem;
-            margin-bottom: 10px;
-            color: #111;
-        }
-
-        #editor-paper p {
-            margin-bottom: 15px;
-        }
-
-        /* 다중 레이어 타겟 단어 디자인 (자연스러운 텍스트 형태) */
+        /* 다중 레이어 인라인 단어 노드 스타일 */
         .layer-target {
             position: relative;
-            border-bottom: 1px dashed var(--text-muted);
-            cursor: text;
-            display: inline;
+            border-bottom: 1.5px dashed var(--text-muted);
+            padding: 0 2px;
+            transition: background-color 0.2s, color 0.2s;
         }
-
-        /* 2단계 레이어 상태 (주석/메모) */
         .layer-target.level-2 {
             color: var(--layer-blue);
             border-bottom-color: var(--layer-blue);
-            background-color: rgba(59, 130, 246, 0.05);
+            background-color: rgba(59, 130, 246, 0.06);
         }
-
-        /* 3단계 레이어 상태 (AI 가이드/번역) */
         .layer-target.level-3 {
             color: var(--layer-green);
             border-bottom-color: var(--layer-green);
-            background-color: rgba(16, 185, 129, 0.05);
+            background-color: rgba(16, 185, 129, 0.06);
         }
 
-        /* 가상 렌즈 가이드 UI */
+        /* 호버 안내 링 렌즈 */
         #layer-lens {
             position: absolute;
-            width: 100px;
-            height: 100px;
+            width: 90px; height: 90px;
             border-radius: 50%;
-            border: 1.5px solid var(--text-muted);
+            border: 2px solid var(--text-muted);
             pointer-events: none;
             transform: translate(-50%, -50%);
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            display: flex; justify-content: center; align-items: center;
             z-index: 10;
-            transition: width 0.15s, height 0.15s, border-color 0.15s;
+            opacity: 0;
+            transition: opacity 0.2s, width 0.1s, height 0.1s;
         }
-        #layer-lens .lens-tag {
-            position: absolute;
-            top: -22px;
-            font-size: 0.7rem;
-            padding: 1px 6px;
-            border-radius: 3px;
-            background: #333;
-            color: #fff;
+        .lens-tag {
+            position: absolute; top: -24px;
+            font-size: 0.7rem; padding: 2px 6px;
+            border-radius: 3px; background: #222; color: #fff;
             white-space: nowrap;
         }
 
-        /* 오른쪽 정보 정보/제어 대시보드 */
+        /* 개폐식 오른쪽 사이드바 패널 */
         #sidebar {
-            width: 320px;
+            width: 300px;
             background-color: var(--sidebar-bg);
             border-left: 1px solid var(--border-color);
             padding: 24px;
             display: flex;
             flex-direction: column;
-            gap: 24px;
+            gap: 20px;
+            transition: transform 0.3s ease, margin-right 0.3s ease;
+        }
+        #sidebar.collapsed {
+            margin-right: -300px;
+            transform: translateX(300px);
         }
 
         .section-title {
-            font-size: 0.85rem;
-            font-weight: 700;
-            color: var(--text-muted);
-            letter-spacing: 0.5px;
-            text-transform: uppercase;
+            font-size: 0.85rem; font-weight: 700; color: var(--text-muted);
             border-bottom: 1px solid var(--border-color);
-            padding-bottom: 6px;
-            margin-bottom: 12px;
+            padding-bottom: 6px; margin-bottom: 10px;
         }
 
         .info-card {
-            background: var(--editor-bg);
-            border: 1px solid var(--border-color);
-            padding: 12px;
-            border-radius: 6px;
-            font-size: 0.9rem;
+            background: var(--editor-bg); border: 1px solid var(--border-color);
+            padding: 10px; border-radius: 6px; font-size: 0.85rem;
         }
+        .info-card label { display: block; font-size: 0.7rem; color: var(--text-muted); }
+        .info-card span { font-weight: 600; }
 
-        .info-card label {
-            display: block;
-            font-size: 0.75rem;
-            color: var(--text-muted);
-            margin-bottom: 4px;
-        }
+        .slider-ui { width: 100%; margin-top: 6px; accent-color: var(--layer-blue); }
 
-        .info-card span {
-            font-weight: 600;
-        }
-
-        .slider-ui {
-            width: 100%;
-            margin-top: 8px;
-            accent-color: var(--layer-blue);
-        }
-
-        /* 범례 내 안내 박스 */
-        .legend-item {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 0.85rem;
-            margin-bottom: 6px;
-        }
-        .legend-dot {
-            width: 10px;
-            height: 10px;
-            border-radius: 50%;
-        }
+        .legend { font-size: 0.8rem; display: flex; align-items: center; gap: 6px; margin-bottom: 4px;}
+        .dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; }
     </style>
 </head>
 <body>
 
     <div id="main-container">
         <div id="toolbar">
-            <span style="font-weight: bold; color: #111; margin-right: 15px;">SmartEditor Pro</span>
-            <button class="toolbar-btn active">본문 편집 모드</button>
-            <span style="height: 15px; border-left: 1px solid var(--border-color);"></span>
-            <span>글꼴: 기본 고딕</span>
-            <span>크기: 11pt</span>
-            <span style="margin-left: auto; font-size: 0.8rem; color: var(--layer-blue);">💡 문서를 클릭하여 직접 타이핑하고 편집해 보세요!</span>
+            <span style="font-weight: 800; font-size: 1.05rem; margin-right: 10px;">SmartEditor Layer+</span>
+            
+            <button id="btn-view-mode" class="btn active" onclick="switchMainMode('view')">👁️ 보기 모드</button>
+            <button id="btn-edit-mode" class="btn" onclick="switchMainMode('edit')">✍️ 편집 모드</button>
+
+            <span style="height: 18px; border-left: 1px solid var(--border-color);"></span>
+
+            <span id="edit-layer-label" style="font-size: 0.85rem; color: var(--text-muted); display:none;">편집할 레이어:</span>
+            <div id="layer-selector-zone" class="layer-selector" style="display: none;">
+                <button class="layer-btn active" data-target="orig" onclick="changeEditLayer('orig')">1층 (원문)</button>
+                <button class="layer-btn" data-target="l2" onclick="changeEditLayer('l2')">2층 (주석)</button>
+                <button class="layer-btn" data-target="l3" onclick="changeEditLayer('l3')">3층 (AI추천)</button>
+            </div>
+
+            <button class="btn" style="margin-left: auto;" onclick="toggleSidebar()">📊 텔레메트리 토글</button>
         </div>
 
         <div id="workspace">
@@ -229,20 +216,16 @@
                 <div class="lens-tag" id="lens-status">기본 문서</div>
             </div>
 
-            <div id="editor-paper" contenteditable="true" spellcheck="false">
-                <h1>S펜 다중 레이어 활용 제안서</h1>
-                <p style="color: var(--text-muted); font-size: 0.9rem; border-bottom: 1px solid var(--border-color); padding-bottom: 10px; margin-bottom: 25px;">작성자: 기획팀 마일드 파트 | 최종 수정일: 2026-06-03</p>
+            <div id="editor-paper" contenteditable="false" spellcheck="false">
+                <h1 contenteditable="false">S펜 사용자 편집형 다중 레이어 문서</h1>
+                <p contenteditable="false" style="color: var(--text-muted); font-size: 0.85rem; border-bottom: 1px solid var(--border-color); padding-bottom: 8px; margin-bottom: 25px;">상단 모드를 전환해 레이어별 내용을 자유롭게 커스텀 편집하세요.</p>
                 
                 <p>
-                    스마트 태블릿 환경에서 S펜의 가치는 디스플레이 터치에만 국한되지 않습니다. 하드웨어가 제공하는 고유의 스페이스 감지 기술인 <span class="layer-target" data-orig="호버링(Hovering)" data-l2="[메모: 화면 위 5~15mm 공중 감지 기술]" data-l3="[AI추천: '공중 제스처 제어'로 변경 가능]">호버링(Hovering)</span> 메커니즘을 결합하면 사용자의 탐색 흐름을 끊지 않는 새로운 웹 브라우징 디자인 패러다임을 설계할 수 있습니다.
+                    이 에디터 프레임워크는 사용자가 <span class="layer-target" data-orig="직접 입력한 텍스트" data-l2="[사용자 메모: 레이어 2층에 직접 기록한 코멘트입니다]" data-l3="[AI 가이드: User-inputted Customized Text]">직접 입력한 텍스트</span>를 기반으로 작동합니다. 편집 모드로 진입하면 상단의 레이어 선택 분기를 통해 공중 높이에 매핑될 3개의 다차원 인라인 캔버스 데이터를 개별 독립적으로 타이핑하여 밀어 넣을 수 있습니다.
                 </p>
-                
+                <br>
                 <p>
-                    기존의 일반적인 오피스 프로그램들은 주석이나 원문 번역 가이드를 확인하기 위해 별도의 사이드 패널을 열거나 마우스 오른쪽 버튼을 클릭해야만 했습니다. 하지만 본 고안에서 제시하는 <span class="layer-target" data-orig="다중 공간 레이어" data-l2="[링크참조: 특허 출원 고유 기능 번호 #2026-A]" data-l3="[AI요약: 높이에 따라 정보를 분류하는 핵심 UI]">다중 공간 레이어</span> 방식을 채택하면, 사용자는 펜을 쥐고 화면에 다가가는 높이 변화 조절(Z축)만으로 문서 이면의 풍부한 컨텍스트 데이터를 손쉽게 열람할 수 있습니다.
-                </p>
-
-                <p>
-                    예를 들어, 학습 모드에서 펜을 멀리 띄우면 깨끗한 원문이 유지되다가, 중간 높이로 좁히면 <span class="layer-target" data-orig="전문가의 실시간 멘토링 주석" data-l2="[교수 주석: 이 부분은 기말고사 출제 범위입니다]" data-l3="[AI번역: Expert's Real-time Mentoring Annotations]">전문가의 실시간 멘토링 주석</span> 레이어가 가볍게 떠오르고, 화면에 완전히 밀착하게 되면 직관적인 핵심 어휘 가이드 및 다국어 실시간 <span class="layer-target" data-orig="기계 번역 결과물" data-l2="[각주: 인공신경망 번역 API 연동 스펙]" data-l3="[AI번역: Machine Translation Results]">기계 번역 결과물</span>이 매끄럽게 교체 렌더링되는 시나리오를 완성할 수 있습니다.
+                    오른쪽 패널을 닫아 완전한 <span class="layer-target" data-orig="집중형 레이아웃" data-l2="[각주: 사이드바가 접히면 여백이 자동 확장됨]" data-l3="[동의어 가이드: 몰입형 인터페이스]">집중형 레이아웃</span>을 구성해 보십시오. 보조 계측기가 숨겨진 상태에서도 시스템 내부 커널은 S펜 하드웨어 스펙인 디지타이저 감도와 <span class="layer-target" data-orig="호버링 Z축 깊이 좌표" data-l2="[기술 메모: pointermove 이벤트를 통한 실시간 높이 추적]" data-l3="[AI 번역: Hovering Z-axis depth coordinates]">호버링 Z축 깊이 좌표</span>를 끊임없이 분석하여 부드러운 가시성 트랜지션을 연출합니다.
                 </p>
             </div>
         </div>
@@ -250,44 +233,30 @@
 
     <div id="sidebar">
         <div>
-            <div class="section-title">스마트 펜 정보 (Telemetry)</div>
-            <div class="info-card" style="margin-bottom: 10px;">
-                <label>포인터 위치 (X, Y)</label>
+            <div class="section-title">S-Pen 텔레메트리</div>
+            <div class="info-card" style="margin-bottom: 8px;">
+                <label>실시간 포인터 좌표</label>
                 X: <span id="val-x">0.0</span>, Y: <span id="val-y">0.0</span>
             </div>
             <div class="info-card">
-                <label>실시간 호버 높이 (Z-Axis)</label>
-                <span id="val-depth" style="color: var(--layer-blue); font-size: 1.1rem;">18.0 mm</span>
+                <label>호버링 높이 상태 (Z축)</label>
+                <span id="val-depth" style="color: var(--layer-blue); font-size: 1.05rem;">18.0 mm</span>
             </div>
         </div>
 
         <div>
-            <div class="section-title">다중 레이어 상태 안내</div>
-            <div class="legend-item">
-                <div class="legend-dot" style="background: var(--text-muted);"></div>
-                <span>1단계 (원거리): 기본 일반 문서</span>
-            </div>
-            <div class="legend-item">
-                <div class="legend-dot" style="background: var(--layer-blue);"></div>
-                <span>2단계 (중거리): 주석 / 편집자 메모</span>
-            </div>
-            <div class="legend-item">
-                <div class="legend-dot" style="background: var(--layer-green);"></div>
-                <span>3단계 (근거리): AI 번역 / 요약 가이드</span>
-            </div>
+            <div class="section-title">공간 레이어 구조</div>
+            <div class="legend"><div class="dot" style="background: var(--text-muted);"></div> 1단계 (원거리): 기본 원문</div>
+            <div class="legend"><div class="dot" style="background: var(--layer-blue);"></div> 2단계 (중거리): 사용자 커스텀 주석</div>
+            <div class="legend"><div class="dot" style="background: var(--layer-green);"></div> 3단계 (근거리): AI 번역 및 요약 가이드</div>
         </div>
 
         <div>
-            <div class="section-title">호버링 시뮬레이터 (마우스용)</div>
-            <p style="font-size: 0.8rem; color: var(--text-muted); line-height: 1.4;">
-                S펜이 없을 경우 아래 슬라이더 조정 및 문서 위에서 <strong>마우스 휠(Wheel)</strong>을 조작해 가상으로 높이를 증감해 다중 레이어를 체험할 수 있습니다.
+            <div class="section-title">가상 휠 호버 제어</div>
+            <p style="font-size: 0.75rem; color: var(--text-muted); line-height: 1.4; margin-bottom: 6px;">
+                마우스 환경은 문서 위에서 <strong>휠(Wheel)</strong>을 돌리거나 슬라이더로 높이를 수동 조절해 다중 레이어를 테스팅하세요.
             </p>
             <input type="range" id="sim-height" class="slider-ui" min="1" max="30" value="18">
-            <div style="display: flex; justify-content: space-between; font-size: 0.75rem; color: var(--text-muted); margin-top: 4px;">
-                <span>3단계(근)</span>
-                <span>2단계(중)</span>
-                <span>1단계(원)</span>
-            </div>
         </div>
     </div>
 
@@ -297,623 +266,203 @@
         const lens = document.getElementById('layer-lens');
         const lensStatus = document.getElementById('lens-status');
         const simHeight = document.getElementById('sim-height');
-        
-        // 데이터 바인딩 엘리먼트
+        const sidebar = document.getElementById('sidebar');
+
+        // 툴바 버튼 노드
+        const btnView = document.getElementById('btn-view-mode');
+        const btnEdit = document.getElementById('btn-edit-mode');
+        const editLayerLabel = document.getElementById('edit-layer-label');
+        const layerSelectorZone = document.getElementById('layer-selector-zone');
+
+        // 스태틱 텔레메트리 필드
         const valX = document.getElementById('val-x');
         const valY = document.getElementById('val-y');
         const valDepth = document.getElementById('val-depth');
 
-        let currentZHeight = 18; // 기본 원거리 상태 시작값 (단위: mm 가정)
+        // 글로벌 상태 변수
+        let mainMode = 'view'; // 'view' 또는 'edit'
+        let currentActiveLayer = 'orig'; // 'orig', 'l2', 'l3' 편집 타겟
+        let currentZHeight = 18; 
 
-        // 포인터 무브먼트 및 호버 깊이 분기 처리
+        // 1. 모드 전환기 (보기 vs 편집)
+        function switchMainMode(mode) {
+            mainMode = mode;
+            if (mode === 'view') {
+                btnView.classList.add('active');
+                btnEdit.classList.remove('active');
+                editLayerLabel.style.display = 'none';
+                layerSelectorZone.style.display = 'none';
+                
+                paper.contentEditable = "false"; // 본문 직접 타이핑 차단 (호버 뷰어 활성화)
+                restoreOriginalStateFromAttributes(); // 데이터 가공 전 원상복구
+                lens.style.opacity = "1";
+            } else {
+                btnView.classList.remove('active');
+                btnEdit.classList.add('active');
+                editLayerLabel.style.display = 'inline';
+                layerSelectorZone.style.display = 'flex';
+                
+                paper.contentEditable = "true"; // 본문 텍스트 타이핑 수정 허용
+                lens.style.opacity = "0"; // 편집 모드에선 호버 링 가이드 숨김
+                
+                // 현재 선택된 편집 타겟 레이어 레이아웃으로 본문 전면 전환 고정
+                renderTargetLayerForEdit(currentActiveLayer);
+            }
+        }
+
+        // 2. 편집 모드 시 수정 타겟 레이어 분기 변경
+        function changeEditLayer(layerType) {
+            // 직전까지 타이핑 편집하던 현재 레이어 데이터를 임시 어트리뷰트 캐시에 강제 저장 동기화
+            saveCurrentPaperContentToDataAttributes();
+
+            currentActiveLayer = layerType;
+            document.querySelectorAll('.layer-btn').forEach(btn => {
+                btn.classList.toggle('active', btn.getAttribute('data-target') === layerType);
+            });
+
+            // 종이 본문 화면을 선택한 레이어의 데이터셋 상태로 실시간 변환출력
+            renderTargetLayerForEdit(layerType);
+        }
+
+        // 편집을 위해 선택한 레이어 본문을 밀어넣는 렌더러
+        function renderTargetLayerForEdit(layerType) {
+            const targets = document.querySelectorAll('.layer-target');
+            targets.forEach(el => {
+                let dataVal = "";
+                if(layerType === 'orig') dataVal = el.getAttribute('data-orig');
+                else if(layerType === 'l2') dataVal = el.getAttribute('data-l2');
+                else if(layerType === 'l3') dataVal = el.getAttribute('data-l3');
+                
+                el.innerText = dataVal || "";
+                
+                // 편집 중인 레이어의 시각적 피드백 바인딩
+                el.className = "layer-target";
+                if(layerType === 'l2') el.classList.add('level-2');
+                if(layerType === 'l3') el.classList.add('level-3');
+            });
+        }
+
+        // 편집 모드 중 사용자가 수정한 인라인 글자 속성을 돔 데이터셋 캐시에 백업
+        function saveCurrentPaperContentToDataAttributes() {
+            const targets = document.querySelectorAll('.layer-target');
+            targets.forEach(el => {
+                if (currentActiveLayer === 'orig') el.setAttribute('data-orig', el.innerText);
+                else if (currentActiveLayer === 'l2') el.setAttribute('data-l2', el.innerText);
+                else if (currentActiveLayer === 'l3') el.setAttribute('data-l3', el.innerText);
+            });
+        }
+
+        // 편집 중 다른 구역을 클릭하거나 편집이 나갈 때 실시간 자동 세이브 연동
+        paper.addEventListener('input', () => {
+            if(mainMode === 'edit') {
+                saveCurrentPaperContentToDataAttributes();
+            }
+        });
+
+        function restoreOriginalStateFromAttributes() {
+            document.querySelectorAll('.layer-target').forEach(el => {
+                el.className = "layer-target";
+                el.innerText = el.getAttribute('data-orig');
+            });
+        }
+
+        // 3. 사이드바 접기 / 펴기 토글 핸들러
+        function toggleSidebar() {
+            sidebar.classList.toggle('collapsed');
+        }
+
+        // 4. 공간 호버 레이어 추적 핵심 좌표 로직
         workspace.addEventListener('pointermove', (e) => {
-            // 사이드바 영역 상호작용 시 무시
-            if(e.target.closest('#sidebar')) return;
-
-            // 실시간 평면 좌표 업데이트
+            if (mainMode === 'edit') return; // 편집 모드일 때는 호버링 렌즈 비활성화
+            
             valX.innerText = e.clientX.toFixed(1);
             valY.innerText = e.clientY.toFixed(1);
 
-            // 가이드 링 위치 동기화
             lens.style.left = e.clientX + 'px';
             lens.style.top = e.clientY + 'px';
+            lens.style.opacity = "1";
 
-            // 입력 디바이스 하드웨어 판정
+            // S펜 디바이스 인식 분기
             if (e.pointerType === 'pen') {
                 if (e.buttons === 0) {
-                    // 순수 펜 호버링 중일 때 가상 높이 수렴 매핑 (기울기값 연계 보정)
                     currentZHeight = 9 + (Math.abs(e.tiltX) / 8);
                     simHeight.value = currentZHeight;
                 } else {
-                    currentZHeight = 2; // 터치 타이핑 필기 시 최하단 레이어 고정
+                    currentZHeight = 1;
                 }
             } else {
-                // S펜 미사용 데스크톱 환경은 우측 슬라이더 및 휠 바인딩 참조
                 currentZHeight = parseFloat(simHeight.value);
             }
 
-            renderMultiLayer(currentZHeight, e.clientX, e.clientY);
+            processSpaceZLayer(currentZHeight, e.clientX, e.clientY);
         });
 
-        // 일반 마우스 사용자를 위한 휠 조작 지원
+        workspace.addEventListener('mouseleave', () => { lens.style.opacity = "0"; });
+
+        // 마우스 휠 공간 가상 스케일링 바인딩
         workspace.addEventListener('wheel', (e) => {
-            // 편집 스크롤 방해 최소화를 위해 디코더 타겟 위에서 동작 유도 권장되나 기본 수치 제어로 할당
+            if (mainMode === 'edit') return;
             e.preventDefault();
-            let delta = e.deltaY > 0 ? 1 : -1;
-            let targetVal = Math.min(Math.max(parseInt(simHeight.value) + delta, 1), 30);
-            simHeight.value = targetVal;
-            currentZHeight = targetVal;
-            renderMultiLayer(currentZHeight, e.clientX, e.clientY);
+            let step = e.deltaY > 0 ? 1 : -1;
+            let nextZ = Math.min(Math.max(parseInt(simHeight.value) + step, 1), 30);
+            simHeight.value = nextZ;
+            currentZHeight = nextZ;
+            processSpaceZLayer(currentZHeight, e.clientX, e.clientY);
         }, { passive: false });
 
-        // 슬라이더 변경 시 동기화
         simHeight.addEventListener('input', (e) => {
             currentZHeight = parseFloat(e.target.value);
             const rect = paper.getBoundingClientRect();
-            renderMultiLayer(currentZHeight, rect.left + rect.width/2, rect.top + rect.height/2);
+            processSpaceZLayer(currentZHeight, rect.left + rect.width/2, rect.top + rect.height/2);
         });
 
-        // 핵심: 3차원 깊이(Z-Axis) 기반 다중 레이어 정보 교체 렌더링 로직
-        function renderMultiLayer(zHeight, pX, pY) {
+        // 보기 모드 시 공간 조준경 연산 렌더러
+        function processSpaceZLayer(zHeight, pointerX, pointerY) {
             valDepth.innerText = zHeight.toFixed(1) + " mm";
-            
-            let layerLevel = 1; // 1단계 기본 문서
+            let currentLevel = 1;
 
             if (zHeight > 15) {
-                layerLevel = 1;
-                lensStatus.innerText = "기본 문서";
+                currentLevel = 1;
+                lensStatus.innerText = "1층: 원문";
                 lens.style.borderColor = "var(--text-muted)";
                 valDepth.style.color = "var(--text-main)";
             } else if (zHeight > 5 && zHeight <= 15) {
-                layerLevel = 2;
-                lensStatus.innerText = "2층: 주석 레이어";
+                currentLevel = 2;
+                lensStatus.innerText = "2층: 사용자 주석";
                 lens.style.borderColor = "var(--layer-blue)";
                 valDepth.style.color = "var(--layer-blue)";
             } else {
-                layerLevel = 3;
-                lensStatus.innerText = "3층: AI 추천 레이어";
+                currentLevel = 3;
+                lensStatus.innerText = "3층: AI 추천가이드";
                 lens.style.borderColor = "var(--layer-green)";
                 valDepth.style.color = "var(--layer-green)";
             }
 
-            // 본문 내부의 레이어 타겟들과 포인터 사이의 공간 충돌 검사
+            // 기하학적 범위 내 단어 충돌 검사 교체 트랜지션
             const targets = document.querySelectorAll('.layer-target');
             targets.forEach(el => {
                 const rect = el.getBoundingClientRect();
-                const targetX = rect.left + rect.width / 2;
-                const targetY = rect.top + rect.height / 2;
-                const dist = Math.hypot(pX - targetX, pY - targetY);
+                const tX = rect.left + rect.width / 2;
+                const tY = rect.top + rect.height / 2;
+                const distance = Math.hypot(pointerX - tX, pointerY - tY);
 
-                // 펜 가이드 반경(90px) 내에 위치 시 해당 레이어 단계 적용
-                if (dist < 90) {
-                    if (layerLevel === 1) {
+                if (distance < 80) {
+                    if (currentLevel === 1) {
                         el.className = "layer-target";
                         el.innerText = el.getAttribute('data-orig');
-                    } else if (layerLevel === 2) {
+                    } else if (currentLevel === 2) {
                         el.className = "layer-target level-2";
                         el.innerText = el.getAttribute('data-l2');
-                    } else if (layerLevel === 3) {
+                    } else if (currentLevel === 3) {
                         el.className = "layer-target level-3";
                         el.innerText = el.getAttribute('data-l3');
                     }
                 } else {
-                    // 인식 범위 외곽은 완벽한 일반 원래 텍스트 복구
                     el.className = "layer-target";
                     el.innerText = el.getAttribute('data-orig');
                 }
             });
         }
-
-        // 사용자가 직접 타이핑하여 커스텀 원본 텍스트 내용을 바꿨을 때 동적 데이터 갱신 보완 기믹
-        paper.addEventListener('blur', () => {
-            // 편집 종료(포커스 아웃) 시 타겟 엘리먼트들의 원본 텍스트 동기화 속성 갱신 처리
-            const targets = document.querySelectorAll('.layer-target');
-            targets.forEach(el => {
-                // 단 단어 가이드 속성이 유지되고 있을 때만 캡처 수렴
-                if(!el.className.includes('level-2') && !el.className.includes('level-3')) {
-                    el.setAttribute('data-orig', el.innerText);
-                }
-            });
-        });
     </script>
 </body>
 </html>
-            position: relative;
-            height: 100%;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
-            cursor: none; /* 실제 커서를 숨기고 커스텀 레이더 출력 */
-        }
-
-        /* 보안 문서 컨테이너 */
-        #document-container {
-            width: 90%;
-            max-width: 800px;
-            background: #090d14;
-            border: 1px solid #1f293d;
-            border-radius: 8px;
-            padding: 40px;
-            position: relative;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
-            line-height: 1.8;
-            font-size: 1.15rem;
-            word-break: keep-all;
-        }
-
-        .doc-header {
-            border-bottom: 2px dashed #1f293d;
-            padding-bottom: 15px;
-            margin-bottom: 30px;
-            color: #566885;
-            display: flex;
-            justify-content: space-between;
-            font-size: 0.9rem;
-        }
-
-        /* 암호화 처리된 단어 기본 스타일 */
-        .crypt {
-            background-color: #111;
-            color: transparent;
-            transition: all 0.2s ease;
-            position: relative;
-            padding: 0 4px;
-            border-radius: 3px;
-            display: inline-block;
-        }
-
-        /* 3단계 디코딩 상태 스타일링 */
-        .crypt.level-1 { /* High Hover: 블랙아웃 */
-            background-color: #111;
-            color: transparent;
-        }
-
-        .crypt.level-2 { /* Mid Hover: 암호 해독 */
-            background-color: rgba(0, 255, 102, 0.15);
-            color: var(--accent-green);
-            text-shadow: 0 0 8px var(--accent-green);
-        }
-
-        .crypt.level-3 { /* Low Hover / Touch: 메타데이터 노출 */
-            background-color: rgba(255, 51, 51, 0.2);
-            color: var(--accent-red);
-            text-shadow: 0 0 8px var(--accent-red);
-        }
-
-        /* 커스텀 S펜 호버링 링 (디코더 스포트라이트) */
-        #spy-decoder {
-            position: absolute;
-            width: 120px;
-            height: 120px;
-            border-radius: 50%;
-            border: 2px dashed var(--accent-green);
-            pointer-events: none;
-            transform: translate(-50%, -50%);
-            transition: width 0.1s ease, height 0.1s ease, border-color 0.1s ease;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 100;
-        }
-
-        #spy-decoder::before {
-            content: '';
-            width: 4px;
-            height: 4px;
-            background: var(--accent-green);
-            border-radius: 50%;
-        }
-
-        #spy-decoder .depth-indicator {
-            position: absolute;
-            bottom: -25px;
-            font-size: 0.75rem;
-            color: var(--accent-green);
-            background: rgba(5, 7, 10, 0.8);
-            padding: 2px 6px;
-            border-radius: 4px;
-            border: 1px solid currentColor;
-            white-space: nowrap;
-        }
-
-        /* 오른쪽 제어 및 텔레메트리 패널 */
-        #telemetry-panel {
-            width: 350px;
-            background-color: var(--panel-bg);
-            border-left: 1px solid #1f293d;
-            padding: 25px;
-            display: flex;
-            flex-direction: column;
-            gap: 25px;
-            z-index: 101;
-        }
-
-        h2, h3 {
-            color: var(--accent-blue);
-            font-weight: normal;
-            letter-spacing: 1px;
-        }
-
-        h2 { border-bottom: 1px solid #1f293d; padding-bottom: 10px; font-size: 1.3rem;}
-
-        .telemetry-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 15px;
-        }
-
-        .data-box {
-            background: #05070a;
-            border: 1px solid #1f293d;
-            padding: 12px;
-            border-radius: 6px;
-        }
-
-        .data-box label {
-            display: block;
-            font-size: 0.75rem;
-            color: #566885;
-            margin-bottom: 5px;
-        }
-
-        .data-box span {
-            font-size: 1.1rem;
-            font-weight: bold;
-            color: var(--text-color);
-        }
-
-        /* 기기 상태 표시등 */
-        .status-tag {
-            display: inline-block;
-            padding: 4px 8px;
-            border-radius: 4px;
-            font-size: 0.8rem;
-            font-weight: bold;
-            background: #222;
-        }
-        .status-tag.active {
-            background: rgba(0, 242, 254, 0.2);
-            color: var(--accent-blue);
-            border: 1px solid var(--accent-blue);
-        }
-
-        /* 시뮬레이터 슬라이더 컨테이너 */
-        .simulator-zone {
-            border-top: 1px solid #1f293d;
-            padding-top: 20px;
-        }
-
-        .slider-ui {
-            width: 100%;
-            margin-top: 10px;
-            accent-color: var(--accent-blue);
-        }
-
-        /* 락다운 비상 스크린 */
-        #lockdown-screen {
-            position: fixed;
-            top: 0; left: 0; width: 100vw; height: 100vh;
-            background: rgba(20, 0, 0, 0.95);
-            z-index: 999;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 0.3s ease;
-        }
-
-        #lockdown-screen.active {
-            opacity: 1;
-            pointer-events: auto;
-        }
-
-        .lockdown-box {
-            text-align: center;
-            border: 2px solid var(--accent-red);
-            padding: 40px;
-            background: #000;
-            box-shadow: 0 0 30px var(--accent-red);
-            border-radius: 8px;
-        }
-
-        .lockdown-box h1 {
-            color: var(--accent-red);
-            font-size: 2.5rem;
-            margin-bottom: 15px;
-            animation: blink 1s infinite;
-        }
-
-        .btn-reset {
-            margin-top: 20px;
-            background: transparent;
-            border: 1px solid var(--accent-red);
-            color: var(--accent-red);
-            padding: 10px 20px;
-            cursor: pointer;
-            font-family: inherit;
-        }
-        .btn-reset:hover {
-            background: var(--accent-red);
-            color: #000;
-        }
-
-        @keyframes blink {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.3; }
-        }
-    </style>
-</head>
-<body>
-
-    <div id="workspace">
-        <div id="spy-decoder">
-            <div class="depth-indicator" id="depth-txt">HIGH HOVER</div>
-        </div>
-
-        <div id="document-container">
-            <div class="doc-header">
-                <span>CLASSIFIED: LEVEL 4 SECURITY</span>
-                <span>DOC_ID: #SPEN-7739X</span>
-            </div>
-            
-            <p>
-                본 문서는 국외 기밀 작전 정보를 담고 있습니다. 2026년 6월부로 발효된 프로토콜에 의거, 승인되지 않은 접근 시 터치 락다운이 실행됩니다.
-            </p>
-            <br>
-            <p>
-                작전 코드명 <span class="crypt" data-secret="네오 매트릭스 (Neo Matrix)" data-meta="[소속: 알파 팀 / 승인 등급: TOP SECRET]">█████████████████</span>은(는) 다가오는 금요일 자정에 개시됩니다. 
-                접선지는 런던 중심부에 위치한 <span class="crypt" data-secret="킹스 크로스역 9번 플랫폼 뒤편" data-meta="[좌표: 51.5322° N, 0.1242° W]">████████████████████████</span> 이며, 현장 요원은 
-                반드시 S펜을 호버링하여 암호 구조를 해독해야 합니다.
-            </p>
-            <br>
-            <p>
-                확보해야 할 핵심 타겟의 자산은 <span class="crypt" data-secret="양자 암호화 드라이브 키" data-meta="[형태: 나노 크리스탈 캡슐]">██████████████████</span>입니다. 만약 정보 유출 위험이 감지되어 화면을 강하게 
-                <span style="color: var(--accent-red); font-weight: bold;">터치(클릭)</span>할 경우 즉시 데이터가 격리되며 시스템이 임시 폐쇄 처리됩니다.
-            </p>
-        </div>
-    </div>
-
-    <div id="telemetry-panel">
-        <h2>S-PEN TELEMETRY</h2>
-        
-        <div>
-            <h3>INPUT TYPE</h3>
-            <div style="margin-top: 8px;">
-                <span id="tag-pen" class="status-tag">S-PEN DETECTED</span>
-                <span id="tag-mouse" class="status-tag active">MOUSE EMU</span>
-            </div>
-        </div>
-
-        <div>
-            <h3>REAL-TIME COORDINATE</h3>
-            <div class="telemetry-grid" style="margin-top:8px;">
-                <div class="data-box"><label>POINTER X</label><span id="val-x">0.00</span></div>
-                <div class="data-box"><label>POINTER Y</label><span id="val-y">0.00</span></div>
-            </div>
-        </div>
-
-        <div>
-            <h3>Z-AXIS SENSING</h3>
-            <div class="telemetry-grid" style="margin-top:8px;">
-                <div class="data-box"><label>HOVER DEPTH</label><span id="val-depth" style="color:var(--accent-green);">18 mm</span></div>
-                <div class="data-box"><label>PRESSURE</label><span id="val-pressure">0.00</span></div>
-            </div>
-            <div class="telemetry-grid" style="margin-top:10px;">
-                <div class="data-box"><label>TILT X</label><span id="val-tiltx">0°</span></div>
-                <div class="data-box"><label>TILT Y</label><span id="val-tilty">0°</span></div>
-            </div>
-        </div>
-
-        <div class="simulator-zone">
-            <h3>HOVER SIMULATOR</h3>
-            <p style="font-size:0.75rem; color:#566885; margin-top:5px;">
-                S펜이 없는 환경의 경우 아래 슬라이더(마우스 휠 대체 가능)로 호버링 높이를 조절해 보세요.
-            </p>
-            <input type="range" id="sim-height" class="slider-ui" min="1" max="30" value="18">
-            <div style="display:flex; justify-content:space-between; font-size:0.75rem; margin-top:5px; color:#566885;">
-                <span>0mm (터치)</span>
-                <span>15mm (해독)</span>
-                <span>30mm (원거리)</span>
-            </div>
-        </div>
-    </div>
-
-    <div id="lockdown-screen">
-        <div class="lockdown-box">
-            <h1>SECURITY LOCKDOWN</h1>
-            <p>터치 입력 감지로 인해 데이터 보호 프로토콜이 작동되었습니다.</p>
-            <p style="color:#566885; font-size:0.85rem; margin-top:10px;">터치 패널을 우회하여 호버 기술로만 보안을 해제하십시오.</p>
-            <button class="btn-reset" onclick="liftLockdown()">시스템 복구 (RESET)</button>
-        </div>
-    </div>
-
-    <script>
-        const workspace = document.getElementById('workspace');
-        const decoder = document.getElementById('spy-decoder');
-        const depthTxt = document.getElementById('depth-txt');
-        const simHeight = document.getElementById('sim-height');
-        
-        // 텔레메트리 엘리먼트
-        const valX = document.getElementById('val-x');
-        const valY = document.getElementById('val-y');
-        const valDepth = document.getElementById('val-depth');
-        const valPressure = document.getElementById('val-pressure');
-        const valTiltX = document.getElementById('val-tiltx');
-        const valTiltY = document.getElementById('val-tilty');
-        const tagPen = document.getElementById('tag-pen');
-        const tagMouse = document.getElementById('tag-mouse');
-        const lockdownScreen = document.getElementById('lockdown-screen');
-
-        let isLockdown = false;
-        let currentZHeight = 18; // 기본 설정 높이 (18mm)
-        
-        // Web Audio API 기믹 (호버 사운드 피드백)
-        let audioCtx = null;
-        let oscillator = null;
-
-        function initAudio() {
-            if (!audioCtx) {
-                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-                oscillator = audioCtx.createOscillator();
-                const gainNode = audioCtx.createGain();
-                
-                oscillator.type = 'sine';
-                oscillator.frequency.setValueAtTime(200, audioCtx.currentTime); 
-                gainNode.gain.setValueAtTime(0.01, audioCtx.currentTime); // 아주 미세하게 주파수음 설정
-                
-                oscillator.connect(gainNode);
-                gainNode.connect(audioCtx.destination);
-                oscillator.start();
-            }
-        }
-
-        // 마우스 및 S펜 실시간 무브먼트 이벤트 처리
-        workspace.addEventListener('pointermove', (e) => {
-            if (isLockdown) return;
-            initAudio();
-
-            // 1. 기본 텔레메트리 정보 매핑
-            valX.innerText = e.clientX.toFixed(1);
-            valY.innerText = e.clientY.toFixed(1);
-            valPressure.innerText = e.pressure.toFixed(2);
-            valTiltX.innerText = Math.round(e.tiltX) + '°';
-            valTiltY.innerText = Math.round(e.tiltY) + '°';
-
-            // 커스텀 디코더 가상 조준경 위치 동기화
-            decoder.style.left = e.clientX + 'px';
-            decoder.style.top = e.clientY + 'px';
-
-            // 2. 입력 장치 분기 분석 (S펜 인식)
-            if (e.pointerType === 'pen') {
-                tagPen.classList.add('active');
-                tagMouse.classList.remove('active');
-                
-                // 실제 디바이스에서 호버 거리 판정 가공
-                // 하드웨어 펜이 화면 근처에 있을 때 pressure는 0이지만 실시간 좌표 연동됨
-                if (e.buttons === 0) {
-                    // 실제 웹 API에서는 Z축 유추를 tilt나 무브 정밀도로 가공하거나 가상 조합함
-                    // 여기서는 하드웨어 펜 감지 시 미드 영역으로 기본 수렴 유도
-                    currentZHeight = 10 + (Math.abs(e.tiltX) / 10); 
-                    simHeight.value = currentZHeight;
-                } else {
-                    currentZHeight = 0; // 터치 시 0
-                }
-            } else {
-                tagPen.classList.remove('active');
-                tagMouse.classList.add('active');
-                // 일반 마우스인 경우 슬라이더 값 가져옴
-                currentZHeight = parseFloat(simHeight.value);
-            }
-
-            processZAxisLogic(currentZHeight, e.clientX, e.clientY);
-        });
-
-        // 슬라이더 조작 시 가상 변경 프로세스
-        simHeight.addEventListener('input', (e) => {
-            currentZHeight = parseFloat(e.target.value);
-            // 정중앙 가상 좌표 기반으로 시뮬레이션 작동
-            const rect = workspace.getBoundingClientRect();
-            processZAxisLogic(currentZHeight, rect.left + rect.width/2, rect.top + rect.height/2);
-        });
-
-        // 마우스 휠로 호버링 3D 높낮이 제어 기능 보완
-        workspace.addEventListener('wheel', (e) => {
-            e.preventDefault();
-            let change = e.deltaY > 0 ? 1 : -1;
-            let nextVal = Math.min(Math.max(parseInt(simHeight.value) + change, 1), 30);
-            simHeight.value = nextVal;
-            currentZHeight = nextVal;
-            processZAxisLogic(currentZHeight, e.clientX, e.clientY);
-        }, { passive: false });
-
-
-        // 3단계 호버링 핵심 분기 기술 매트릭스
-        function processZAxisLogic(zHeight, pointerX, pointerY) {
-            valDepth.innerText = zHeight.toFixed(1) + " mm";
-            
-            // 주파수 음역대 가변 (호버가 깊어질수록 고주파 알람음 효과)
-            if (oscillator) {
-                oscillator.frequency.setValueAtTime(600 - (zHeight * 12), audioCtx.currentTime);
-            }
-
-            let currentLevel = 1;
-            
-            if (zHeight > 15) {
-                // [LEVEL 1: High Hover] 정보 차단 단계
-                currentLevel = 1;
-                depthTxt.innerText = "HIGH HOVER (REDACTED)";
-                depthTxt.style.color = "var(--text-color)";
-                decoder.style.borderColor = "#1f293d";
-                decoder.style.width = "160px";
-                decoder.style.height = "160px";
-            } 
-            else if (zHeight > 4 && zHeight <= 15) {
-                // [LEVEL 2: Mid Hover] 디코더 실시간 락온 해독 단계
-                currentLevel = 2;
-                depthTxt.innerText = "MID HOVER (DECRYPTING...)";
-                depthTxt.style.color = "var(--accent-green)";
-                decoder.style.borderColor = "var(--accent-green)";
-                decoder.style.width = "110px";
-                decoder.style.height = "110px";
-            } 
-            else {
-                // [LEVEL 3: Low Hover / Touch Close] 메타데이터 극비 탐지 단계
-                currentLevel = 3;
-                depthTxt.innerText = "LOW HOVER (WARN: METADATA)";
-                depthTxt.style.color = "var(--accent-red)";
-                decoder.style.borderColor = "var(--accent-red)";
-                decoder.style.width = "70px";
-                decoder.style.height = "70px";
-            }
-
-            // 커서 근처에 있는 암호 단어 복호화 계산기 (기하학적 바운딩 박스 충돌 체크)
-            const cryptElements = document.querySelectorAll('.crypt');
-            cryptElements.forEach(el => {
-                const rect = el.getBoundingClientRect();
-                
-                // 단어와 포인터 사이의 거리 계산
-                const elX = rect.left + rect.width / 2;
-                const elY = rect.top + rect.height / 2;
-                const distance = Math.hypot(pointerX - elX, pointerY - elY);
-
-                // 디코더 반경 내부(80px 내)에 들어올 시 쉐이더 상태 변화 기믹
-                if (distance < 85) {
-                    el.className = `crypt level-${currentLevel}`;
-                    if (currentLevel === 2) {
-                        el.innerText = el.getAttribute('data-secret');
-                    } else if (currentLevel === 3) {
-                        el.innerText = el.getAttribute('data-meta');
-                    }
-                } else {
-                    // 범위를 벗어나면 다시 블랙박스 블라인드 처리
-                    el.className = 'crypt';
-                    el.innerText = "██████████████████";
-                }
-            });
-        }
-
-        // 터치 락다운 트리거 (S펜을 꾹 누르거나, 실수로 화면 터치 시)
-        workspace.addEventListener('pointerdown', (e) => {
-            // 시뮬레이터 조작 UI 클릭 시 예외 처리
-            if(e.target.closest('#telemetry-panel')) return;
-
-            isLockdown = true;
-            lockdownScreen.classList.add('active');
-            if (audioCtx) audioCtx.suspend();
-        });
-
-        function liftLockdown() {
-            isLockdown = false;
-            lockdownScreen.classList.remove('active');
-            simHeight.value = 18;
-            currentZHeight = 18;
-            if (audioCtx) audioCtx.resume();
-        }
-    </script>
-</body>
-</html>
-
