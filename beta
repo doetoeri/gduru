@@ -1,0 +1,761 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>S-Pen Raytrace Elegance Studio</title>
+  
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital,wght@0,400;1,400&family=Noto+Serif+KR:wght@300;500;700;900&family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet">
+  
+  <style>
+    /* 서체 토큰 및 레이아웃 정의 */
+    .brand-font { font-family: 'Instrument Serif', serif; font-style: italic; }
+    .body-font { font-family: 'Noto Serif KR', serif; }
+    .tech-font { font-family: 'Space Grotesk', sans-serif; }
+
+    /* 카라라 화이트 고급 대리석 데스크 무늬 */
+    .desk-marble {
+      background-color: #f5f5f7;
+      background-image: 
+        radial-gradient(circle at 20% 30%, rgba(220, 224, 230, 0.4) 0%, transparent 60%),
+        radial-gradient(circle at 80% 70%, rgba(215, 218, 224, 0.4) 0%, transparent 60%);
+      box-shadow: inset 0 0 100px rgba(0, 0, 0, 0.03);
+    }
+
+    /* 세이지 그린 프리미엄 린넨 데스크 매트 */
+    .linen-mat {
+      background-color: #e2e8e0;
+      background-image: 
+        linear-gradient(90deg, rgba(255,255,255,0.07) 1px, transparent 1px),
+        linear-gradient(rgba(255,255,255,0.07) 1px, transparent 1px);
+      background-size: 4px 4px;
+      box-shadow: 
+        inset 0 0 30px rgba(0, 0, 0, 0.06),
+        0 15px 45px rgba(110, 125, 115, 0.2);
+    }
+    .linen-stitch { border: 2px dashed #b5c2b1; }
+
+    /* 종이 적층 효과 (Skeuomorphic Stack) */
+    .paper-shadow {
+      box-shadow: 
+        0 4px 20px rgba(0,0,0,0.04),
+        0 1px 2px rgba(0,0,0,0.03),
+        0 12px 0 -6px #f7f5f0,
+        0 12px 3px -5px rgba(0,0,0,0.05),
+        0 24px 0 -12 #efebe0,
+        0 24px 5px -11px rgba(0,0,0,0.05),
+        0 35px 50px -15px rgba(100,105,95,0.18);
+    }
+
+    /* 지질 종류별 패턴 */
+    .bg-lined {
+      background-color: #fdfbf7;
+      background-image: linear-gradient(rgba(33, 150, 243, 0.08) 1px, transparent 1px);
+      background-size: 100% 28px;
+      background-position: 0 14px;
+    }
+    .bg-lined::before {
+      content: ''; position: absolute; top: 0; left: 65px; width: 1px; height: 100%;
+      background-color: rgba(244, 67, 54, 0.18); pointer-events: none;
+    }
+    .bg-grid {
+      background-color: #fafbf9;
+      background-image: 
+        linear-gradient(rgba(120, 140, 130, 0.06) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(120, 140, 130, 0.06) 1px, transparent 1px);
+      background-size: 20px 20px;
+    }
+    .bg-kraft {
+      background-color: #e5ccac;
+      background-image: linear-gradient(rgba(90, 60, 30, 0.05) 1px, transparent 1px);
+      background-size: 100% 24px;
+    }
+    .bg-plain { background-color: #fefefe; }
+
+    /* 유리 복층 스페이스(GlassSpace) 3D 연출 공용 컴포넌트 */
+    .layer-target {
+      position: relative; display: inline-block; font-weight: 700;
+      color: #6366f1; cursor: pointer; border-bottom: 2px dashed #6366f1;
+    }
+    .glass-space-container {
+      position: absolute; left: 50%; top: 130%; transform: translateX(-50%);
+      width: 340px; height: 190px; pointer-events: none; z-index: 100; opacity: 0;
+      transform-style: preserve-3d; transition: opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .glass-space-container.active { opacity: 1; }
+    .glass-pane {
+      position: absolute; width: 100%; height: 50px; background: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.6); border-radius: 12px; padding: 12px 16px;
+      font-size: 0.8rem; display: flex; align-items: center; gap: 10px;
+      transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s, filter 0.3s;
+    }
+    .glass-pane .pane-badge { font-size: 0.65rem; font-weight: 700; color: #fff; padding: 2px 6px; border-radius: 4px; }
+    
+    .glass-pane.p-l1 { top: 0px; z-index: 3; }
+    .glass-pane.p-l1 .pane-badge { background: #1f2328; }
+    .glass-pane.p-l2 { top: 65px; z-index: 2; border-left: 4px solid #3b82f6; }
+    .glass-pane.p-l2 .pane-badge { background: #3b82f6; }
+    .glass-pane.p-l3 { top: 130px; z-index: 1; border-left: 4px solid #a855f7; }
+    .glass-pane.p-l3 .pane-badge { background: #a855f7; }
+
+    /* S24 Ultra 하드웨어 사각단면 3D 레이트레이싱 그림자 레이어 */
+    #spen-raytrace-shadow {
+      position: absolute; pointer-events: none; z-index: 90; opacity: 0;
+      transform-origin: top left; transition: opacity 0.15s ease;
+    }
+    .shadow-aim-dot { position: absolute; top: 0; left: 0; width: 3.5px; height: 3.5px; background: #000; border-radius: 50%; transform: translate(-50%, -50%); }
+    .s24-silhouette-container { position: relative; transform-origin: 0px 0px; filter: blur(2px); }
+    .s24-nib-core { position: absolute; top: 0; left: -1px; width: 2px; height: 6px; background: rgba(0,0,0,0.3); border-radius: 50% 50% 0 0; }
+    .s24-nib-cone { position: absolute; top: 6px; left: -4px; width: 8px; height: 16px; background: rgba(0,0,0,0.28); clip-path: polygon(25% 0%, 75% 0%, 100% 100%, 0% 100%); }
+    .s24-pen-body { position: absolute; top: 22px; left: -7px; width: 14px; height: 180px; background: rgba(0,0,0,0.24); border-radius: 1px 1px 3px 3px; }
+
+    /* 아날로그 슬라이더 커스텀 마감 */
+    input[type=range] { -webkit-appearance: none; background: #e2ded5; height: 4px; border-radius: 999px; }
+    input[type=range]::-webkit-slider-thumb {
+      -webkit-appearance: none; height: 14px; width: 14px; border-radius: 50%;
+      background: linear-gradient(135deg, #f3e5c8 0%, #c5a059 100%); border: 1px solid #b38f46; cursor: pointer;
+    }
+
+    /* 3D 페이지 전환 모션 인프라 */
+    .page-turn-left { transform: rotateY(-15deg) translateX(-100%); opacity: 0; transition: transform 0.6s ease-in-out, opacity 0.6s; }
+    .page-turn-right { transform: rotateY(15deg) translateX(100%); opacity: 0; transition: transform 0.6s ease-in-out, opacity 0.6s; }
+    .page-active { transform: rotateY(0deg) translateX(0); opacity: 1; transition: transform 0.6s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.6s; }
+  </style>
+</head>
+<body class="desk-marble h-screen w-screen flex items-center justify-center overflow-hidden select-none body-font">
+
+  <div class="w-[98vw] h-[96vh] max-w-[1380px] max-h-[920px] linen-mat rounded-[36px] p-5 relative flex flex-col justify-between">
+    <div class="absolute inset-2.5 linen-stitch rounded-[30px] pointer-events-none opacity-50"></div>
+
+    <div class="w-full bg-[#fdfdfc]/95 backdrop-blur border border-[#eae6db] p-3 rounded-2xl shadow-[0_10px_30px_rgba(140,150,135,0.08)] flex items-center justify-between gap-4 z-50">
+      
+      <div class="flex items-center gap-4">
+        <div class="flex items-center gap-2 pl-1">
+          <span class="brand-font text-[22px] font-bold tracking-[0.05em] text-[#9a7d46]">S-Pen Studio OS</span>
+          <div class="text-[9px] tech-font uppercase tracking-widest text-neutral-400 font-bold bg-[#f4f2eb] px-2 py-0.5 rounded ml-1" id="page-indicator">PAGE 1</div>
+        </div>
+        
+        <div class="flex bg-[#f4f2eb] p-0.5 rounded-xl border border-[#e1ded6]">
+          <button id="mode-view" onclick="setAppMode('view')" class="px-3 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 text-[#6366f1] bg-white border border-[#e0e7ff] shadow-sm">
+            <span class="material-icons-outlined text-[15px]">auto_stories</span>보기 (호버)
+          </button>
+          <button id="mode-edit" onclick="setAppMode('edit')" class="px-3 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 text-neutral-500 hover:text-neutral-800">
+            <span class="material-icons-outlined text-[15px]">draw</span>S펜 틸트 편집
+          </button>
+        </div>
+        <span id="tilt-guide" class="text-[11px] text-[#6366f1] font-medium hidden animate-pulse">💡 S펜을 40° 이상 눕혀 다중 레이어 텍스트를 누르면 즉시 편집기로 진입합니다.</span>
+      </div>
+
+      <div class="flex items-center gap-1 bg-[#f4f2eb] p-0.5 rounded-xl border border-[#e1ded6]">
+        <button onclick="changeTool('fountain')" id="tool-fountain" class="tool-btn px-3 py-1.5 rounded-lg text-xs font-semibold transition-all flex items-center gap-1 text-[#9a7d46] bg-white border border-[#eae3d2] shadow-sm">
+          <span>✒️</span><span>만년필</span>
+        </button>
+        <button onclick="changeTool('pencil')" id="tool-pencil" class="tool-btn px-3 py-1.5 rounded-lg text-xs font-semibold transition-all flex items-center gap-1 text-neutral-500">
+          <span>✏️</span><span>연필</span>
+        </button>
+        <button onclick="changeTool('brush')" id="tool-brush" class="tool-btn px-3 py-1.5 rounded-lg text-xs font-semibold transition-all flex items-center gap-1 text-neutral-500">
+          <span>🖌️</span><span>서예붓</span>
+        </button>
+        <button onclick="changeTool('highlighter')" id="tool-highlighter" class="tool-btn px-3 py-1.5 rounded-lg text-xs font-semibold transition-all flex items-center gap-1 text-neutral-500">
+          <span>🖍️</span><span>형광펜</span>
+        </button>
+      </div>
+
+      <div id="palette" class="flex items-center gap-1 bg-[#f4f2eb] px-2 py-1 rounded-xl border border-[#e1ded6]"></div>
+
+      <div class="flex items-center gap-3 bg-[#f4f2eb] px-3 py-1 rounded-xl border border-[#e1ded6]">
+        <div class="flex flex-col">
+          <span class="text-[8px] uppercase tracking-wider text-neutral-400 font-extrabold leading-none">종이 삼투압</span>
+          <span id="wetness-display" class="text-[10px] font-bold text-[#9a7d46] mt-0.5">0% (건조)</span>
+        </div>
+        <input type="range" id="wetness-slider" min="0" max="100" value="0" oninput="changeWetness(this.value)" class="w-16 cursor-pointer" />
+      </div>
+
+      <div class="flex items-center gap-1 bg-[#f4f2eb] p-0.5 rounded-xl border border-[#e1ded6]">
+        <button onclick="changePaper('lined')" id="paper-lined" class="paper-btn px-2.5 py-1.5 rounded-lg text-xs font-bold text-[#9a7d46] bg-white border border-[#eae3d2] shadow-sm">유선</button>
+        <button onclick="changePaper('grid')" id="paper-grid" class="paper-btn px-2.5 py-1.5 rounded-lg text-xs font-bold text-neutral-500">모눈</button>
+        <button onclick="changePaper('kraft')" id="paper-kraft" class="paper-btn px-2.5 py-1.5 rounded-lg text-xs font-bold text-neutral-500">황포</button>
+        <button onclick="changePaper('plain')" id="paper-plain" class="paper-btn px-2.5 py-1.5 rounded-lg text-xs font-bold text-neutral-500">백지</button>
+      </div>
+
+      <div class="flex items-center gap-1.5">
+        <button onclick="toggleAudio()" id="audio-btn" class="w-8 h-8 flex items-center justify-center rounded-xl bg-white border border-[#eae6db] hover:border-[#c5a059] text-xs transition-all shadow-sm">🔊</button>
+        <button onclick="performUndo()" class="px-2.5 py-1.5 bg-white border border-[#eae6db] text-xs font-medium rounded-lg text-neutral-600 shadow-sm active:scale-95">취소</button>
+        <button onclick="clearCurrentPage()" class="px-2.5 py-1.5 bg-red-50/60 border border-red-100 text-xs font-medium rounded-lg text-red-600 shadow-sm active:scale-95">지우기</button>
+        <button onclick="saveArtwork()" class="px-3 py-1.5 bg-gradient-to-b from-[#f3e5c8] to-[#c5a059] border border-[#b38f46] text-[#4d3319] text-xs font-bold rounded-lg shadow-sm active:scale-95">저장</button>
+      </div>
+    </div>
+
+    <div id="workspace" class="flex-1 w-full flex justify-center items-center py-2 relative">
+      
+      <div id="spen-raytrace-shadow">
+        <div class="shadow-aim-dot"></div>
+        <div class="s24-silhouette-container" id="silhouette-mesh">
+          <div class="s24-nib-core"></div>
+          <div class="s24-nib-cone"></div>
+          <div class="s24-pen-body"></div>
+        </div>
+      </div>
+
+      <div id="notebook-spine" class="w-full h-full max-w-[1140px] paper-shadow rounded-r-[24px] bg-[#fcfaf5] flex relative overflow-hidden transition-all duration-300">
+        
+        <div class="w-11 h-full bg-gradient-to-r from-[#eadecc] to-[#ded0bc] border-r border-[#cbbea8] flex flex-col justify-around py-8 relative z-50 shadow-[4px_0_12px_rgba(0,0,0,0.03)]">
+          <div class="absolute inset-y-0 right-1 w-[1.5px] bg-black/10"></div>
+          <script>
+            for (let i = 0; i < 11; i++) {
+              document.write(`
+                <div class="w-5.5 h-7 bg-[#cbbea8] rounded-full mx-auto relative shadow-[inset_0_2px_4px_rgba(0,0,0,0.15)]">
+                  <div class="absolute top-1/2 -translate-y-1/2 -left-2 w-8.5 h-1.5 bg-gradient-to-b from-[#fff6e3] via-[#dfbf82] to-[#bfa063] rounded-full shadow-[0_4px_6px_rgba(100,80,50,0.2)] transform -rotate-2 border-t border-white/20"></div>
+                </div>
+              `);
+            }
+          </script>
+        </div>
+
+        <div id="paper-viewport" class="flex-1 h-full relative overflow-hidden bg-transparent" style="perspective: 1500px;">
+          <div id="paper-scroller" class="absolute inset-0 bg-transparent origin-center page-active">
+            
+            <div id="paper-surface" class="w-full h-[160%] absolute top-0 left-0 bg-lined transition-all duration-300 shadow-[inset_25px_0_40px_-20px_rgba(0,0,0,0.04)] px-16 py-12">
+              <div class="absolute inset-0 opacity-[0.02] bg-[radial-gradient(#000_1px,transparent_1px)] bg-[size:3px_3px] pointer-events-none"></div>
+
+              <div class="prose max-w-none relative z-0 pointer-events-auto text-neutral-800 leading-relaxed mb-8">
+                <h1 class="text-3xl font-black tracking-tight text-neutral-900 mb-6 body-font">S24 Ultra 하드웨어 레이트레이싱 명세 서치</h1>
+                <p class="body-font text-[14px] mb-4">
+                  디지털 캔버스 융합 아키텍처에서 고정밀 벡터 그래픽을 묘사하기 위해서는 외부 기기의 하드웨어 수치를 반영해야 합니다. 본 제어 장치는 정밀 측정된 
+                  <span class="layer-target" id="node-1">
+                    [S24 Ultra 0.7mm 엘라스토머 메쉬]
+                    <span class="glass-space-container">
+                      <span class="glass-pane p-l1" id="node-1-l1"><span class="pane-badge">1층 원문</span>[S24 Ultra 0.7mm 엘라스토머 메쉬]</span>
+                      <span class="glass-pane p-l2" id="node-1-l2"><span class="pane-badge">2층 주석</span>직경 0.7mm 플라스틱 단면 하우징 데이터 일치화 구현</span>
+                      <span class="glass-pane p-l3" id="node-1-l3"><span class="pane-badge">3층 분석</span>호버링 Z축 깊이 센싱에 따른 투영 행렬 변환 엔진 결합</span>
+                    </span>
+                  </span>를 토대로 광학 흐림 쉐이더의 입체 인터페이스적 가치를 증명합니다.
+                </p>
+                <p class="body-font text-[14px]">
+                  사용자는 입력 도구를 스마트 디바이스 표면에 밀착시키는 행위만으로 가상 공간의 데이터 중첩층을 완전히 분리해 낼 수 있습니다. 
+                  <span class="layer-target" id="node-2">
+                    [유리 복층 스페이스 (GlassSpace)]
+                    <span class="glass-space-container">
+                      <span class="glass-pane p-l1" id="node-2-l1"><span class="pane-badge">1층 원문</span>[유리 복층 스페이스 (GlassSpace)]</span>
+                      <span class="glass-pane p-l2" id="node-2-l2"><span class="pane-badge">2층 주석</span>고도 반경 100px 스캔 연산 락온 연출 스위칭</span>
+                      <span class="glass-pane p-l3" id="node-2-l3"><span class="pane-badge">3층 제어</span>기울기 임계치 40도 도달 시 인라인 컨텍스트 편집 모달 동기화</span>
+                    </span>
+                  </span>는 단순한 평면 노트를 넘어 3D 입체 투영 컴퓨팅의 새로운 패러다임을 제안합니다.
+                </p>
+              </div>
+
+              <canvas id="mainCanvas" class="absolute inset-0 z-10 pointer-events-none"></canvas>
+              <canvas id="activeCanvas" class="absolute inset-0 z-20 pointer-events-none"></canvas>
+              <canvas id="shadowCanvas" class="absolute inset-0 z-30 pointer-events-none"></canvas>
+
+              <div id="sensorShield" class="absolute inset-0 z-40 cursor-none" style="touch-action: none;"></div>
+
+              <div id="aimingReticle" class="absolute z-50 pointer-events-none rounded-full border border-[#9a7d46] bg-[#dfbf82]/10 hidden" style="transform: translate(-50%, -50%); box-shadow: 0 0 6px rgba(154,125,70,0.3);"></div>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="w-full bg-[#fdfdfc]/95 border border-[#eae6db] px-5 py-2.5 rounded-xl flex justify-between items-center text-[11px] text-neutral-500 tech-font shadow-sm z-50">
+      <div class="flex items-center gap-5">
+        <div class="flex items-center gap-1.5">
+          <span class="w-2 h-2 rounded-full bg-[#c5a059] animate-pulse"></span>
+          <span class="font-medium text-neutral-600">S-Pen Intelligent Core v4.0 Active</span>
+        </div>
+        <div class="h-3 w-[1px] bg-neutral-300"></div>
+        <div>좌표: <strong id="telemetry-coord" class="text-neutral-800 font-mono">0, 0</strong></div>
+        <div>필압: <strong id="telemetry-pressure" class="text-neutral-800 font-mono">0.00</strong></div>
+        <div>기울기(Tilt): <strong id="telemetry-tilt" class="text-neutral-800 font-mono">0°</strong></div>
+        <div>가상 고도: <strong id="telemetry-height" class="text-neutral-[#6366f1] font-mono">18.0 mm</strong></div>
+      </div>
+      
+      <div class="flex items-center gap-3">
+        <span class="text-[10px] text-neutral-400">마우스 환경: 문서 위에서 휠 스크롤 조작으로 가상 고도(Z축) 제어</span>
+        <input type="range" id="sim-z" min="1" max="30" value="18" class="w-24" />
+      </div>
+    </div>
+
+  </div>
+
+  <div id="quick-modal" class="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 scale-90 w-[420px] bg-white border border-[#eae6db] rounded-2xl p-5 shadow-[0_25px_60px_rgba(0,0,0,0.15)] z-[1000] opacity-0 pointer-events-none transition-all duration-300">
+    <div class="flex items-center gap-2 mb-1">
+      <span class="material-icons-outlined text-[#6366f1]">draw</span>
+      <h3 class="text-sm font-bold text-neutral-900 body-font">S-Pen Genuine 퀵 레이어 편집기</h3>
+    </div>
+    <p class="text-[11px] text-neutral-400 mb-3">선택한 다중 가상 레이어의 텍스트 원천 코드를 동시 동기화합니다.</p>
+    <textarea id="quick-textarea" class="w-full h-28 p-3 border border-neutral-200 rounded-xl text-xs font-mono outline-none focus:border-[#6366f1] resize-none mb-3 bg-[#fafbfa]"></textarea>
+    <div class="flex justify-end gap-2 text-xs">
+      <button onclick="closeQuickModal()" class="px-3 py-2 bg-neutral-100 rounded-lg text-neutral-600 font-medium">취소</button>
+      <button onclick="saveQuickModal()" class="px-3 py-2 bg-[#6366f1] text-white rounded-lg font-bold shadow-sm">적용 및 동기화</button>
+    </div>
+  </div>
+
+  <script>
+    const TOOLS = {
+      fountain: { sizes: [2.5, 4, 7, 10], defaultSize: 4, baseColor: '#1a237e' },
+      pencil: { sizes: [1.5, 2.5, 4, 6], defaultSize: 2.5, baseColor: '#4f4f4f' },
+      brush: { sizes: [4, 10, 20, 32], defaultSize: 10, baseColor: '#111111' },
+      highlighter: { sizes: [16, 24, 32, 42], defaultSize: 24, baseColor: '#ffeb3b' }
+    };
+
+    const COLORS = [
+      { hex: '#111111', name: '먹색' },
+      { hex: '#1a237e', name: '청람색' },
+      { hex: '#b71c1c', name: '진자색' },
+      { hex: '#1b5e20', name: '죽록색' },
+      { hex: '#ffeb3b', name: '황형광', only: 'highlighter' },
+      { hex: '#ff4081', name: '도형광', only: 'highlighter' }
+    ];
+
+    let currentPage = 1, maxPages = 3;
+    const pageStrokes = { 1: [], 2: [], 3: [] };
+
+    let appMode = 'view'; // view: 호버 공간 탐색, edit: 틸트 제스처 제어
+    let activeTool = 'fountain';
+    let inkColor = '#1a237e';
+    let brushSize = 4;
+    let paperType = 'lined';
+    let soundEnabled = true;
+    let paperWetness = 0;
+
+    let activeStroke = null;
+    let isPenDrawing = false;
+    let lastPenX = 0, lastPenY = 0;
+
+    // 통합 통합 포인터 원천 텔레메트리 매트릭스
+    const pointerState = {
+      x: 0, y: 0, clientX: 0, clientY: 0,
+      tiltX: 0, tiltY: 0, totalTilt: 0,
+      pressure: 0, zHeight: 18,
+      pointerType: 'mouse', active: false, isHovering: true
+    };
+
+    let scrollY = 0, maxScrollY = 0;
+    let audioCtx = null, soundNode = null;
+
+    // DOM 캐싱
+    const mainCanvas = document.getElementById('mainCanvas');
+    const activeCanvas = document.getElementById('activeCanvas');
+    const shadowCanvas = document.getElementById('shadowCanvas');
+    const shield = document.getElementById('sensorShield');
+    const reticle = document.getElementById('aimingReticle');
+    const scroller = document.getElementById('paper-scroller');
+    const viewport = document.getElementById('paper-viewport');
+    const surface = document.getElementById('paper-surface');
+    const simZ = document.getElementById('sim-z');
+    const sShadow = document.getElementById('spen-raytrace-shadow');
+    const sMesh = document.getElementById('silhouette-mesh');
+    const qModal = document.getElementById('quick-modal');
+    const qTextarea = document.getElementById('quick-textarea');
+    let currentActiveNodeId = null;
+
+    window.onload = function() {
+      setupPaletteUI();
+      resizePaperEngine();
+      window.addEventListener('resize', resizePaperEngine);
+      setupSensors();
+      
+      // 60FPS 하드웨어 레이트레이싱 루프 구동
+      requestAnimationFrame(raytraceRenderLoop);
+    };
+
+    function setAppMode(mode) {
+      appMode = mode;
+      document.getElementById('mode-view').className = mode === 'view' ? 'px-3 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 text-[#6366f1] bg-white border border-[#e0e7ff] shadow-sm' : 'px-3 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 text-neutral-500 hover:text-neutral-800';
+      document.getElementById('mode-edit').className = mode === 'edit' ? 'px-3 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 text-[#6366f1] bg-white border border-[#e0e7ff] shadow-sm' : 'px-3 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 text-neutral-500 hover:text-neutral-800';
+      document.getElementById('tilt-guide').style.display = mode === 'edit' ? 'inline' : 'none';
+      if (mode === 'edit') closeAllGlassSpaces();
+    }
+
+    function resizePaperEngine() {
+      if (!viewport || !surface) return;
+      const rect = viewport.getBoundingClientRect();
+      const dpr = window.devicePixelRatio || 1;
+      const w = rect.width, h = rect.height * 1.6;
+      
+      maxScrollY = -(h - rect.height);
+      surface.style.height = `${h}px`;
+
+      [mainCanvas, activeCanvas, shadowCanvas].forEach(cvs => {
+        if (cvs) {
+          cvs.width = w * dpr; cvs.height = h * dpr;
+          cvs.style.width = `${w}px`; cvs.style.height = `${h}px`;
+          cvs.getContext('2d').scale(dpr, dpr);
+        }
+      });
+      redrawCanvasData();
+    }
+
+    function setupPaletteUI() {
+      const container = document.getElementById('palette');
+      container.innerHTML = '';
+      const list = COLORS.filter(c => !c.only || c.only === activeTool);
+      if (!list.some(c => c.hex === inkColor)) inkColor = list[0].hex;
+
+      list.forEach(color => {
+        const active = inkColor === color.hex;
+        const btn = document.createElement('button');
+        btn.className = `w-5.5 h-5.5 rounded-full border transition-all transform hover:scale-110 ${active ? 'border-[#9a7d46] scale-115 ring-2 ring-[#eaddc3]' : 'border-neutral-300'}`;
+        btn.style.backgroundColor = color.hex;
+        btn.onclick = () => { inkColor = color.hex; setupPaletteUI(); };
+        container.appendChild(btn);
+      });
+    }
+
+    function changeTool(toolId) {
+      activeTool = toolId;
+      document.querySelectorAll('.tool-btn').forEach(b => b.className = "tool-btn px-3 py-1.5 rounded-lg text-xs font-semibold transition-all flex items-center gap-1 text-neutral-500");
+      document.getElementById(`tool-${toolId}`).className = "tool-btn px-3 py-1.5 rounded-lg text-xs font-semibold transition-all flex items-center gap-1 text-[#9a7d46] bg-white border border-[#eae3d2] shadow-sm";
+      brushSize = TOOLS[toolId].defaultSize;
+      setupPaletteUI();
+    }
+
+    function changePaper(paperId) {
+      paperType = paperId;
+      document.querySelectorAll('.paper-btn').forEach(b => b.className = "paper-btn px-2.5 py-1.5 rounded-lg text-xs font-bold text-neutral-500");
+      document.getElementById(`paper-${paperId}`).className = "paper-btn px-2.5 py-1.5 rounded-lg text-xs font-bold text-[#9a7d46] bg-white border border-[#eae3d2] shadow-sm";
+      surface.className = `w-full h-[160%] absolute top-0 left-0 bg-${paperId} transition-all duration-300 shadow-[inset_25px_0_40px_-20px_rgba(0,0,0,0.04)] px-16 py-12`;
+    }
+
+    function changeWetness(val) {
+      paperWetness = Number(val);
+      document.getElementById('wetness-display').innerText = `${val}% ${val > 50 ? '(흠뻑)' : val > 0 ? '(촉촉)' : '(건조)'}`;
+    }
+
+    // 🌟 S24 Ultra 정밀 가상 3D 섀도 투영 및 GlassSpace 인터랙션 결합 처리 센서단
+    function setupSensors() {
+      shield.addEventListener('pointerdown', (e) => {
+        initAudioContext();
+        const rect = shield.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top - scrollY;
+
+        if (appMode === 'edit') return; // 편집 기능 전용 바인딩 제어
+
+        isPenDrawing = true;
+        pointerState.active = true;
+        pointerState.pointerType = e.pointerType;
+        pointerState.pressure = e.pressure || 0.5;
+        pointerState.zHeight = 0;
+        pointerState.isHovering = false;
+
+        lastPenX = x; lastPenY = y;
+        activeStroke = {
+          tool: activeTool, color: inkColor, size: brushSize, wetness: paperWetness,
+          points: [{ x, y, pressure: pointerState.pressure, tiltX: e.tiltX||0, tiltY: e.tiltY||0 }]
+        };
+        playMrictionSound(pointerState.pressure, 1.0);
+      });
+
+      shield.addEventListener('pointermove', (e) => {
+        const rect = shield.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top - scrollY;
+
+        pointerState.clientX = e.clientX;
+        pointerState.clientY = e.clientY;
+        pointerState.x = x;
+        pointerState.y = y;
+        pointerState.pointerType = e.pointerType;
+        pointerState.tiltX = e.tiltX || 0;
+        pointerState.tiltY = e.tiltY || 0;
+        pointerState.totalTilt = Math.round(Math.hypot(e.tiltX || 0, e.tiltY || 0));
+
+        // 하드웨어 S펜 연동 오프셋 계산 부속
+        if (e.pointerType === 'pen') {
+          pointerState.zHeight = e.buttons === 0 ? 5 + (Math.abs(e.tiltX || 0) / 5) : 0;
+          simZ.value = pointerState.zHeight;
+        } else {
+          pointerState.zHeight = parseFloat(simZ.value);
+        }
+
+        if (isPenDrawing && activeStroke && appMode === 'view') {
+          const pr = e.pressure || 0.5;
+          pointerState.pressure = pr;
+          pointerState.isHovering = false;
+          activeStroke.points.push({ x, y, pressure: pr, tiltX: pointerState.tiltX, tiltY: pointerState.tiltY });
+          
+          const actCtx = activeCanvas.getContext('2d');
+          actCtx.clearRect(0, 0, activeCanvas.width, activeCanvas.height);
+          drawStrokePath(actCtx, activeStroke);
+          playMrictionSound(pr, Math.hypot(x - lastPenX, y - lastPenY));
+        } else {
+          pointerState.pressure = 0;
+          pointerState.isHovering = true;
+          stopMrictionSound();
+        }
+
+        lastPenX = x; lastPenY = y;
+        updateTelemetryView();
+        processGlassSpaceCore(pointerState.zHeight, e.clientX, e.clientY);
+      });
+
+      shield.addEventListener('pointerup', () => { finalizeStroke(); });
+      shield.addEventListener('pointerleave', () => { pointerState.active = false; finalizeStroke(); });
+
+      // 가상 조준 및 고도 마우스 휠 바인딩
+      shield.addEventListener('wheel', (e) => {
+        if (appMode === 'edit') return;
+        e.preventDefault();
+        let delta = e.deltaY > 0 ? 1.5 : -1.5;
+        let nextZ = Math.min(Math.max(parseFloat(simZ.value) + delta, 1), 30);
+        simZ.value = nextZ; pointerState.zHeight = nextZ;
+        processGlassSpaceCore(nextZ, pointerState.clientX, pointerState.clientY);
+      }, { passive: false });
+
+      simZ.addEventListener('input', (e) => {
+        pointerState.zHeight = parseFloat(e.target.value);
+        processGlassSpaceCore(pointerState.zHeight, pointerState.clientX, pointerState.clientY);
+      });
+    }
+
+    function finalizeStroke() {
+      if (isPenDrawing && activeStroke) {
+        pageStrokes[currentPage].push(activeStroke);
+        activeCanvas.getContext('2d').clearRect(0, 0, activeCanvas.width, activeCanvas.height);
+        applyInkDiffusion(activeStroke);
+        activeStroke = null;
+      }
+      isPenDrawing = false;
+      stopMrictionSound();
+      updateTelemetryView();
+    }
+
+    // 삼투압 물 번짐 기하학 렌더러
+    function applyInkDiffusion(stroke) {
+      const ctx = mainCanvas.getContext('2d');
+      if (stroke.wetness === 0) {
+        drawStrokePath(ctx, stroke);
+        return;
+      }
+      let step = 0, total = 12;
+      const bleedRadius = stroke.wetness * 0.12;
+      function diffusionLoop() {
+        if (step >= total) return;
+        step++;
+        ctx.save();
+        ctx.shadowColor = stroke.color;
+        ctx.shadowBlur = (step / total) * bleedRadius;
+        drawStrokePath(ctx, stroke, 0.4 - (step / total) * 0.3);
+        ctx.restore();
+        if (step === total) drawStrokePath(ctx, stroke, 0.95);
+        else requestAnimationFrame(diffusionLoop);
+      }
+      diffusionLoop();
+    }
+
+    // 미드포인트 보강 벡터 드로잉 코어
+    function drawStrokePath(ctx, stroke, opacityOverride = null) {
+      if (!ctx || stroke.points.length < 1) return;
+      ctx.save();
+      
+      if (stroke.tool === 'highlighter') {
+        ctx.globalCompositeOperation = 'multiply'; ctx.lineCap = 'square'; ctx.globalAlpha = opacityOverride || 0.35;
+      } else {
+        ctx.lineCap = 'round'; ctx.lineJoin = 'round'; ctx.globalAlpha = opacityOverride || 1.0;
+      }
+      ctx.strokeStyle = stroke.color;
+
+      if (stroke.points.length === 1) {
+        const p = stroke.points[0];
+        ctx.fillStyle = stroke.color; ctx.beginPath(); ctx.arc(p.x, p.y, stroke.size*0.5, 0, Math.PI*2); ctx.fill();
+        ctx.restore(); return;
+      }
+
+      ctx.beginPath();
+      let p1 = stroke.points[0], p2 = stroke.points[1];
+      ctx.moveTo(p1.x, p1.y);
+
+      for (let i = 1; i < stroke.points.length - 1; i++) {
+        const midX = (p1.x + p2.x) / 2, midY = (p1.y + p2.y) / 2;
+        let currentSize = stroke.size;
+        if (stroke.tool === 'fountain') currentSize = stroke.size * (0.4 + p2.pressure * 1.3);
+        else if (stroke.tool === 'brush') currentSize = stroke.size * (0.2 + p2.pressure * 1.6) * (1 + Math.hypot(p2.tiltX, p2.tiltY)/90);
+
+        ctx.lineWidth = currentSize;
+        ctx.quadraticCurveTo(p1.x, p1.y, midX, midY);
+        ctx.stroke(); ctx.beginPath(); ctx.moveTo(midX, midY);
+        p1 = stroke.points[i]; p2 = stroke.points[i+1];
+      }
+      ctx.lineWidth = stroke.size; ctx.lineTo(p2.x, p2.y); ctx.stroke();
+      ctx.restore();
+    }
+
+    // 🌟 60FPS 모니터 동기 초정밀 3D 그림자 투영 알고리즘
+    function raytraceRenderLoop() {
+      if (pointerState.pointerType === 'mouse' && pointerState.x === 0) {
+        sShadow.style.opacity = "0"; reticle.style.display = 'none';
+      } else {
+        sShadow.style.opacity = "1";
+        sShadow.style.left = `${pointerState.clientX}px`;
+        sShadow.style.top = `${pointerState.clientY}px`;
+
+        let shadowAngle = Math.atan2(pointerState.tiltY, pointerState.tiltX) * (180 / Math.PI) - 90;
+        if (pointerState.tiltX === 0 && pointerState.tiltY === 0) shadowAngle = -45;
+
+        let shadowOffsetX = (pointerState.tiltX / 90) * pointerState.zHeight * 2.5;
+        let shadowOffsetY = (pointerState.tiltY / 90) * pointerState.zHeight * 2.5 + (pointerState.zHeight * 0.4);
+        let blurRadius = 1.0 + (pointerState.zHeight * 0.4);
+        let scaleX = 1 + (pointerState.zHeight * 0.012);
+        let scaleY = 1 + (pointerState.zHeight * 0.015) + (pointerState.totalTilt * 0.008);
+
+        // 고도별 색조 스펙트럼 인젝션
+        let meshColor = 'rgba(18, 20, 24, 0.3)';
+        if (pointerState.zHeight <= 14 && pointerState.zHeight > 5) meshColor = 'rgba(59, 130, 246, 0.35)';
+        else if (pointerState.zHeight <= 5) meshColor = 'rgba(168, 85, 247, 0.45)';
+
+        sMesh.style.filter = `blur(${blurRadius}px)`;
+        sMesh.style.transform = `translate(${shadowOffsetX}px, ${shadowOffsetY}px) rotate(${shadowAngle}deg) scale(${scaleX}, ${scaleY})`;
+        sMesh.querySelectorAll('div').forEach(p => p.style.background = meshColor);
+
+        // 가상 십자 레티클 조준경 동기화
+        if (pointerState.isHovering) {
+          reticle.style.left = `${pointerState.x}px`; reticle.style.top = `${pointerState.y}px`;
+          reticle.style.width = `${Math.max(6, brushSize)}px`; reticle.style.height = `${Math.max(6, brushSize)}px`;
+          reticle.style.display = 'block';
+        } else { reticle.style.display = 'none'; }
+      }
+      requestAnimationFrame(raytraceRenderLoop);
+    }
+
+    // 유리 복층 스페이스 가상 Z축 분리 알고리즘
+    function processGlassSpaceCore(z, pX, pY) {
+      document.querySelectorAll('.layer-target').forEach(node => {
+        const rect = node.getBoundingClientRect();
+        const nX = rect.left + rect.width / 2, nY = rect.top + rect.height / 2;
+        const dist = Math.hypot(pX - nX, pY - nY);
+        const container = node.querySelector('.glass-space-container');
+        if (!container) return;
+        const p1 = container.querySelector('.p-l1'), p2 = container.querySelector('.p-l2'), p3 = container.querySelector('.p-l3');
+
+        if (dist < 110 && appMode === 'view') {
+          container.classList.add('active');
+          if (z > 14) {
+            p1.style.transform = "translateZ(0px) scale(1)"; p2.style.transform = "translateZ(-45px) scale(0.9) translateY(-10px)"; p3.style.transform = "translateZ(-90px) scale(0.8) translateY(-20px)";
+            p1.style.opacity = "1"; p2.style.opacity = "0.2"; p3.style.opacity = "0.05";
+            p1.style.filter = "none"; p2.style.filter = "blur(1.5px)"; p3.style.filter = "blur(4px)";
+          } else if (z > 5 && z <= 14) {
+            p1.style.transform = "translateZ(-35px) scale(0.92) translateY(10px)"; p2.style.transform = "translateZ(50px) scale(1.05) translateY(0px)"; p3.style.transform = "translateZ(-45px) scale(0.9) translateY(-10px)";
+            p1.style.opacity = "0.3"; p2.style.opacity = "1"; p3.style.opacity = "0.2";
+            p1.style.filter = "blur(1px)"; p2.style.filter = "drop-shadow(0 0 15px rgba(59,130,246,0.5))"; p3.style.filter = "blur(2px)";
+          } else {
+            p1.style.transform = "translateZ(-70px) scale(0.86) translateY(20px)"; p2.style.transform = "translateZ(-35px) scale(0.92) translateY(10px)"; p3.style.transform = "translateZ(80px) scale(1.1) translateY(0px)";
+            p1.style.opacity = "0.05"; p2.style.opacity = "0.3"; p3.style.opacity = "1";
+            p1.style.filter = "blur(3px)"; p2.style.filter = "blur(1px)"; p3.style.filter = "drop-shadow(0 0 20px rgba(168,85,247,0.6))";
+          }
+        } else { container.classList.remove('active'); }
+      });
+    }
+
+    // 🌟 S펜 틸트 각도 감지 인라인 기획 수정 기능 (App 1 융합)
+    document.querySelectorAll('.layer-target').forEach(node => {
+      node.addEventListener('pointerdown', (e) => {
+        if (appMode !== 'edit') return;
+        if (pointerState.totalTilt >= 40 || e.pointerType === 'mouse') {
+          e.preventDefault(); e.stopPropagation();
+          currentActiveNodeId = node.id;
+          const l2Text = document.getElementById(`${node.id}-l2`).innerText.replace('2층 주석', '');
+          const l3Text = document.getElementById(`${node.id}-l3`).innerText.replace('3층 분석', '');
+          qTextarea.value = `[2층 데이터]${l2Text}\n\n[3층 데이터]${l3Text}`;
+          qModal.style.opacity = "1"; qModal.style.pointerEvents = "auto"; qModal.style.transform = "text-center scale(1)";
+        }
+      });
+    });
+
+    function closeQuickModal() { qModal.style.opacity = "0"; qModal.style.pointerEvents = "none"; qModal.style.transform = "text-center scale(0.9)"; currentActiveNodeId = null; }
+    function saveQuickModal() {
+      if (!currentActiveNodeId) return;
+      const sections = qTextarea.value.split('\n\n');
+      if (sections[0]) document.getElementById(`${currentActiveNodeId}-l2`).innerHTML = `<span class="pane-badge" style="background:#3b82f6;">2층 주석</span>` + sections[0].replace('[2층 데이터]', '');
+      if (sections[1]) document.getElementById(`${currentActiveNodeId}-l3`).innerHTML = `<span class="pane-badge" style="background:#a855f7;">3층 분석</span>` + sections[1].replace('[3층 데이터]', '');
+      closeQuickModal();
+    }
+    function closeAllGlassSpaces() { document.querySelectorAll('.glass-space-container').forEach(c => c.classList.remove('active')); }
+
+    function redrawCanvasData() {
+      if (!mainCanvas) return;
+      const ctx = mainCanvas.getContext('2d');
+      ctx.clearRect(0, 0, mainCanvas.width, mainCanvas.height);
+      pageStrokes[currentPage].forEach(stk => drawStrokePath(ctx, stk));
+    }
+
+    function updateTelemetryView() {
+      document.getElementById('telemetry-coord').innerText = `${Math.round(pointerState.x)}, ${Math.round(pointerState.y)}`;
+      document.getElementById('telemetry-pressure').innerText = pointerState.pressure.toFixed(2);
+      document.getElementById('telemetry-tilt').innerText = pointerState.totalTilt + "°";
+      document.getElementById('telemetry-height').innerText = pointerState.zHeight.toFixed(1) + " mm";
+    }
+
+    // Web Audio 물리 마찰 서스테인 합성 엔진 (App 2 시스템)
+    function initAudioContext() { if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)(); }
+    function playMrictionSound(press, speed) {
+      if (!soundEnabled || !audioCtx) return;
+      try {
+        if (audioCtx.state === 'suspended') audioCtx.resume();
+        if (!soundNode) {
+          const ctx = audioCtx; const bufferSize = ctx.sampleRate * 2;
+          const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+          const data = buffer.getChannelData(0);
+          for (let i = 0; i < bufferSize; i++) data[i] = Math.random() * 2 - 1;
+
+          const source = ctx.createBufferSource(); source.buffer = buffer; source.loop = true;
+          const filter = ctx.createBiquadFilter(); const gainNode = ctx.createGain();
+
+          if (activeTool === 'pencil') { filter.type = 'bandpass'; filter.frequency.setValueAtTime(2200, ctx.currentTime); filter.Q.setValueAtTime(4.0, ctx.currentTime); }
+          else if (activeTool === 'fountain') { filter.type = 'bandpass'; filter.frequency.setValueAtTime(1500, ctx.currentTime); filter.Q.setValueAtTime(2.5, ctx.currentTime); }
+          else { filter.type = 'lowpass'; filter.frequency.setValueAtTime(500, ctx.currentTime); }
+
+          source.connect(filter); filter.connect(gainNode); gainNode.connect(ctx.destination); source.start();
+          soundNode = { source, filter, gainNode };
+        }
+        const { filter, gainNode } = soundNode;
+        const normSpd = Math.min(speed / 12, 1.5);
+        const vol = Math.min((press * 0.1) + (normSpd * 0.06), 0.18);
+        gainNode.gain.setTargetAtTime(vol, audioCtx.currentTime, 0.03);
+      } catch (e) {}
+    }
+    function stopMrictionSound() {
+      if (soundNode) {
+        try {
+          soundNode.gainNode.gain.setTargetAtTime(0, audioCtx.currentTime, 0.05);
+          const src = soundNode.source; setTimeout(() => { try{src.stop();}catch(err){} }, 60);
+        } catch(e){}
+        soundNode = null;
+      }
+    }
+    function toggleAudio() {
+      soundEnabled = !soundEnabled;
+      document.getElementById('audio-btn').innerHTML = soundEnabled ? '🔊' : '🔇';
+    }
+
+    function performUndo() { if(pageStrokes[currentPage].length > 0) { pageStrokes[currentPage].pop(); redrawCanvasData(); } }
+    function clearCurrentPage() { pageStrokes[currentPage] = []; redrawCanvasData(); }
+
+    function saveArtwork() {
+      const exportCanvas = document.createElement('canvas');
+      exportCanvas.width = mainCanvas.width; exportCanvas.height = mainCanvas.height;
+      const ctx = exportCanvas.getContext('2d');
+      const dpr = window.devicePixelRatio || 1;
+
+      if (paperType === 'kraft') ctx.fillStyle = '#e5ccac';
+      else if (paperType === 'grid') ctx.fillStyle = '#fafbf9';
+      else if (paperType === 'plain') ctx.fillStyle = '#fefefe';
+      else ctx.fillStyle = '#fdfbf7';
+      ctx.fillRect(0, 0, exportCanvas.width, exportCanvas.height);
+      ctx.drawImage(mainCanvas, 0, 0);
+
+      const link = document.createElement('a');
+      link.download = `Spen_Raytrace_Studio_Page_${currentPage}.png`;
+      link.href = exportCanvas.toDataURL('image/png'); link.click();
+    }
+  </script>
+</body>
+</html>
