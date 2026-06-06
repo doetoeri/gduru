@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Material You 플래너</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet">
+    
+    <style>
+        /* Material You 테마 변수 설정 (토널 팔레트 기반) */
+        :root {
+            --md-sys-color-background: #fef7ff;
+            --md-sys-color-surface: #f7f2fa;
+            --md-sys-color-surface-variant: #e7e0ec;
+            --md-sys-color-primary: #6750a4;
+            --md-sys-color-on-primary: #ffffff;
+            --md-sys-color-on-surface: #1d1b20;
+            --md-sys-color-outline: #79747e;
+            
+            /* 과제별 Material You 스타일의 부드러운 배경색 */
+            --color-red-container: #ffdad9;
+            --color-red-on-container: #410002;
+            --color-yellow-container: #ffe088;
+            --color-yellow-on-container: #241a00;
+            --color-blue-container: #dce2ff;
+            --color-blue-on-container: #001543;
+        }
+
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+            background-color: var(--md-sys-color-background);
+            color: var(--md-sys-color-on-surface);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        /* 메인 카드 컨테이너 */
+        .planner-card {
+            background-color: var(--md-sys-color-surface);
+            border-radius: 28px; /* Material 3의 특징인 큰 라운드 */
+            padding: 24px;
+            width: 100%;
+            max-width: 360px;
+            box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.05);
+        }
+
+        /* 상단 요일 헤더 */
+        .day-header {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 16px;
+            color: var(--md-sys-color-primary);
+            padding-left: 4px;
+        }
+
+        /* 학원 일정 섹션 */
+        .schedule-section {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 28px;
+        }
+
+        .schedule-item {
+            background-color: var(--md-sys-color-surface-variant);
+            padding: 16px;
+            border-radius: 16px;
+        }
+
+        .schedule-time {
+            font-size: 13px;
+            color: var(--md-sys-color-outline);
+            margin-bottom: 4px;
+            font-weight: 500;
+        }
+
+        .schedule-title {
+            font-size: 16px;
+            font-weight: 700;
+        }
+
+        /* 구분선 */
+        .divider {
+            height: 1px;
+            background-color: var(--md-sys-color-surface-variant);
+            margin: 20px 0;
+            border: none;
+        }
+
+        /* 오늘의 과제 섹션 */
+        .tasks-section-title {
+            font-size: 18px;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 16px;
+            color: var(--md-sys-color-on-surface);
+        }
+
+        .tasks-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        /* 과제 아이템 공통 스타일 */
+        .task-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px;
+            border-radius: 16px;
+            cursor: pointer;
+            transition: transform 0.2s ease, opacity 0.2s ease;
+            user-select: none;
+        }
+
+        .task-item:active {
+            transform: scale(0.98);
+        }
+
+        .task-content {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .task-title {
+            font-size: 15px;
+            font-weight: 700;
+        }
+
+        .task-sub {
+            font-size: 13px;
+            opacity: 0.8;
+        }
+
+        /* 체크박스 아이콘 무드 */
+        .checkbox-icon {
+            font-family: 'Material Icons Outlined';
+            font-size: 24px;
+            transition: color 0.2s ease;
+        }
+
+        /* 과제별 개별 색상 지정 (Material You 컬러 매칭) */
+        .task-red {
+            background-color: var(--color-red-container);
+            color: var(--color-red-on-container);
+        }
+        .task-yellow {
+            background-color: var(--color-yellow-container);
+            color: var(--color-yellow-on-container);
+        }
+        .task-blue {
+            background-color: var(--color-blue-container);
+            color: var(--color-blue-on-container);
+        }
+
+        /* 체크 완료 상태 스타일 */
+        .task-item.completed {
+            opacity: 0.5;
+        }
+        .task-item.completed .task-title,
+        .task-item.completed .task-sub {
+            text-decoration: line-through;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="planner-card">
+        <div class="day-header">토요일</div>
+
+        <div class="schedule-section">
+            <div class="schedule-item">
+                <div class="schedule-time">14:30 ~ 17:30</div>
+                <div class="schedule-title">국어 학원</div>
+            </div>
+            <div class="schedule-item">
+                <div class="schedule-time">18:00 ~ 21:00</div>
+                <div class="schedule-title">영어 학원</div>
+            </div>
+        </div>
+
+        <hr class="divider">
+
+        <div class="tasks-section-title">오늘의 과제</div>
+        
+        <div class="tasks-list">
+            <div class="task-item task-red" onclick="toggleTask(this)">
+                <div class="task-content">
+                    <div class="task-title">이번주에 밀린 것 해결하기</div>
+                </div>
+                <span class="checkbox-icon">check_box_outline_blank</span>
+            </div>
+
+            <div class="task-item task-yellow" onclick="toggleTask(this)">
+                <div class="task-content">
+                    <div class="task-title">모의고사 오답 분석</div>
+                </div>
+                <span class="checkbox-icon">check_box_outline_blank</span>
+            </div>
+
+            <div class="task-item task-blue" onclick="toggleTask(this)">
+                <div class="task-content">
+                    <div class="task-title">수학</div>
+                    <div class="task-sub">여러가지 방정식 ~36번</div>
+                </div>
+                <span class="checkbox-icon">check_box_outline_blank</span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 과제 체크/해제 토글 함수
+        function toggleTask(element) {
+            element.classList.toggle('completed');
+            const icon = element.querySelector('.checkbox-icon');
+            
+            if (element.classList.contains('completed')) {
+                icon.textContent = 'check_box'; // 체크된 아이콘
+            } else {
+                icon.textContent = 'check_box_outline_blank'; // 빈 아이콘
+            }
+        }
+    </script>
+</body>
+</html>
