@@ -2,430 +2,212 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>S24 Ultra S-Pen Genuine Shadow GlassSpace</title>
-    
-    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet">
-
+    <title>Galaxy Tab S8 S-Pen Genuine Body Engine</title>
     <style>
         :root {
-            --md-bg: #f6f8fa;
-            --md-surface: #ffffff;
-            --md-on-surface: #1f2328;
-            --md-primary: #6366f1;
-            --md-primary-container: #e0e7ff;
-            --md-border: #d0d7de;
-            --l2-glow: rgba(59, 130, 246, 0.6);
-            --l3-glow: rgba(168, 85, 247, 0.6);
+            --bg-gradient: linear-gradient(135deg, #f5f7fa 0%, #e4e8f0 100%);
+            --apple-blur: blur(25px);
+            --l2-liquid: rgba(43, 114, 241, 0.35);
+            --l3-liquid: rgba(147, 51, 234, 0.35);
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; }
-        body {
-            background-color: var(--md-bg);
-            color: var(--md-on-surface);
-            font-family: 'Space Grotesk', 'Noto Sans KR', sans-serif;
-            display: flex; height: 100vh; overflow: hidden;
+        body { 
+            margin: 0; background: var(--bg-gradient); 
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; 
+            overflow: hidden; height: 100vh;
+            touch-action: none; 
+            -webkit-user-select: none;
+            user-select: none;
+        }
+        
+        #space {
+            width: 100vw; height: 100vh; position: relative;
+            perspective: 2500px; display: flex; justify-content: center; align-items: center;
         }
 
-        #main-frame { flex: 1; display: flex; flex-direction: column; height: 100%; position: relative; }
-
-        /* Top App Bar */
-        #top-bar {
-            height: 64px; background: var(--md-surface);
-            border-bottom: 1px solid var(--md-border);
-            display: flex; align-items: center; padding: 0 20px; gap: 16px; z-index: 10;
-        }
-        .title { font-size: 1.15rem; font-weight: 700; letter-spacing: -0.5px; margin-right: 16px;}
-
-        /* Segmented Control */
-        .segmented { display: flex; border: 1px solid var(--md-border); border-radius: 8px; overflow: hidden; }
-        .seg-btn {
-            border: none; background: transparent; padding: 6px 16px; font-size: 0.85rem;
-            font-weight: 500; cursor: pointer; display: flex; align-items: center; gap: 6px;
-            color: var(--md-on-surface);
-        }
-        .seg-btn.active { background: var(--md-primary-container); color: var(--md-primary); font-weight: 700; }
-
-        /* Workspace */
-        #workspace {
-            flex: 1; padding: 40px 20px; overflow-y: auto;
-            display: flex; justify-content: center; position: relative;
-            perspective: 2000px; /* 3D 오피스 심도 극대화 */
+        /* 스쿼클 리퀴드 레이아웃 */
+        .target {
+            font-size: 1.6rem; font-weight: 700; color: #1d1d1f;
+            position: relative; cursor: pointer; transform-style: preserve-3d;
+            letter-spacing: -0.5px; padding: 10px 20px;
         }
 
-        #editor-sheet {
-            width: 100%; max-width: 800px; min-height: 1000px;
-            background: var(--md-surface); border: 1px solid var(--md-border);
-            border-radius: 16px; padding: 60px 50px; line-height: 2.1; font-size: 1.05rem;
-            outline: none; box-shadow: 0 4px 24px rgba(0,0,0,0.02);
-            position: relative; z-index: 1;
+        .glass-container {
+            position: absolute; top: 140%; left: 50%; transform: translateX(-50%);
+            width: 320px; height: 150px; pointer-events: none; opacity: 0;
+            transform-style: preserve-3d; transition: opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1);
         }
+        .glass-container.active { opacity: 1; }
 
-        #editor-sheet h1 { font-size: 2.2rem; font-weight: 700; margin-bottom: 30px; letter-spacing: -1px; }
-        #editor-sheet p { margin-bottom: 24px; }
-
-        /* 파격적인 다중 레이어: 유리 복층 스페이스 */
-        .layer-target {
-            position: relative; display: inline-block; font-weight: 700;
-            color: var(--md-primary); cursor: pointer; border-bottom: 2px dashed var(--md-primary);
-        }
-
-        .glass-space-container {
-            position: absolute; left: 50%; top: 130%;
-            transform: translateX(-50%); width: 360px; height: 190px;
-            pointer-events: none; z-index: 100; opacity: 0;
-            transform-style: preserve-3d;
-            transition: opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-        .glass-space-container.active { opacity: 1; }
-
-        .glass-pane {
-            position: absolute; width: 100%; height: 50px;
-            background: rgba(255, 255, 255, 0.75);
-            backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+        .glass-layer {
+            position: absolute; width: 100%; padding: 16px 20px;
+            border-radius: 24px; color: #1d1d1f; font-size: 0.9rem; font-weight: 500;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.45) 0%, rgba(255, 255, 255, 0.15) 100%);
+            backdrop-filter: var(--apple-blur); -webkit-backdrop-filter: var(--apple-blur);
             border: 1px solid rgba(255, 255, 255, 0.6);
-            border-radius: 12px; padding: 12px 16px; font-size: 0.85rem;
-            display: flex; align-items: center; gap: 10px;
-            transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s, filter 0.3s;
-        }
-        .glass-pane .pane-badge {
-            font-size: 0.65rem; font-weight: 700; color: #fff;
-            padding: 2px 6px; border-radius: 4px;
+            box-shadow: inset 0 1px 2px rgba(255,255,255,0.8), 0 8px 32px rgba(0, 0, 0, 0.03);
+            transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.4s, filter 0.4s, box-shadow 0.4s;
         }
 
-        .glass-pane.p-l1 { top: 0px; z-index: 3; }
-        .glass-pane.p-l1 .pane-badge { background: var(--md-on-surface); }
-        .glass-pane.p-l2 { top: 65px; z-index: 2; border-left: 4px solid #3b82f6; }
-        .glass-pane.p-l2 .pane-badge { background: #3b82f6; }
-        .glass-pane.p-l3 { top: 130px; z-index: 1; border-left: 4px solid #a855f7; }
-        .glass-pane.p-l3 .pane-badge { background: #a855f7; }
+        .layer-1 { top: 0; z-index: 2; }
+        .layer-2 { top: 75px; z-index: 1; }
 
-        /* 🌟 S24 Ultra S-Pen Genuine 3D Shadow Realizer */
-        #spen-raytrace-shadow {
-            position: absolute; pointer-events: none; z-index: 999; opacity: 0;
-            transform-origin: top left; transition: opacity 0.15s ease;
-        }
-
-        /* 터치 조준점 */
-        .shadow-aim-dot {
-            position: absolute; top: 0; left: 0;
-            width: 3.5px; height: 3.5px; background: #000000;
-            border-radius: 50%; transform: translate(-50%, -50%);
+        /* 탭 S8 절대 좌표 동기화 프레임 */
+        #tabs8-shadow {
+            position: absolute; 
+            top: 0; left: 0;
+            pointer-events: none; 
+            opacity: 0;
+            z-index: 9999;
+            will-change: transform, opacity;
+            transform-style: preserve-3d;
         }
 
-        /* OBJ 데이터 구조 모델링 기반 리얼 실루엣 컨테이너 */
-        .s24-silhouette-container {
-            position: relative;
-            transform-origin: 0px 0px;
-            filter: blur(2px);
-            transition: filter 0.1s, background 0.1s;
+        /* 🌟 탭 S8 전용 S펜 바디 매체 셰이더 */
+        .shadow-mesh {
+            /* 울트라용 사각 펜보다 훨씬 두꺼운 탭 S8 펜 바디 직경비(16px) 반영 */
+            width: 16px; height: 210px;
+            background: rgba(10, 15, 25, 0.28);
+            /* 둥근 연필형 바디 + 완만한 원추형 펜촉 흐름을 완벽히 모사한 7각 구조 메쉬 */
+            clip-path: polygon(50% 0%, 90% 7%, 100% 13%, 100% 100%, 0% 100%, 0% 13%, 10% 7%);
+            /* 실제 연필처럼 둥근 그라데이션 광학 효과를 내기 위해 둥근 테두리 곡률 추가 */
+            border-radius: 0 0 10px 10px;
+            filter: blur(5px);
+            transform-origin: 50% 0%; 
+            will-change: transform, filter, background;
         }
 
-        /* 1단계: 초정밀 0.7mm Elastomer 펜촉 실루엣 */
-        .s24-nib-core {
-            position: absolute; top: 0; left: -1px;
-            width: 2px; height: 6px;
-            background: rgba(0,0,0,0.3);
-            border-radius: 50% 50% 0 0;
+        .shadow-aim {
+            position: absolute; top: 0; left: 0; width: 4px; height: 4px;
+            background: #000000; border-radius: 50%; 
+            transform: translate(-50%, -50%);
         }
-
-        /* 2단계: S24 특유의 각진 플라스틱 콘 구조 가치 매칭 */
-        .s24-nib-cone {
-            position: absolute; top: 6px; left: -4px;
-            width: 8px; height: 16px;
-            background: rgba(0,0,0,0.28);
-            clip-path: polygon(25% 0%, 75% 0%, 100% 100%, 0% 100%);
-        }
-
-        /* 3단계: Ultra 단면 플랫형 사각 바디 쉐이더 */
-        .s24-pen-body {
-            position: absolute; top: 22px; left: -7px;
-            width: 14px; height: 180px;
-            background: rgba(0,0,0,0.24);
-            border-radius: 1px 1px 3px 3px;
-        }
-
-        /* 슬림 대시보드 */
-        #slim-sidebar {
-            width: 240px; background: var(--md-surface);
-            border-left: 1px solid var(--md-border); padding: 24px 16px;
-            display: flex; flex-direction: column; gap: 20px;
-        }
-        .panel-group { display: flex; flex-direction: column; gap: 6px; }
-        .panel-label { font-size: 0.7rem; font-weight: 700; color: var(--md-on-surface); opacity: 0.6; letter-spacing: 0.5px;}
-        .panel-value { 
-            background: var(--md-bg); padding: 10px 12px; border-radius: 8px; 
-            font-size: 0.85rem; font-weight: 600; display: flex; justify-content: space-between;
-        }
-        .panel-value span { color: var(--md-primary); font-weight: 700; }
-        .slider { width: 100%; -webkit-appearance: none; height: 4px; background: var(--md-border); outline: none; border-radius: 2px;}
-        .slider::-webkit-slider-thumb { -webkit-appearance: none; width: 14px; height: 14px; border-radius: 50%; background: var(--md-primary); cursor: pointer; }
-
-        /* 퀵 제스처 에디터 모달 */
-        #quick-modal {
-            position: fixed; left: 50%; top: 50%; transform: translate(-50%, -50%) scale(0.9);
-            width: 400px; background: #fff; border-radius: 16px; padding: 24px;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.15); border: 1px solid var(--md-border);
-            z-index: 1000; opacity: 0; pointer-events: none; transition: all 0.25s ease;
-        }
-        #quick-modal.active { opacity: 1; pointer-events: auto; transform: translate(-50%, -50%) scale(1); }
-        #quick-textarea { width: 100%; height: 100px; padding: 12px; border-radius: 8px; border: 1px solid var(--md-border); outline: none; font-size: 0.95rem; resize: none; margin-bottom: 12px;}
     </style>
 </head>
 <body>
 
-    <div id="main-frame">
-        <div id="top-bar">
-            <span class="title">S-Pen Raytrace OS</span>
-            <div class="segmented">
-                <button id="mode-view" class="seg-btn active" onclick="setAppMode('view')"><span class="material-icons-outlined" style="font-size:16px;">auto_stories</span>보기 모드</button>
-                <button id="mode-edit" class="seg-btn" onclick="setAppMode('edit')"><span class="material-icons-outlined" style="font-size:16px;">draw</span>S펜 틸트 편집</button>
+    <div id="space">
+        <div id="tabs8-shadow">
+            <div class="shadow-aim"></div>
+            <div class="shadow-mesh"></div>
+        </div>
+
+        <span class="target" id="text-node">
+            하드웨어 통합 렌더
+            <div class="glass-container">
+                <div class="glass-layer layer-1">💧 2층 리퀴드 젤: 몽환적 심도 탐색 상태</div>
+                <div class="glass-layer layer-2">✨ 3층 글로스 에센스: 초근접 밀착 인터랙션</div>
             </div>
-            <span id="tilt-guide" style="font-size:0.8rem; color:var(--md-primary); margin-left:12px; display:none; font-weight: 500;">💡 S펜을 40° 이상 크게 기울여 터치하면 3층 복층 주석이 바로 편집됩니다.</span>
-        </div>
-
-        <div id="workspace">
-            <div id="spen-raytrace-shadow">
-                <div class="shadow-aim-dot"></div>
-                <div class="s24-silhouette-container" id="silhouette-mesh">
-                    <div class="s24-nib-core"></div>
-                    <div class="s24-nib-cone"></div>
-                    <div class="s24-pen-body"></div>
-                </div>
-            </div>
-
-            <div id="editor-sheet" spellcheck="false">
-                <h1>S24 Ultra S-Pen 하드웨어 정밀 렌더링 명세</h1>
-                
-                <p>
-                    디지털 캔버스 아키텍처에서 정밀도가 높은 벡터 그림자를 묘사하기 위해서는 외부 입력 단말의 실제 물리 규격을 연산에 반영해야 합니다. 본 시스템은 승인된 <span class="layer-target" id="node-1">
-                        S24 Ultra 0.7mm 펜촉 메쉬 데이터
-                        <span class="glass-space-container">
-                            <span class="glass-pane p-l1"><span class="pane-badge">1층 원문</span>S24 Ultra 0.7mm 펜촉 메쉬 데이터</span>
-                            <span class="glass-pane p-l2"><span class="pane-badge">2층 주석</span>[스펙] 엘라스토머 펜촉 코어 직경 0.7mm 및 바디 사각 하우징 완벽 일치</span>
-                            <span class="glass-pane p-l3"><span class="pane-badge">3층 분석</span>[심화] tilt 센싱값 연동에 따른 실루엣 길이 투영 행렬 변환식 탑재</span>
-                        </span>
-                    </span>를 토대로 광학 쉐이더의 한계를 돌파했습니다.
-                </p>
-                <br>
-                <p>
-                    사용자는 손에 쥔 입력 도구를 스크린 표면에 근접시키는 일련의 동적 움직임만으로, 다중 우주처럼 중첩된 가상 공간의 데이터 층을 시각적으로 완전히 분리해 낼 수 있습니다. <span class="layer-target" id="node-2">
-                        유리 복층 스페이스 (GlassSpace)
-                        <span class="glass-space-container">
-                            <span class="glass-pane p-l1"><span class="pane-badge">1층 원문</span>유리 복층 스페이스 (GlassSpace)</span>
-                            <span class="glass-pane p-l2"><span class="pane-badge">2층 주석</span>[인터랙션] 반경 100px 락온 스캔 시 레이어의 고도 역전 현상 연출</span>
-                            <span class="glass-pane p-l3"><span class="pane-badge">3층 제어</span>[제스처] 틸트 임계 각도 40° 충족 시 인라인 텍스트 동기화 모달 렌더</span>
-                        </span>
-                    </span>는 단순한 평면 출력을 넘어, 깊이감에 따른 광학 흐림(Blur) 및 고유의 스펙트럼 색조 변환을 제공하는 새로운 터치 컴퓨팅 인터페이스의 이정표입니다.
-                </p>
-            </div>
-        </div>
-    </div>
-
-    <div id="slim-sidebar">
-        <div class="panel-group">
-            <div class="panel-label">POINTER TELEMETRY</div>
-            <div class="panel-value">S펜 고도 <span id="lbl-z">18.0 mm</span></div>
-            <div class="panel-value">S펜 틸트각 <span id="lbl-tilt">0°</span></div>
-        </div>
-        
-        <div class="panel-group" style="margin-top: auto;">
-            <div class="panel-label">VIRTUAL HOVERING (MOUSE)</div>
-            <p style="font-size:0.75rem; color:gray; line-height:1.4;">마우스 환경은 문서 구역 위에서 <strong>휠(Wheel)</strong>을 조작해 가상 고도를 제어하세요.</p>
-            <input type="range" id="sim-z" class="slider" min="1" max="30" value="18">
-        </div>
-    </div>
-
-    <div id="quick-modal">
-        <h3><span class="material-icons-outlined" style="color:var(--md-primary)">draw</span> S-Pen Genuine 퀵 레이어 편집</h3>
-        <p style="font-size:0.75rem; color:gray; margin-bottom:12px;">선택한 인라인 다중 레이어 노드의 텍스트 코어 데이터를 실시간 수정합니다.</p>
-        <textarea id="quick-textarea"></textarea>
-        <div style="display:flex; gap:8px; justify-content:flex-end;">
-            <button class="seg-btn" style="background:#e9ecef" onclick="closeQuickModal()">취소</button>
-            <button class="seg-btn active" onclick="saveQuickModal()">적용 및 동기화</button>
-        </div>
+        </span>
     </div>
 
     <script>
-        const workspace = document.getElementById('workspace');
-        const sShadow = document.getElementById('spen-raytrace-shadow');
-        const sMesh = document.getElementById('silhouette-mesh');
-        const simZ = document.getElementById('sim-z');
-        const lblZ = document.getElementById('lbl-z');
-        const lblTilt = document.getElementById('lbl-tilt');
-        const tiltGuide = document.getElementById('tilt-guide');
+        const space = document.getElementById('space');
+        const shadow = document.getElementById('tabs8-shadow');
+        const mesh = shadow.querySelector('.shadow-mesh');
+        const target = document.getElementById('text-node');
+        const container = target.querySelector('.glass-container');
+        const l1 = container.querySelector('.layer-1');
+        const l2 = container.querySelector('.layer-2');
 
-        const qModal = document.getElementById('quick-modal');
-        const qTextarea = document.getElementById('quick-textarea');
-
-        let appMode = 'view';
         let zHeight = 18;
-        let globalTilt = 0;
-        let currentActiveNodeId = null;
 
-        function setAppMode(mode) {
-            appMode = mode;
-            document.getElementById('mode-view').classList.toggle('active', mode === 'view');
-            document.getElementById('mode-edit').classList.toggle('active', mode === 'edit');
-            tiltGuide.style.display = mode === 'edit' ? 'inline' : 'none';
-            if(mode === 'edit') closeAllGlassSpaces();
-        }
+        function renderSpenPhysics(e) {
+            if (e.type === 'pointerdown') {
+                e.preventDefault();
+            }
 
-        // 🌟 S24 Ultra OBJ 메쉬 구조 기반의 초정밀 레이트레이싱 그림자 매핑 엔진
-        workspace.addEventListener('pointermove', (e) => {
-            if (appMode === 'edit') return;
+            shadow.style.opacity = "1";
+
+            const spaceRect = space.getBoundingClientRect();
+            const physicalX = e.clientX - spaceRect.left;
+            const physicalY = e.clientY - spaceRect.top;
 
             let tX = e.tiltX || 0;
             let tY = e.tiltY || 0;
-            globalTilt = Math.round(Math.hypot(tX, tY));
+            let tiltMagnitude = Math.round(Math.hypot(tX, tY));
 
-            if (e.pointerType === 'pen') {
-                zHeight = e.buttons === 0 ? 6 + (Math.abs(tX) / 6) : 0;
-                simZ.value = zHeight;
-                sShadow.style.opacity = "1";
+            if (e.buttons === 1 || e.pressure > 0) {
+                zHeight = 0; 
             } else {
-                zHeight = parseFloat(simZ.value);
-                sShadow.style.opacity = "1";
+                zHeight = e.pointerType === 'pen' ? 4 + (Math.abs(tX) / 5) : zHeight;
             }
 
-            lblZ.innerText = zHeight.toFixed(1) + " mm";
-            lblTilt.innerText = globalTilt + "°";
+            shadow.style.transform = `translate3d(${physicalX}px, ${physicalY}px, 0)`;
 
-            // 1. 펜의 물리 위치 오프셋 바인딩
-            sShadow.style.left = e.clientX + 'px';
-            sShadow.style.top = e.clientY + 'px';
+            let angle = Math.atan2(tY, tX) * (180 / Math.PI) - 90;
+            if (tX === 0 && tY === 0) angle = -40;
 
-            // 2. S24 Ultra OBJ 데이터 투영 왜곡 알고리즘 
-            // 틸트와 고도(Z축)에 비례한 광학 그림자 실루엣 각도 계산
-            let shadowAngle = Math.atan2(tY, tX) * (180 / Math.PI) - 90;
-            if(tX === 0 && tY === 0) shadowAngle = -45; // 마우스 기본 디폴트 각도 45도 유도
+            // 🌟 탭 S8 두툼한 라운드 펜 바디 전용 스케일 가중치 보정
+            let hyperBlur = 1.4 + (zHeight * 0.9); 
+            let scaleX = 0.85 + (zHeight * 0.038); // 닿았을 때도 실린더 형태 볼륨감 유지
+            let scaleY = 1.0 + (zHeight * 0.042) + (tiltMagnitude * 0.012);
 
-            let shadowOffsetX = (tX / 90) * zHeight * 2.8;
-            let shadowOffsetY = (tY / 90) * zHeight * 2.8 + (zHeight * 0.5);
-
-            // 고도에 따른 투영 흐림(Blur) 스케일 및 왜곡 행렬 맵핑
-            let blurRad = 1.0 + (zHeight * 0.45);
-            let shadowScaleX = 1 + (zHeight * 0.015);
-            // 기울임(Tilt) 각도가 커질수록 빛의 사각 입사에 의해 그림자 바디 쉐이더의 길이가 리얼하게 늘어남
-            let shadowScaleY = 1 + (zHeight * 0.02) + (globalTilt * 0.01);
-
-            // 🌟 요구사항: 호버링 고도 단계별 정밀 그림자 색조(Color Spectrum) 변화 구현
-            let meshColor = 'rgba(15, 18, 22, 0.32)'; // 1단계 기본 연한 흑연색
-            if (zHeight <= 14 && zHeight > 5) {
-                meshColor = 'rgba(37, 99, 235, 0.38)';  // 2단계: 주석 레이어 근접 시 블루라이팅 펄스 반영
-            } else if (zHeight <= 5) {
-                meshColor = 'rgba(147, 51, 234, 0.48)'; // 3단계: 완전 밀착 시 강렬한 퍼플 그림자 대칭
+            let liquidColor = 'rgba(10, 15, 25, 0.22)';
+            if (zHeight <= 14 && zHeight > 3.5) {
+                liquidColor = 'rgba(43, 114, 241, 0.32)'; 
+            } else if (zHeight <= 3.5) {
+                liquidColor = 'rgba(147, 51, 234, 0.42)'; 
             }
 
-            // OBJ 실루엣 통합 시각 렌더 변환 트랜스폼 적용
-            sMesh.style.filter = `blur(${blurRad}px)`;
-            sMesh.style.transform = `translate(${shadowOffsetX}px, ${shadowOffsetY}px) rotate(${shadowAngle}deg) scale(${shadowScaleX}, ${shadowScaleY})`;
-            
-            // 모든 파트 메쉬에 동적 색상 스펙트럼 인젝션
-            sMesh.querySelectorAll('div').forEach(part => {
-                part.style.background = meshColor;
-            });
+            mesh.style.filter = `blur(${hyperBlur}px)`;
+            mesh.style.transform = `rotate(${angle}deg) scale(${scaleX}, ${scaleY})`;
+            mesh.style.background = liquidColor;
 
-            processGlassSpaceCore(zHeight, e.clientX, e.clientY);
-        });
+            const rect = target.getBoundingClientRect();
+            const nodeCenterX = rect.left + rect.width / 2;
+            const nodeCenterY = rect.top + rect.height / 2;
+            const distance = Math.hypot(e.clientX - nodeCenterX, e.clientY - nodeCenterY);
 
-        workspace.addEventListener('mouseleave', () => { sShadow.style.opacity = "0"; });
-
-        // 마우스 휠 고도 스위칭 결합
-        workspace.addEventListener('wheel', (e) => {
-            if (appMode === 'edit') return;
-            e.preventDefault();
-            let delta = e.deltaY > 0 ? 1.5 : -1.5;
-            let nextZ = Math.min(Math.max(parseFloat(simZ.value) + delta, 1), 30);
-            simZ.value = nextZ;
-            zHeight = nextZ;
-            processGlassSpaceCore(zHeight, e.clientX, e.clientY);
-        }, { passive: false });
-
-        simZ.addEventListener('input', (e) => {
-            zHeight = parseFloat(e.target.value);
-            processGlassSpaceCore(zHeight, 0, 0);
-        });
-
-        // 파격적 '유리 복층 스페이스' 3D 입체 투영 엔진
-        function processGlassSpaceCore(z, pX, pY) {
-            document.querySelectorAll('.layer-target').forEach(node => {
-                const rect = node.getBoundingClientRect();
-                const nX = rect.left + rect.width / 2;
-                const nY = rect.top + rect.height / 2;
-                const dist = Math.hypot(pX - nX, pY - nY);
-
-                const container = node.querySelector('.glass-space-container');
-                const p1 = container.querySelector('.p-l1');
-                const p2 = container.querySelector('.p-l2');
-                const p3 = container.querySelector('.p-l3');
-
-                if (dist < 100) {
-                    container.classList.add('active');
-
-                    if (z > 14) {
-                        p1.style.transform = "translateZ(0px) scale(1)";
-                        p2.style.transform = "translateZ(-50px) scale(0.9) translateY(-12px)";
-                        p3.style.transform = "translateZ(-100px) scale(0.8) translateY(-24px)";
-                        p1.style.opacity = "1"; p2.style.opacity = "0.15"; p3.style.opacity = "0.03";
-                        p1.style.filter = "none"; p2.style.filter = "blur(2px)"; p3.style.filter = "blur(5px)";
-                    } 
-                    else if (z > 5 && z <= 14) {
-                        p1.style.transform = "translateZ(-40px) scale(0.93) translateY(12px)";
-                        p2.style.transform = "translateZ(60px) scale(1.06) translateY(0px)";
-                        p3.style.transform = "translateZ(-50px) scale(0.88) translateY(-12px)";
-                        p1.style.opacity = "0.25"; p2.style.opacity = "1"; p3.style.opacity = "0.15";
-                        p1.style.filter = "blur(1.5px)"; p2.style.filter = "drop-shadow(0 0 18px var(--l2-glow))"; p3.style.filter = "blur(3px)";
-                    } 
-                    else {
-                        p1.style.transform = "translateZ(-80px) scale(0.85) translateY(24px)";
-                        p2.style.transform = "translateZ(-40px) scale(0.93) translateY(12px)";
-                        p3.style.transform = "translateZ(90px) scale(1.12) translateY(0px)";
-                        p1.style.opacity = "0.05"; p2.style.opacity = "0.25"; p3.style.opacity = "1";
-                        p1.style.filter = "blur(4px)"; p2.style.filter = "blur(2px)"; p3.style.filter = "drop-shadow(0 0 24px var(--l3-glow))";
-                    }
-                } else {
-                    container.classList.remove('active');
-                }
-            });
-        }
-
-        function closeAllGlassSpaces() {
-            document.querySelectorAll('.glass-space-container').forEach(c => c.classList.remove('active'));
-        }
-
-        // S펜 틸트(기울기) 센서 기반 터치 제스처 연동 퀵 편집기 트리거
-        document.querySelectorAll('.layer-target').forEach(node => {
-            node.addEventListener('pointerdown', (e) => {
-                if (appMode !== 'edit') return;
+            if (distance < 140) {
+                container.classList.add('active');
                 
-                // 마우스 클릭 또는 S펜 틸트 임계 각도 40도 초과 결합 검증
-                if (globalTilt >= 40 || e.pointerType === 'mouse') {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    
-                    currentActiveNodeId = node.id;
-                    const l2Text = document.getElementById(`${node.id}-l2`).innerText.replace('[2층 주석] ', '');
-                    const l3Text = document.getElementById(`${node.id}-l3`).innerText.replace('[3층 분석] ', '');
-                    
-                    qTextarea.value = `[2층 데이터]\n${l2Text}\n\n[3층 데이터]\n${l3Text}`;
-                    qModal.classList.add('active');
+                if (zHeight > 14) {
+                    l1.style.transform = "translateZ(0px) scale(1)";
+                    l2.style.transform = "translateZ(-60px) scale(0.88) translateY(-10px)";
+                    l1.style.opacity = "1"; l2.style.opacity = "0.15";
+                    l1.style.filter = "none"; l2.style.filter = "blur(4px)";
+                } 
+                else if (zHeight > 3.5 && zHeight <= 14) {
+                    l1.style.transform = "translateZ(-40px) scale(0.92) translateY(10px)";
+                    l2.style.transform = "translateZ(60px) scale(1.04) translateY(0px)";
+                    l1.style.opacity = "0.2"; l2.style.opacity = "1";
+                    l1.style.filter = "blur(2px)"; l2.style.filter = "none";
+                    l2.style.boxShadow = `0 12px 40px var(--l2-liquid), inset 0 1px 4px rgba(255,255,255,0.9)`;
+                } 
+                else {
+                    l1.style.transform = "translateZ(-90px) scale(0.84) translateY(20px)";
+                    l2.style.transform = "translateZ(100px) scale(1.08) translateY(5px)";
+                    l1.style.opacity = "0.03"; l2.style.opacity = "1";
+                    l1.style.filter = "blur(5px)"; l2.style.filter = "none";
+                    l2.style.boxShadow = `0 16px 48px var(--l3-liquid), inset 0 1px 4px rgba(255,255,255,0.9)`;
                 }
-            });
-        });
-
-        function closeQuickModal() { qModal.classList.remove('active'); currentActiveNodeId = null; }
-
-        function saveQuickModal() {
-            if(!currentActiveNodeId) return;
-            const lines = qTextarea.value.split('\n\n');
-            
-            if(lines[0]) document.getElementById(`${currentActiveNodeId}-l2`).innerHTML = `<span class="pane-badge" style="background:#3b82f6;">2층 주석</span>` + lines[0].replace('[2층 데이터]\n', '');
-            if(lines[1]) document.getElementById(`${currentActiveNodeId}-l3`).innerHTML = `<span class="pane-badge" style="background:#a855f7;">3층 분석</span>` + lines[1].replace('[3층 데이터]\n', '');
-            
-            closeQuickModal();
+            } else {
+                container.classList.remove('active');
+                l1.style.transform = "none"; l2.style.transform = "none";
+                l1.style.filter = "none"; l2.style.filter = "none";
+            }
         }
+
+        function killSpenShadow() {
+            shadow.style.opacity = "0"; 
+        }
+
+        space.addEventListener('pointermove', renderSpenPhysics, { passive: false });
+        space.addEventListener('pointerdown', renderSpenPhysics, { passive: false });
+        space.addEventListener('pointerup', renderSpenPhysics, { passive: false });
+        
+        space.addEventListener('pointerleave', killSpenShadow);
+        space.addEventListener('pointerout', killSpenShadow);
+        space.addEventListener('pointercancel', killSpenShadow);
+
+        space.addEventListener('wheel', (e) => {
+            if (e.pointerType === 'pen') return;
+            e.preventDefault();
+            zHeight = Math.min(Math.max(zHeight + (e.deltaY > 0 ? 1.5 : -1.5), 0), 30);
+            renderSpenPhysics(e);
+        }, { passive: false });
     </script>
 </body>
 </html>
