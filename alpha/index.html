@@ -205,7 +205,7 @@ function fmtDate(d) {
     return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
 }
 
-// Firebase Initialize
+// Firebase 설정
 const fbConfig = {
     apiKey: "AIzaSyAP8WRXAjmPdmATfWKnCrCRQNH0ftbBV9w",
     authDomain: "duru108.firebaseapp.com",
@@ -233,7 +233,7 @@ const PERIODS = [
     { label:'2교시', start:'09:30', end:'10:20' },
     { label:'3교시', start:'10:30', end:'11:20' },
     { label:'4교시', start:'11:30', end:'12:20' },
-    { label:'5교시', start:'13:10', py: '14:00' },
+    { label:'5교시', start:'13:10', end:'14:00' }, /* ✨ 오타 수정 완료: py -> end */
     { label:'6교시', start:'14:10', end:'15:00' },
     { label:'7교시', start:'15:10', end:'16:00' },
 ];
@@ -447,7 +447,6 @@ function App() {
             const fri = new Date(d); fri.setDate(d.getDate() - dow + 5);
             const fmt = x => `${x.getFullYear()}${String(x.getMonth()+1).padStart(2,'0')}${String(x.getDate()).padStart(2,'0')}`;
 
-            // 동적 학년 및 반 연동
             const data = await fetchNEIS('hisTimetable', {
                 ATPT_OFCDC_SC_CODE: ATPT_CODE, SD_SCHUL_CODE: SCHUL_CODE,
                 GRADE: grade, CLASS_NM: classNm,
@@ -615,7 +614,7 @@ function App() {
         setCalYear(d.getFullYear()); setCalMonth(d.getMonth());
     };
 
-    // ── 🎨 브랜드 로고 컴포넌트 (gDuru Alpha 필기체 반영) ──
+    // ── 🎨 로고 컴포넌트 ──
     const BrandLogo = ({ size = "text-xl", showBadge = true }) => (
         <div className={`font-black flex items-center justify-center tracking-tight select-none text-slate-800 ${size}`}>
             <span className="font-g text-indigo-600 italic translate-y-[-2px] tracking-normal mr-[1px]" style={{fontSize: '1.35em'}}>g</span>
@@ -626,7 +625,7 @@ function App() {
         </div>
     );
 
-    // ── Onboarding Screen (반 미지정 유저 스크린) ──
+    // ── Onboarding Screen (초기 학년/반 미지정 시 설정 화면) ──
     if (!isConfigured) {
         return (
             <div className="flex items-center justify-center min-h-screen bg-[#E5E9F0] p-4">
