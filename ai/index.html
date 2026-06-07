@@ -3,78 +3,63 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-  <title>온디바이스 AI 실시간 캔버스</title>
+  <title>고급 AI 온디바이스 캔버스</title>
   
   <style>
     body, html {
-      margin: 0;
-      padding: 0;
-      width: 100%;
-      height: 100%;
-      overflow: hidden;
-      background-color: #f5f5f5;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      margin: 0; padding: 0; width: 100%; height: 100%;
+      overflow: hidden; background-color: #f0f2f5;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     }
 
-    /* 캔버스 스타일 (S펜 터치 밀림 방지) */
     canvas {
-      display: block;
-      position: absolute;
-      top: 0;
-      left: 0;
-      background: #ffffff;
-      touch-action: none; /* 브라우저 스크롤/제스처 차단 */
+      display: block; position: absolute; top: 0; left: 0;
+      background: #ffffff; touch-action: none;
     }
 
-    /* 상단 알림 및 결과창 UI */
+    /* 대시보드 UI */
     #ui-container {
-      position: absolute;
-      top: 20px;
-      left: 20px;
-      z-index: 10;
-      background: rgba(255, 255, 255, 0.95);
-      padding: 15px;
-      border-radius: 12px;
-      box-sizing: border-box;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.15);
-      width: 300px;
+      position: absolute; top: 20px; left: 20px; z-index: 10;
+      background: rgba(255, 255, 255, 0.96); padding: 18px;
+      border-radius: 16px; box-shadow: 0 8px 32px rgba(0,0,0,0.12);
+      width: 320px; backdrop-filter: blur(8px);
     }
 
-    h3 { margin: 0 0 8px 0; font-size: 16px; color: #333; }
+    h3 { margin: 0 0 6px 0; font-size: 16px; color: #1c1c1e; display: flex; align-items: center; gap: 6px; }
     p { margin: 4px 0; font-size: 13px; color: #666; }
     
-    #status { font-weight: bold; color: #007aff; }
+    #status { font-weight: 600; color: #007aff; }
+
+    /* 프로그레스 바 스타일 */
+    #progress-container {
+      margin-top: 8px; background: #e5e5ea;
+      border-radius: 6px; height: 8px; overflow: hidden;
+      display: none; /* 로딩 중에만 표시 */
+    }
+    #progress-bar {
+      background: #007aff; width: 0%; height: 100%;
+      transition: width 0.1s ease;
+    }
 
     #result-box {
-      margin-top: 10px;
-      padding: 10px;
-      background: #eef2f7;
-      border-radius: 6px;
-      font-size: 14px;
-      font-weight: 500;
-      line-height: 1.4;
-      color: #222;
-      min-height: 40px;
+      margin-top: 12px; padding: 12px; background: #f2f2f7;
+      border-radius: 8px; font-size: 14px; font-weight: 500;
+      line-height: 1.5; color: #2c2c2e; min-height: 45px;
     }
 
-    /* 우측 상단 컨트롤 버튼 */
-    #btn-container {
-      position: absolute;
-      top: 20px;
-      right: 20px;
-      z-index: 10;
+    /* 현재 도구 표시기 */
+    #tool-indicator {
+      display: inline-block; margin-top: 6px; padding: 4px 8px;
+      font-size: 11px; font-weight: bold; border-radius: 4px;
+      background: #e3f2fd; color: #0d47a1;
     }
 
+    /* 컨트롤 버튼 */
+    #btn-container { position: absolute; top: 20px; right: 20px; z-index: 10; }
     .btn {
-      background: #ff3b30;
-      color: white;
-      border: none;
-      padding: 10px 20px;
-      font-size: 14px;
-      font-weight: bold;
-      border-radius: 8px;
-      cursor: pointer;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+      background: #ff3b30; color: white; border: none;
+      padding: 12px 24px; font-size: 14px; font-weight: 600;
+      border-radius: 10px; cursor: pointer; box-shadow: 0 4px 12px rgba(0,0,0,0.15);
     }
     .btn:active { background: #d32f2f; }
   </style>
@@ -84,30 +69,40 @@
   <canvas id="canvas"></canvas>
 
   <div id="ui-container">
-    <h3>🤖 온디바이스 비전 AI</h3>
-    <p>상태: <span id="status">AI 시스템 시동 중...</span></p>
-    <div id="result-box">그림을 그리면 AI의 해석이 여기에 나타납니다.</div>
+    <h3>✨ 갤럭시 온디바이스 AI 캔버스</h3>
+    <p>상태: <span id="status">시스템 준비 중...</span></p>
+    
+    <div id="progress-container">
+      <div id="progress-bar"></div>
+    </div>
+    
+    <div id="tool-indicator">모드: 펜 (S펜 버튼 누르면 지우개)</div>
+    <div id="result-box">S펜이나 터치로 그리면 AI가 분석을 시작합니다.</div>
   </div>
 
   <div id="btn-container">
-    <button class="btn" id="clear-btn">지우기</button>
+    <button class="btn" id="clear-btn">화면 비우기</button>
   </div>
 
   <script type="module">
-    // 1. Hugging Face 미러 CDN을 통해 Transformers.js v3 로드
     import { pipeline } from 'https://cdn.jsdelivr.net/npm/@huggingface/transformers@3.0.2';
 
     const canvas = document.getElementById('canvas');
     const ctx = canvas.getContext('2d');
     const statusText = document.getElementById('status');
+    const progressBar = document.getElementById('progress-bar');
+    const progressContainer = document.getElementById('progress-container');
     const resultBox = document.getElementById('result-box');
+    const toolIndicator = document.getElementById('tool-indicator');
     const clearBtn = document.getElementById('clear-btn');
 
     let vlmPipeline = null;
     let isDrawing = false;
     let debounceTimeout = null;
 
-    // 2. 화면 크기에 맞게 캔버스 크기 초기화
+    // S펜 버튼을 누른 채 캔버스를 터치할 때 생기는 팝업 메뉴 차단 (필수)
+    window.addEventListener('contextmenu', e => e.preventDefault());
+
     function resizeCanvas() {
       canvas.width = window.innerWidth;
       canvas.height = window.innerHeight;
@@ -116,105 +111,140 @@
     }
     resizeCanvas();
 
-    // 3. AI 모델 로드 (갤럭시 S24U / 탭S8 WebGPU 활성화 유도)
+    // 1. AI 로드 및 실시간 진척도(%) 표시 연동
     async function initAI() {
       try {
-        statusText.innerText = "초경량 AI 모델 다운로드 중... (최초 1회)";
-        
-        // 브라우저 캐시를 사용해 로컬 연산하는 비전 모델 가동
+        progressContainer.style.display = 'block';
+        statusText.innerText = "AI 모델 다운로드 시동 중...";
+
         vlmPipeline = await pipeline('image-to-text', 'Xenova/vit-gpt2-image-captioning', {
-          device: 'webgpu' // 갤럭시 GPU 강제 할당 시도
+          device: 'webgpu',
+          // 라이브러리 자체에서 제공하는 다운로드 진행 상황 콜백 함수
+          progress_callback: (data) => {
+            if (data.status === 'downloading') {
+              statusText.innerText = `다운로드 중... (${data.file.substring(0, 15)}...)`;
+            } else if (data.status === 'progress') {
+              const percent = Math.round(data.progress);
+              progressBar.style.width = `${percent}%`;
+              statusText.innerText = `모델 구성 요소 로딩: ${percent}%`;
+            } else if (data.status === 'done') {
+              progressBar.style.width = '100%';
+            }
+          }
         });
         
+        // 로딩 완료 후 프로그레스 바 숨김
+        progressContainer.style.display = 'none';
         statusText.innerText = "준비 완료! S펜으로 그려보세요.";
       } catch (e) {
-        console.warn("WebGPU 미지원 또는 에러로 인해 CPU(Wasm) 모드로 전환합니다:", e);
+        console.warn("WebGPU 가속 실패, Wasm 모드로 전환:", e);
         try {
           vlmPipeline = await pipeline('image-to-text', 'Xenova/vit-gpt2-image-captioning');
-          statusText.innerText = "준비 완료 (Wasm 모드 구동)";
+          progressContainer.style.display = 'none';
+          statusText.innerText = "준비 완료 (Wasm 모드)";
         } catch (err) {
-          statusText.innerText = "AI 초기화 실패: " + err.message;
+          statusText.innerText = "초기화 실패: " + err.message;
         }
       }
     }
     initAI();
 
-    // 4. S펜 및 터치/마우스 그리기 이벤트 구현
-    function getCoordinates(e) {
+    // 2. S펜 고정밀 포인터 이벤트 핸들러
+    function getCoords(e) {
       const rect = canvas.getBoundingClientRect();
-      const clientX = e.touches ? e.touches[0].clientX : e.clientX;
-      const clientY = e.touches ? e.touches[0].clientY : e.clientY;
-      return {
-        x: clientX - rect.left,
-        y: clientY - rect.top
-      };
+      return { x: e.clientX - rect.left, y: e.clientY - rect.top };
     }
 
-    function startDrawing(e) {
+    function checkEraserMode(e) {
+      // e.pointerType === 'pen' 일 때 S펜 제어 가능
+      // e.buttons 값이 2(우클릭 매핑) 또는 32(배럴/사이드 버튼)인 경우 버튼이 눌린 상태임
+      const isPenButtonPressed = (e.pointerType === 'pen' && ((e.buttons & 2) || (e.buttons & 32)));
+      
+      if (isPenButtonPressed) {
+        // 진짜 지우개 기능 가동 (배경을 흰색으로 칠하는 게 아니라 픽셀을 투명하게 지움)
+        ctx.globalCompositeOperation = 'destination-out';
+        ctx.lineWidth = 50; // 지우개는 두껍게
+        toolIndicator.innerText = "모드: S펜 지우개 작동 중 🔥";
+        toolIndicator.style.background = "#ffe2e2";
+        toolIndicator.style.color = "#d32f2f";
+      } else {
+        // 일반 펜 모드 전환
+        ctx.globalCompositeOperation = 'source-over';
+        
+        // 갤럭시 S펜의 리얼 필압(e.pressure) 적용 (0.0 ~ 1.0 사이의 값)
+        // 최소 굵기 2px ~ 최대 굵기 14px까지 압력에 따라 실시간 변화
+        ctx.lineWidth = 2 + (e.pressure * 12); 
+        
+        toolIndicator.innerText = "모드: 펜 (S펜 버튼 누르면 지우개)";
+        toolIndicator.style.background = "#e3f2fd";
+        toolIndicator.style.color = "#0d47a1";
+      }
+    }
+
+    canvas.addEventListener('pointerdown', (e) => {
       isDrawing = true;
-      const coords = getCoordinates(e);
+      const coords = getCoords(e);
       ctx.beginPath();
       ctx.moveTo(coords.x, coords.y);
-      clearTimeout(debounceTimeout); // 그리는 도중에는 분석 대기 타이머 리셋
-    }
-
-    function draw(e) {
-      if (!isDrawing) return;
-      const coords = getCoordinates(e);
       
-      ctx.lineWidth = 4;
+      checkEraserMode(e);
+      clearTimeout(debounceTimeout);
+    });
+
+    canvas.addEventListener('pointermove', (e) => {
+      if (!isDrawing) return;
+      const coords = getCoords(e);
+      
+      checkEraserMode(e);
+
       ctx.lineCap = 'round';
       ctx.lineJoin = 'round';
-      ctx.strokeStyle = '#222222'; // 펜 색상
+      ctx.strokeStyle = '#1c1c1e';
 
       ctx.lineTo(coords.x, coords.y);
       ctx.stroke();
-    }
+    });
 
-    function stopDrawing() {
+    canvas.addEventListener('pointerup', () => {
       if (!isDrawing) return;
       isDrawing = false;
       
-      // 사용자가 펜을 떼고 1.2초간 기다리면 AI가 실시간 분석 돌입 (디바운싱)
-      clearTimeout(debounceTimeout);
-      debounceTimeout = setTimeout(analyzeCanvas, 1200);
-    }
+      // 손을 떼면 원래 안내 문구로 복귀
+      toolIndicator.innerText = "모드: 펜 (S펜 버튼 누르면 지우개)";
+      toolIndicator.style.background = "#e3f2fd";
+      toolIndicator.style.color = "#0d47a1";
 
-    // 5. 실시간 비전 AI 분석 핵심 로직
+      // 1초간 멈추면 이미지 분석
+      clearTimeout(debounceTimeout);
+      debounceTimeout = setTimeout(analyzeCanvas, 1000);
+    });
+
+    canvas.addEventListener('pointercancel', () => { isDrawing = false; });
+
+    // 3. 이미지 분석 엔진
     async function analyzeCanvas() {
       if (!vlmPipeline) return;
 
       try {
-        statusText.innerText = "🧐 AI가 그림 분석 중...";
+        statusText.innerText = "🧐 AI가 실시간 설계 분석 중...";
         
-        // 현재 캔버스 화면을 이미지 데이터 주소(Base64)로 캡처
+        // 지우개 효과(destination-out)가 적용된 캔버스를 분석하기 위해 대조용 임시 주소 추출
         const imageDataUrl = canvas.toDataURL('image/png');
 
-        // 로컬 비전 AI 모델에 이미지 주소 전달
         const output = await vlmPipeline(imageDataUrl);
         
-        // 영어로 출력되는 결과를 화면에 표시 (원할 경우 추후 번역 API 연동 가능)
-        resultBox.innerText = `[AI 결과]: ${output[0].generated_text}`;
-        statusText.innerText = "준비 완료! 추가로 그려보세요.";
+        resultBox.innerText = `[AI 예측]: ${output[0].generated_text}`;
+        statusText.innerText = "준비 완료! 추가로 입력해 보세요.";
       } catch (error) {
         console.error(error);
-        statusText.innerText = "분석 중 오류가 발생했습니다.";
+        statusText.innerText = "분석 중 오류 발생";
       }
     }
 
-    // 이벤트 리스너 등록 (마우스 및 갤럭시 S펜/터치 대응)
-    canvas.addEventListener('mousedown', startDrawing);
-    canvas.addEventListener('mousemove', draw);
-    window.addEventListener('mouseup', stopDrawing);
-
-    canvas.addEventListener('touchstart', startDrawing, { passive: true });
-    canvas.addEventListener('touchmove', draw, { passive: true });
-    window.addEventListener('touchend', stopDrawing);
-
-    // 화면 초기화 버튼
     clearBtn.addEventListener('click', () => {
+      ctx.globalCompositeOperation = 'source-over';
       ctx.fillRect(0, 0, canvas.width, canvas.height);
-      resultBox.innerText = "그림을 그리면 AI의 해석이 여기에 나타납니다.";
+      resultBox.innerText = "S펜이나 터치로 그리면 AI가 분석을 시작합니다.";
     });
   </script>
 </body>
