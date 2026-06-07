@@ -1,0 +1,1507 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>고교 영어 지문 순서 배열 학습기 (M3 Edition)</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Material Symbols (구글 머티리얼 최신 아이콘 세트) -->
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet" />
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap');
+        
+        :root {
+            /* 머티리얼 3 기본 라이트 테마 토큰 (기본 웜 테라코타 테마) */
+            --md-primary: #8F4E00;
+            --md-on-primary: #FFFFFF;
+            --md-primary-container: #FFDCC3;
+            --md-on-primary-container: #2E1400;
+            --md-secondary: #745B4B;
+            --md-on-secondary: #FFFFFF;
+            --md-surface: #FFF8F6;
+            --md-on-surface: #221A15;
+            --md-surface-variant: #F4E0D4;
+            --md-on-surface-variant: #52443C;
+            --md-outline: #85736B;
+            --md-success: #2C6B3F;
+            --md-on-success: #FFFFFF;
+            --md-success-container: #AEF5B9;
+            --md-error: #BA1A1A;
+            --md-on-error: #FFFFFF;
+            --md-error-container: #FFDAD6;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', 'Noto Sans KR', sans-serif;
+            background-color: var(--md-surface);
+            color: var(--md-on-surface);
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        /* 머티리얼 유 테마 클래스 유틸리티 정의 */
+        .color-primary { color: var(--md-primary); }
+        .bg-primary { background-color: var(--md-primary); }
+        .text-on-primary { color: var(--md-on-primary); }
+        .bg-primary-container { background-color: var(--md-primary-container); }
+        .text-on-primary-container { color: var(--md-on-primary-container); }
+        .bg-surface-variant { background-color: var(--md-surface-variant); }
+        .text-on-surface-variant { color: var(--md-on-surface-variant); }
+        .border-outline { border-color: var(--md-outline); }
+        
+        /* Material You 리플 및 호버 효과 */
+        .m3-interactive {
+            position: relative;
+            overflow: hidden;
+            transition: all 0.25s cubic-bezier(0.2, 0, 0, 1);
+        }
+        .m3-interactive:hover {
+            filter: brightness(0.96);
+            transform: translateY(-1px);
+        }
+        .m3-interactive:active {
+            transform: scale(0.97);
+            filter: brightness(0.9);
+        }
+
+        /* 드래그 앤 드롭 전용 물리 스타일 */
+        .dragging {
+            opacity: 0.4 !important;
+            transform: scale(0.96) rotate(-1deg);
+            border: 2px dashed var(--md-primary) !important;
+            box-shadow: 0 12px 24px rgba(0,0,0,0.08) !important;
+            cursor: grabbing !important;
+        }
+
+        /* 스마트 인서트 가이드라인 */
+        .drop-preview {
+            border: 2px dashed var(--md-primary);
+            background-color: var(--md-primary-container);
+            opacity: 0.7;
+            height: 52px;
+            border-radius: 16px;
+            transition: all 0.2s ease;
+            margin: 4px 0;
+        }
+
+        /* 스무스 스크롤바 */
+        .custom-scroll::-webkit-scrollbar {
+            width: 8px;
+        }
+        .custom-scroll::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .custom-scroll::-webkit-scrollbar-thumb {
+            background: var(--md-surface-variant);
+            border-radius: 99px;
+        }
+        .custom-scroll::-webkit-scrollbar-thumb:hover {
+            background: var(--md-outline);
+        }
+
+        /* 타겟 카드 반짝임 애니메이션 */
+        @keyframes highlight-pulse {
+            0% { transform: scale(1); box-shadow: 0 0 0 0px rgba(245, 158, 11, 0.5); }
+            50% { transform: scale(1.02); box-shadow: 0 0 0 10px rgba(245, 158, 11, 0); }
+            100% { transform: scale(1); box-shadow: 0 0 0 0px rgba(245, 158, 11, 0); }
+        }
+        .card-highlight-effect {
+            animation: highlight-pulse 1.2s ease-out;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col antialiased select-none">
+
+    <!-- 상단 앱 바 (Material Style Header) -->
+    <header class="sticky top-0 z-40 bg-[var(--md-surface)]/90 backdrop-blur-md border-b border-[var(--md-surface-variant)] px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between transition-all">
+        <div class="flex items-center space-x-3 cursor-pointer" onclick="backToDashboard()">
+            <span class="material-symbols-outlined text-[var(--md-primary)] font-bold text-3xl">explore</span>
+            <div>
+                <h1 class="text-base sm:text-lg font-extrabold tracking-tight flex items-center gap-2">
+                    Journey Into Culture & Art
+                    <span class="px-2 py-0.5 bg-[var(--md-primary-container)] text-[var(--md-primary)] text-[10px] rounded-full font-black uppercase tracking-wider hidden sm:inline-block">Lesson 3 & 4</span>
+                </h1>
+                <p class="text-[10px] text-slate-400 hidden sm:block">고등학교 영어 지문 순서 배열 통합 학습 시스템</p>
+            </div>
+        </div>
+        
+        <!-- 실시간 테마 셀렉터 (Material You 다이내믹 컬러 컨셉) -->
+        <div class="flex items-center space-x-2">
+            <span class="text-xs text-slate-400 font-bold mr-1 hidden md:inline">Theme</span>
+            <div class="flex bg-[var(--md-surface-variant)] p-1 rounded-full space-x-1">
+                <button onclick="changeTheme('terracotta')" class="w-6 h-6 rounded-full bg-[#8F4E00] border-2 border-white cursor-pointer shadow" title="Warm Terracotta"></button>
+                <button onclick="changeTheme('wheat')" class="w-6 h-6 rounded-full bg-[#6A5E00] border-2 border-white cursor-pointer shadow" title="Wheat Gold"></button>
+                <button onclick="changeTheme('blue')" class="w-6 h-6 rounded-full bg-[#005FAF] border-2 border-white cursor-pointer shadow" title="Ocean Blue"></button>
+                <button onclick="changeTheme('sage')" class="w-6 h-6 rounded-full bg-[#2F6B27] border-2 border-white cursor-pointer shadow" title="Sage Green"></button>
+            </div>
+        </div>
+    </header>
+
+    <!-- 메인 콘텐츠 영역 -->
+    <main class="flex-1 max-w-7xl w-full mx-auto p-4 sm:p-6 flex flex-col justify-start">
+        
+        <!-- ==================== 1. 대시보드 뷰 (단원 탭 및 문단 선택지) ==================== -->
+        <div id="dashboard-view" class="space-y-6">
+            <!-- 가이드 배너 -->
+            <div class="bg-[var(--md-primary-container)] text-[var(--md-on-primary-container)] rounded-[28px] p-6 sm:p-8 md:p-10 relative overflow-hidden shadow-inner">
+                <div class="absolute top-0 right-0 w-64 h-64 bg-[var(--md-primary)]/5 rounded-full blur-3xl -mr-16 -mt-16 pointer-events-none"></div>
+                
+                <div class="relative z-10 max-w-3xl">
+                    <span class="px-3.5 py-1.5 bg-[var(--md-primary)] text-[var(--md-on-primary)] text-xs font-black rounded-full tracking-wider uppercase inline-block mb-4 shadow-sm">
+                        Material Design 3 & Smart Drag
+                    </span>
+                    <h2 class="text-2xl sm:text-4xl font-black tracking-tight mb-3">
+                        영어 문단 구조 완벽 마스터하기
+                    </h2>
+                    <p class="text-slate-600 leading-relaxed text-sm sm:text-base mb-6 font-medium">
+                        네덜란드의 다양한 전통문화를 담은 <b>Lesson 3</b>와 환경 보존의 소중함을 담은 친환경 예술 <b>Lesson 4</b>의 핵심 지문들을 단락 단위로 훈련해 보세요. 오답 위치를 즉시 알려주는 <b>학습 미니맵</b>과 한눈에 파악되는 <b>컴팩트 뷰</b>가 학습 효율을 극대화합니다.
+                    </p>
+                    <div class="flex flex-wrap gap-2.5 text-xs">
+                        <div class="flex items-center gap-1.5 bg-[var(--md-surface)] text-[var(--md-primary)] font-bold px-3 py-2 rounded-2xl shadow-sm">
+                            <span class="material-symbols-outlined text-sm font-bold">map</span> 오답 추적 미니맵 완비
+                        </div>
+                        <div class="flex items-center gap-1.5 bg-[var(--md-surface)] text-[var(--md-primary)] font-bold px-3 py-2 rounded-2xl shadow-sm">
+                            <span class="material-symbols-outlined text-sm font-bold">compress</span> 화면 맞춤 컴팩트 모드
+                        </div>
+                        <div class="flex items-center gap-1.5 bg-[var(--md-surface)] text-[var(--md-primary)] font-bold px-3 py-2 rounded-2xl shadow-sm">
+                            <span class="material-symbols-outlined text-sm font-bold">text_to_speech</span> 원어민 영어 TTS 지원
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 단원 선택용 대형 M3 세그먼트 컨트롤러 -->
+            <div class="bg-[var(--md-surface-variant)] p-1.5 rounded-[24px] flex gap-2 shadow-inner">
+                <button id="lesson-tab-3" onclick="switchLessonDashboard(3)" class="flex-1 py-4 text-center text-sm font-black rounded-2xl transition-all bg-[var(--md-primary)] text-[var(--md-on-primary)] shadow flex items-center justify-center gap-2">
+                    <span class="material-symbols-outlined font-bold">flight_takeoff</span>
+                    <span>Lesson 3. Journey into Another Culture</span>
+                </button>
+                <button id="lesson-tab-4" onclick="switchLessonDashboard(4)" class="flex-1 py-4 text-center text-sm font-black rounded-2xl transition-all text-slate-600 hover:text-[var(--md-primary)] flex items-center justify-center gap-2">
+                    <span class="material-symbols-outlined font-bold">eco</span>
+                    <span>Lesson 4. Painting Our World Greener</span>
+                </button>
+            </div>
+
+            <!-- 단락 목록 카드 리스트 -->
+            <div>
+                <div class="flex items-center justify-between mb-4 px-2">
+                    <h3 id="dashboard-section-title" class="text-lg font-black text-slate-800 flex items-center gap-2.5">
+                        <!-- JS에서 동적 바인딩 -->
+                    </h3>
+                </div>
+
+                <div id="section-cards-grid" class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                    <!-- JS 동적 생성 영역 -->
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================== 2. 실제 학습 구역 (게임 플레이 뷰) ==================== -->
+        <div id="game-view" class="space-y-4 hidden">
+            
+            <!-- 상단 바 및 정보창 -->
+            <div class="bg-[var(--md-surface)] border border-[var(--md-surface-variant)] rounded-[24px] p-4 sm:p-5 flex flex-col md:flex-row md:items-center justify-between gap-4">
+                <div>
+                    <button onclick="backToDashboard()" class="inline-flex items-center gap-1 text-xs font-black text-[var(--md-primary)] hover:opacity-80 transition-colors mb-2">
+                        <span class="material-symbols-outlined text-sm font-bold">arrow_back</span> 대시보드 복귀
+                    </button>
+                    <div class="flex items-center gap-2">
+                        <span id="game-section-badge" class="px-2.5 py-0.5 bg-[var(--md-primary-container)] text-[var(--md-primary)] text-[10px] font-black rounded-lg">
+                            SECTION 01
+                        </span>
+                        <h3 id="game-section-title" class="text-base sm:text-lg font-black text-slate-800"></h3>
+                    </div>
+                    <p id="game-section-subtitle" class="text-xs sm:text-sm text-slate-400 font-bold mt-1"></p>
+                </div>
+
+                <!-- 부가 컨트롤 버튼들 -->
+                <div class="flex flex-wrap items-center gap-2">
+                    <div class="flex items-center gap-1.5 bg-[var(--md-surface-variant)] text-[var(--md-on-surface-variant)] px-3 py-2 rounded-2xl text-xs font-black shadow-inner">
+                        <span class="material-symbols-outlined text-sm font-bold">schedule</span>
+                        <span id="game-timer-display" class="font-mono">0:00</span>
+                    </div>
+                    <button onclick="openOriginalModal()" class="bg-[var(--md-surface-variant)] text-[var(--md-on-surface-variant)] hover:opacity-90 text-xs font-bold px-3 py-2.5 rounded-2xl flex items-center gap-1.5 transition-all">
+                        <span class="material-symbols-outlined text-sm font-bold">library_books</span> 원문
+                    </button>
+                    <button id="btn-toggle-compact" onclick="toggleCompactView()" class="text-xs font-bold px-3 py-2.5 rounded-2xl flex items-center gap-1.5 transition-all bg-[var(--md-surface-variant)] text-slate-500">
+                        <span class="material-symbols-outlined text-sm font-bold">compress</span> 컴팩트 뷰 OFF
+                    </button>
+                    <button id="btn-toggle-hints" onclick="toggleHints()" class="text-xs font-bold px-3 py-2.5 rounded-2xl flex items-center gap-1.5 transition-all bg-[var(--md-primary-container)] text-[var(--md-primary)]">
+                        <span class="material-symbols-outlined text-sm font-bold">g_translate</span> 해석 켜짐
+                    </button>
+                    <button id="btn-toggle-realtime" onclick="toggleRealTimeCheck()" class="text-xs font-bold px-3.5 py-2.5 rounded-2xl flex items-center gap-1.5 transition-all bg-[var(--md-surface-variant)] text-slate-500">
+                        <span class="material-symbols-outlined text-sm font-bold">rule</span> 실시간 채점 OFF
+                    </button>
+                </div>
+            </div>
+
+            <!-- 실시간 문단 완성도 가이드라인 -->
+            <div class="bg-[var(--md-surface)] border border-[var(--md-surface-variant)] p-3 rounded-[16px] space-y-2">
+                <div class="flex items-center justify-between text-xs text-slate-500 font-bold px-1">
+                    <span class="flex items-center gap-1"><span class="material-symbols-outlined text-sm text-[var(--md-primary)]">query_stats</span> 전체 문단 배치율</span>
+                    <span id="progress-text">0 / 0 문장 배치됨 (0%)</span>
+                </div>
+                <div class="w-full bg-slate-200 h-2.5 rounded-full overflow-hidden">
+                    <div id="progress-bar-fill" class="bg-[var(--md-primary)] h-full w-0 transition-all duration-300"></div>
+                </div>
+            </div>
+
+            <!-- 정답/오답 실시간 트래킹 미니맵 대시보드 (오답 탐색 핵심 도구) -->
+            <div id="assembly-minimap-wrapper" class="bg-white border border-[var(--md-surface-variant)] p-4 rounded-[20px] shadow-sm space-y-3">
+                <div class="flex items-center justify-between text-xs font-bold text-slate-500 px-1">
+                    <span class="flex items-center gap-1">
+                        <span class="material-symbols-outlined text-base text-[var(--md-primary)]">map</span> 
+                        학습 위치 탐색 미니맵
+                    </span>
+                    <span id="minimap-stats" class="text-xs text-[var(--md-primary)] font-bold">문장 정렬 대기 중...</span>
+                </div>
+                <!-- 동적으로 생성되는 미니맵 배지 목록 -->
+                <div id="assembly-minimap" class="flex flex-wrap gap-2">
+                    <!-- JS에서 둥근 칩으로 자동 렌더링 -->
+                </div>
+                <p class="text-[10px] text-slate-400 font-bold flex items-center gap-1">
+                    <span class="material-symbols-outlined text-xs">info</span> 채점 후 주황색 배지를 클릭하면 오답인 카드로 즉시 스크롤 이동 및 강조 표시됩니다.
+                </p>
+            </div>
+
+            <!-- 스마트폰/모바일용 상단 뷰 모드 탭 (md 미만 크기에서만 표시) -->
+            <div class="flex md:hidden bg-[var(--md-surface-variant)] p-1 rounded-2xl gap-1">
+                <button id="mobile-tab-pool" onclick="switchMobileTab('pool')" class="flex-1 py-3 text-xs font-black rounded-xl text-center transition-all bg-[var(--md-primary)] text-[var(--md-on-primary)] shadow flex items-center justify-center gap-1">
+                    <span class="material-symbols-outlined text-xs">list</span> 선택 문장들 (<span id="mobile-pool-badge">0</span>)
+                </button>
+                <button id="mobile-tab-assembly" onclick="switchMobileTab('assembly')" class="flex-1 py-3 text-xs font-black rounded-xl text-center transition-all text-slate-600 flex items-center justify-center gap-1">
+                    <span class="material-symbols-outlined text-xs">draw</span> 조립판 (<span id="mobile-assembly-badge">0</span>)
+                </button>
+            </div>
+
+            <!-- 메인 워크스페이스 (모바일 탭 제어 & 태블릿/PC 듀얼레이아웃 분기) -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-5 items-start">
+                
+                <!-- 1. 문장 풀 영역 (Pool Container) -->
+                <div id="pool-workspace-wrapper" class="space-y-3">
+                    <div class="flex items-center justify-between px-1">
+                        <h4 class="text-xs font-black text-slate-500 tracking-wider flex items-center gap-1.5">
+                            <span class="w-2 h-2 bg-[var(--md-primary)] rounded-full inline-block animate-pulse"></span>
+                            선택 가능한 카드 카드덱 (<span id="pool-count">0</span>)
+                        </h4>
+                        <span class="text-[10px] text-slate-400 font-semibold hidden md:inline">원하는 카드를 잡고 끌거나 클릭하세요</span>
+                    </div>
+
+                    <!-- 드롭존 수용 (풀 컨테이너) -->
+                    <div id="pool-container" 
+                         class="dropzone custom-scroll grid grid-cols-1 gap-2 border-2 border-transparent rounded-[24px] p-2 transition-all"
+                         style="max-height: 65vh; overflow-y: auto; min-height: 160px;"
+                         ondragover="allowDrop(event)"
+                         ondrop="dropToPool(event)">
+                        <!-- JS Dynamic Cards -->
+                    </div>
+                </div>
+
+                <!-- 2. 조립판 영역 (Assembly Container) -->
+                <div id="assembly-workspace-wrapper" class="space-y-3 hidden md:block">
+                    <div class="flex items-center justify-between px-1">
+                        <h4 class="text-xs font-black text-slate-500 tracking-wider flex items-center gap-1.5">
+                            <span class="w-2 h-2 bg-emerald-500 rounded-full inline-block"></span>
+                            내가 완성 중인 문단 구조 (<span id="assembly-count">0</span> / <span id="total-count">0</span>)
+                        </h4>
+                        <div class="flex items-center gap-3">
+                            <button onclick="resetCurrentGame()" class="text-xs text-red-500 hover:text-red-700 font-bold flex items-center gap-1 transition-colors">
+                                <span class="material-symbols-outlined text-sm">restart_alt</span> 비우기
+                            </button>
+                            <button onclick="triggerAutoSolve()" class="text-[10px] text-slate-300 hover:text-slate-500 font-bold">
+                                치트
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- 드롭존 수용 (조립 컨테이너) - 스크롤 과도화 완화를 위해 데스크탑 max-height를 상향하고 정돈 -->
+                    <div id="assembly-container" 
+                         class="dropzone custom-scroll flex flex-col gap-2 border-2 border-dashed border-[var(--md-outline)]/40 bg-[var(--md-surface-variant)]/30 rounded-[28px] p-3 transition-all"
+                         style="max-height: 65vh; overflow-y: auto; min-height: 220px;"
+                         ondragover="allowDrop(event)"
+                         ondrop="dropToAssembly(event)">
+                        <!-- JS Dynamic Cards -->
+                    </div>
+
+                    <!-- 하단 채점 액션 바 -->
+                    <div id="submit-actions-panel" class="bg-[var(--md-surface)] border border-[var(--md-surface-variant)] rounded-[20px] p-4 flex flex-col sm:flex-row items-center justify-between gap-4 hidden">
+                        <div class="text-xs text-slate-500 font-bold">
+                            문단 문장을 모두 배치했습니다. 최종 순서를 검증해 보세요.
+                        </div>
+                        <button onclick="submitAndGrade()" class="w-full sm:w-auto bg-[var(--md-primary)] text-[var(--md-on-primary)] hover:opacity-95 text-xs font-black py-3 px-6 rounded-full flex items-center justify-center gap-1.5 transition-all shadow-md">
+                            <span class="material-symbols-outlined text-sm font-bold">task_alt</span> 문장 순서 채점하기
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- ==================== 3. 최종 및 정답 피드백 뷰 ==================== -->
+            <div id="result-feedback-card" class="bg-[var(--md-surface)] border border-[var(--md-surface-variant)] rounded-[28px] p-6 sm:p-8 shadow-sm hidden animate-slideUp">
+                <div class="flex flex-col md:flex-row items-center justify-between gap-6">
+                    <div class="flex items-center gap-4">
+                        <div id="result-icon-box" class="w-14 h-14 rounded-2xl flex items-center justify-center shrink-0">
+                            <!-- JS icon -->
+                        </div>
+                        <div>
+                            <h4 id="result-heading" class="text-lg font-black text-slate-800"></h4>
+                            <p id="result-text" class="text-xs sm:text-sm text-slate-500 mt-1 font-medium"></p>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center gap-6">
+                        <div class="text-center">
+                            <span class="block text-[10px] font-black text-slate-400 uppercase tracking-widest">일치도</span>
+                            <span id="result-accuracy-display" class="text-3xl font-black text-[var(--md-primary)]">0%</span>
+                        </div>
+                        <div class="text-center">
+                            <span class="block text-[10px] font-black text-slate-400 uppercase tracking-widest">소요 시간</span>
+                            <span id="result-time-display" class="text-3xl font-black text-slate-700 font-mono">0:00</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="border-t border-slate-150 pt-5 mt-5 flex flex-col sm:flex-row items-center gap-3 justify-end">
+                    <p id="result-hint-tip" class="text-xs text-amber-600 font-bold mb-3 sm:mb-0 mr-auto flex items-center gap-1.5 hidden">
+                        <span class="material-symbols-outlined text-sm">warning</span> 미니맵에서 간편하게 주황색 배지를 클릭해 오답의 위치를 파악하세요.
+                    </p>
+                    <button onclick="restartSection()" class="w-full sm:w-auto bg-[var(--md-surface-variant)] text-[var(--md-on-surface-variant)] text-xs font-bold py-2.5 px-4 rounded-full transition-all flex items-center justify-center gap-1.5">
+                        <span class="material-symbols-outlined text-sm">replay</span> 처음부터 다시하기
+                    </button>
+                    <button onclick="backToDashboard()" class="w-full sm:w-auto bg-slate-900 text-white text-xs font-bold py-2.5 px-4 rounded-full transition-all flex items-center justify-center gap-1.5">
+                        다른 문단 고르기 <span class="material-symbols-outlined text-sm">navigate_next</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- ==================== 4. 원문 보기 팝업 모달 ==================== -->
+    <div id="original-modal" class="fixed inset-0 bg-slate-950/60 backdrop-blur-xs flex items-center justify-center p-4 z-50 hidden">
+        <div class="bg-white rounded-[28px] max-w-2xl w-full max-h-[80vh] flex flex-col overflow-hidden shadow-2xl border border-slate-100 animate-fadeIn">
+            <div class="bg-slate-50 border-b border-slate-100 p-5 flex items-center justify-between">
+                <div>
+                    <span class="px-2 py-0.5 bg-[var(--md-primary-container)] text-[var(--md-primary)] text-[10px] font-black rounded-md">ORIGINAL TEXT</span>
+                    <h4 id="modal-section-title" class="text-base font-bold text-slate-800 mt-1"></h4>
+                </div>
+                <button onclick="closeOriginalModal()" class="p-1.5 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-full transition-colors flex items-center justify-center">
+                    <span class="material-symbols-outlined">close</span>
+                </button>
+            </div>
+
+            <div id="modal-content-body" class="p-6 overflow-y-auto space-y-4 custom-scroll">
+                <!-- JS Original Data -->
+            </div>
+
+            <div class="border-t border-slate-100 p-4 bg-slate-50 flex justify-end">
+                <button onclick="closeOriginalModal()" class="bg-slate-900 text-white text-xs font-bold py-2.5 px-6 rounded-full hover:bg-orange-600 transition-colors">
+                    닫기
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 토스트 알림 컴포넌트 -->
+    <div id="toast-message" class="fixed bottom-6 right-6 bg-slate-900 text-white px-5 py-3.5 rounded-[20px] text-xs font-bold shadow-2xl flex items-center gap-2.5 transform translate-y-20 opacity-0 transition-all duration-300 z-50">
+        <span class="material-symbols-outlined text-amber-400">notifications</span>
+        <span id="toast-text">알림</span>
+    </div>
+
+    <!-- 푸터 -->
+    <footer class="bg-[var(--md-surface)] border-t border-[var(--md-surface-variant)] py-6 text-center text-[10px] text-slate-400 font-bold shrink-0">
+        <p>© 2026 High School English Journey. Material Design 3 Edition.</p>
+    </footer>
+
+    <!-- 비즈니스 로직 스크립트 -->
+    <script>
+        // 전개된 통합 지문 데이터셋 (Lesson 3 & Lesson 4)
+        const INTEGRATED_LESSON_DATA = {
+            3: {
+                title: "Lesson 3. Journey into Another Culture",
+                subtitle: "A Trip to the Netherlands",
+                sections: [
+                    {
+                        id: 1,
+                        title: "The Anne Frank House and the Prinsengracht in Amsterdam",
+                        titleKo: "안네 프랑크의 집과 암스테르담 프린센흐라흐트 운하",
+                        description: "암스테르담에서의 역사적인 첫 걸음, 안네 프랑크의 집과 운하 크루즈 여행기",
+                        sentences: [
+                            { text: "Before my trip to the Netherlands, all I knew of the country was that it is famous for windmills and tulips.", ko: "네덜란드 여행을 가기 전에 내가 그 나라에 대해 알고 있던 전부라곤 풍차와 튤립으로 유명하다는 것뿐이었다." },
+                            { text: "But as I cycled from place to place, I experienced many things that I hadn't expected, and I wanted to share some of them with you.", ko: "하지만 이곳저곳 자전거를 타고 다니면서 예상치 못했던 많은 것들을 경험했고, 그중 일부를 여러분과 공유하고 싶었다." },
+                            { text: "My first stop was the Anne Frank House, one of the old buildings lined up along the Prinsengracht, a canal in Amsterdam.", ko: "나의 첫 번째 목적지는 암스테르담의 운하인 프린센흐라흐트를 따라 줄지어 서 있는 오래된 건물 중 하나인 '안네 프랑크의 집'이었다." },
+                            { text: "Since it was close to the hotel I was staying at, I decided to rent a bike to go there.", ko: "내가 묵고 있던 호텔과 가까웠기 때문에, 나는 그곳에 가기 위해 자전거를 빌리기로 했다." },
+                            { text: "I enjoyed riding along the canal.", ko: "나는 운하를 따라 자전거를 타는 것을 즐겼다." },
+                            { text: "The Anne Frank House is one of the most visited museums in the Netherlands.", ko: "안네 프랑크의 집은 네덜란드에서 가장 많은 사람들이 찾는 미술관 중 하나이다." },
+                            { text: "It housed the secret hiding place of Anne Frank.", ko: "그곳에는 안네 프랑크의 비밀 은신처가 보존되어 있었다." },
+                            { text: "There was an old bookcase on the second floor.", ko: "2층에는 오래된 책장이 하나 있었다." },
+                            { text: "It looked ordinary, but behind it was a secret space where Anne and her family hid for over two years during World War II.", ko: "평범해 보였지만, 그 뒤에는 제2차 세계대전 동안 안네와 그녀의 가족이 2년 넘게 숨어 지냈던 비밀 공간이 있었다." },
+                            { text: "The steep stairs and narrow passages gave me a better understanding of what life must have been like for them back then.", ko: "가파른 계단과 좁은 통로는 당시 그들의 삶이 어땠을지 더 잘 이해할 수 있게 해 주었다." },
+                            { text: "After visiting the Anne Frank House, I took a canal cruise on the Prinsengracht.", ko: "안네 프랑크의 집을 방문한 후, 나는 프린센흐라흐트에서 운하 크루즈를 탔다." },
+                            { text: "The canal houses I saw along the way had mostly been built during the Dutch Golden Age, which gives them great historical value.", ko: "길을 따라 마주한 운하 주택들은 대부분 네덜란드 황금기에 지어진 것으로, 역사적 가치가 매우 높다." },
+                            { text: "Taking the cruise was a great way to see the city from different angles.", ko: "크루즈를 타는 것은 도시를 다양한 각도에서 감상할 수 있는 좋은 방법이었다." },
+                            { text: "The gentle touch of the wind made the experience even more pleasant.", ko: "부드러운 바람의 감촉이 그 경험을 한층 더 즐겁게 만들어 주었다." }
+                        ]
+                    },
+                    {
+                        id: 2,
+                        title: "The Van Gogh Museum in Amsterdam",
+                        titleKo: "암스테르담의 반 고흐 미술관",
+                        description: "빈센트 반 고흐의 명작들과 그의 남동생 테오에 대한 애정이 담긴 편지들",
+                        sentences: [
+                            { text: "Amsterdam is home to a lot of museums, but the Van Gogh Museum was the one I was really excited to visit.", ko: "암스테르담에는 많은 미술관이 있지만, 반 고흐 미술관은 내가 정말 가보고 싶어 했던 곳이었다." },
+                            { text: "The most interesting part of the museum was the way the exhibits were arranged to show how the artist's style had changed over time.", ko: "미술관에서 가장 흥미로웠던 부분은 화가의 화풍이 시간이 흐름에 따라 어떻게 변했는지를 보여 주도록 전시물이 배열된 방식이었다." },
+                            { text: "The museum showed many of Vincent van Gogh's most well-known works, including my personal favorites: The Bedroom, Sunflowers, and Wheatfield with Crows.", ko: "미술관은 내가 개인적으로 가장 좋아하는 '아를의 반 고흐의 방', '해바라기', '까마귀가 있는 밀밭'을 포함하여 빈센트 반 고흐의 가장 잘 알려진 작품들을 많이 전시하고 있었다." },
+                            { text: "The bright colors in The Bedroom seemed to convey a sense of relaxation.", ko: "'아를의 반 고흐의 방'의 밝은 색상들은 편안함을 전달하는 듯했다." },
+                            { text: "The different shades of yellow in Sunflowers were just amazing.", ko: "'해바라기'의 다양한 노란색 색조는 정말 놀라웠다." },
+                            { text: "In Wheatfield with Crows, the contrast between the bright yellow wheat field and the cool blue sky was striking.", ko: "'까마귀가 있는 밀밭'에서는 밝은 노란색 밀밭과 차가운 파란색 하늘의 대비가 강렬했다." },
+                            { text: "Overall, seeing the artworks in person was a very powerful experience.", ko: "전반적으로 예술 작품들을 직접 감상한 것은 매우 강렬한 경험이었다." },
+                            { text: "The museum also displayed the letters that Van Gogh wrote to his younger brother, Theo.", ko: "미술관은 또한 반 고흐가 그의 남동생 테오에게 쓴 편지들도 전시하고 있었다." },
+                            { text: "Reading those letters, I found out how much the artist loved his brother.", ko: "그 편지들을 읽으며, 나는 이 화가가 그의 남동생을 얼마나 사랑했는지 알게 되었다." },
+                            { text: "After I bought a few postcards with Van Gogh's art on them, I slowly cycled back to the hotel.", ko: "반 고흐의 미술 작품이 담긴 엽서 몇 장을 산 후, 나는 천천히 자전거를 타고 호텔로 돌아왔다." },
+                            { text: "On my way back, I couldn't help but admire the beautiful, calm, and scenic views of the city, especially people relaxing on the grass and enjoying the sun.", ko: "돌아오는 길에 나는 도시의 아름답고 차분하며 이국적인 풍경, 특히 잔디밭에서 휴식을 취하며 햇볕을 즐기는 사람들의 모습에 감탄하지 않을 수 없었다." }
+                        ]
+                    },
+                    {
+                        id: 3,
+                        title: "Windmills in the Zaanse Schans and Seafood in Volendam",
+                        titleKo: "잔세스칸스의 풍차와 볼렌담의 해산물 맛보기",
+                        description: "네덜란드 전통 문화를 직접 느끼는 바람개비 마을과 맛있는 해산물 요리 여행",
+                        sentences: [
+                            { text: "I highly recommend visiting the Zaanse Schans and Volendam if you want to get out of the busy city to experience traditional Dutch culture.", ko: "바쁜 도시에서 벗어나 전통적인 네덜란드 문화를 경험하고 싶다면 잔세스칸스와 볼렌담을 방문하는 것을 적극 추천한다." },
+                            { text: "A trip to the Netherlands wouldn't be complete without a visit to the windmills.", ko: "풍차를 방문하지 않고는 네덜란드 여행이 완성되지 않을 것이다." },
+                            { text: "Fortunately, you can get to the Zaanse Schans, which is famous for its windmills, in just 17 minutes by train from Amsterdam.", ko: "다행히도 풍차로 유명한 잔세스칸스까지는 암스테르담에서 기차로 단 17분 만에 갈 수 있다." },
+                            { text: "The moment I saw the village, its beauty took my breath away.", ko: "마을을 보는 순간 그 아름다움에 숨이 멎을 것 같았다." },
+                            { text: "Several windmills were spinning by the river in the distance.", ko: "저 멀리 강가에서 여러 개의 풍차가 돌고 있었다." },
+                            { text: "Soon I felt like I was taken to a point in the past.", ko: "곧 나는 마치 과거의 어느 한 시점으로 이동한 것 같은 느낌이 들었다." },
+                            { text: "I looked into one of the working windmills, and it was grinding nuts into oil with its large stone wheels.", ko: "나는 작동 중인 풍차 중 하나를 들여다보았는데, 커다란 맷돌로 견과류를 빻아 기름을 만들고 있었다." },
+                            { text: "Near the windmills, I found a cheese farm and a clog factory.", ko: "풍차 근처에서 나는 치즈 농장과 나막신 공장을 발견했다." },
+                            { text: "I was surprised by the variety of Dutch cheeses and actually a little unsure about tasting them at first because they were mostly new to me.", ko: "나는 네덜란드 치즈의 다양성에 놀랐고, 대부분 처음 접하는 것이었기 때문에 처음에는 맛보는 것이 조금 망설여졌다." },
+                            { text: "However, when I tried some of them, they turned out to be incredibly satisfying.", ko: "하지만 맛을 보았을 때, 그것들은 믿을 수 없을 정도로 아주 만족스러웠다." },
+                            { text: "I also tried on a few pairs of clogs and found them quite comfortable, which I hadn't expected.", ko: "나막신도 몇 켤레 신어 보았는데, 예상치 못하게 꽤 편안하다는 것을 알게 되었다." },
+                            { text: "Volendam was a pretty fishing village with neat rows of brick houses with orange roofs.", ko: "볼렌담은 주황색 지붕의 벽돌 주택이 깔끔하게 늘어선 예쁜 어촌 마을이었다." },
+                            { text: "The harbor was dotted with boats.", ko: "항구에는 배들이 군데군데 떠 있었다." },
+                            { text: "I rented a bike to explore Volendam, and the shop owner said, \"In Volendam, do as the locals do and eat seafood.\"", ko: "볼렌담을 둘러보기 위해 자전거를 빌렸는데, 가게 주인이 \"볼렌담에서는 현지인들처럼 해산물을 드셔보세요\"라고 말했다." },
+                            { text: "At a restaurant, I ordered one of the Netherlands' most popular dishes, kibbeling.", ko: "한 식당에서 나는 네덜란드에서 가장 인기 있는 요리 중 하나인 키벨링(kibbeling)을 주문했다." },
+                            { text: "The fried fish snack was hot, fresh, and absolutely delicious!", ko: "그 튀긴 생선 간식은 뜨겁고 신선하며 완전히 맛있었다!" }
+                        ]
+                    },
+                    {
+                        id: 4,
+                        title: "The Cube Houses in Rotterdam",
+                        titleKo: "로테르담의 독특한 입체 건물, 큐브 하우스",
+                        description: "전쟁의 폐허를 극복하고 예술적인 건축 도시로 탄생한 로테르담과 45도 기울어진 노란 주택들",
+                        sentences: [
+                            { text: "After being completely destroyed during World War II, Rotterdam was restored into a beautiful port city.", ko: "제2차 세계대전 중 완전히 파괴된 후, 로테르담은 아름다운 항구 도시로 복원되었다." },
+                            { text: "Experimental and artistic constructions were used to improve the appearance of the city.", ko: "도시의 미관을 개선하기 위해 실험적이고 예술적인 건축물들이 활용되었다." },
+                            { text: "The Cube Houses in Rotterdam are among the most innovative buildings in the country.", ko: "로테르담의 큐브 하우스는 이 나라에서 가장 혁신적인 건축물 중 하나이다." },
+                            { text: "The bright yellow houses were something I had been looking forward to seeing, and they were as fantastic as I had expected.", ko: "밝은 노란색의 집들은 내가 보기를 고대해 왔던 것이었는데, 기대했던 것만큼이나 환상적이었다." },
+                            { text: "One of the key features of the Cube Houses is that the cubes are tilted by 45 degrees.", ko: "큐브 하우스의 핵심 특징 중 하나는 큐브가 45도 기울어져 있다는 점이다." },
+                            { text: "I visited the Show Cube Museum to get a feel of what life in such a house was like.", ko: "나는 그런 집에서의 생활이 어떨지 느껴보기 위해 쇼큐브 박물관(Show Cube Museum)을 방문했다." },
+                            { text: "From the outside, it looked entirely twisted, but once I went inside, it was surprisingly quite comfortable.", ko: "밖에서 보았을 때는 완전히 뒤틀린 것처럼 보였지만, 일단 들어가 보니 놀랍게도 꽤 안락했다." },
+                            { text: "For the last few days after the trip, I haven't been able to get the charming sights of the Netherlands out of my mind.", ko: "여행을 다녀온 후 지난 며칠 동안 네덜란드의 매력적인 풍경들이 머릿속에서 떠나지 않았다." },
+                            { text: "If you ever plan to visit the country, I really hope that you will find my post helpful.", ko: "만약 여러분이 이 나라를 방문할 계획이 있다면, 내 글이 도움이 되기를 진심으로 바란다." }
+                        ]
+                    }
+                ]
+            },
+            4: {
+                title: "Lesson 4. Painting Our World Greener",
+                subtitle: "Art & Our Environment",
+                sections: [
+                    {
+                        id: 1,
+                        title: "Introduction to Art & Environment",
+                        titleKo: "예술과 환경의 만남 (도입부)",
+                        description: "예술이 우리 사회와 지구적 문제에 기여하고 영감을 주는 주도적인 역할",
+                        sentences: [
+                            { text: "While art can stir up a sense of beauty in us, it can also draw a spirited reaction from the public.", ko: "예술이 우리에게 아름다움의 감각을 불러일으킬 수도 있지만, 대중으로부터 열정적인 반응을 이끌어낼 수도 있다." },
+                            { text: "An excellent artistic piece can communicate a message to us and even change our ways of looking at our surroundings.", ko: "훌륭한 예술 작품은 우리에게 메시지를 전달할 수 있고 우리의 주변 환경을 바라보는 방식마저도 바꿀 수 있다." },
+                            { text: "That is why art has played an essential role in addressing social and global issues throughout history.", ko: "그것이 예술이 역사 전반에 걸쳐 사회적 및 지구적 문제를 다루는 데 본질적인 역할을 해온 이유이다." },
+                            { text: "Let us take a look at a few modern artworks that address environmental issues.", ko: "환경 문제를 다루는 몇몇 현대 예술 작품들을 한 번 살펴보자." }
+                        ]
+                    },
+                    {
+                        id: 2,
+                        title: "Benjamin Von Wong (Turn Off the Plastic Tap)",
+                        titleKo: "벤자민 폰 웡과 '플라스틱 수도꼭지를 잠가라'",
+                        description: "매 분 바다로 흘러드는 플라스틱의 위험성과 환경에 대한 소비자의 사회적 연대 압박",
+                        sentences: [
+                            { text: "The first art piece is a photograph by Benjamin Von Wong.", ko: "첫 번째 예술 작품은 벤자민 폰 웡의 사진이다." },
+                            { text: "His artworks rally people around environmental actions.", ko: "그의 예술 작품들은 사람들을 환경적 행동을 위해 결집시킨다." },
+                            { text: "In the photo on the left, titled Turn Off the Plastic Tap, he tries to highlight the fact that a huge amount of plastic enters the ocean every minute.", ko: "왼쪽에 있는 '플라스틱 수도꼭지를 잠가라'라는 제목의 사진에서, 그는 매분 엄청난 양의 플라스틱이 바다로 흘러 들어간다는 사실을 강조하고자 한다." },
+                            { text: "He says, \"You can't order a product online without having it delivered in plastic packaging.\"", ko: "그는 \"플라스틱 포장재에 담겨 배송되지 않고는 온라인으로 상품을 주문할 수 없습니다.\"라고 말한다." },
+                            { text: "Also, the clothes you are wearing must be, at least in part, made of plastic.", ko: "또한, 여러분이 입고 있는 옷도 최소한 일부분은 플라스틱으로 만들어져 있을 것임에 틀림없습니다." },
+                            { text: "Dependence on plastic is built into the supply chain, so the individual consumer finds it harder and harder to opt out.", ko: "플라스틱에 대한 의존이 공급망 자체에 깊숙이 자리 잡고 있어서, 개별 소비자가 이를 거부하기는 점점 더 어려워지고 있습니다." },
+                            { text: "Of course, you can choose not to purchase products containing plastic, but that only goes so far.", ko: "물론 플라스틱을 포함하는 제품을 사지 않기로 선택할 수는 있지만, 그것도 한계가 있습니다." },
+                            { text: "I think it is important for you to inform your friends and family of the issue because at the end of the day, you know, companies and governments can't ignore the interest of the consumers.", ko: "결국 기업과 정부는 소비자의 관심사를 무시할 수 없기 때문에, 여러분이 친구와 가족에게 이 문제를 알리는 것이 중요하다고 생각합니다." },
+                            { text: "At the same time, we also need to pressure governments and corporations to do the right thing.", ko: "동시에, 우리는 정부와 기업들이 올바른 일을 하도록 압박할 필요도 있습니다." }
+                        ]
+                    },
+                    {
+                        id: 3,
+                        title: "Jenny Kendler (Forget Me Not)",
+                        titleKo: "제니 켄들러와 바다를 위한 러브레터 '물망초'",
+                        description: "화석연료 연소로 인해 산성화되는 바다와 해양 껍데기 생물의 보이지 않는 위기",
+                        sentences: [
+                            { text: "The next piece, titled Forget Me Not, is Jenny Kendler's personal love letter to the sea.", ko: "다음 작품인 '물망초'는 바다를 향한 제니 켄들러의 개인적인 러브레터이다." },
+                            { text: "She covered an old boom box with various shells, which took her a year to collect.", ko: "그녀는 오래된 카세트 라디오를 다양한 조개껍데기로 덮었는데, 이를 수집하는 데 그녀가 1년이라는 시간이 걸렸다." },
+                            { text: "The boom box plays something you may regard as calming ocean sounds.", ko: "그 라디오는 여러분이 마음을 차분하게 해주는 바다 소리로 여길 만한 것을 재생한다." },
+                            { text: "They are actually what she recorded as she had one of her baby teeth dissolve in acid.", ko: "그것들은 사실 그녀가 자신의 젖니 중 하나를 산에 녹이면서 녹음한 소리이다." },
+                            { text: "She wanted us to think of what sea creatures might go through one day if we continue burning fossil fuels carelessly.", ko: "그녀는 우리가 화석 연료를 부주의하게 계속 연소한다면 해양 생물들이 언젠가 겪게 될 일을 우리가 생각해 보기를 원했다." },
+                            { text: "As the ocean absorbs more and more carbon dioxide, it becomes more and more acidic.", ko: "바다가 점점 더 많은 이산화탄소를 흡수함에 따라, 바다는 점점 더 산성화된다." },
+                            { text: "Under this condition, the hard shells of many marine species will dissolve.", ko: "이러한 상태에서는 많은 해양 생물의 단단한 껍데기가 녹아버릴 것이다." },
+                            { text: "Kendler says, \"I wanted to inspire people to raise their own awareness about what they can actually do as individuals, but at the same time, I hoped to encourage collective action and collective responsibility.\"", ko: "켄들러는 \"저는 사람들이 개인으로서 실제로 무엇을 할 수 있는지에 대해 스스로 인식을 높이도록 고취하고 싶었지만, 동시에 집단적인 행동과 공동의 책임을 장려하고 싶었습니다.\"라고 말한다." },
+                            { text: "One thing that art can do really well is to help us imagine how the world might be otherwise.", ko: "예술이 정말 잘할 수 있는 한 가지는 세상이 그렇지 않다면 어떻게 될지 상상하도록 돕는 것입니다." },
+                            { text: "Certainly, we can't get to a different place if we can't imagine it.", ko: "확실히, 우리가 상상할 수 없다면 우리는 다른 곳에 도달할 수 없습니다." }
+                        ]
+                    },
+                    {
+                        id: 4,
+                        title: "Jon Ching (Homestead) & Conclusion",
+                        titleKo: "존 칭의 '홈스테드'와 지구의 마법을 지키는 변화",
+                        description: "생태계의 상호 연대성과 앤디 워홀의 격언으로 끝맺는 실천적인 행동 촉구",
+                        sentences: [
+                            { text: "The piece below, titled Homestead, is a painting by Jon Ching.", ko: "아래의 '홈스테드'라는 작품은 존 칭의 그림이다." },
+                            { text: "Most of his work, including this painting, is a celebration of nature and a quiet appeal to humans to appreciate the world around them.", ko: "이 그림을 포함한 그의 작품 대부분은 대자연에 대한 찬사이며, 인간이 그들 주변의 세상을 소중히 여기도록 촉구하는 조용한 호소이다." },
+                            { text: "\"I believe we've separated ourselves from nature and no longer see how we fit in.\"", ko: "그는 \"저는 우리가 스스로를 자연과 분리해 왔으며, 우리가 어떻게 그 안에 어우러지는지를 더 이상 보지 못한다고 믿습니다.\"라고 말한다." },
+                            { text: "\"Instead of helping nature thrive, we are simply consuming it,\" says Ching.", ko: "칭은 \"자연이 번창하도록 돕는 대신, 우리는 그저 자연을 소비하고 있을 뿐입니다.\"라고 말한다." },
+                            { text: "One cannot help but smile at his paintings, which are rich in color and tenderness.", ko: "풍부한 색채와 부드러움이 가득한 그의 그림을 보면 미소를 짓지 않을 수 없다." },
+                            { text: "One of the fun aspects of his work is how he blends the features of one life form with those of another.", ko: "그의 작품의 재미있는 점 중 하나는 한 생명체의 특징을 다른 생명체의 특징과 혼합하는 방식이다." },
+                            { text: "\"I've been using my work as a means of commenting on issues and problems I'm heavily interested in.\"", ko: "\"저는 제가 깊이 관심을 두고 있는 쟁점과 문제들에 대해 의견을 표명하는 수단으로 제 작품을 사용해 왔습니다.\"" },
+                            { text: "\"I find it necessary to express a silver lining rather than just reflect on what's wrong.\"", ko: "\"저는 단지 무엇이 잘못되었는지 반영하기보다 한 줄기 희망을 표현하는 것이 필요하다고 생각합니다.\"" },
+                            { text: "\"I want to show that everything is connected and that protecting nature is actually protecting us.\"", ko: "\"저는 모든 것이 연결되어 있으며 자연을 보호하는 것이 사실 우리 자신을 보호하는 것임을 보여주고 싶습니다.\"" },
+                            { text: "\"My call to action is to remember the magic and wonder of this planet.\"", ko: "\"행동을 촉구하는 저의 메시지는 이 행성의 마법과 경이로움을 기억하라는 것입니다.\"" },
+                            { text: "Art can strike up conversations about the environment, but more importantly, it can also make a great difference by inspiring us to take action.", ko: "예술은 환경에 대한 대화를 시작할 수 있지만, 더 중요한 것은 우리가 행동을 취하도록 영감을 줌으로써 큰 변화를 만들어낼 수도 있다는 점이다." },
+                            { text: "The following words from Andy Warhol, an American pop artist, ring especially true in this context.", ko: "미국의 팝 아티스트 앤디 워홀이 남긴 다음의 말이 이 맥락에서 특히 가슴에 와닿는다." },
+                            { text: "\"They always say time changes things, but you actually have to change them yourself.\"", ko: "\"사람들은 항상 시간이 상황을 바꾼다고 말하지만, 실제로는 여러분 스스로가 상황을 바꾸어야 합니다.\"" }
+                        ]
+                    }
+                ]
+            }
+        };
+
+        // 앱 상태 데이터
+        let activeLessonTab = 3; // 기본 대시보드에서 Lesson 3 선택 상태
+        let selectedSection = null;
+        let scrambledPool = [];
+        let userAssembly = [];
+        let showHints = true;
+        let realTimeCheck = false;
+        let isCompactView = false; 
+        let timeElapsed = 0;
+        let timerInterval = null;
+        let checkTriggered = false;
+        let speakingText = "";
+        
+        // 최고 점수 & 타이머 대시보드 연동용 (Lesson 3 & 4 별도 보존)
+        let stats = {
+            3: {
+                1: { completed: false, bestTime: null, maxAccuracy: 0 },
+                2: { completed: false, bestTime: null, maxAccuracy: 0 },
+                3: { completed: false, bestTime: null, maxAccuracy: 0 },
+                4: { completed: false, bestTime: null, maxAccuracy: 0 }
+            },
+            4: {
+                1: { completed: false, bestTime: null, maxAccuracy: 0 },
+                2: { completed: false, bestTime: null, maxAccuracy: 0 },
+                3: { completed: false, bestTime: null, maxAccuracy: 0 },
+                4: { completed: false, bestTime: null, maxAccuracy: 0 }
+            }
+        };
+
+        // 모바일 독립 탭 관리자
+        let currentMobileTab = 'pool';
+
+        // 드래그앤드롭 추적기
+        let draggedItemId = null;
+        let draggedSource = null; 
+        let draggedIndex = null;  
+
+        window.onload = function() {
+            renderDashboard();
+            setupDragInteractions();
+        }
+
+        // ==================== 테마 체인저 ====================
+        function changeTheme(themeName) {
+            const root = document.documentElement;
+            if (themeName === 'terracotta') {
+                root.style.setProperty('--md-primary', '#8F4E00');
+                root.style.setProperty('--md-primary-container', '#FFDCC3');
+                root.style.setProperty('--md-surface', '#FFF8F6');
+                root.style.setProperty('--md-surface-variant', '#F4E0D4');
+                root.style.setProperty('--md-outline', '#85736B');
+            } else if (themeName === 'wheat') {
+                root.style.setProperty('--md-primary', '#6A5E00');
+                root.style.setProperty('--md-primary-container', '#F7E65D');
+                root.style.setProperty('--md-surface', '#FFFBF0');
+                root.style.setProperty('--md-surface-variant', '#EBE2CD');
+                root.style.setProperty('--md-outline', '#7C7667');
+            } else if (themeName === 'blue') {
+                root.style.setProperty('--md-primary', '#005FAF');
+                root.style.setProperty('--md-primary-container', '#D4E3FF');
+                root.style.setProperty('--md-surface', '#F8F9FF');
+                root.style.setProperty('--md-surface-variant', '#E0E2EC');
+                root.style.setProperty('--md-outline', '#74777F');
+            } else if (themeName === 'sage') {
+                root.style.setProperty('--md-primary', '#2F6B27');
+                root.style.setProperty('--md-primary-container', '#B1F4A0');
+                root.style.setProperty('--md-surface', '#F7FBF4');
+                root.style.setProperty('--md-surface-variant', '#DFE4D7');
+                root.style.setProperty('--md-outline', '#75796F');
+            }
+            showToast(`테마가 변경되었습니다: ${themeName.toUpperCase()}`);
+        }
+
+        function showToast(message) {
+            const toast = document.getElementById("toast-message");
+            const toastText = document.getElementById("toast-text");
+            toastText.textContent = message;
+            toast.classList.remove("translate-y-20", "opacity-0");
+            toast.classList.add("translate-y-0", "opacity-100");
+            
+            setTimeout(() => {
+                toast.classList.remove("translate-y-0", "opacity-100");
+                toast.classList.add("translate-y-20", "opacity-0");
+            }, 3000);
+        }
+
+        // ==================== 대시보드 단원 탭 전환 기능 ====================
+        function switchLessonDashboard(lessonNum) {
+            activeLessonTab = lessonNum;
+            const tab3 = document.getElementById("lesson-tab-3");
+            const tab4 = document.getElementById("lesson-tab-4");
+
+            if (lessonNum === 3) {
+                tab3.className = "flex-1 py-4 text-center text-sm font-black rounded-2xl transition-all bg-[var(--md-primary)] text-[var(--md-on-primary)] shadow flex items-center justify-center gap-2";
+                tab4.className = "flex-1 py-4 text-center text-sm font-black rounded-2xl transition-all text-slate-600 hover:text-[var(--md-primary)] flex items-center justify-center gap-2";
+            } else {
+                tab3.className = "flex-1 py-4 text-center text-sm font-black rounded-2xl transition-all text-slate-600 hover:text-[var(--md-primary)] flex items-center justify-center gap-2";
+                tab4.className = "flex-1 py-4 text-center text-sm font-black rounded-2xl transition-all bg-[var(--md-primary)] text-[var(--md-on-primary)] shadow flex items-center justify-center gap-2";
+            }
+
+            renderDashboard();
+            showToast(`Lesson ${lessonNum} 단원으로 전환되었습니다.`);
+        }
+
+        // ==================== 1. 대시보드 렌더러 ====================
+        function renderDashboard() {
+            const grid = document.getElementById("section-cards-grid");
+            const titleEl = document.getElementById("dashboard-section-title");
+            grid.innerHTML = "";
+
+            const activeLesson = INTEGRATED_LESSON_DATA[activeLessonTab];
+            titleEl.innerHTML = `
+                <span class="material-symbols-outlined text-[var(--md-primary)] font-bold">folder_open</span> 
+                ${activeLesson.title} 단락 리스트
+            `;
+
+            activeLesson.sections.forEach(section => {
+                const sStat = stats[activeLessonTab][section.id];
+                let statusBadge = `<span class="text-xs text-slate-400 font-bold">총 ${section.sentences.length}개 구성문장</span>`;
+                
+                if (sStat.completed) {
+                    statusBadge = `
+                        <span class="flex items-center gap-1 text-[11px] font-black text-emerald-600 bg-emerald-50 px-3 py-1 rounded-full border border-emerald-100">
+                            <span class="material-symbols-outlined text-sm font-bold">check_circle</span> 완료됨
+                        </span>
+                    `;
+                }
+
+                const bestTimeFormatted = sStat.bestTime !== null ? formatTime(sStat.bestTime) : "--:--";
+
+                const cardHtml = `
+                    <div class="bg-white border border-slate-100 rounded-[28px] p-6 shadow-sm hover:shadow-md hover:border-[var(--md-primary)]/20 transition-all duration-300 flex flex-col justify-between group">
+                        <div>
+                            <div class="flex items-center justify-between mb-4">
+                                <span class="px-3 py-1 bg-slate-100 text-slate-500 text-[10px] font-black rounded-xl group-hover:bg-[var(--md-primary-container)] group-hover:text-[var(--md-primary)] transition-all uppercase">
+                                    SECTION 0${section.id}
+                                </span>
+                                ${statusBadge}
+                            </div>
+
+                            <h4 class="text-base sm:text-lg font-black text-slate-800 tracking-tight group-hover:text-[var(--md-primary)] transition-all mb-1">
+                                ${section.title}
+                            </h4>
+                            <p class="text-xs sm:text-sm font-semibold text-slate-400 mb-4">
+                                ${section.titleKo}
+                            </p>
+                            <p class="text-xs text-slate-400 leading-relaxed font-medium mb-6">
+                                ${section.description}
+                            </p>
+                        </div>
+
+                        <div class="border-t border-slate-100 pt-4 flex items-center justify-between">
+                            <div class="flex items-center gap-4 text-xs text-slate-500 font-bold">
+                                <div>
+                                    <span class="block text-[8px] text-slate-400 font-black">BEST ACCURACY</span>
+                                    <span class="font-extrabold text-slate-700">${sStat.maxAccuracy}%</span>
+                                </div>
+                                <div>
+                                    <span class="block text-[8px] text-slate-400 font-black">RECORD</span>
+                                    <span class="font-extrabold text-slate-700 flex items-center gap-0.5">
+                                        <span class="material-symbols-outlined text-xs">schedule</span> ${bestTimeFormatted}
+                                    </span>
+                                </div>
+                            </div>
+
+                            <button onclick="startSection(${activeLessonTab}, ${section.id})"
+                                    class="m3-interactive flex items-center gap-1 bg-slate-900 text-white hover:bg-[var(--md-primary)] text-xs font-black py-2.5 px-4 rounded-full transition-all">
+                                시작 <span class="material-symbols-outlined text-xs font-bold">arrow_forward</span>
+                            </button>
+                        </div>
+                    </div>
+                `;
+                grid.innerHTML += cardHtml;
+            });
+        }
+
+        // ==================== 2. 플레이어 제어기 ====================
+        function startSection(lessonId, sectionId) {
+            window.speechSynthesis.cancel();
+            
+            // 현재 활성 레슨/섹션 보정
+            activeLessonTab = lessonId;
+            selectedSection = INTEGRATED_LESSON_DATA[lessonId].sections.find(s => s.id === sectionId);
+            
+            const mapped = selectedSection.sentences.map((item, index) => ({
+                id: `sentence-${lessonId}-${sectionId}-${index}`,
+                text: item.text,
+                translation: item.ko,
+                originalIndex: index
+            }));
+
+            scrambledPool = shuffleArray(mapped);
+            userAssembly = [];
+            timeElapsed = 0;
+            checkTriggered = false;
+
+            document.getElementById("dashboard-view").classList.add("hidden");
+            document.getElementById("game-view").classList.remove("hidden");
+            
+            document.getElementById("game-section-badge").textContent = `LESSON 0${lessonId} • SECTION 0${selectedSection.id}`;
+            document.getElementById("game-section-title").textContent = selectedSection.title;
+            document.getElementById("game-section-subtitle").textContent = selectedSection.titleKo;
+
+            // 모바일 독립 탭 세팅
+            switchMobileTab('pool');
+
+            resetTimer();
+            startTimer();
+
+            document.getElementById("result-feedback-card").classList.add("hidden");
+
+            renderGameBoards();
+            updateProgressBar();
+        }
+
+        function backToDashboard() {
+            window.speechSynthesis.cancel();
+            stopTimer();
+            selectedSection = null;
+            document.getElementById("game-view").classList.add("hidden");
+            document.getElementById("dashboard-view").classList.remove("hidden");
+            renderDashboard();
+        }
+
+        // ==================== 스마트 모바일 탭 스위처 ====================
+        function switchMobileTab(tab) {
+            currentMobileTab = tab;
+            const poolWrapper = document.getElementById("pool-workspace-wrapper");
+            const assemblyWrapper = document.getElementById("assembly-workspace-wrapper");
+            const btnPool = document.getElementById("mobile-tab-pool");
+            const btnAssembly = document.getElementById("mobile-tab-assembly");
+
+            if (tab === 'pool') {
+                poolWrapper.classList.remove("hidden");
+                assemblyWrapper.classList.add("hidden", "md:block"); 
+                
+                btnPool.className = "flex-1 py-3 text-xs font-black rounded-xl text-center transition-all bg-[var(--md-primary)] text-[var(--md-on-primary)] shadow flex items-center justify-center gap-1";
+                btnAssembly.className = "flex-1 py-3 text-xs font-black rounded-xl text-center transition-all text-slate-600 flex items-center justify-center gap-1";
+            } else {
+                poolWrapper.classList.add("hidden", "md:block");
+                assemblyWrapper.classList.remove("hidden");
+                
+                btnPool.className = "flex-1 py-3 text-xs font-black rounded-xl text-center transition-all text-slate-600 flex items-center justify-center gap-1";
+                btnAssembly.className = "flex-1 py-3 text-xs font-black rounded-xl text-center transition-all bg-[var(--md-primary)] text-[var(--md-on-primary)] shadow flex items-center justify-center gap-1";
+            }
+        }
+
+        // 배치 상태 프로그레스 바 및 미니맵 동적 갱신
+        function updateProgressBar() {
+            if (!selectedSection) return;
+            const total = selectedSection.sentences.length;
+            const current = userAssembly.length;
+            const ratio = total > 0 ? Math.round((current / total) * 100) : 0;
+
+            document.getElementById("progress-text").textContent = `${current} / ${total} 문장 배치됨 (${ratio}%)`;
+            document.getElementById("progress-bar-fill").style.width = `${ratio}%`;
+
+            document.getElementById("mobile-pool-badge").textContent = scrambledPool.length;
+            document.getElementById("mobile-assembly-badge").textContent = current;
+
+            renderMinimap();
+        }
+
+        // ==================== 오답 추적용 미니맵 렌더링 ====================
+        function renderMinimap() {
+            const minimap = document.getElementById("assembly-minimap");
+            const statsText = document.getElementById("minimap-stats");
+            
+            if (!selectedSection) return;
+            minimap.innerHTML = "";
+
+            let correct = 0;
+            let incorrect = 0;
+            const total = selectedSection.sentences.length;
+
+            for (let i = 0; i < total; i++) {
+                const itemInAssembly = userAssembly[i];
+                let bgClass = "bg-slate-100 text-slate-400 hover:bg-slate-200"; 
+                let borderClass = "border border-slate-300";
+                let iconSymbol = "";
+
+                if (itemInAssembly) {
+                    if (checkTriggered || realTimeCheck) {
+                        if (itemInAssembly.originalIndex === i) {
+                            bgClass = "bg-emerald-500 text-white hover:bg-emerald-600 shadow-sm";
+                            borderClass = "border-none";
+                            iconSymbol = "check";
+                            correct++;
+                        } else {
+                            bgClass = "bg-amber-500 text-white hover:bg-amber-600 shadow-sm";
+                            borderClass = "border-none";
+                            iconSymbol = "warning";
+                            incorrect++;
+                        }
+                    } else {
+                        bgClass = "bg-[var(--md-primary-container)] text-[var(--md-primary)] hover:opacity-90";
+                        borderClass = "border border-[var(--md-primary)]/30";
+                    }
+                }
+
+                const badge = document.createElement("button");
+                badge.className = `w-9 h-9 rounded-full flex items-center justify-center text-xs font-black transition-all ${bgClass} ${borderClass}`;
+                badge.title = itemInAssembly ? `${i+1}번 문장: ${itemInAssembly.text}` : `${i+1}번 문장 미배치`;
+                
+                badge.onclick = () => {
+                    if (itemInAssembly) {
+                        scrollToAssemblyCard(i);
+                    } else {
+                        showToast(`${i+1}번째 위치에 아직 문장 카드가 배치되지 않았습니다.`);
+                    }
+                };
+
+                badge.innerHTML = iconSymbol 
+                    ? `<span class="material-symbols-outlined text-xs font-black mr-0.5">${iconSymbol}</span>${i+1}`
+                    : `${i+1}`;
+
+                minimap.appendChild(badge);
+            }
+
+            if (checkTriggered || realTimeCheck) {
+                statsText.innerHTML = `정답: <b class="text-emerald-600">${correct}</b> / 오답: <b class="text-amber-600">${incorrect}</b> (총 ${total}문장)`;
+            } else {
+                statsText.textContent = `조립 현황: ${userAssembly.length} / ${total} 문장 정렬 중`;
+            }
+        }
+
+        // 미니맵 클릭 시 스크롤 하이라이트 포커싱
+        function scrollToAssemblyCard(index) {
+            const cardElement = document.querySelector(`.assembly-card[data-index="${index}"]`);
+            if (cardElement) {
+                cardElement.scrollIntoView({ behavior: "smooth", block: "center" });
+                
+                cardElement.classList.add("card-highlight-effect");
+                setTimeout(() => {
+                    cardElement.classList.remove("card-highlight-effect");
+                }, 1200);
+            }
+        }
+
+        // 컴팩트 뷰 토글
+        function toggleCompactView() {
+            isCompactView = !isCompactView;
+            const btn = document.getElementById("btn-toggle-compact");
+            if (isCompactView) {
+                btn.className = "text-xs font-bold px-3 py-2.5 rounded-2xl flex items-center gap-1.5 transition-all bg-[var(--md-primary)] text-white shadow";
+                btn.innerHTML = '<span class="material-symbols-outlined text-sm font-bold">compress</span> 컴팩트 뷰 ON';
+                showToast("화면 맞춤을 위해 한글 힌트를 접고 카드 크기를 최소화했습니다.");
+            } else {
+                btn.className = "text-xs font-bold px-3 py-2.5 rounded-2xl flex items-center gap-1.5 transition-all bg-[var(--md-surface-variant)] text-slate-500";
+                btn.innerHTML = '<span class="material-symbols-outlined text-sm font-bold">compress</span> 컴팩트 뷰 OFF';
+            }
+            renderGameBoards();
+        }
+
+        // ==================== 드래그 배치 가이드라인 (스마트 인서트 엔진) ====================
+        function setupDragInteractions() {
+            const assemblyContainer = document.getElementById("assembly-container");
+
+            assemblyContainer.addEventListener("dragover", (e) => {
+                e.preventDefault();
+                const afterElement = getDragAfterElement(assemblyContainer, e.clientY);
+                const currentPreview = document.querySelector(".drop-preview");
+
+                if (!currentPreview) {
+                    const preview = document.createElement("div");
+                    preview.classList.add("drop-preview");
+                    if (afterElement == null) {
+                        assemblyContainer.appendChild(preview);
+                    } else {
+                        assemblyContainer.insertBefore(preview, afterElement);
+                    }
+                } else {
+                    if (afterElement == null) {
+                        assemblyContainer.appendChild(currentPreview);
+                    } else {
+                        assemblyContainer.insertBefore(currentPreview, afterElement);
+                    }
+                }
+            });
+
+            assemblyContainer.addEventListener("dragleave", () => {
+                const preview = document.querySelector(".drop-preview");
+                if (preview) preview.remove();
+            });
+        }
+
+        function getDragAfterElement(container, y) {
+            const draggableElements = [...container.querySelectorAll('.assembly-card:not(.dragging)')];
+            return draggableElements.reduce((closest, child) => {
+                const box = child.getBoundingClientRect();
+                const offset = y - box.top - box.height / 2;
+                if (offset < 0 && offset > closest.offset) {
+                    return { offset: offset, element: child };
+                } else {
+                    return closest;
+                }
+            }, { offset: Number.NEGATIVE_INFINITY }).element;
+        }
+
+        // ==================== 타이머 시스템 ====================
+        function startTimer() {
+            timerInterval = setInterval(() => {
+                timeElapsed++;
+                document.getElementById("game-timer-display").textContent = formatTime(timeElapsed);
+            }, 1000);
+        }
+
+        function stopTimer() {
+            if (timerInterval) {
+                clearInterval(timerInterval);
+                timerInterval = null;
+            }
+        }
+
+        function resetTimer() {
+            stopTimer();
+            timeElapsed = 0;
+            document.getElementById("game-timer-display").textContent = "0:00";
+        }
+
+        function formatTime(seconds) {
+            const m = Math.floor(seconds / 60);
+            const s = seconds % 60;
+            return `${m}:${s < 10 ? '0' : ''}${s}`;
+        }
+
+        // ==================== TTS 원어민 낭독 기능 ====================
+        function speak(text, event) {
+            if (event) event.stopPropagation();
+            if ('speechSynthesis' in window) {
+                window.speechSynthesis.cancel();
+                const utterance = new SpeechSynthesisUtterance(text);
+                utterance.lang = 'en-US';
+                utterance.rate = 0.85; 
+
+                utterance.onstart = () => {
+                    speakingText = text;
+                    updateSpeakingEffects();
+                };
+                utterance.onend = () => {
+                    speakingText = "";
+                    updateSpeakingEffects();
+                };
+                window.speechSynthesis.speak(utterance);
+            } else {
+                showToast("브라우저가 음성 합성 기능을 지원하지 않습니다.");
+            }
+        }
+
+        function updateSpeakingEffects() {
+            document.querySelectorAll(".speaker-btn").forEach(btn => {
+                const targetText = btn.getAttribute("data-text");
+                const sizeClass = isCompactView ? "p-1.5" : "p-3";
+                if (targetText === speakingText) {
+                    btn.className = `speaker-btn ${sizeClass} rounded-full bg-[var(--md-primary)] text-[var(--md-on-primary)] animate-pulse transition-all shadow-md flex items-center justify-center`;
+                } else {
+                    btn.className = `speaker-btn ${sizeClass} rounded-full bg-[var(--md-surface-variant)] text-[var(--md-on-surface-variant)] hover:bg-[var(--md-primary-container)] transition-all shadow-sm flex items-center justify-center`;
+                }
+            });
+        }
+
+        // ==================== 드래그앤드롭 이벤트 바인딩 ====================
+        function allowDrop(e) {
+            e.preventDefault();
+        }
+
+        function startDragItem(e, id, source, index) {
+            draggedItemId = id;
+            draggedSource = source;
+            draggedIndex = index;
+            e.target.classList.add('dragging');
+            e.dataTransfer.effectAllowed = 'move';
+        }
+
+        function endDragItem(e) {
+            e.target.classList.remove('dragging');
+            const preview = document.querySelector(".drop-preview");
+            if (preview) preview.remove();
+        }
+
+        function dropToAssembly(e) {
+            e.preventDefault();
+            const preview = document.querySelector(".drop-preview");
+            if (preview) preview.remove();
+
+            if (!draggedItemId) return;
+
+            const container = document.getElementById("assembly-container");
+            const afterElement = getDragAfterElement(container, e.clientY);
+            let targetIdx = userAssembly.length;
+
+            if (afterElement) {
+                targetIdx = parseInt(afterElement.getAttribute("data-index"));
+            }
+
+            if (draggedSource === 'pool') {
+                const sentence = scrambledPool.find(item => item.id === draggedItemId);
+                if (sentence) {
+                    userAssembly.splice(targetIdx, 0, sentence);
+                    scrambledPool = scrambledPool.filter(item => item.id !== draggedItemId);
+                }
+            } 
+            else if (draggedSource === 'assembly') {
+                const sentence = userAssembly[draggedIndex];
+                if (sentence) {
+                    userAssembly.splice(draggedIndex, 1);
+                    if (draggedIndex < targetIdx && targetIdx > 0) {
+                        targetIdx--;
+                    }
+                    userAssembly.splice(targetIdx, 0, sentence);
+                }
+            }
+
+            draggedItemId = null;
+            renderGameBoards();
+            updateProgressBar();
+            
+            if (realTimeCheck) {
+                updateVisualValidation();
+            }
+        }
+
+        function dropToPool(e) {
+            e.preventDefault();
+            if (!draggedItemId || draggedSource === 'pool') return;
+
+            const sentence = userAssembly[draggedIndex];
+            if (sentence) {
+                userAssembly.splice(draggedIndex, 1);
+                scrambledPool.push(sentence);
+            }
+
+            draggedItemId = null;
+            renderGameBoards();
+            updateProgressBar();
+
+            if (realTimeCheck) {
+                updateVisualValidation();
+            }
+        }
+
+        // ==================== 터치 클릭 액션 바인딩 ====================
+        function selectCard(id) {
+            const sentence = scrambledPool.find(item => item.id === id);
+            if (sentence) {
+                scrambledPool = scrambledPool.filter(item => item.id !== id);
+                userAssembly.push(sentence);
+                renderGameBoards();
+                updateProgressBar();
+                if (realTimeCheck) updateVisualValidation();
+            }
+        }
+
+        function deselectCard(id) {
+            const sentence = userAssembly.find(item => item.id === id);
+            if (sentence) {
+                userAssembly = userAssembly.filter(item => item.id !== id);
+                scrambledPool.push(sentence);
+                renderGameBoards();
+                updateProgressBar();
+                if (realTimeCheck) updateVisualValidation();
+            }
+        }
+
+        function moveUp(index, event) {
+            if (event) event.stopPropagation();
+            if (index === 0) return;
+            const temp = userAssembly[index];
+            userAssembly[index] = userAssembly[index - 1];
+            userAssembly[index - 1] = temp;
+            renderGameBoards();
+            if (realTimeCheck) updateVisualValidation();
+        }
+
+        function moveDown(index, event) {
+            if (event) event.stopPropagation();
+            if (index === userAssembly.length - 1) return;
+            const temp = userAssembly[index];
+            userAssembly[index] = userAssembly[index + 1];
+            userAssembly[index + 1] = temp;
+            renderGameBoards();
+            if (realTimeCheck) updateVisualValidation();
+        }
+
+        function moveToTop(index, event) {
+            if (event) event.stopPropagation();
+            if (index === 0) return;
+            const target = userAssembly.splice(index, 1)[0];
+            userAssembly.unshift(target);
+            renderGameBoards();
+            if (realTimeCheck) updateVisualValidation();
+        }
+
+        function resetCurrentGame() {
+            if (!selectedSection) return;
+            const mapped = selectedSection.sentences.map((item, index) => ({
+                id: `sentence-${activeLessonTab}-${selectedSection.id}-${index}`,
+                text: item.text,
+                translation: item.ko,
+                originalIndex: index
+            }));
+
+            scrambledPool = shuffleArray(mapped);
+            userAssembly = [];
+            checkTriggered = false;
+            document.getElementById("result-feedback-card").classList.add("hidden");
+            renderGameBoards();
+            updateProgressBar();
+        }
+
+        function triggerAutoSolve() {
+            if (!selectedSection) return;
+            const mapped = selectedSection.sentences.map((item, index) => ({
+                id: `sentence-${activeLessonTab}-${selectedSection.id}-${index}`,
+                text: item.text,
+                translation: item.ko,
+                originalIndex: index
+            }));
+            userAssembly = mapped;
+            scrambledPool = [];
+            renderGameBoards();
+            updateProgressBar();
+            if (realTimeCheck) updateVisualValidation();
+        }
+
+        // ==================== 게임보드 렌더러 ====================
+        function renderGameBoards() {
+            const poolBox = document.getElementById("pool-container");
+            const assemblyBox = document.getElementById("assembly-container");
+            const submitPanel = document.getElementById("submit-actions-panel");
+
+            const cardPadding = isCompactView ? "p-2 sm:p-2.5" : "p-4";
+            const textClass = isCompactView ? "text-[11px] sm:text-xs" : "text-xs sm:text-sm";
+            const speakerBtnPadding = isCompactView ? "p-1.5" : "p-3";
+            const gapSpacing = isCompactView ? "gap-2" : "gap-3.5";
+
+            // 1. 카드 덱(Pool) 그리기
+            poolBox.innerHTML = "";
+            document.getElementById("pool-count").textContent = scrambledPool.length;
+
+            if (scrambledPool.length === 0) {
+                poolBox.innerHTML = `
+                    <div class="col-span-full bg-emerald-50 text-emerald-800 border-2 border-dashed border-emerald-200 rounded-[24px] py-10 text-center flex flex-col items-center justify-center gap-2">
+                        <span class="material-symbols-outlined text-4xl animate-bounce">done_all</span>
+                        <p class="font-extrabold text-sm">모든 문장의 이동을 완료했습니다!</p>
+                        <p class="text-[11px] text-emerald-600 font-bold">오른쪽 조립판에서 위치를 미세 조정해 보세요.</p>
+                    </div>
+                `;
+            } else {
+                scrambledPool.forEach(item => {
+                    const hintHtml = (showHints && !isCompactView) ? `<p class="text-[11px] font-bold text-slate-500 mt-1 break-words leading-relaxed">${item.translation}</p>` : '';
+                    
+                    const card = `
+                        <div draggable="true" 
+                             id="${item.id}"
+                             ondragstart="startDragItem(event, '${item.id}', 'pool', null)"
+                             ondragend="endDragItem(event)"
+                             onclick="selectCard('${item.id}')"
+                             class="bg-white border border-slate-200/80 hover:border-[var(--md-primary)] hover:shadow-md rounded-[20px] ${cardPadding} cursor-grab transition-all duration-200 flex items-start ${gapSpacing} group relative select-none">
+                            
+                            <div class="flex-1 min-w-0">
+                                <p class="${textClass} font-bold text-slate-800 leading-relaxed break-words">${item.text}</p>
+                                ${hintHtml}
+                            </div>
+                            
+                            <div class="flex flex-col sm:flex-row items-center gap-1.5 shrink-0 self-center">
+                                <button data-text="${item.text}" onclick="speak('${item.text.replace(/'/g, "\\'")}', event)" 
+                                        class="speaker-btn ${speakerBtnPadding} rounded-full bg-[var(--md-surface-variant)] text-[var(--md-on-surface-variant)] hover:bg-[var(--md-primary-container)] transition-all shadow-sm flex items-center justify-center">
+                                    <span class="material-symbols-outlined text-sm">volume_up</span>
+                                </button>
+                                <span class="material-symbols-outlined text-base text-slate-300 group-hover:text-[var(--md-primary)] transition-all">add_circle</span>
+                            </div>
+                        </div>
+                    `;
+                    poolBox.innerHTML += card;
+                });
+            }
+
+            // 2. 조립 공간(Assembly) 그리기
+            assemblyBox.innerHTML = "";
+            document.getElementById("assembly-count").textContent = userAssembly.length;
+            document.getElementById("total-count").textContent = selectedSection.sentences.length;
+
+            if (userAssembly.length === 0) {
+                assemblyBox.innerHTML = `
+                    <div class="bg-white border-2 border-dashed border-slate-200 rounded-[24px] py-12 px-6 text-center text-slate-400 my-auto flex flex-col items-center justify-center gap-2">
+                        <span class="material-symbols-outlined text-5xl text-slate-300">low_priority</span>
+                        <p class="font-extrabold text-xs text-slate-500">배치된 문장 블록이 없습니다</p>
+                        <p class="text-[10px] text-slate-400 font-bold">왼쪽 카드덱에서 탭하여 이동시키거나 마우스로 드래그해 오세요.</p>
+                    </div>
+                `;
+                submitPanel.classList.add("hidden");
+            } else {
+                userAssembly.forEach((item, index) => {
+                    const hintHtml = (showHints && !isCompactView) ? `<p class="text-[11px] font-bold text-slate-500 mt-1 break-words leading-relaxed">${item.translation}</p>` : '';
+                    const badgeSize = isCompactView ? "w-6 h-6 text-[10px]" : "w-7 h-7 text-xs";
+                    const contrlIconSize = isCompactView ? "text-xs" : "text-sm";
+
+                    const card = `
+                        <div draggable="true" 
+                             id="${item.id}"
+                             data-index="${index}"
+                             ondragstart="startDragItem(event, '${item.id}', 'assembly', ${index})"
+                             ondragend="endDragItem(event)"
+                             class="assembly-card border-2 bg-white rounded-[20px] ${cardPadding} transition-all flex items-start ${gapSpacing} shadow-sm hover:shadow cursor-grab select-none">
+                            
+                            <!-- 문장 번호 표시 배지 -->
+                            <div class="sentence-index-badge ${badgeSize} rounded-full font-black flex items-center justify-center shrink-0 bg-slate-100 text-slate-500">
+                                ${index + 1}
+                            </div>
+
+                            <div class="flex-1 min-w-0">
+                                <p class="${textClass} font-bold text-slate-800 leading-relaxed break-words">${item.text}</p>
+                                ${hintHtml}
+                            </div>
+
+                            <!-- 수동 보정 및 빠른 조작 인터페이스 -->
+                            <div class="flex items-center gap-1.5 shrink-0 self-center">
+                                <button data-text="${item.text}" onclick="speak('${item.text.replace(/'/g, "\\'")}', event)" 
+                                        class="speaker-btn ${speakerBtnPadding} rounded-full bg-[var(--md-surface-variant)] text-[var(--md-on-surface-variant)] hover:bg-[var(--md-primary-container)] transition-all shadow-sm flex items-center justify-center">
+                                    <span class="material-symbols-outlined text-sm">volume_up</span>
+                                </button>
+                                
+                                <div class="flex items-center bg-slate-100 rounded-full px-1 py-0.5">
+                                    <button onclick="moveToTop(${index}, event)" ${index === 0 ? 'disabled' : ''} 
+                                            class="p-0.5 text-slate-400 hover:text-slate-800 disabled:opacity-20 flex items-center justify-center" title="맨 위로 보내기">
+                                        <span class="material-symbols-outlined ${contrlIconSize} font-bold">vertical_align_top</span>
+                                    </button>
+                                    <button onclick="moveUp(${index}, event)" ${index === 0 ? 'disabled' : ''} 
+                                            class="p-0.5 text-slate-400 hover:text-slate-800 disabled:opacity-20 flex items-center justify-center" title="한칸 위로">
+                                        <span class="material-symbols-outlined ${contrlIconSize} font-bold">keyboard_arrow_up</span>
+                                    </button>
+                                    <button onclick="moveDown(${index}, event)" ${index === userAssembly.length - 1 ? 'disabled' : ''} 
+                                            class="p-0.5 text-slate-400 hover:text-slate-800 disabled:opacity-20 flex items-center justify-center" title="한칸 아래로">
+                                        <span class="material-symbols-outlined ${contrlIconSize} font-bold">keyboard_arrow_down</span>
+                                    </button>
+                                </div>
+
+                                <button onclick="deselectCard('${item.id}')" 
+                                        class="p-1.5 text-slate-400 hover:text-[var(--md-error)] hover:bg-[var(--md-error-container)] rounded-full transition-colors flex items-center justify-center" title="풀로 회수">
+                                    <span class="material-symbols-outlined text-base font-bold">delete</span>
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                    assemblyBox.innerHTML += card;
+                });
+
+                submitPanel.classList.remove("hidden");
+            }
+
+            updateSpeakingEffects();
+            
+            if (checkTriggered) {
+                updateVisualValidation();
+            }
+        }
+
+        // ==================== 실시간/최종 배치 성공유무 시각 피드백 ====================
+        function updateVisualValidation() {
+            const cards = document.querySelectorAll(".assembly-card");
+            cards.forEach(card => {
+                const index = parseInt(card.getAttribute("data-index"));
+                const item = userAssembly[index];
+                const indexBadge = card.querySelector(".sentence-index-badge");
+                const sizeClass = isCompactView ? "w-6 h-6 text-[10px]" : "w-7 h-7 text-xs";
+
+                if (item) {
+                    if (item.originalIndex === index) {
+                        card.style.borderColor = "#10B981"; 
+                        card.style.backgroundColor = "#F0FDF4";
+                        if (indexBadge) {
+                            indexBadge.className = `sentence-index-badge ${sizeClass} rounded-full font-black flex items-center justify-center shrink-0 bg-[#10B981] text-white`;
+                        }
+                    } else {
+                        card.style.borderColor = "#F59E0B"; 
+                        card.style.backgroundColor = "#FFFBEB";
+                        if (indexBadge) {
+                            indexBadge.className = `sentence-index-badge ${sizeClass} rounded-full font-black flex items-center justify-center shrink-0 bg-[#F59E0B] text-white`;
+                        }
+                    }
+                }
+            });
+        }
+
+        // ==================== 최종 결과 채점기 ====================
+        function submitAndGrade() {
+            checkTriggered = true;
+            let correctCount = 0;
+
+            userAssembly.forEach((item, index) => {
+                if (item.originalIndex === index) {
+                    correctCount++;
+                }
+            });
+
+            const total = selectedSection.sentences.length;
+            const accuracy = Math.round((correctCount / total) * 100);
+            const isPerfect = correctCount === total && userAssembly.length === total;
+
+            if (isPerfect) {
+                stopTimer();
+            }
+
+            const feedbackCard = document.getElementById("result-feedback-card");
+            const heading = document.getElementById("result-heading");
+            const text = document.getElementById("result-text");
+            const iconBox = document.getElementById("result-icon-box");
+            const accuracyDisplay = document.getElementById("result-accuracy-display");
+            const timeDisplay = document.getElementById("result-time-display");
+            const resultTip = document.getElementById("result-hint-tip");
+
+            feedbackCard.classList.remove("hidden");
+            accuracyDisplay.textContent = `${accuracy}%`;
+            timeDisplay.textContent = formatTime(timeElapsed);
+
+            if (isPerfect) {
+                heading.textContent = "참 잘했습니다! 정답을 완벽하게 맞췄어요!";
+                text.textContent = "본문의 전체 문장 흐름을 완벽하게 정렬하셨습니다. 뛰어난 맥락 파악 능력입니다!";
+                iconBox.className = "w-14 h-14 rounded-2xl flex items-center justify-center shrink-0 bg-emerald-100 text-emerald-600 text-2xl";
+                iconBox.innerHTML = '<span class="material-symbols-outlined text-3xl font-bold">workspace_premium</span>';
+                resultTip.classList.add("hidden");
+            } else {
+                heading.textContent = "틀린 문장 위치가 존재합니다. 조금만 다듬어 볼까요?";
+                text.textContent = `전체 ${total}개의 문장 카드 중에서 현재 ${correctCount}개가 올바른 제자리에 정렬되어 있습니다.`;
+                iconBox.className = "w-14 h-14 rounded-2xl flex items-center justify-center shrink-0 bg-amber-100 text-amber-600 text-2xl";
+                iconBox.innerHTML = '<span class="material-symbols-outlined text-3xl font-bold">published_with_changes</span>';
+                resultTip.classList.remove("hidden");
+            }
+
+            // 통계 정보 저장 (단원별 세션에 맞춰 분류 저장)
+            const currentStat = stats[activeLessonTab][selectedSection.id];
+            const newAccuracy = Math.max(currentStat.maxAccuracy, accuracy);
+            let newBestTime = currentStat.bestTime;
+
+            if (isPerfect) {
+                if (newBestTime === null || timeElapsed < newBestTime) {
+                    newBestTime = timeElapsed;
+                }
+            }
+
+            stats[activeLessonTab][selectedSection.id] = {
+                completed: currentStat.completed || isPerfect,
+                bestTime: newBestTime,
+                maxAccuracy: newAccuracy
+            };
+
+            updateVisualValidation();
+            renderMinimap();
+
+            feedbackCard.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function restartSection() {
+            if (selectedSection) {
+                startSection(activeLessonTab, selectedSection.id);
+            }
+        }
+
+        // ==================== 유틸리티 작동 함수들 ====================
+        function toggleHints() {
+            showHints = !showHints;
+            const btn = document.getElementById("btn-toggle-hints");
+            if (showHints) {
+                btn.className = "text-xs font-bold px-3.5 py-2.5 rounded-2xl flex items-center gap-1.5 transition-all bg-[var(--md-primary-container)] text-[var(--md-primary)]";
+                btn.innerHTML = '<span class="material-symbols-outlined text-sm font-bold">g_translate</span> 해석 켜짐';
+            } else {
+                btn.className = "text-xs font-bold px-3.5 py-2.5 rounded-2xl flex items-center gap-1.5 transition-all bg-[var(--md-surface-variant)] text-slate-500";
+                btn.innerHTML = '<span class="material-symbols-outlined text-sm font-bold">translate</span> 해석 꺼짐';
+            }
+            renderGameBoards();
+        }
+
+        function toggleRealTimeCheck() {
+            realTimeCheck = !realTimeCheck;
+            const btn = document.getElementById("btn-toggle-realtime");
+            if (realTimeCheck) {
+                btn.className = "text-xs font-bold px-3.5 py-2.5 rounded-2xl flex items-center gap-1.5 transition-all bg-emerald-100 text-emerald-800 border border-emerald-200";
+                btn.innerHTML = '<span class="material-symbols-outlined text-sm font-bold">check_circle</span> 실시간 채점 ON';
+                updateVisualValidation();
+            } else {
+                btn.className = "text-xs font-bold px-3.5 py-2.5 rounded-2xl flex items-center gap-1.5 transition-all bg-[var(--md-surface-variant)] text-slate-500";
+                btn.innerHTML = '<span class="material-symbols-outlined text-sm font-bold">rule</span> 실시간 채점 OFF';
+                if (!checkTriggered) {
+                    document.querySelectorAll(".assembly-card").forEach(card => {
+                        card.style.borderColor = "";
+                        card.style.backgroundColor = "";
+                        const indexBadge = card.querySelector(".sentence-index-badge");
+                        if (indexBadge) {
+                            indexBadge.className = "sentence-index-badge w-7 h-7 rounded-full text-xs font-black flex items-center justify-center shrink-0 bg-slate-100 text-slate-500";
+                        }
+                    });
+                }
+            }
+            renderMinimap();
+        }
+
+        // ==================== 원문 참조 모달 ====================
+        function openOriginalModal() {
+            if (!selectedSection) return;
+            document.getElementById("modal-section-title").textContent = selectedSection.title;
+            const body = document.getElementById("modal-content-body");
+            body.innerHTML = "";
+
+            selectedSection.sentences.forEach((item, idx) => {
+                const node = `
+                    <div class="border-l-4 border-[var(--md-primary)] pl-4 py-1">
+                        <span class="text-[9px] font-black text-[var(--md-primary)] block mb-0.5">SENTENCE 0${idx + 1}</span>
+                        <p class="text-xs sm:text-sm font-extrabold text-slate-800 leading-relaxed">${item.text}</p>
+                        <p class="text-[11px] sm:text-xs font-semibold text-slate-400 mt-1 leading-relaxed">${item.ko}</p>
+                    </div>
+                `;
+                body.innerHTML += node;
+            });
+
+            document.getElementById("original-modal").classList.remove("hidden");
+        }
+
+        function closeOriginalModal() {
+            document.getElementById("original-modal").classList.add("hidden");
+        }
+    </script>
+</body>
+</html>
