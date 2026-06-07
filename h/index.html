@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>웹 보조 모니터</title>
+    <style>
+        body {
+            margin: 0; background-color: #000; color: #fff;
+            font-family: sans-serif; height: 100vh;
+            display: flex; flex-direction: column;
+            align-items: center; justify-content: center;
+        }
+        #container { text-align: center; max-width: 400px; padding: 20px; }
+        button {
+            padding: 15px 30px; font-size: 18px; margin: 10px;
+            border: none; border-radius: 8px; cursor: pointer;
+            background-color: #007bff; color: white; width: 100%;
+        }
+        button:hover { background-color: #0056b3; }
+        video { width: 100vw; height: 100vh; object-fit: contain; display: none; }
+    </style>
+    <!-- 무료 릴레이 서버 라이브러리 추가 -->
+    <script src="https://unpkg.com"></script>
+</head>
+<body>
+
+    <div id="container">
+        <h2>웹 보조 모니터 연결</h2>
+        <p>1단계: 태블릿에서 먼저 접속하세요.</p>
+        <button id="tabletBtn">📱 태블릿 (화면 받기)</button>
+        
+        <p style="margin-top: 30px;">2단계: 크롬북에서 접속하세요.</p>
+        <button id="chromebookBtn">💻 크롬북 (화면 보내기)</button>
+    </div>
+
+    <video id="remoteVideo" autoplay playsinline></video>
+
+    <script src="script.js"></script>
+</body>
+</html>
