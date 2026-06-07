@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -216,6 +217,11 @@
 
                 <!-- 부가 컨트롤 버튼들 -->
                 <div class="flex flex-wrap items-center gap-2">
+                    <!-- 하트(생명) 카운터: 무작위 찍기 방지용 -->
+                    <div id="game-lives-wrapper" class="flex items-center gap-1.5 bg-rose-50 text-rose-700 px-3 py-2 rounded-2xl text-xs font-black shadow-inner">
+                        <span class="material-symbols-outlined text-sm font-bold text-rose-500">favorite</span>
+                        <span id="game-lives-display">5 / 5</span>
+                    </div>
                     <div class="flex items-center gap-1.5 bg-[var(--md-surface-variant)] text-[var(--md-on-surface-variant)] px-3 py-2 rounded-2xl text-xs font-black shadow-inner">
                         <span class="material-symbols-outlined text-sm font-bold">schedule</span>
                         <span id="game-timer-display" class="font-mono">0:00</span>
@@ -226,11 +232,12 @@
                     <button id="btn-toggle-compact" onclick="toggleCompactView()" class="text-xs font-bold px-3 py-2.5 rounded-2xl flex items-center gap-1.5 transition-all bg-[var(--md-surface-variant)] text-slate-500">
                         <span class="material-symbols-outlined text-sm font-bold">compress</span> 컴팩트 뷰 OFF
                     </button>
+                    <!-- 스마트 구원 도구: 하트를 깎는 채점 대신 제한된 힌트 제공 -->
+                    <button id="btn-use-hint" onclick="usePositionHint()" class="text-xs font-bold px-3 py-2.5 rounded-2xl flex items-center gap-1.5 transition-all bg-[var(--md-surface-variant)] text-slate-600">
+                        <span class="material-symbols-outlined text-sm font-bold">lightbulb</span> 힌트 쓰기 (<span id="hint-count-display">2</span>/2)
+                    </button>
                     <button id="btn-toggle-hints" onclick="toggleHints()" class="text-xs font-bold px-3 py-2.5 rounded-2xl flex items-center gap-1.5 transition-all bg-[var(--md-primary-container)] text-[var(--md-primary)]">
                         <span class="material-symbols-outlined text-sm font-bold">g_translate</span> 해석 켜짐
-                    </button>
-                    <button id="btn-toggle-realtime" onclick="toggleRealTimeCheck()" class="text-xs font-bold px-3.5 py-2.5 rounded-2xl flex items-center gap-1.5 transition-all bg-[var(--md-surface-variant)] text-slate-500">
-                        <span class="material-symbols-outlined text-sm font-bold">rule</span> 실시간 채점 OFF
                     </button>
                 </div>
             </div>
@@ -260,7 +267,7 @@
                     <!-- JS에서 둥근 칩으로 자동 렌더링 -->
                 </div>
                 <p class="text-[10px] text-slate-400 font-bold flex items-center gap-1">
-                    <span class="material-symbols-outlined text-xs">info</span> 채점 후 주황색 배지를 클릭하면 오답인 카드로 즉시 스크롤 이동 및 강조 표시됩니다.
+                    <span class="material-symbols-outlined text-xs">info</span> 채점 제출 이후에만 미니맵에 정오답 상태가 표기되며, 주황색 배지를 클릭하면 해당 오답 카드로 즉시 스크롤 이동합니다. (한 번 틀린 적이 있는 문장은 골드 아웃라인 링 <span class="inline-block w-2.5 h-2.5 rounded-full border border-amber-400 bg-emerald-500"></span> 으로 미니맵에 유지됩니다.)
                 </p>
             </div>
 
@@ -568,7 +575,7 @@
                             { text: "\"Instead of helping nature thrive, we are simply consuming it,\" says Ching.", ko: "칭은 \"자연이 번창하도록 돕는 대신, 우리는 그저 자연을 소비하고 있을 뿐입니다.\"라고 말한다." },
                             { text: "One cannot help but smile at his paintings, which are rich in color and tenderness.", ko: "풍부한 색채와 부드러움이 가득한 그의 그림을 보면 미소를 짓지 않을 수 없다." },
                             { text: "One of the fun aspects of his work is how he blends the features of one life form with those of another.", ko: "그의 작품의 재미있는 점 중 하나는 한 생명체의 특징을 다른 생명체의 특징과 혼합하는 방식이다." },
-                            { text: "\"I've been using my work as a means of commenting on issues and problems I'm heavily interested in.\"", ko: "\"저는 제가 깊이 관심을 두고 있는 쟁점과 문제들에 대해 의견을 표명하는 수단으로 제 작품을 사용해 왔습니다.\"" },
+                            { text: "\"I've been using my work as a means of commenting on issues and problems I'm heavily interested in.\"", ko: "\"저는 제가 깊이 관심을 두고 있는 쟁점과 문제들에 대해 의견을 표명하는 수단으로 제 작품을 사용해  왔습니다.\"" },
                             { text: "\"I find it necessary to express a silver lining rather than just reflect on what's wrong.\"", ko: "\"저는 단지 무엇이 잘못되었는지 반영하기보다 한 줄기 희망을 표현하는 것이 필요하다고 생각합니다.\"" },
                             { text: "\"I want to show that everything is connected and that protecting nature is actually protecting us.\"", ko: "\"저는 모든 것이 연결되어 있으며 자연을 보호하는 것이 사실 우리 자신을 보호하는 것임을 보여주고 싶습니다.\"" },
                             { text: "\"My call to action is to remember the magic and wonder of this planet.\"", ko: "\"행동을 촉구하는 저의 메시지는 이 행성의 마법과 경이로움을 기억하라는 것입니다.\"" },
@@ -587,13 +594,21 @@
         let scrambledPool = [];
         let userAssembly = [];
         let showHints = true;
-        let realTimeCheck = false;
         let isCompactView = false; 
         let timeElapsed = 0;
         let timerInterval = null;
         let checkTriggered = false;
         let speakingText = "";
+        let isLocked = false; // 도전 기회 소진 시 드롭/수정 잠금 플래그
         
+        // 오답 이력 실시간 트래커 Set 추가 (중복 원천 차단)
+        let historicallyIncorrectIds = new Set();
+
+        // 찍기 방지용 제한 기회(하트) 및 힌트 관리 변수
+        let lives = 5;
+        let hintsUsed = 0;
+        const MAX_HINTS = 2;
+
         // 최고 점수 & 타이머 대시보드 연동용 (Lesson 3 & 4 별도 보존)
         let stats = {
             3: {
@@ -664,7 +679,7 @@
             setTimeout(() => {
                 toast.classList.remove("translate-y-0", "opacity-100");
                 toast.classList.add("translate-y-20", "opacity-0");
-            }, 3000);
+            }, 3500);
         }
 
         // ==================== 대시보드 단원 탭 전환 기능 ====================
@@ -776,6 +791,14 @@
             userAssembly = [];
             timeElapsed = 0;
             checkTriggered = false;
+            
+            // 찍기 방지용 오답 이력 & 하트 & 힌트 초기화
+            historicallyIncorrectIds.clear();
+            lives = 5;
+            hintsUsed = 0;
+            document.getElementById("game-lives-display").textContent = "5 / 5";
+            document.getElementById("hint-count-display").textContent = "2";
+            lockWorkspace(false);
 
             document.getElementById("dashboard-view").classList.add("hidden");
             document.getElementById("game-view").classList.remove("hidden");
@@ -803,6 +826,90 @@
             document.getElementById("game-view").classList.add("hidden");
             document.getElementById("dashboard-view").classList.remove("hidden");
             renderDashboard();
+        }
+
+        // 워크스페이스 잠금/해제 (기회 모두 소모 시 편집 불가능하도록 조치)
+        function lockWorkspace(shouldLock) {
+            isLocked = shouldLock;
+            const pool = document.getElementById("pool-container");
+            const assembly = document.getElementById("assembly-container");
+            const resetBtn = document.querySelector('[onclick="resetCurrentGame()"]');
+            const cheatBtn = document.querySelector('[onclick="triggerAutoSolve()"]');
+
+            if (shouldLock) {
+                pool.classList.add("opacity-50", "pointer-events-none");
+                assembly.classList.add("opacity-50", "pointer-events-none");
+                if (resetBtn) resetBtn.classList.add("opacity-20", "pointer-events-none");
+                if (cheatBtn) cheatBtn.classList.add("opacity-20", "pointer-events-none");
+            } else {
+                pool.classList.remove("opacity-50", "pointer-events-none");
+                assembly.classList.remove("opacity-50", "pointer-events-none");
+                if (resetBtn) resetBtn.classList.remove("opacity-20", "pointer-events-none");
+                if (cheatBtn) cheatBtn.classList.remove("opacity-20", "pointer-events-none");
+            }
+        }
+
+        // 정교한 구원 수단: 단 라운드당 2번 위치 힌트 획득 가능
+        function usePositionHint() {
+            if (isLocked) {
+                showToast("현재 세션이 잠겨 있습니다. 새로 다시 시작해 주세요.");
+                return;
+            }
+            if (hintsUsed >= MAX_HINTS) {
+                showToast("이번 세션의 힌트(2회)를 모두 사용했습니다.");
+                return;
+            }
+            if (userAssembly.length === 0) {
+                showToast("최소 1개 이상의 문장을 조립판에 배치해야 올바른 위치 힌트를 매칭해드릴 수 있습니다.");
+                return;
+            }
+
+            // 올바르지 않은 위치에 있는 카드 인덱스 탐색
+            let misplacedIndices = [];
+            userAssembly.forEach((item, index) => {
+                if (item.originalIndex !== index) {
+                    misplacedIndices.push(index);
+                }
+            });
+
+            if (misplacedIndices.length === 0) {
+                showToast("현재 조립판에 놓인 모든 문장의 순서가 올바릅니다! 스스로 힘으로 채점해 보세요.");
+                return;
+            }
+
+            // 잘못 매칭된 무작위 인덱스 하나 추출
+            let randomIdx = misplacedIndices[Math.floor(Math.random() * misplacedIndices.length)];
+            let targetItem = userAssembly[randomIdx];
+
+            hintsUsed++;
+            document.getElementById("hint-count-display").textContent = MAX_HINTS - hintsUsed;
+
+            // 시각적 강조 및 토스트 출력
+            scrollToAssemblyCard(randomIdx);
+            showToast(`[힌트 발동] "${targetItem.text.substring(0, 32)}..." 문장은 원래 [${targetItem.originalIndex + 1}번째]에 들어가야 합니다!`);
+
+            // 카드 테두리에 일시적으로 황금색 펄스 아웃라인 강조 표시
+            const cardEl = document.querySelector(`.assembly-card[data-index="${randomIdx}"]`);
+            if (cardEl) {
+                cardEl.style.outline = "4px solid #F59E0B";
+                setTimeout(() => {
+                    cardEl.style.outline = "";
+                }, 4000);
+            }
+        }
+
+        function shuffleArray(array) {
+            let shuffled;
+            let isIdentical = true;
+            while (isIdentical && array.length > 1) {
+                shuffled = [...array];
+                for (let i = shuffled.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+                }
+                isIdentical = shuffled.every((val, idx) => val.originalIndex === idx);
+            }
+            return shuffled || [...array];
         }
 
         // ==================== 스마트 모바일 탭 스위처 ====================
@@ -863,10 +970,13 @@
                 let iconSymbol = "";
 
                 if (itemInAssembly) {
+                    const wasWrongBefore = historicallyIncorrectIds.has(itemInAssembly.id);
+                    
                     if (checkTriggered || realTimeCheck) {
                         if (itemInAssembly.originalIndex === i) {
                             bgClass = "bg-emerald-500 text-white hover:bg-emerald-600 shadow-sm";
-                            borderClass = "border-none";
+                            // 이전에 한 번 틀렸던 이력이 존재하면, 정답 상태여도 미니맵에 금빛 경고 링 테두리 가이드 활성화
+                            borderClass = wasWrongBefore ? "border-2 border-amber-400" : "border-none";
                             iconSymbol = "check";
                             correct++;
                         } else {
@@ -877,13 +987,15 @@
                         }
                     } else {
                         bgClass = "bg-[var(--md-primary-container)] text-[var(--md-primary)] hover:opacity-90";
-                        borderClass = "border border-[var(--md-primary)]/30";
+                        borderClass = wasWrongBefore ? "border-2 border-amber-400" : "border border-[var(--md-primary)]/30";
                     }
                 }
 
                 const badge = document.createElement("button");
                 badge.className = `w-9 h-9 rounded-full flex items-center justify-center text-xs font-black transition-all ${bgClass} ${borderClass}`;
-                badge.title = itemInAssembly ? `${i+1}번 문장: ${itemInAssembly.text}` : `${i+1}번 문장 미배치`;
+                
+                const wasWrong = itemInAssembly && historicallyIncorrectIds.has(itemInAssembly.id);
+                badge.title = itemInAssembly ? `${i+1}번 문장: ${itemInAssembly.text}${wasWrong ? ' (이전 시도 오답 이력 존재)' : ''}` : `${i+1}번 문장 미배치`;
                 
                 badge.onclick = () => {
                     if (itemInAssembly) {
@@ -941,6 +1053,8 @@
 
             assemblyContainer.addEventListener("dragover", (e) => {
                 e.preventDefault();
+                if (isLocked) return;
+
                 const afterElement = getDragAfterElement(assemblyContainer, e.clientY);
                 const currentPreview = document.querySelector(".drop-preview");
 
@@ -1048,6 +1162,10 @@
         }
 
         function startDragItem(e, id, source, index) {
+            if (isLocked) {
+                e.preventDefault();
+                return;
+            }
             draggedItemId = id;
             draggedSource = source;
             draggedIndex = index;
@@ -1063,6 +1181,8 @@
 
         function dropToAssembly(e) {
             e.preventDefault();
+            if (isLocked) return;
+
             const preview = document.querySelector(".drop-preview");
             if (preview) preview.remove();
 
@@ -1105,6 +1225,7 @@
 
         function dropToPool(e) {
             e.preventDefault();
+            if (isLocked) return;
             if (!draggedItemId || draggedSource === 'pool') return;
 
             const sentence = userAssembly[draggedIndex];
@@ -1124,6 +1245,7 @@
 
         // ==================== 터치 클릭 액션 바인딩 ====================
         function selectCard(id) {
+            if (isLocked) return;
             const sentence = scrambledPool.find(item => item.id === id);
             if (sentence) {
                 scrambledPool = scrambledPool.filter(item => item.id !== id);
@@ -1135,6 +1257,7 @@
         }
 
         function deselectCard(id) {
+            if (isLocked) return;
             const sentence = userAssembly.find(item => item.id === id);
             if (sentence) {
                 userAssembly = userAssembly.filter(item => item.id !== id);
@@ -1146,6 +1269,7 @@
         }
 
         function moveUp(index, event) {
+            if (isLocked) return;
             if (event) event.stopPropagation();
             if (index === 0) return;
             const temp = userAssembly[index];
@@ -1156,6 +1280,7 @@
         }
 
         function moveDown(index, event) {
+            if (isLocked) return;
             if (event) event.stopPropagation();
             if (index === userAssembly.length - 1) return;
             const temp = userAssembly[index];
@@ -1166,6 +1291,7 @@
         }
 
         function moveToTop(index, event) {
+            if (isLocked) return;
             if (event) event.stopPropagation();
             if (index === 0) return;
             const target = userAssembly.splice(index, 1)[0];
@@ -1175,6 +1301,7 @@
         }
 
         function resetCurrentGame() {
+            if (isLocked) return;
             if (!selectedSection) return;
             const mapped = selectedSection.sentences.map((item, index) => ({
                 id: `sentence-${activeLessonTab}-${selectedSection.id}-${index}`,
@@ -1186,12 +1313,14 @@
             scrambledPool = shuffleArray(mapped);
             userAssembly = [];
             checkTriggered = false;
+            historicallyIncorrectIds.clear();
             document.getElementById("result-feedback-card").classList.add("hidden");
             renderGameBoards();
             updateProgressBar();
         }
 
         function triggerAutoSolve() {
+            if (isLocked) return;
             if (!selectedSection) return;
             const mapped = selectedSection.sentences.map((item, index) => ({
                 id: `sentence-${activeLessonTab}-${selectedSection.id}-${index}`,
@@ -1279,6 +1408,14 @@
                     const badgeSize = isCompactView ? "w-6 h-6 text-[10px]" : "w-7 h-7 text-xs";
                     const contrlIconSize = isCompactView ? "text-xs" : "text-sm";
 
+                    // 이전에 한 번이라도 오답이었던 카드는 "이전 오답"이라는 작은 머티리얼 경고 리콜 배지를 우측 하단이나 번호 아래에 표기해 줌
+                    const isWrongBefore = historicallyIncorrectIds.has(item.id);
+                    const wrongBadgeHtml = isWrongBefore ? `
+                        <div class="flex items-center justify-center bg-amber-100/90 text-amber-800 rounded-full px-2 py-0.5 text-[9px] font-black shrink-0 border border-amber-300 shadow-xs mt-1">
+                            <span class="material-symbols-outlined text-[10px] font-bold mr-0.5">history</span>이전 오답
+                        </div>
+                    ` : '';
+
                     const card = `
                         <div draggable="true" 
                              id="${item.id}"
@@ -1287,9 +1424,12 @@
                              ondragend="endDragItem(event)"
                              class="assembly-card border-2 bg-white rounded-[20px] ${cardPadding} transition-all flex items-start ${gapSpacing} shadow-sm hover:shadow cursor-grab select-none">
                             
-                            <!-- 문장 번호 표시 배지 -->
-                            <div class="sentence-index-badge ${badgeSize} rounded-full font-black flex items-center justify-center shrink-0 bg-slate-100 text-slate-500">
-                                ${index + 1}
+                            <!-- 문장 번호 표시 및 오답 이력 배지 래퍼 -->
+                            <div class="flex flex-col items-center shrink-0">
+                                <div class="sentence-index-badge ${badgeSize} rounded-full font-black flex items-center justify-center bg-slate-100 text-slate-500">
+                                    ${index + 1}
+                                </div>
+                                ${wrongBadgeHtml}
                             </div>
 
                             <div class="flex-1 min-w-0">
@@ -1366,24 +1506,33 @@
             });
         }
 
-        // ==================== 최종 결과 채점기 ====================
+        // ==================== 최종 결과 채점기 (찍기 방지 강화 개편) ====================
         function submitAndGrade() {
+            if (isLocked) {
+                showToast("이미 기회를 모두 소모하여 실패한 챌린지입니다. 다시 시작해 주세요.");
+                return;
+            }
+            if (userAssembly.length < selectedSection.sentences.length) {
+                showToast(`모든 문장(${selectedSection.sentences.length}개)을 조립판에 배치해야만 온전한 채점을 진행할 수 있습니다!`);
+                return;
+            }
+
             checkTriggered = true;
             let correctCount = 0;
 
+            // 채점 시 오답인 카드는 이력기(Set)에 즉시 저장
             userAssembly.forEach((item, index) => {
                 if (item.originalIndex === index) {
                     correctCount++;
+                } else {
+                    // 이력 기록!
+                    historicallyIncorrectIds.add(item.id);
                 }
             });
 
             const total = selectedSection.sentences.length;
             const accuracy = Math.round((correctCount / total) * 100);
             const isPerfect = correctCount === total && userAssembly.length === total;
-
-            if (isPerfect) {
-                stopTimer();
-            }
 
             const feedbackCard = document.getElementById("result-feedback-card");
             const heading = document.getElementById("result-heading");
@@ -1398,36 +1547,51 @@
             timeDisplay.textContent = formatTime(timeElapsed);
 
             if (isPerfect) {
+                stopTimer();
                 heading.textContent = "참 잘했습니다! 정답을 완벽하게 맞췄어요!";
                 text.textContent = "본문의 전체 문장 흐름을 완벽하게 정렬하셨습니다. 뛰어난 맥락 파악 능력입니다!";
                 iconBox.className = "w-14 h-14 rounded-2xl flex items-center justify-center shrink-0 bg-emerald-100 text-emerald-600 text-2xl";
                 iconBox.innerHTML = '<span class="material-symbols-outlined text-3xl font-bold">workspace_premium</span>';
                 resultTip.classList.add("hidden");
-            } else {
-                heading.textContent = "틀린 문장 위치가 존재합니다. 조금만 다듬어 볼까요?";
-                text.textContent = `전체 ${total}개의 문장 카드 중에서 현재 ${correctCount}개가 올바른 제자리에 정렬되어 있습니다.`;
-                iconBox.className = "w-14 h-14 rounded-2xl flex items-center justify-center shrink-0 bg-amber-100 text-amber-600 text-2xl";
-                iconBox.innerHTML = '<span class="material-symbols-outlined text-3xl font-bold">published_with_changes</span>';
-                resultTip.classList.remove("hidden");
-            }
 
-            // 통계 정보 저장 (단원별 세션에 맞춰 분류 저장)
-            const currentStat = stats[activeLessonTab][selectedSection.id];
-            const newAccuracy = Math.max(currentStat.maxAccuracy, accuracy);
-            let newBestTime = currentStat.bestTime;
-
-            if (isPerfect) {
+                // 통계 정보 저장 (완벽 성공 기록)
+                const currentStat = stats[activeLessonTab][selectedSection.id];
+                const newAccuracy = Math.max(currentStat.maxAccuracy, accuracy);
+                let newBestTime = currentStat.bestTime;
                 if (newBestTime === null || timeElapsed < newBestTime) {
                     newBestTime = timeElapsed;
                 }
+                stats[activeLessonTab][selectedSection.id] = {
+                    completed: true,
+                    bestTime: newBestTime,
+                    maxAccuracy: 100
+                };
+            } else {
+                // 오답으로 인한 하트 차감 처리
+                lives--;
+                document.getElementById("game-lives-display").textContent = `${lives} / 5`;
+
+                if (lives <= 0) {
+                    // 도전 실패 잠금 모드 발동
+                    stopTimer();
+                    lockWorkspace(true);
+                    heading.textContent = "도전 실패! 기회를 모두 소모했습니다.";
+                    text.textContent = "문장을 반복해서 단순 찍기로 배치하다가 하트(기회)가 바닥났습니다. 단락 흐름을 재독해하고 처음부터 다시 도전해보세요!";
+                    iconBox.className = "w-14 h-14 rounded-2xl flex items-center justify-center shrink-0 bg-rose-100 text-rose-600 text-2xl";
+                    iconBox.innerHTML = '<span class="material-symbols-outlined text-3xl font-bold">heart_broken</span>';
+                    resultTip.classList.add("hidden");
+                } else {
+                    // 기회 남음 피드백
+                    heading.textContent = "틀린 문장 위치가 존재합니다. 기회가 차감되었습니다!";
+                    text.textContent = `전체 ${total}개의 문장 카드 중 현재 ${correctCount}개만 제자리에 있습니다. 하트가 1개 깎여 [남은 도전 기회: ${lives}번]입니다.`;
+                    iconBox.className = "w-14 h-14 rounded-2xl flex items-center justify-center shrink-0 bg-amber-100 text-amber-600 text-2xl";
+                    iconBox.innerHTML = '<span class="material-symbols-outlined text-3xl font-bold">published_with_changes</span>';
+                    resultTip.classList.remove("hidden");
+                }
             }
 
-            stats[activeLessonTab][selectedSection.id] = {
-                completed: currentStat.completed || isPerfect,
-                bestTime: newBestTime,
-                maxAccuracy: newAccuracy
-            };
-
+            // 오답 상태로 인한 하단 보드 재페인트
+            renderGameBoards();
             updateVisualValidation();
             renderMinimap();
 
@@ -1505,3 +1669,5 @@
     </script>
 </body>
 </html>
+
+
