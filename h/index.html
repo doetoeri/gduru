@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>웹 보조 모니터</title>
+    <title>웹 보조 모니터 (연결 방 방식)</title>
     <style>
         body {
             margin: 0; background-color: #111; color: #fff;
@@ -11,58 +11,65 @@
             display: flex; flex-direction: column;
             align-items: center; justify-content: center;
         }
-        #container { text-align: center; max-width: 400px; padding: 20px; background: #222; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.5); }
+        #container { text-align: center; max-width: 400px; padding: 25px; background: #222; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.5); }
+        input {
+            width: 90%; padding: 12px; margin: 10px 0; font-size: 16px;
+            border-radius: 6px; border: 1px solid #444; background: #333; color: white; text-align: center;
+        }
         button {
-            padding: 15px 30px; font-size: 18px; margin: 12px 0;
+            padding: 15px 30px; font-size: 18px; margin: 8px 0;
             border: none; border-radius: 8px; cursor: pointer;
             color: white; width: 100%; font-weight: bold;
-            transition: background 0.2s;
         }
         #tabletBtn { background-color: #28a745; }
-        #tabletBtn:hover { background-color: #218838; }
         #chromebookBtn { background-color: #007bff; }
-        #chromebookBtn:hover { background-color: #0056b3; }
-        #statusMessage { margin-top: 15px; color: #ffc107; font-size: 14px; }
+        #statusMessage { margin-top: 15px; color: #ffc107; font-size: 14px; line-height: 1.5; }
         video { width: 100vw; height: 100vh; object-fit: contain; display: none; background: #000; }
     </style>
-    <!-- 연결을 도와주는 안전한 라이브러리 로드 -->
     <script src="https://cloudflare.com"></script>
 </head>
 <body>
 
     <div id="container">
         <h2>🖥️ 웹 보조 모니터</h2>
-        <p><strong>1단계:</strong> 태블릿에서 먼저 누르세요.</p>
-        <button id="tabletBtn">📱 태블릿 (화면 받기)</button>
         
-        <p style="margin-top: 25px;"><strong>2단계:</strong> 크롬북에서 누르세요.</p>
-        <button id="chromebookBtn">💻 크롬북 (화면 보내기)</button>
+        <!-- 나만의 고유한 방 이름을 입력하는 칸 -->
+        <p>나만의 방 이름을 입력하세요 (영문/숫자)</p>
+        <input type="text" id="roomName" value="mysecretroom123">
 
-        <div id="statusMessage">현재 대기 중...</div>
+        <button id="tabletBtn">📱 1단계: 태블릿 대기 시작</button>
+        <button id="chromebookBtn">💻 2단계: 크롬북 화면 보내기</button>
+
+        <div id="statusMessage">아래 버튼을 눌러 연결을 시작하세요.</div>
     </div>
 
-    <video id="remoteVideo" autoplay playsinline controls></video>
+    <video id="remoteVideo" autoplay playsinline></video>
 
     <script>
-        // 무작위 연결 주소 생성 방지용 고유 ID 고정
-        const ROOM_ID = 'chromebook-tablet-dual-monitor-screen';
         const videoElement = document.getElementById('remoteVideo');
         const container = document.getElementById('container');
         const statusMessage = document.getElementById('statusMessage');
+        let peer = null;
 
-        // 📱 태블릿 (화면 수신측) 로직
+        // 📱 태블릿 (수신측)
         document.getElementById('tabletBtn').addEventListener('click', () => {
-            statusMessage.innerText = "태블릿 서버 연결 중...";
-            const peer = new Peer(ROOM_ID);
+            const roomId = document.getElementById('roomName').value.trim();
+            if(!roomId) return alert("방 이름을 입력해주세요!");
+
+            statusMessage.innerText = "서버에 접속하는 중...";
+            
+            // 기존 연결이 있다면 종료
+            if(peer) peer.destroy();
+
+            // 입력한 방 이름으로 서버에 내 주소를 등록
+            peer = new Peer('tablet-' + roomId);
             
             peer.on('open', (id) => {
-                statusMessage.innerHTML = "✅ 태블릿 대기 모드 작동 중!<br>이제 <strong>크롬북</strong>에서 보내기 버튼을 누르세요.";
-                document.getElementById('tabletBtn').style.opacity = "0.5";
+                statusMessage.innerHTML = `✅ <strong>태블릿 준비 완료!</strong><br>방 이름: <span style="color:#00ff00">${roomId}</span><br><br>이제 크롬북에서 같은 방 이름을 쓰고 '보내기'를 누르세요.`;
             });
 
-            // 크롬북에서 신호(영상 스트림)가 들어오면 수신
             peer.on('call', (call) => {
-                statusMessage.innerText = "연결 성공! 화면을 가져옵니다.";
+                statusMessage.innerText = "연결 성공! 화면을 전송받는 중...";
                 call.answer(); 
                 call.on('stream', (remoteStream) => {
                     container.style.display = 'none';
@@ -72,38 +79,50 @@
             });
 
             peer.on('error', (err) => {
-                alert("태블릿 오류 발생: " + err.type + "\n이미 태블릿 버튼이 눌려있을 수 있습니다. 새로고침 후 다시 하세요.");
+                console.error(err);
+                if(err.type === 'unavailable-id') {
+                    statusMessage.innerHTML = "❌ 이미 사용 중인 방 이름입니다.<br>이름을 조금 더 복잡하게 수정 후 다시 시도하세요.";
+                } else {
+                    statusMessage.innerHTML = "❌ 연결 오류 발생: " + err.type;
+                }
             });
         });
 
-        // 💻 크롬북 (화면 송신측) 로직
+        // 💻 크롬북 (송신측)
         document.getElementById('chromebookBtn').addEventListener('click', () => {
-            statusMessage.innerText = "크롬북 연결 준비 중...";
-            // 송신자는 랜덤 ID로 생성해 중복 회피
-            const peer = new Peer();
+            const roomId = document.getElementById('roomName').value.trim();
+            if(!roomId) return alert("방 이름을 입력해주세요!");
+
+            statusMessage.innerText = "크롬북 송신 준비 중...";
+            if(peer) peer.destroy();
+
+            // 송신자는 랜덤 아이디로 접속
+            peer = new Peer();
 
             peer.on('open', async (id) => {
                 try {
                     statusMessage.innerText = "화면 공유 권한 요청 중...";
-                    // 크롬북 전체 화면 캡처 권한창 띄우기
                     const stream = await navigator.mediaDevices.getDisplayMedia({
-                        video: { width: { ideal: 1920 }, height: { ideal: 1080 } },
+                        video: { width: { ideal: 1920 }, height: { ideal: 1080 }, frameRate: 30 },
                         audio: false
                     });
                     
-                    statusMessage.innerText = "태블릿으로 화면 전송 중입니다!";
+                    statusMessage.innerText = "태블릿을 찾아 연결하는 중...";
                     
-                    // 지정된 태블릿 ID로 화면 연결 쏘기
-                    peer.call(ROOM_ID, stream);
+                    // 태블릿 주소('tablet-' + 방이름)로 화면을 전송
+                    const call = peer.call('tablet-' + roomId, stream);
                     
+                    if(call) {
+                        statusMessage.innerText = "✅ 전송 성공! 태블릿 화면을 확인하세요.";
+                    }
                 } catch (err) {
-                    alert("화면 가져오기 실패: " + err.message + "\n권한을 허용해야 합니다.");
+                    alert("화면 캡처 실패: " + err.message);
                     statusMessage.innerText = "연결 실패";
                 }
             });
 
             peer.on('error', (err) => {
-                alert("크롬북 연결 오류: " + err.type);
+                statusMessage.innerHTML = "❌ 크롬북 오류: " + err.type;
             });
         });
     </script>
