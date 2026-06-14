@@ -3,17 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Duru Tester - 3D Haptic UI</title>
+    <title>Duru Tester - 3D Haptic UI (Agent Enabled)</title>
     
-    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     
-    <!-- Google Fonts: Noto Sans KR -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;800&display=swap" rel="stylesheet">
     
-    <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
 
     <style>
@@ -134,6 +131,19 @@
             box-shadow: 0px 4px 12px rgba(37, 99, 235, 0.15) !important;
         }
 
+        /* 탭 버튼 스타일 */
+        .tactile-tab {
+            background: #D1D5DB;
+            box-shadow: inset 2px 2px 5px rgba(0, 0, 0, 0.1);
+            color: #4B5563;
+        }
+        .tactile-tab.active {
+            background: linear-gradient(180deg, #FFFFFF 0%, #E2E8F0 100%);
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.08);
+            color: #1E293B;
+            border: 1px solid rgba(255, 255, 255, 0.8);
+        }
+
         /* 로딩 딤 오버레이 */
         .loading-overlay {
             background: rgba(229, 233, 240, 0.85);
@@ -152,7 +162,6 @@
 </head>
 <body class="min-h-screen flex items-center justify-center p-4 sm:p-8">
 
-    <!-- 글로벌 로딩 디스플레이 -->
     <div id="loadingOverlay" class="fixed inset-0 z-50 flex flex-col items-center justify-center loading-overlay transition-opacity duration-300">
         <div class="inline-flex items-center justify-center w-16 h-16 rounded-full debossed-well mb-4 animate-bounce">
             <i data-lucide="cloud-lightning" class="w-8 h-8 text-blue-600"></i>
@@ -160,15 +169,11 @@
         <p class="text-slate-600 font-extrabold text-lg">Duru 클라우드와 동기화 중...</p>
     </div>
 
-    <!-- 확장된 너비(max-w-5xl) 적용으로 태블릿/PC 반응형 개선 -->
     <main class="w-full max-w-5xl mx-auto">
         
-        <!-- ==========================================
-             1. 메인 홈 화면 (대시보드)
-             ========================================== -->
+        <!-- 홈 화면 -->
         <div id="screen-home" class="screen active">
             <div class="tactile-card p-6 sm:p-10 flex flex-col gap-8">
-                <!-- 헤더 영역 -->
                 <header class="text-center space-y-2">
                     <div class="inline-flex items-center justify-center w-16 h-16 rounded-full debossed-well mb-2">
                         <i data-lucide="check-square" class="w-8 h-8 text-blue-600"></i>
@@ -179,12 +184,9 @@
 
                 <div class="h-px w-full bg-slate-300 shadow-[0_1px_1px_rgba(255,255,255,1)]"></div>
 
-                <!-- 2단 그리드 레이아웃 적용 (태블릿 이상에서 분리) -->
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12">
                     
-                    <!-- [좌측 그리드]: 라이브 시험지 및 접속 -->
                     <div class="flex flex-col gap-6">
-                        <!-- 실시간 라이브 시험지 목록 -->
                         <section class="space-y-3 flex-1">
                             <div class="flex items-center justify-between ml-2">
                                 <h2 class="text-slate-700 font-bold flex items-center">
@@ -197,45 +199,41 @@
                             </div>
                             
                             <div id="liveExamsContainer" class="flex flex-col gap-3 max-h-60 overflow-y-auto pr-1 hide-scroll">
-                                <!-- 실시간 동기화된 시험지들이 이곳에 나타납니다 -->
                                 <div class="debossed-well p-6 text-center text-slate-500 font-bold text-sm">
                                     로딩 중이거나 아직 조립된 시험지가 없습니다.<br>관리자에게 조립을 요청해 보세요!
                                 </div>
                             </div>
                         </section>
 
-                        <!-- 시험 코드 직접 입력 섹션 -->
                         <section class="space-y-3">
                             <label class="block text-slate-700 font-bold ml-2">비공개 시험 코드 입력</label>
                             <div class="flex flex-col sm:flex-row gap-3">
                                 <div class="debossed-well flex-1 flex items-center px-4 py-3 transition-colors focus-within:ring-2 focus-within:ring-blue-400">
                                     <i data-lucide="key-round" class="w-5 h-5 text-slate-400 mr-2"></i>
                                     <input type="text" id="testCodeInput" placeholder="예: DURU-1234" 
-                                           class="w-full bg-transparent border-none outline-none text-slate-700 placeholder-slate-400 font-bold uppercase">
+                                           class="w-full bg-transparent border-none outline-none text-slate-700 placeholder-slate-400 font-bold uppercase"
+                                           data-agent="test-code-input">
                                 </div>
-                                <button onclick="startTest()" class="tactile-pill-btn-primary px-8 py-3 text-base shrink-0 w-full sm:w-auto">
+                                <button onclick="startTest()" class="tactile-pill-btn-primary px-8 py-3 text-base shrink-0 w-full sm:w-auto" data-agent="test-enter-button">
                                     시험 입장
                                 </button>
                             </div>
                         </section>
                     </div>
 
-                    <!-- [우측 그리드]: 액션 메뉴 및 기록 -->
                     <div class="flex flex-col gap-8">
-                        <!-- 메뉴 버튼 레이아웃 -->
                         <section class="grid grid-cols-2 gap-3 sm:gap-4">
-                            <button onclick="goToSubmitQuestion()" class="tactile-pill-btn p-4 sm:p-5 text-sm sm:text-base text-blue-600 flex flex-col items-center gap-2 h-full text-center">
+                            <button onclick="goToSubmitQuestion()" class="tactile-pill-btn p-4 sm:p-5 text-sm sm:text-base text-blue-600 flex flex-col items-center gap-2 h-full text-center" data-agent="home-submit-q-btn">
                                 <i data-lucide="edit-3" class="w-6 h-6 sm:w-8 sm:h-8 text-blue-500"></i>
                                 <span>① 친구용<br>문제 제출하기</span>
                             </button>
 
-                            <button onclick="openPasswordGate()" class="tactile-pill-btn p-4 sm:p-5 text-sm sm:text-base text-slate-700 flex flex-col items-center gap-2 h-full text-center">
+                            <button onclick="openPasswordGate()" class="tactile-pill-btn p-4 sm:p-5 text-sm sm:text-base text-slate-700 flex flex-col items-center gap-2 h-full text-center" data-agent="home-admin-btn">
                                 <i data-lucide="wrench" class="w-6 h-6 sm:w-8 sm:h-8 text-amber-500"></i>
                                 <span>② 관리자용<br>시험지 조립소</span>
                             </button>
                         </section>
 
-                        <!-- 내 시험 기록 -->
                         <section class="space-y-3 flex-1 flex flex-col">
                             <div class="flex items-center justify-between ml-2">
                                 <h2 class="text-slate-700 font-bold flex items-center">
@@ -247,8 +245,7 @@
                                 </button>
                             </div>
                             <div id="myRecordsContainer" class="flex flex-col gap-3 max-h-48 overflow-y-auto pr-1 hide-scroll">
-                                <!-- 기록이 여기에 렌더링됨 -->
-                            </div>
+                                </div>
                         </section>
                         
                         <footer class="text-center mt-auto">
@@ -262,9 +259,7 @@
             </div>
         </div>
 
-        <!-- ==========================================
-             2. 문제 제출 화면 (친구들이 개별 등록)
-             ========================================== -->
+        <!-- 문제 제출 화면 (일반 폼 및 AI 간편 등록 동시 지원) -->
         <div id="screen-submit-q" class="screen">
             <div class="tactile-card p-6 sm:p-10 flex flex-col gap-6 max-w-3xl mx-auto">
                 <header class="flex justify-between items-center mb-2">
@@ -274,111 +269,150 @@
                     </button>
                 </header>
 
-                <div class="space-y-2">
-                    <label class="block text-slate-700 font-bold ml-2">출제자 이름 (친구명)</label>
-                    <div class="debossed-well flex items-center px-4 py-3">
-                        <i data-lucide="user" class="w-5 h-5 text-slate-400 mr-2"></i>
-                        <input type="text" id="submitAuthor" placeholder="예: 민수, 지윤" 
-                               class="w-full bg-transparent border-none outline-none text-slate-700 placeholder-slate-400 font-bold">
-                    </div>
+                <!-- 에이전트 & 수동작성을 구분하는 탭 바 -->
+                <div class="debossed-well flex p-1 rounded-2xl gap-1">
+                    <button id="tabBtnManual" onclick="switchSubmitTab('manual')" class="flex-1 py-2 text-sm font-bold rounded-xl transition-all tactile-tab active" data-agent="tab-manual">
+                        일반 등록 (Human)
+                    </button>
+                    <button id="tabBtnAgent" onclick="switchSubmitTab('agent')" class="flex-1 py-2 text-sm font-bold rounded-xl transition-all tactile-tab" data-agent="tab-agent">
+                        🤖 AI / JSON 간편 등록 (Agent)
+                    </button>
                 </div>
 
-                <div class="space-y-2">
-                    <label class="block text-slate-700 font-bold ml-2">문제 내용</label>
-                    <div class="debossed-well px-4 py-3">
-                        <input type="text" id="submitQuestionText" placeholder="예: 지구의 대기 중 가장 흔한 기체 원소는?" 
-                               class="w-full bg-transparent border-none outline-none text-slate-700 placeholder-slate-400 font-bold">
-                    </div>
-                </div>
-
-                <div class="space-y-2 pt-2 border-t border-slate-200 mt-2">
-                    <label class="block text-slate-700 font-bold ml-2">문제 유형</label>
-                    <div class="flex gap-4 ml-2 mt-2">
-                        <label class="flex items-center gap-2 cursor-pointer">
-                            <input type="radio" name="submitQType" value="4choice" checked onchange="window.toggleSubmitType()" class="w-5 h-5 text-blue-600 bg-slate-100 border-slate-300 focus:ring-blue-500 cursor-pointer">
-                            <span class="font-bold text-slate-700">4지선다형</span>
-                        </label>
-                        <label class="flex items-center gap-2 cursor-pointer">
-                            <input type="radio" name="submitQType" value="ox" onchange="window.toggleSubmitType()" class="w-5 h-5 text-blue-600 bg-slate-100 border-slate-300 focus:ring-blue-500 cursor-pointer">
-                            <span class="font-bold text-slate-700">O/X 퀴즈</span>
-                        </label>
-                    </div>
-                </div>
-
-                <div class="space-y-3" id="submitType4">
-                    <label class="block text-slate-700 font-bold ml-2">보기 입력 및 정답 체크</label>
-                    <!-- 보기도 2단 그리드로 반응형 처리 -->
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                        <div class="flex items-center gap-3">
-                            <input type="radio" name="submitCorrect" value="0" id="correct-radio-0" checked
-                                   class="w-6 h-6 text-blue-600 bg-slate-100 border-slate-300 focus:ring-blue-500 cursor-pointer">
-                            <label for="correct-radio-0" class="text-xs font-bold text-slate-400 shrink-0">보기 1</label>
-                            <div class="debossed-well px-4 py-2 flex-1">
-                                <input type="text" class="submit-option w-full bg-transparent border-none outline-none text-slate-700 font-medium placeholder-slate-400" placeholder="보기 1번">
-                            </div>
-                        </div>
-                        <div class="flex items-center gap-3">
-                            <input type="radio" name="submitCorrect" value="1" id="correct-radio-1"
-                                   class="w-6 h-6 text-blue-600 bg-slate-100 border-slate-300 focus:ring-blue-500 cursor-pointer">
-                            <label for="correct-radio-1" class="text-xs font-bold text-slate-400 shrink-0">보기 2</label>
-                            <div class="debossed-well px-4 py-2 flex-1">
-                                <input type="text" class="submit-option w-full bg-transparent border-none outline-none text-slate-700 font-medium placeholder-slate-400" placeholder="보기 2번">
-                            </div>
-                        </div>
-                        <div class="flex items-center gap-3">
-                            <input type="radio" name="submitCorrect" value="2" id="correct-radio-2"
-                                   class="w-6 h-6 text-blue-600 bg-slate-100 border-slate-300 focus:ring-blue-500 cursor-pointer">
-                            <label for="correct-radio-2" class="text-xs font-bold text-slate-400 shrink-0">보기 3</label>
-                            <div class="debossed-well px-4 py-2 flex-1">
-                                <input type="text" class="submit-option w-full bg-transparent border-none outline-none text-slate-700 font-medium placeholder-slate-400" placeholder="보기 3번">
-                            </div>
-                        </div>
-                        <div class="flex items-center gap-3">
-                            <input type="radio" name="submitCorrect" value="3" id="correct-radio-3"
-                                   class="w-6 h-6 text-blue-600 bg-slate-100 border-slate-300 focus:ring-blue-500 cursor-pointer">
-                            <label for="correct-radio-3" class="text-xs font-bold text-slate-400 shrink-0">보기 4</label>
-                            <div class="debossed-well px-4 py-2 flex-1">
-                                <input type="text" class="submit-option w-full bg-transparent border-none outline-none text-slate-700 font-medium placeholder-slate-400" placeholder="보기 4번">
-                            </div>
+                <!-- 1. 수동 등록 폼 -->
+                <div id="submitFormManual" class="space-y-6">
+                    <div class="space-y-2">
+                        <label class="block text-slate-700 font-bold ml-2">출제자 이름 (친구명)</label>
+                        <div class="debossed-well flex items-center px-4 py-3">
+                            <i data-lucide="user" class="w-5 h-5 text-slate-400 mr-2"></i>
+                            <input type="text" id="submitAuthor" placeholder="예: 민수, 지윤" 
+                                   class="w-full bg-transparent border-none outline-none text-slate-700 placeholder-slate-400 font-bold" data-agent="submit-author">
                         </div>
                     </div>
-                </div>
 
-                <div class="space-y-3 hidden" id="submitTypeOX">
-                    <label class="block text-slate-700 font-bold ml-2">정답 체크 (O / X)</label>
-                    <div class="flex gap-4">
-                        <label class="flex-1 flex flex-col items-center gap-3 cursor-pointer group">
-                            <div class="debossed-well w-full py-4 flex items-center justify-center transition-all group-hover:ring-2 group-hover:ring-blue-300">
-                                <span class="text-3xl font-black text-blue-600">O</span>
-                            </div>
-                            <input type="radio" name="submitCorrectOX" value="0" checked class="w-6 h-6 text-blue-600 bg-slate-100 border-slate-300 focus:ring-blue-500 cursor-pointer">
-                        </label>
-                        <label class="flex-1 flex flex-col items-center gap-3 cursor-pointer group">
-                            <div class="debossed-well w-full py-4 flex items-center justify-center transition-all group-hover:ring-2 group-hover:ring-red-300">
-                                <span class="text-3xl font-black text-red-500">X</span>
-                            </div>
-                            <input type="radio" name="submitCorrectOX" value="1" class="w-6 h-6 text-blue-600 bg-slate-100 border-slate-300 focus:ring-blue-500 cursor-pointer">
-                        </label>
+                    <div class="space-y-2">
+                        <label class="block text-slate-700 font-bold ml-2">문제 내용</label>
+                        <div class="debossed-well px-4 py-3">
+                            <input type="text" id="submitQuestionText" placeholder="예: 지구의 대기 중 가장 흔한 기체 원소는?" 
+                                   class="w-full bg-transparent border-none outline-none text-slate-700 placeholder-slate-400 font-bold" data-agent="submit-question-text">
+                        </div>
                     </div>
-                </div>
 
-                <div class="space-y-2">
-                    <label class="block text-slate-700 font-bold ml-2">오답 해설 및 팁 (생략 가능)</label>
-                    <div class="debossed-well px-4 py-3">
-                        <textarea id="submitExplanation" class="w-full bg-transparent border-none outline-none text-slate-700 font-medium placeholder-slate-400 resize-none h-20" placeholder="친구들이 이 문제를 틀렸을 때 보여줄 설명글을 입력해주세요."></textarea>
+                    <div class="space-y-2 pt-2 border-t border-slate-200 mt-2">
+                        <label class="block text-slate-700 font-bold ml-2">문제 유형</label>
+                        <div class="flex gap-4 ml-2 mt-2">
+                            <label class="flex items-center gap-2 cursor-pointer">
+                                <input type="radio" name="submitQType" value="4choice" checked onchange="window.toggleSubmitType()" class="w-5 h-5 text-blue-600 bg-slate-100 border-slate-300 focus:ring-blue-500 cursor-pointer" data-agent="type-4choice">
+                                <span class="font-bold text-slate-700">4지선다형</span>
+                            </label>
+                            <label class="flex items-center gap-2 cursor-pointer">
+                                <input type="radio" name="submitQType" value="ox" onchange="window.toggleSubmitType()" class="w-5 h-5 text-blue-600 bg-slate-100 border-slate-300 focus:ring-blue-500 cursor-pointer" data-agent="type-ox">
+                                <span class="font-bold text-slate-700">O/X 퀴즈</span>
+                            </label>
+                        </div>
                     </div>
+
+                    <div class="space-y-3" id="submitType4">
+                        <label class="block text-slate-700 font-bold ml-2">보기 입력 및 정답 체크</label>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div class="flex items-center gap-3">
+                                <input type="radio" name="submitCorrect" value="0" id="correct-radio-0" checked
+                                       class="w-6 h-6 text-blue-600 bg-slate-100 border-slate-300 focus:ring-blue-500 cursor-pointer" data-agent="correct-0">
+                                <label for="correct-radio-0" class="text-xs font-bold text-slate-400 shrink-0">보기 1</label>
+                                <div class="debossed-well px-4 py-2 flex-1">
+                                    <input type="text" class="submit-option w-full bg-transparent border-none outline-none text-slate-700 font-medium placeholder-slate-400" placeholder="보기 1번" data-agent="option-0">
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-3">
+                                <input type="radio" name="submitCorrect" value="1" id="correct-radio-1"
+                                       class="w-6 h-6 text-blue-600 bg-slate-100 border-slate-300 focus:ring-blue-500 cursor-pointer" data-agent="correct-1">
+                                <label for="correct-radio-1" class="text-xs font-bold text-slate-400 shrink-0">보기 2</label>
+                                <div class="debossed-well px-4 py-2 flex-1">
+                                    <input type="text" class="submit-option w-full bg-transparent border-none outline-none text-slate-700 font-medium placeholder-slate-400" placeholder="보기 2번" data-agent="option-1">
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-3">
+                                <input type="radio" name="submitCorrect" value="2" id="correct-radio-2"
+                                       class="w-6 h-6 text-blue-600 bg-slate-100 border-slate-300 focus:ring-blue-500 cursor-pointer" data-agent="correct-2">
+                                <label for="correct-radio-2" class="text-xs font-bold text-slate-400 shrink-0">보기 3</label>
+                                <div class="debossed-well px-4 py-2 flex-1">
+                                    <input type="text" class="submit-option w-full bg-transparent border-none outline-none text-slate-700 font-medium placeholder-slate-400" placeholder="보기 3번" data-agent="option-2">
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-3">
+                                <input type="radio" name="submitCorrect" value="3" id="correct-radio-3"
+                                       class="w-6 h-6 text-blue-600 bg-slate-100 border-slate-300 focus:ring-blue-500 cursor-pointer" data-agent="correct-3">
+                                <label for="correct-radio-3" class="text-xs font-bold text-slate-400 shrink-0">보기 4</label>
+                                <div class="debossed-well px-4 py-2 flex-1">
+                                    <input type="text" class="submit-option w-full bg-transparent border-none outline-none text-slate-700 font-medium placeholder-slate-400" placeholder="보기 4번" data-agent="option-3">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="space-y-3 hidden" id="submitTypeOX">
+                        <label class="block text-slate-700 font-bold ml-2">정답 체크 (O / X)</label>
+                        <div class="flex gap-4">
+                            <label class="flex-1 flex flex-col items-center gap-3 cursor-pointer group">
+                                <div class="debossed-well w-full py-4 flex items-center justify-center transition-all group-hover:ring-2 group-hover:ring-blue-300">
+                                    <span class="text-3xl font-black text-blue-600">O</span>
+                                </div>
+                                <input type="radio" name="submitCorrectOX" value="0" checked class="w-6 h-6 text-blue-600 bg-slate-100 border-slate-300 focus:ring-blue-500 cursor-pointer" data-agent="ox-o">
+                            </label>
+                            <label class="flex-1 flex flex-col items-center gap-3 cursor-pointer group">
+                                <div class="debossed-well w-full py-4 flex items-center justify-center transition-all group-hover:ring-2 group-hover:ring-red-300">
+                                    <span class="text-3xl font-black text-red-500">X</span>
+                                </div>
+                                <input type="radio" name="submitCorrectOX" value="1" class="w-6 h-6 text-blue-600 bg-slate-100 border-slate-300 focus:ring-blue-500 cursor-pointer" data-agent="ox-x">
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="space-y-2">
+                        <label class="block text-slate-700 font-bold ml-2">오답 해설 및 팁 (생략 가능)</label>
+                        <div class="debossed-well px-4 py-3">
+                            <textarea id="submitExplanation" class="w-full bg-transparent border-none outline-none text-slate-700 font-medium placeholder-slate-400 resize-none h-20" placeholder="친구들이 이 문제를 틀렸을 때 보여줄 설명글을 입력해주세요." data-agent="submit-explanation"></textarea>
+                        </div>
+                    </div>
+
+                    <button onclick="submitSingleQuestion()" class="tactile-pill-btn-primary w-full py-4 px-6 text-lg" data-agent="submit-btn">
+                        <i data-lucide="check" class="w-5 h-5 mr-2"></i>
+                        보관함에 문제 제출하기
+                    </button>
                 </div>
 
-                <button onclick="submitSingleQuestion()" class="tactile-pill-btn-primary w-full py-4 px-6 text-lg">
-                    <i data-lucide="check" class="w-5 h-5 mr-2"></i>
-                    보관함에 문제 제출하기
-                </button>
+                <!-- 2. 에이전트 전용 JSON / 대량 가져오기 폼 -->
+                <div id="submitFormAgent" class="space-y-6 hidden">
+                    <p class="text-xs text-slate-500 font-bold leading-relaxed ml-2">
+                        🤖 AI 에이전트 또는 전문 사용자를 위한 원클릭 데이터 가져오기 공간입니다.<br>아래 양식(JSON Object 또는 Array)에 맞춘 데이터를 넣고 버튼을 누르면 단숨에 일괄 가입됩니다.
+                    </p>
+
+                    <div class="space-y-2">
+                        <label class="block text-slate-700 font-bold ml-2">JSON 데이터 입력 (단일 혹은 배열)</label>
+                        <div class="debossed-well p-4">
+                            <textarea id="agentJsonInput" class="w-full bg-transparent border-none outline-none text-slate-700 font-mono text-xs sm:text-sm h-64 resize-none" 
+                                      placeholder='[
+  {
+    "author": "AI 에이전트",
+    "text": "지구의 대기 중 가장 많은 원소는 무엇일까요?",
+    "qType": "4choice",
+    "options": ["질소", "산소", "아르곤", "이산화탄소"],
+    "correctAnswer": 0,
+    "explanation": "질소가 대기 성분의 약 78%를 차지하고 있습니다."
+  }
+]' data-agent="json-textarea"></textarea>
+                        </div>
+                    </div>
+
+                    <button onclick="importQuestionsViaAgent()" class="tactile-pill-btn-primary w-full py-4 px-6 text-lg" data-agent="json-import-btn">
+                        <i data-lucide="sparkles" class="w-5 h-5 mr-2"></i>
+                        클라우드 보관함에 일괄 가져오기
+                    </button>
+                </div>
             </div>
         </div>
 
-        <!-- ==========================================
-             [신규 기능] 문제 수정 화면 (관리자용)
-             ========================================== -->
+        <!-- 문제 수정 화면 -->
         <div id="screen-edit-q" class="screen">
             <div class="tactile-card p-6 sm:p-10 flex flex-col gap-6 max-w-3xl mx-auto">
                 <header class="flex justify-between items-center mb-2">
@@ -485,9 +519,7 @@
             </div>
         </div>
 
-        <!-- ==========================================
-             3. 관리자 조립소 화면
-             ========================================== -->
+        <!-- 관리자 대시보드 -->
         <div id="screen-admin" class="screen">
             <div class="tactile-card p-6 sm:p-10 flex flex-col gap-6">
                 <header class="flex justify-between items-center mb-2">
@@ -504,7 +536,6 @@
 
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
                     
-                    <!-- [좌측]: 새 시험지 조립 영역 -->
                     <div class="flex flex-col gap-6">
                         <div class="space-y-3 bg-slate-200/50 p-5 rounded-3xl border border-slate-300">
                             <h3 class="font-bold text-slate-700 ml-1 flex items-center gap-1">
@@ -515,14 +546,14 @@
                                 <label class="block text-xs font-bold text-slate-500 ml-2">시험지 타이틀</label>
                                 <div class="debossed-well flex items-center px-4 py-3 bg-white">
                                     <input type="text" id="adminExamTitle" placeholder="예: 1학기 기말고사 통합 모의평가" 
-                                           class="w-full bg-transparent border-none outline-none text-slate-800 font-bold placeholder-slate-400">
+                                           class="w-full bg-transparent border-none outline-none text-slate-800 font-bold placeholder-slate-400" data-agent="admin-exam-title">
                                 </div>
                             </div>
 
                             <div class="space-y-2 pt-2 border-t border-slate-200 mt-3">
                                 <label class="block text-xs font-bold text-slate-500 ml-2">과목 선택</label>
                                 <div class="debossed-well flex items-center px-4 py-3 bg-white relative">
-                                    <select id="adminExamSubject" class="w-full bg-transparent border-none outline-none text-slate-800 font-bold appearance-none cursor-pointer">
+                                    <select id="adminExamSubject" class="w-full bg-transparent border-none outline-none text-slate-800 font-bold appearance-none cursor-pointer" data-agent="admin-exam-subject">
                                         <option value="국어">국어</option>
                                         <option value="영어">영어</option>
                                         <option value="수학">수학</option>
@@ -542,32 +573,49 @@
                                 <span class="text-xs font-bold text-slate-400" id="selectedCountInfo">0개 선택됨</span>
                             </div>
 
-                            <div id="adminSubmittedQList" class="flex flex-col gap-4 max-h-[400px] overflow-y-auto pr-1 hide-scroll border-b border-slate-300 pb-2">
-                                <!-- 동적으로 등록된 문제 목록이 카드로 뿌려짐 -->
-                            </div>
+                            <div id="adminSubmittedQList" class="flex flex-col gap-4 max-h-[350px] overflow-y-auto pr-1 hide-scroll border-b border-slate-300 pb-2">
+                                </div>
                         </div>
 
-                        <button onclick="assembleExamPaper()" class="tactile-pill-btn-primary w-full py-4 px-6 text-lg mt-auto">
+                        <button onclick="assembleExamPaper()" class="tactile-pill-btn-primary w-full py-4 px-6 text-lg mt-auto" data-agent="admin-assemble-btn">
                             <i data-lucide="sparkles" class="w-5 h-5 mr-2"></i>
                             선택한 문제들로 시험지 조립하기
                         </button>
                     </div>
 
-                    <!-- [우측]: 발급된 시험지 관리 영역 (신규 기능) -->
-                    <div class="flex flex-col gap-4 bg-slate-200/30 p-5 rounded-3xl border border-slate-300">
-                        <div class="flex justify-between items-center mb-1">
-                            <h3 class="font-bold text-slate-700 flex items-center gap-2">
-                                <i data-lucide="folder-open" class="w-5 h-5 text-amber-500"></i> 발급된 시험지 관리
-                            </h3>
+                    <div class="flex flex-col gap-6">
+                        <div class="flex flex-col gap-4 bg-slate-200/30 p-5 rounded-3xl border border-slate-300">
+                            <div class="flex justify-between items-center mb-1">
+                                <h3 class="font-bold text-slate-700 flex items-center gap-2">
+                                    <i data-lucide="folder-open" class="w-5 h-5 text-amber-500"></i> 발급된 시험지 관리
+                                </h3>
+                            </div>
+                            <p class="text-xs text-slate-500 font-medium leading-relaxed">
+                                활성화된 시험지 목록입니다. 삭제 시 코드를 통한 입장이 불가능합니다.
+                            </p>
+                            
+                            <div id="adminLiveExamsList" class="flex flex-col gap-3 max-h-[180px] overflow-y-auto pr-1 hide-scroll">
+                                <div class="debossed-well p-6 text-center text-slate-400 font-bold text-sm">
+                                    관리할 수 있는 활성 시험지가 없습니다.
+                                </div>
+                            </div>
                         </div>
-                        <p class="text-xs text-slate-500 font-medium leading-relaxed">
-                            활성화된 시험지 목록입니다. 삭제 시 해당 코드를 통한 시험 입장이 더 이상 불가합니다.
-                        </p>
-                        
-                        <div id="adminLiveExamsList" class="flex flex-col gap-3 max-h-[500px] overflow-y-auto pr-1 hide-scroll">
-                            <!-- 관리용 시험지 목록 렌더링 -->
-                            <div class="debossed-well p-6 text-center text-slate-400 font-bold text-sm">
-                                관리할 수 있는 활성 시험지가 없습니다.
+
+                        <div class="flex flex-col gap-4 bg-red-50/50 p-5 rounded-3xl border border-red-200">
+                            <div class="flex justify-between items-center mb-1">
+                                <h3 class="font-bold text-red-700 flex items-center gap-2">
+                                    <i data-lucide="trash-2" class="w-5 h-5 text-red-500"></i> 삭제된 문제 휴지통
+                                </h3>
+                                <span class="text-xs font-bold text-red-400" id="trashCountInfo">0개 보관됨</span>
+                            </div>
+                            <p class="text-xs text-red-500 font-medium leading-relaxed">
+                                삭제된 문제는 휴지통으로 임시 보관됩니다. 복원하거나 완전히 영구 삭제할 수 있습니다.
+                            </p>
+                            
+                            <div id="adminTrashQList" class="flex flex-col gap-3 max-h-[180px] overflow-y-auto pr-1 hide-scroll">
+                                <div class="debossed-well p-6 text-center text-slate-400 font-bold text-sm">
+                                    휴지통이 비어 있습니다.
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -576,9 +624,7 @@
             </div>
         </div>
 
-        <!-- ==========================================
-             4. 문제 풀이 화면
-             ========================================== -->
+        <!-- 시험 풀기 화면 -->
         <div id="screen-test" class="screen">
             <div class="tactile-card p-6 sm:p-10 flex flex-col gap-6 max-w-4xl mx-auto">
                 <div class="flex justify-between items-center mb-2">
@@ -596,16 +642,14 @@
                     </h3>
                 </div>
 
-                <!-- 옵션 컨테이너: 태블릿 크기 이상에서는 2x2 그리드 배열 -->
                 <div id="optionsContainer" class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-2">
-                    <!-- 보기가 추가되는 영역 -->
-                </div>
+                    </div>
 
                 <div class="flex gap-4 mt-4">
                     <button onclick="goHome()" class="tactile-pill-btn py-4 px-6 shrink-0">
                         <i data-lucide="x" class="w-5 h-5"></i>
                     </button>
-                    <button id="nextBtn" onclick="nextQuestion()" class="tactile-pill-btn-primary flex-1 py-4 px-6 text-lg">
+                    <button id="nextBtn" onclick="nextQuestion()" class="tactile-pill-btn-primary flex-1 py-4 px-6 text-lg" data-agent="test-next-btn">
                         다음 문제
                         <i data-lucide="arrow-right" class="w-5 h-5 ml-2"></i>
                     </button>
@@ -613,9 +657,7 @@
             </div>
         </div>
 
-        <!-- ==========================================
-             5. 결과 및 오답 노트 화면
-             ========================================== -->
+        <!-- 채점 결과 화면 -->
         <div id="screen-result" class="screen">
             <div class="tactile-card p-6 sm:p-10 flex flex-col gap-8 max-w-4xl mx-auto">
                 <header class="text-center space-y-4">
@@ -631,8 +673,7 @@
                 <section>
                     <h2 class="text-xl font-bold text-slate-700 mb-4 ml-2">오답 노트 분석</h2>
                     <div id="wrongAnswersContainer" class="flex flex-col gap-4">
-                        <!-- 오답 내역 추가되는 영역 -->
-                    </div>
+                        </div>
                 </section>
 
                 <button onclick="goHome()" class="tactile-pill-btn py-4 px-6 text-lg w-full mt-4">
@@ -644,7 +685,7 @@
 
     </main>
 
-    <!-- 공통 알림 모달 -->
+    <!-- 알림 모달 -->
     <div id="customModal" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 flex items-center justify-center p-4 opacity-0 pointer-events-none transition-opacity duration-300">
         <div class="tactile-card w-full max-w-sm p-8 flex flex-col items-center text-center transform scale-95 transition-transform duration-300" id="modalCard">
             <div id="modalIconContainer" class="w-16 h-16 rounded-full debossed-well flex items-center justify-center mb-4">
@@ -658,7 +699,7 @@
         </div>
     </div>
 
-    <!-- 관리자 비밀번호 게이트 모달 -->
+    <!-- 패스워드 모달 -->
     <div id="passwordModal" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 flex items-center justify-center p-4 opacity-0 pointer-events-none transition-opacity duration-300">
         <div class="tactile-card w-full max-w-sm p-8 flex flex-col items-center transform scale-95 transition-transform duration-300" id="passwordCard">
             <div class="w-16 h-16 rounded-full debossed-well flex items-center justify-center mb-4">
@@ -667,31 +708,23 @@
             <h3 class="text-xl font-bold text-slate-800 mb-2 text-center">관리자 인증</h3>
             
             <div class="debossed-well w-full flex items-center px-4 py-3 mt-4 mb-6 bg-[#E2E8F0]">
-                <!-- 보안 업데이트: placeholder에서 기본 비밀번호 노출 제거 -->
                 <input type="password" id="adminPasswordInput" placeholder="비밀번호 입력" 
-                       class="w-full bg-transparent border-none outline-none text-slate-700 text-center font-bold tracking-widest">
+                       class="w-full bg-transparent border-none outline-none text-slate-700 text-center font-bold tracking-widest" data-agent="password-input">
             </div>
 
             <div class="flex gap-3 w-full">
                 <button onclick="closePasswordGate()" class="tactile-pill-btn py-3 px-4 text-sm font-bold flex-1">취소</button>
-                <button onclick="checkAdminPassword()" class="tactile-pill-btn-primary py-3 px-4 text-sm font-bold flex-1">입장</button>
+                <button onclick="checkAdminPassword()" class="tactile-pill-btn-primary py-3 px-4 text-sm font-bold flex-1" data-agent="password-auth-btn">입장</button>
             </div>
         </div>
     </div>
 
-    <!-- Firebase SDK & 비즈니스 로직 -->
     <script type="module">
-        // ==========================================
-        // Firebase CDN 연동 구성 (v11.6.1)
-        // ==========================================
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
         import { getFirestore, collection, doc, setDoc, getDoc, onSnapshot, deleteDoc, updateDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-        // ==========================================
-        // [설정] 제공해주신 Firebase Project 전용 설정
-        // ==========================================
-        const ADMIN_PASSWORD = "1234"; // 🔑 관리자 페이지 입장 비밀번호
+        const ADMIN_PASSWORD = "1234"; 
 
         const firebaseConfig = {
             apiKey: "AIzaSyDC6tQ3FMdYZ7uNUgLxKfOYELt8FEZ83bg",
@@ -707,26 +740,21 @@
         const auth = getAuth(app);
         const db = getFirestore(app);
         
-        // 💡 중요: 기기 및 호스팅 환경에 관계없이 동일한 DB 공간을 참조하도록 고정
         const appId = 'duru-tester-global'; 
 
-        // ==========================================
         // 클라이언트 상태 관리 변수
-        // ==========================================
         const submittedQuestions = []; 
+        const trashQuestions = []; 
         let adminSelectedQIds = new Set();
         let currentTestData = null;
         let currentQuestionIndex = 0;
         let userAnswers = [];
         let authUser = null;
 
-        // 아이콘 초기화
         lucide.createIcons();
 
-        // 커스텀 스크롤 숨기기 유틸 적용
         document.head.insertAdjacentHTML("beforeend", `<style>.hide-scroll::-webkit-scrollbar { display: none; } .hide-scroll { -ms-overflow-style: none; scrollbar-width: none; }</style>`);
 
-        // 로딩 바 제어
         const loadingOverlay = document.getElementById('loadingOverlay');
         function showLoading() {
             loadingOverlay.classList.remove('opacity-0', 'pointer-events-none');
@@ -735,7 +763,6 @@
             loadingOverlay.classList.add('opacity-0', 'pointer-events-none');
         }
 
-        // Firebase Auth 인증 처리
         const initAuth = async () => {
             showLoading();
             try {
@@ -766,21 +793,17 @@
             }
         });
 
-        // ==========================================
-        // DB 실시간 동기화 (모든 기기 실시간 연동)
-        // ==========================================
+        // DB 실시간 동기화 (휴지통 기능 포함)
         function syncDatabaseCountersRealtime() {
             if (!authUser) return;
             try {
                 // 1. [문제 보관함] 실시간 동기화
                 const qColRef = collection(db, 'artifacts', appId, 'public', 'data', 'submittedQuestions');
-                
                 onSnapshot(qColRef, (qSnap) => {
                     submittedQuestions.length = 0;
                     qSnap.forEach(doc => {
                         submittedQuestions.push(doc.data());
                     });
-                    
                     submittedQuestions.sort((a, b) => b.createdAt - a.createdAt);
                     
                     const countEl = document.getElementById('homeQCount');
@@ -793,21 +816,36 @@
                     console.error("문제 실시간 동기화 실패", error);
                 });
 
-                // 2. [시험지 목록] 실시간 동기화 (메인/관리자 화면용)
+                // 2. [휴지통 보관함] 실시간 동기화
+                const trashColRef = collection(db, 'artifacts', appId, 'public', 'data', 'trashQuestions');
+                onSnapshot(trashColRef, (tSnap) => {
+                    trashQuestions.length = 0;
+                    tSnap.forEach(doc => {
+                        trashQuestions.push(doc.data());
+                    });
+                    trashQuestions.sort((a, b) => b.deletedAt - a.deletedAt);
+                    
+                    const trashCountEl = document.getElementById('trashCountInfo');
+                    if (trashCountEl) trashCountEl.textContent = `${trashQuestions.length}개 보관됨`;
+
+                    if (document.getElementById('screen-admin').classList.contains('active')) {
+                        window.renderAdminTrashList();
+                    }
+                }, (error) => {
+                    console.error("휴지통 실시간 동기화 실패", error);
+                });
+
+                // 3. [시험지 목록] 실시간 동기화
                 const examColRef = collection(db, 'artifacts', appId, 'public', 'data', 'activeExams');
-                
                 onSnapshot(examColRef, (eSnap) => {
                     const exams = [];
                     eSnap.forEach(doc => {
                         exams.push({ id: doc.id, ...doc.data() });
                     });
-                    
                     exams.sort((a, b) => b.createdAt - a.createdAt);
                     
-                    // 홈 화면 및 관리자 화면 각각 렌더링
                     window.renderLiveExams(exams);
                     window.renderAdminExamsManageList(exams);
-
                     hideLoading(); 
                 }, (error) => {
                     console.error("시험지 실시간 동기화 실패", error);
@@ -820,9 +858,6 @@
             }
         }
 
-        // ==========================================
-        // 화면 조작 및 렌더링 함수 전역 노출
-        // ==========================================
         window.switchScreen = function(screenId) {
             document.querySelectorAll('.screen').forEach(screen => {
                 screen.classList.remove('active');
@@ -837,7 +872,26 @@
             window.switchScreen('screen-home');
         };
 
-        // 홈 화면: 실시간 라이브 시험지 렌더링
+        // 문제 제출 화면 내부 탭 체인저 (에이전트 입력 / 일반 수동 입력)
+        window.switchSubmitTab = function(tabType) {
+            const btnManual = document.getElementById('tabBtnManual');
+            const btnAgent = document.getElementById('tabBtnAgent');
+            const formManual = document.getElementById('submitFormManual');
+            const formAgent = document.getElementById('submitFormAgent');
+
+            if (tabType === 'agent') {
+                btnManual.classList.remove('active');
+                btnAgent.classList.add('active');
+                formManual.classList.add('hidden');
+                formAgent.classList.remove('hidden');
+            } else {
+                btnAgent.classList.remove('active');
+                btnManual.classList.add('active');
+                formAgent.classList.add('hidden');
+                formManual.classList.remove('hidden');
+            }
+        };
+
         window.renderLiveExams = function(exams) {
             const container = document.getElementById('liveExamsContainer');
             if (!container) return;
@@ -863,7 +917,6 @@
             lucide.createIcons();
         };
 
-        // 관리자 화면: 발급된 시험지 관리 목록 렌더링 [신규 기능]
         window.renderAdminExamsManageList = function(exams) {
             const container = document.getElementById('adminLiveExamsList');
             if (!container) return;
@@ -887,7 +940,6 @@
             lucide.createIcons();
         };
 
-        // 관리자: 발급된 시험지 삭제 실행 [신규 기능]
         window.deleteExamFromAdmin = async function(examId) {
             showLoading();
             try {
@@ -901,28 +953,22 @@
             }
         };
 
-        // 홈 화면: 목록에서 즉시 풀기
         window.startTestWithCode = function(code) {
             document.getElementById('testCodeInput').value = code;
             window.startTest();
         };
 
-        // ==========================================
-        // 로컬 스토리지 시험 기록 관리
-        // ==========================================
         window.renderMyRecords = function() {
             const container = document.getElementById('myRecordsContainer');
             if (!container) return;
             
             const records = JSON.parse(localStorage.getItem('duru_test_records') || '[]');
-            
             if (records.length === 0) {
                 container.innerHTML = `<div class="debossed-well p-4 text-center text-slate-500 font-bold text-sm">아직 응시한 시험 기록이 없습니다.</div>`;
                 return;
             }
 
             records.sort((a, b) => b.date - a.date);
-
             container.innerHTML = records.map(r => {
                 const dateObj = new Date(r.date);
                 const dateStr = `${dateObj.getMonth() + 1}월 ${dateObj.getDate()}일 ${dateObj.getHours()}:${String(dateObj.getMinutes()).padStart(2, '0')}`;
@@ -945,9 +991,6 @@
             window.showModal("기록 삭제", "모든 로컬 시험 기록이 깨끗하게 지워졌습니다.", "trash-2", "text-red-500");
         };
 
-        // ==========================================
-        // 모달 관리
-        // ==========================================
         const modal = document.getElementById('customModal');
         const modalCard = document.getElementById('modalCard');
         
@@ -976,9 +1019,6 @@
             if (e.target === modal) window.closeModal();
         });
 
-        // ==========================================
-        // 자격 인증 게이트 모달 제어
-        // ==========================================
         const passModal = document.getElementById('passwordModal');
         const passCard = document.getElementById('passwordCard');
 
@@ -1005,19 +1045,19 @@
             }
         };
 
-        // ==========================================
-        // 1. [기능] 친구의 문제 제출 연동 (Firebase Write)
-        // ==========================================
         window.goToSubmitQuestion = function() {
             document.getElementById('submitAuthor').value = '';
             document.getElementById('submitQuestionText').value = '';
             document.getElementById('submitExplanation').value = '';
+            document.getElementById('agentJsonInput').value = '';
             
             const options = document.querySelectorAll('.submit-option');
             options.forEach(opt => opt.value = '');
             
             document.getElementById('correct-radio-0').checked = true;
             document.querySelector('input[name="submitQType"][value="4choice"]').checked = true;
+            
+            window.switchSubmitTab('manual');
             window.toggleSubmitType();
 
             window.switchScreen('screen-submit-q');
@@ -1034,6 +1074,24 @@
             }
         };
 
+        // 클라우드 저장 코어 기능 (단일 데이터 업로드용)
+        async function saveQuestionToCloud(author, text, qType, options, correctAnswer, explanation) {
+            const newQId = `q-${Date.now()}-${Math.random().toString(36).substr(2, 5)}`;
+            const qDocRef = doc(db, 'artifacts', appId, 'public', 'data', 'submittedQuestions', newQId);
+            
+            await setDoc(qDocRef, {
+                id: newQId,
+                author: author,
+                text: text,
+                options: options,
+                correctAnswer: correctAnswer,
+                explanation: explanation || "정답 및 해설이 등록되지 않았습니다.",
+                createdAt: Date.now()
+            });
+            return newQId;
+        }
+
+        // 인간 사용자의 단일 수동 제출
         window.submitSingleQuestion = async function() {
             if (!authUser) {
                 window.showModal("오류", "Firebase 클라우드 서버와 연결이 불안정합니다. 잠시 후 시도해주세요.");
@@ -1063,20 +1121,8 @@
             }
 
             showLoading();
-            const newQId = `q-${Date.now()}`;
-
             try {
-                const qDocRef = doc(db, 'artifacts', appId, 'public', 'data', 'submittedQuestions', newQId);
-                await setDoc(qDocRef, {
-                    id: newQId,
-                    author: author,
-                    text: text,
-                    options: options,
-                    correctAnswer: correctAnswer,
-                    explanation: explanation || "정답 및 해설이 등록되지 않았습니다.",
-                    createdAt: Date.now()
-                });
-
+                await saveQuestionToCloud(author, text, qType, options, correctAnswer, explanation);
                 window.showModal(
                     "제출 완료 🎉", 
                     `보관함에 ${author}님의 문제가 성공적으로 저장되었습니다!\n조립소에서 골라 한 판의 시험지로 엮어보세요.`, 
@@ -1092,9 +1138,61 @@
             }
         };
 
-        // ==========================================
-        // 2. [기능] 관리자 조립 패널
-        // ==========================================
+        // 🤖 [AI 전용] 에이전트 JSON 간편 대량 등록 기능
+        window.importQuestionsViaAgent = async function() {
+            const rawJson = document.getElementById('agentJsonInput').value.trim();
+            if (!rawJson) {
+                window.showModal("입력 필요", "가져올 JSON 문자열을 입력상자에 먼저 채워주세요.", "alert-circle", "text-orange-500");
+                return;
+            }
+
+            let parsedData;
+            try {
+                parsedData = JSON.parse(rawJson);
+            } catch (e) {
+                window.showModal("JSON 구문 오류", "형식이 바르지 않은 JSON 데이터입니다.\n올바른 따옴표 및 쉼표 괄호 구조를 점검하세요.", "alert-circle", "text-red-500");
+                return;
+            }
+
+            showLoading();
+            try {
+                const questionsArray = Array.isArray(parsedData) ? parsedData : [parsedData];
+                
+                // 데이터 스키마 유효성 체크
+                for (let i = 0; i < questionsArray.length; i++) {
+                    const q = questionsArray[i];
+                    if (!q.author || !q.text || !q.options || typeof q.correctAnswer === 'undefined') {
+                        throw new Error(`${i+1}번째 문제의 규격(author, text, options, correctAnswer)이 올바르지 않습니다.`);
+                    }
+                }
+
+                // 순차 루프 파이어베이스 일괄 등록
+                for (const q of questionsArray) {
+                    await saveQuestionToCloud(
+                        q.author,
+                        q.text,
+                        q.qType || (q.options.length === 2 ? 'ox' : '4choice'),
+                        q.options,
+                        parseInt(q.correctAnswer),
+                        q.explanation || ""
+                    );
+                }
+
+                window.showModal(
+                    "가져오기 완료 🤖",
+                    `총 ${questionsArray.length}개의 문제를 성공적으로 클라우드 보관함에 주입하였습니다.`,
+                    "sparkles",
+                    "text-blue-500"
+                );
+                window.goHome();
+            } catch (err) {
+                console.error("가져오기 실패:", err);
+                window.showModal("가져오기 실패", err.message || "원인을 알 수 없는 예외가 발생했습니다.", "alert-circle", "text-red-500");
+            } finally {
+                hideLoading();
+            }
+        };
+
         window.goToAdminPanel = function() {
             document.getElementById('adminExamTitle').value = '';
             document.getElementById('adminExamSubject').value = '국어'; 
@@ -1102,6 +1200,7 @@
             window.updateSelectedQCountUI();
 
             window.renderAdminQuestionSelector();
+            window.renderAdminTrashList(); 
             window.switchScreen('screen-admin');
         };
 
@@ -1122,6 +1221,7 @@
                 const card = document.createElement('div');
                 card.id = `admin-card-${q.id}`;
                 card.className = "debossed-well p-4 cursor-pointer transition-all flex flex-col gap-2 relative bg-white border border-slate-300";
+                card.setAttribute('data-agent-qid', q.id);
                 
                 if (adminSelectedQIds.has(q.id)) {
                     card.classList.add('admin-q-selected');
@@ -1134,12 +1234,10 @@
                         </span>
                         
                         <div class="flex gap-2 items-center">
-                            <!-- 문제 수정 버튼 -->
                             <button onclick="window.openEditQuestion('${q.id}', event)" class="p-1.5 text-slate-400 hover:text-blue-500 transition-colors z-10" title="문제 수정하기">
                                 <i data-lucide="edit-2" class="w-5 h-5"></i>
                             </button>
-                            <!-- 문제 삭제 버튼 -->
-                            <button onclick="window.deleteQuestion('${q.id}', event)" class="p-1.5 text-slate-400 hover:text-red-500 transition-colors z-10" title="문제 삭제하기">
+                            <button onclick="window.moveQuestionToTrash('${q.id}', event)" class="p-1.5 text-slate-400 hover:text-red-500 transition-colors z-10" title="휴지통으로 버리기">
                                 <i data-lucide="trash-2" class="w-5 h-5"></i>
                             </button>
                             
@@ -1180,26 +1278,102 @@
             document.getElementById('selectedCountInfo').textContent = `${adminSelectedQIds.size}개 선택됨`;
         };
 
-        window.deleteQuestion = async function(qId, event) {
-            event.stopPropagation(); 
+        // 문제를 '휴지통(trashQuestions)' 컬렉션으로 보낸 뒤 기존 보관함에서 제거
+        window.moveQuestionToTrash = async function(qId, event) {
+            if (event) event.stopPropagation();
             
+            const qData = submittedQuestions.find(q => q.id === qId);
+            if (!qData) return;
+
             showLoading();
             try {
+                const trashDocRef = doc(db, 'artifacts', appId, 'public', 'data', 'trashQuestions', qId);
+                await setDoc(trashDocRef, {
+                    ...qData,
+                    deletedAt: Date.now() 
+                });
+
                 await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'submittedQuestions', qId));
                 
                 adminSelectedQIds.delete(qId); 
                 window.updateSelectedQCountUI();
                 
-                window.showModal("삭제 완료", "선택하신 문제가 보관함에서 지워졌습니다.", "trash-2", "text-red-500");
+                window.showModal("휴지통 이동", "문제를 휴지통으로 안전하게 이동시켰습니다.", "trash-2", "text-amber-500");
             } catch (err) {
-                console.error("문제 삭제 실패: ", err);
-                window.showModal("오류 발생", "문제를 삭제하지 못했습니다. 다시 시도해 주세요.", "alert-circle", "text-red-500");
+                console.error("휴지통 이동 실패: ", err);
+                window.showModal("오류 발생", "문제를 휴지통으로 옮기지 못했습니다.", "alert-circle", "text-red-500");
             } finally {
                 hideLoading();
             }
         };
 
-        // 관리자 문제 수정 프로세스
+        // 휴지통 UI 리스트 렌더링 작업
+        window.renderAdminTrashList = function() {
+            const container = document.getElementById('adminTrashQList');
+            if (!container) return;
+
+            if (trashQuestions.length === 0) {
+                container.innerHTML = `<div class="debossed-well p-6 text-center text-slate-400 font-bold text-sm">휴지통이 비어 있습니다.</div>`;
+                return;
+            }
+
+            container.innerHTML = trashQuestions.map(q => `
+                <div class="debossed-well p-3 px-4 flex justify-between items-center bg-white border border-red-100">
+                    <div class="flex-1 min-w-0 pr-2">
+                        <p class="font-bold text-slate-700 text-sm truncate">${q.text}</p>
+                        <p class="text-xs text-slate-400 font-bold mt-0.5">출제: ${q.author}</p>
+                    </div>
+                    <div class="flex gap-1.5 shrink-0">
+                        <button onclick="window.restoreQuestionFromTrash('${q.id}')" class="tactile-pill-btn p-2 text-green-600 border-green-200 hover:bg-green-50" title="보관함으로 복원">
+                            <i data-lucide="rotate-ccw" class="w-4 h-4"></i>
+                        </button>
+                        <button onclick="window.permanentlyDeleteQuestion('${q.id}')" class="tactile-pill-btn p-2 text-red-600 border-red-200 hover:bg-red-50" title="영구 삭제">
+                            <i data-lucide="x-circle" class="w-4 h-4"></i>
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+            lucide.createIcons();
+        };
+
+        // 휴지통에 든 문제를 오리지널 보관함으로 복원
+        window.restoreQuestionFromTrash = async function(qId) {
+            const qData = trashQuestions.find(q => q.id === qId);
+            if (!qData) return;
+
+            showLoading();
+            try {
+                const restoredData = { ...qData };
+                delete restoredData.deletedAt;
+
+                await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'submittedQuestions', qId), restoredData);
+                await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'trashQuestions', qId));
+
+                window.showModal("복원 완료 🎉", "문제를 다시 활성 보관함으로 복원하였습니다.", "rotate-ccw", "text-green-500");
+            } catch (err) {
+                console.error("문제 복원 실패: ", err);
+                window.showModal("오류 발생", "문제를 복원하는 과정에서 실패했습니다.", "alert-circle", "text-red-500");
+            } finally {
+                hideLoading();
+            }
+        };
+
+        // 휴지통 안에서 영구 파괴 처리
+        window.permanentlyDeleteQuestion = async function(qId) {
+            if(!confirm("이 문제는 클라우드 서버에서 완전히 삭제되며 다시는 복구할 수 없습니다. 계속하시겠습니까?")) return;
+
+            showLoading();
+            try {
+                await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'trashQuestions', qId));
+                window.showModal("영구 삭제", "해당 문제가 데이터베이스에서 흔적 없이 파괴되었습니다.", "alert-circle", "text-red-600");
+            } catch (err) {
+                console.error("영구 삭제 에러: ", err);
+                window.showModal("오류 발생", "영구 삭제를 처리하지 못했습니다.", "alert-circle", "text-red-500");
+            } finally {
+                hideLoading();
+            }
+        };
+
         window.toggleEditType = function() {
             const type = document.querySelector('input[name="editQType"]:checked').value;
             if (type === 'ox') {
@@ -1302,7 +1476,7 @@
             try {
                 const examDocRef = doc(db, 'artifacts', appId, 'public', 'data', 'activeExams', generatedCode);
                 await setDoc(examDocRef, {
-                    id: generatedCode, // ID 명시적 추가
+                    id: generatedCode, 
                     title: title,
                     subject: subject, 
                     questions: selectedObjects,
@@ -1325,9 +1499,6 @@
             }
         };
 
-        // ==========================================
-        // 3. [기능] 모의시험 응시 프로세스 (Firebase Read)
-        // ==========================================
         window.startTest = async function() {
             if (!authUser) return;
             const codeInput = document.getElementById('testCodeInput').value.trim().toUpperCase();
@@ -1338,7 +1509,6 @@
             }
 
             showLoading();
-
             try {
                 const examDocRef = doc(db, 'artifacts', appId, 'public', 'data', 'activeExams', codeInput);
                 const docSnap = await getDoc(examDocRef);
@@ -1387,7 +1557,6 @@
 
             const isOX = qData.options.length === 2 && qData.options[0] === "O" && qData.options[1] === "X";
 
-            // 태블릿 이상에서 4지선다형은 2x2 그리드 배열 적용
             if (isOX) {
                 optionsContainer.className = 'grid grid-cols-2 gap-4 mt-2';
             } else {
@@ -1396,6 +1565,7 @@
 
             qData.options.forEach((optText, index) => {
                 const btn = document.createElement('button');
+                btn.setAttribute('data-agent-option-index', index);
                 
                 if (isOX) {
                     btn.className = 'tactile-pill-btn w-full py-10 sm:py-12 text-4xl sm:text-5xl relative font-black transition-colors';
@@ -1426,7 +1596,6 @@
 
         window.selectOption = function(selectedIndex) {
             userAnswers[currentQuestionIndex] = selectedIndex;
-            
             const buttons = document.getElementById('optionsContainer').children;
             Array.from(buttons).forEach((btn, index) => {
                 if (index === selectedIndex) {
@@ -1479,8 +1648,6 @@
             });
 
             const score = Math.round((correctCount / currentTestData.questions.length) * 100);
-            
-            // 시험 결과를 로컬 스토리지에 저장
             const testCodeUsed = document.getElementById('testCodeInput').value.trim().toUpperCase();
             const record = {
                 testId: testCodeUsed,
@@ -1519,6 +1686,70 @@
             }
 
             window.switchScreen('screen-result');
+        };
+
+        // ====================================================================
+        // 🤖 [AI 에이전트 전용 전역 프로그래밍 JS API 바인딩]
+        // 에이전트가 DevTools 또는 script 실행으로 직접 핸들링 가능하도록 구성
+        // ====================================================================
+        window.duru = {
+            // 단일 질문 업로드
+            submitQuestion: async function(qData) {
+                const author = qData.author || "에이전트";
+                const text = qData.text;
+                const options = qData.options || ["보기1", "보기2", "보기3", "보기4"];
+                const qType = qData.qType || (options.length === 2 ? 'ox' : '4choice');
+                const correctAnswer = typeof qData.correctAnswer !== 'undefined' ? parseInt(qData.correctAnswer) : 0;
+                const explanation = qData.explanation || "";
+
+                if (!text) throw new Error("text 필드는 필수값입니다.");
+
+                try {
+                    const qId = await saveQuestionToCloud(author, text, qType, options, correctAnswer, explanation);
+                    console.log(`[DURU API] 문제 등록 성공 - ID: ${qId}`);
+                    return qId;
+                } catch (e) {
+                    console.error("[DURU API] 문제 등록 실패:", e);
+                    throw e;
+                }
+            },
+
+            // 대량 질문 일괄 업로드
+            submitBulk: async function(questionsArray) {
+                if (!Array.isArray(questionsArray)) throw new Error("배열 형식으로 전달해주세요.");
+                const results = [];
+                for (const q of questionsArray) {
+                    const qId = await this.submitQuestion(q);
+                    results.push(qId);
+                }
+                return results;
+            },
+
+            // 코드 지정 시험지 생성
+            assembleExam: async function(title, subject, questionIds) {
+                if (!title || !questionIds || questionIds.length === 0) {
+                    throw new Error("title과 최소 1개 이상의 questionIds 배열이 필요합니다.");
+                }
+                const selectedQs = submittedQuestions.filter(q => questionIds.includes(q.id));
+                if (selectedQs.length === 0) {
+                    throw new Error("제출된 질문 목록 중 일치하는 ID를 찾지 못했습니다.");
+                }
+
+                const generatedCode = "DURU-" + Math.floor(1000 + Math.random() * 9000);
+                const examDocRef = doc(db, 'artifacts', appId, 'public', 'data', 'activeExams', generatedCode);
+                await setDoc(examDocRef, {
+                    id: generatedCode, 
+                    title: title,
+                    subject: subject || "미지정", 
+                    questions: selectedQs,
+                    createdAt: Date.now()
+                });
+                return generatedCode;
+            },
+
+            // 실시간 상태 데이터 조회용 게터
+            getSubmittedQuestions: () => submittedQuestions,
+            getTrashQuestions: () => trashQuestions
         };
 
     </script>
