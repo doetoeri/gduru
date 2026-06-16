@@ -3,28 +3,31 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>고1 지필 만점 타겟 - 한국사 근현대사 마스터</title>
+    <title>고1 지필평가 완벽 대비 - 한국사 근현대사 퀴즈</title>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
     <style>
         :root {
-            --md-sys-color-primary: #3f51b5;
-            --md-sys-color-on-primary: #ffffff;
-            --md-sys-color-primary-container: #e8eaf6;
-            --md-sys-color-on-primary-container: #1a237e;
-            --md-sys-color-secondary: #009688;
-            --md-sys-color-secondary-container: #e0f2f1;
-            --md-sys-color-on-secondary-container: #004d40;
-            --md-sys-color-background: #fbfbfd;
-            --md-sys-color-surface: #ffffff;
-            --md-sys-color-surface-variant: #f1f3f4;
-            --md-sys-color-on-surface-variant: #5f6368;
-            --md-sys-color-error: #d32f2f;
-            --md-sys-color-error-container: #fdecea;
-            --md-shape-corner-medium: 12px;
-            --md-shape-corner-large: 24px;
-            --md-shape-corner-full: 9999px;
-            --transition-smooth: all 0.25s ease;
+            /* 정제된 UI 컬러 테마 */
+            --primary: #3f51b5;
+            --primary-light: #e8eaf6;
+            --primary-dark: #1a237e;
+            --secondary: #009688;
+            --secondary-light: #e0f2f1;
+            --background: #f8f9fa;
+            --surface: #ffffff;
+            --text-main: #202124;
+            --text-sub: #5f6368;
+            --border: #dadce0;
+            --error: #d32f2f;
+            --error-light: #fdecea;
+            --success: #137333;
+            --success-light: #e6f4ea;
+            
+            --radius-main: 16px;
+            --radius-full: 9999px;
+            --shadow: 0 4px 12px rgba(0,0,0,0.05);
+            --transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         * {
@@ -36,69 +39,104 @@
 
         body {
             font-family: 'Noto Sans KR', sans-serif;
-            background-color: var(--md-sys-color-background);
-            color: #202124;
-            padding-bottom: 60px;
+            background-color: var(--background);
+            color: var(--text-main);
+            line-height: 1.6;
+            padding-bottom: 40px;
         }
 
+        /* 스마트 헤더 영역 */
         header {
-            background-color: var(--md-sys-color-surface);
-            padding: 16px;
+            background-color: var(--surface);
+            padding: 20px 16px;
             position: sticky;
             top: 0;
             z-index: 100;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .header-container {
+            max-width: 600px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
         }
 
         .header-top {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 12px;
         }
 
         .header-title {
             display: flex;
             align-items: center;
             gap: 8px;
-            font-size: 18px;
+            font-size: 20px;
             font-weight: 700;
-            color: var(--md-sys-color-primary);
+            color: var(--primary-dark);
         }
 
-        .tab-container {
+        /* 상단 모르는 것 전용 토글 토스트/버튼 */
+        .btn-moru-toggle {
+            background-color: var(--background);
+            border: 1px solid var(--border);
+            padding: 8px 16px;
+            border-radius: var(--radius-full);
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
             display: flex;
-            background-color: var(--md-sys-color-surface-variant);
-            border-radius: var(--md-shape-corner-full);
+            align-items: center;
+            gap: 6px;
+            transition: var(--transition);
+        }
+
+        .btn-moru-toggle.active {
+            background-color: #fff9c4;
+            border-color: #fbc02d;
+            color: #f57f17;
+        }
+
+        /* 탭 내비게이션 */
+        .tab-box {
+            display: flex;
+            background-color: var(--background);
+            border-radius: var(--radius-full);
             padding: 4px;
             gap: 4px;
+            border: 1px solid var(--border);
         }
 
-        .tab-btn {
+        .tab-item {
             flex: 1;
             border: none;
             background: none;
-            padding: 10px 2px;
-            font-size: 13px;
+            padding: 12px 4px;
+            font-size: 14px;
             font-weight: 500;
-            color: var(--md-sys-color-on-surface-variant);
+            color: var(--text-sub);
             cursor: pointer;
-            border-radius: var(--md-shape-corner-full);
+            border-radius: var(--radius-full);
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 4px;
-            transition: var(--transition-smooth);
+            gap: 6px;
+            transition: var(--transition);
         }
 
-        .tab-btn.active {
-            background-color: var(--md-sys-color-primary);
-            color: var(--md-sys-color-on-primary);
+        .tab-item.active {
+            background-color: var(--primary);
+            color: white;
+            box-shadow: 0 2px 6px rgba(63, 81, 181, 0.3);
         }
 
+        /* 메인 콘텐츠 구조 */
         main {
-            padding: 16px;
-            max-width: 650px;
+            padding: 20px 16px;
+            max-width: 632px;
             margin: 0 auto;
         }
 
@@ -110,244 +148,245 @@
             display: block;
         }
 
-        /* 공통 스타일 카드 */
-        .m3-card {
-            background-color: var(--md-sys-color-surface);
-            border: 1px solid #e0e0e0;
-            border-radius: var(--md-shape-corner-medium);
-            padding: 16px;
-            margin-bottom: 16px;
+        /* 카드 컴포넌트 */
+        .app-card {
+            background-color: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-main);
+            padding: 24px;
+            margin-bottom: 20px;
             position: relative;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+            box-shadow: var(--shadow);
         }
 
-        .card-meta {
+        .card-header-line {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 10px;
+            margin-bottom: 16px;
+        }
+
+        .badge-container {
+            display: flex;
+            gap: 6px;
         }
 
         .badge {
             font-size: 11px;
-            padding: 3px 8px;
-            border-radius: var(--md-shape-corner-full);
+            padding: 4px 10px;
+            border-radius: var(--radius-full);
             font-weight: 500;
         }
 
-        .badge-index { background-color: var(--md-sys-color-primary-container); color: var(--md-sys-color-on-primary-container); }
-        .badge-type { background-color: var(--md-sys-color-secondary-container); color: var(--md-sys-color-on-secondary-container); }
+        .badge-idx { background-color: var(--primary-light); color: var(--primary-dark); }
+        .badge-cat { background-color: var(--secondary-light); color: var(--secondary); }
 
-        .btn-bookmark {
+        .btn-star {
             background: none;
             border: none;
             cursor: pointer;
-            color: #757575;
+            color: #b0bec5;
             display: flex;
             align-items: center;
+            transition: var(--transition);
         }
 
-        .btn-bookmark.active {
+        .btn-star.active {
             color: #fbc02d;
+            transform: scale(1.1);
         }
 
-        /* 단답형 지필 평가 모드 */
-        .quiz-instruction {
-            font-size: 15px;
+        /* 단답형 문제 스타일 */
+        .q-title {
+            font-size: 16px;
             font-weight: 700;
-            margin-bottom: 8px;
-            color: #1a1a1a;
+            margin-bottom: 12px;
+            color: var(--text-main);
         }
 
-        .quiz-box {
-            background-color: #f8f9fa;
-            padding: 14px;
-            border-radius: 8px;
-            margin-bottom: 16px;
-            border-left: 4px solid var(--md-sys-color-primary);
+        .q-box {
+            background-color: var(--background);
+            padding: 16px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border-left: 4px solid var(--primary);
             font-size: 15px;
+            color: #333;
         }
 
-        .input-wrapper {
+        .input-group {
             display: flex;
             gap: 8px;
         }
 
-        .m3-input {
+        .form-input {
             flex: 1;
-            padding: 12px;
-            border: 2px solid #bdc1c6;
-            border-radius: 8px;
+            padding: 14px;
+            border: 2px solid var(--border);
+            border-radius: 10px;
             font-size: 15px;
             outline: none;
+            transition: var(--transition);
         }
 
-        .m3-input:focus {
-            border-color: var(--md-sys-color-primary);
+        .form-input:focus {
+            border-color: var(--primary);
         }
 
-        .m3-btn {
-            background-color: var(--md-sys-color-primary);
-            color: var(--md-sys-color-on-primary);
+        .action-btn {
+            background-color: var(--primary);
+            color: white;
             border: none;
-            padding: 12px 20px;
-            border-radius: 8px;
+            padding: 14px 24px;
+            border-radius: 10px;
             font-weight: 500;
             cursor: pointer;
+            transition: var(--transition);
         }
 
-        .feedback-box {
-            margin-top: 12px;
-            padding: 12px;
-            border-radius: 8px;
+        .action-btn:active {
+            transform: scale(0.98);
+        }
+
+        .result-toast {
+            margin-top: 16px;
+            padding: 14px;
+            border-radius: 10px;
             font-weight: 500;
             display: none;
+            font-size: 14px;
         }
 
-        .feedback-box.correct { display: block; background-color: #e6f4ea; color: #137333; }
-        .feedback-box.wrong { display: block; background-color: var(--md-sys-color-error-container); color: var(--md-sys-color-error); }
+        .result-toast.correct { display: block; background-color: var(--success-light); color: var(--success); }
+        .result-toast.wrong { display: block; background-color: var(--error-light); color: var(--error); }
 
-        /* 드래그 앤 드롭 순서 배열 모드 */
-        .drag-container {
+        /* 순서 정렬형 드래그 앤 드롭 영역 */
+        .drag-list {
             display: flex;
             flex-direction: column;
-            gap: 10px;
-            margin: 16px 0;
+            gap: 12px;
+            margin: 20px 0;
         }
 
-        .drag-item {
-            background-color: var(--md-sys-color-surface);
-            border: 2px dashed #bdc1c6;
-            padding: 14px;
-            border-radius: 8px;
+        .drag-card {
+            background-color: var(--surface);
+            border: 2px dashed var(--border);
+            padding: 16px;
+            border-radius: 12px;
             cursor: grab;
             display: flex;
             align-items: center;
-            gap: 10px;
-            user-select: none;
-            transition: var(--transition-smooth);
+            gap: 12px;
+            transition: var(--transition);
         }
 
-        .drag-item:active { cursor: grabbing; }
-        .drag-item.dragging {
-            opacity: 0.5;
-            background-color: var(--md-sys-color-primary-container);
+        .drag-card.dragging {
+            opacity: 0.4;
+            background-color: var(--primary-light);
+            border-color: var(--primary);
         }
 
-        .drag-handle {
-            color: #757575;
+        .drag-icon {
+            color: var(--text-sub);
             display: flex;
             align-items: center;
         }
 
-        /* 오답노트 필터 스위치 */
-        .filter-wrapper {
-            display: flex;
-            justify-content: flex-end;
-            margin-bottom: 12px;
-        }
-        
-        .btn-filter-toggle {
-            background-color: #f1f3f4;
-            border: 1px solid #dadce0;
-            padding: 6px 12px;
-            border-radius: var(--md-shape-corner-full);
-            font-size: 12px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 4px;
-        }
-
-        .btn-filter-toggle.active {
-            background-color: #fff9c4;
-            border-color: #fbc02d;
-        }
-
-        .control-panel {
+        /* 하단 내비게이션 바 패널 */
+        .bottom-panel {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-top: 16px;
+            margin-top: 24px;
+        }
+
+        .progress-txt {
+            font-size: 13px;
+            color: var(--text-sub);
+            font-weight: 500;
         }
     </style>
 </head>
 <body>
 
     <header>
-        <div class="header-top">
-            <div class="header-title">
-                <span class="material-icons-round">fact_check</span>
-                <span>고1 한국사 지필평가 완벽 대비</span>
+        <div class="header-container">
+            <div class="header-top">
+                <div class="header-title">
+                    <span class="material-icons-round">fact_check</span>
+                    <span>한국사 지필평가 마스터</span>
+                </div>
+                <button class="btn-moru-toggle" id="moru-filter-toggle" onclick="toggleMoruMode()">
+                    <span class="material-icons-round" style="font-size:18px;">star_border</span>
+                    <span id="moru-count-text">모르는 것 골라보기 (0)</span>
+                </button>
             </div>
-            <button class="btn-filter-toggle" id="global-filter-btn" onclick="toggleMoruFilter()">
-                <span class="material-icons-round" style="font-size:16px;">star_border</span>
-                <span id="filter-text">내가 모르는 것만 보기 (0)</span>
-            </button>
-        </div>
-        <div class="tab-container">
-            <button class="tab-btn active" onclick="switchTab('short')">
-                <span class="material-icons-round">edit</span>단답형 키워드
-            </button>
-            <button class="tab-btn" onclick="switchTab('order')">
-                <span class="material-icons-round">low_priority</span>순서 배열(드래그)
-            </button>
-            <button class="tab-btn" onclick="switchTab('list')">
-                <span class="material-icons-round">view_list</span>전체 연표/체크
-            </button>
+            <div class="tab-box">
+                <button class="tab-item active" onclick="changeTab('short')">
+                    <span class="material-icons-round" style="font-size:18px;">edit</span>단답형 키워드
+                </button>
+                <button class="tab-item" onclick="changeTab('order')">
+                    <span class="material-icons-round" style="font-size:18px;">low_priority</span>순서 맞추기
+                </button>
+                <button class="tab-item" onclick="changeTab('list')">
+                    <span class="material-icons-round" style="font-size:18px;">view_list</span>전체 흐름
+                </button>
+            </div>
         </div>
     </header>
 
     <main>
         <section id="short-view" class="view-section active">
-            <div class="m3-card">
-                <div class="card-meta">
-                    <span class="badge badge-type" id="short-type">분류</span>
-                    <button class="btn-bookmark" id="short-bookmark-btn" onclick="toggleBookmarkCurrent('short')">
+            <div class="app-card">
+                <div class="card-header-line">
+                    <div class="badge-container">
+                        <span class="badge badge-cat" id="sh-cat">분류</span>
+                    </div>
+                    <button class="btn-star" id="sh-star-btn" onclick="toggleStarCurrent()">
                         <span class="material-icons-round">star_border</span>
                     </button>
                 </div>
-                <div class="quiz-instruction">❓ 제시된 단서를 보고 알맞은 사건/조약명을 쓰시오.</div>
-                <div class="quiz-box" id="short-hint">핵심 힌트 내용</div>
-                <div style="font-size: 13px; color:#5f6368; margin-bottom:12px;" id="short-nations"></div>
+                <div class="q-title">❓ 아래 탐구 힌트 및 키워드를 읽고 올바른 명칭을 쓰시오.</div>
+                <div class="q-box" id="sh-hint-text">힌트 내용</div>
+                <div style="font-size: 13px; color: var(--text-sub); margin-bottom:16px;" id="sh-nations"></div>
                 
-                <div class="input-wrapper">
-                    <input type="text" id="short-input" class="m3-input" placeholder="정답을 입력하세요 (띄어쓰기 무관)" onkeypress="handleShortKey(event)">
-                    <button class="m3-btn" onclick="checkShortAnswer()">제출</button>
+                <div class="input-group">
+                    <input type="text" id="sh-user-input" class="form-input" placeholder="정답을 입력하세요 (공백 무관)" onkeypress="handleShortEnter(event)">
+                    <button class="action-btn" onclick="verifyShortAnswer()">제출</button>
                 </div>
-                <div class="feedback-box" id="short-feedback">결과 출력창</div>
+                <div class="result-toast" id="sh-result">결과</div>
             </div>
-            <div class="control-panel">
-                <span id="short-progress" style="font-size:13px; color:#5f6368;">1 / 84</span>
-                <button class="m3-btn" style="background-color:#5f6368;" onclick="nextShortQuestion()">다음 문제 ▶</button>
+            <div class="bottom-panel">
+                <span class="progress-txt" id="sh-progress-text">1 / 84</span>
+                <button class="action-btn" style="background-color: var(--text-sub);" onclick="moveNextShort()">다음 문제 ▶</button>
             </div>
         </section>
 
         <section id="order-view" class="view-section">
-            <div class="m3-card" style="margin-bottom: 8px;">
-                <div class="quiz-instruction">⏳ 다음 제시된 4개의 사건을 일어난 시간 순서대로 배열하시오.</div>
-                <p style="font-size:12px; color:#5f6368;">마우스나 손가락으로 드래그하여 위아래 순서를 바꾼 뒤 확인을 누르세요.</p>
+            <div class="app-card" style="margin-bottom: 12px;">
+                <div class="q-title">⏳ 다음 사건들을 역사적 인과 관계 및 시간 순서대로 나열하시오.</div>
+                <p style="font-size:13px; color: var(--text-sub);">항목을 위아래로 드래그하여 순서를 바꾼 후 정답 확인 버튼을 누르세요.</p>
             </div>
             
-            <div class="drag-container" id="drag-space">
+            <div class="drag-list" id="drag-sort-space">
                 </div>
 
-            <div class="feedback-box" id="order-feedback" style="margin-bottom: 16px;">배열 결과 창</div>
+            <div class="result-toast" id="order-result" style="margin-bottom: 16px;">결과</div>
 
-            <div class="control-panel">
-                <button class="m3-btn" style="background-color:#5f6368;" onclick="generateOrderQuestion()">새 문제 만들기</button>
-                <button class="m3-btn" style="background-color:var(--md-sys-color-secondary);" onclick="checkOrderAnswer()">정답 확인</button>
+            <div class="bottom-panel">
+                <button class="action-btn" style="background-color: var(--text-sub);" onclick="makeOrderQuiz()">새로운 무작위 배열</button>
+                <button class="action-btn" style="background-color: var(--secondary);" onclick="verifyOrderAnswer()">정답 확인</button>
             </div>
         </section>
 
         <section id="list-view" class="view-section">
-            <div id="list-container"></div>
+            <div id="flow-list-container"></div>
         </section>
     </main>
 
     <script>
-        // 보낸 데이터 기반 전체 데이터셋 (1~84)
-        const baseDataset = [
+        // 고1 필수 근현대사 핵심 데이터셋 (1~84)
+        const coreHistoryData = [
             [1,"제1차 아편전쟁","전쟁/침략/갈등","청, 영국","영국 개항"],
             [2,"제2차 아편전쟁","전쟁/침략/갈등","청, 프랑스, 영국, 러시아","연해주 할양, 프랑스 개항"],
             [3,"양무운동","운동/시위","청","중체서용, 기기국"],
@@ -380,158 +419,153 @@
             [30,"영독러프오 수교","조약","조선/대한제국","영국, 독일, 러시아, 프랑스, 오스트리아와 차례로 수교"],
             [31,"척화비 제거","설치/파견/제거","조선/대한제국","임오군란 이후 개화 정책 재개 과정에서 철거"],
             [32,"박문국 설치","설치/파견/제거","조선/대한제국","한성순보 발행을 위한 신문 인쇄 관청"],
-            [33,"청불 전쟁","전쟁/침략/갈등","청, 프랑스","베트남 지배권을 둘러싼 전쟁, 조선 주둔 청군 일부 철수 원인"],
+            [33,"청불 전쟁","전쟁/침략/갈등","청, 프랑스","베트남 지배권을 둘러싼 전쟁"],
             [34,"갑신정변","전쟁/침략/갈등","조선/대한제국","김옥균 등 급진개화파의 우정총국 개국 축하연 이용 정변, 3일천하"],
             [35,"한성조약","조약","조선/대한제국, 일본","갑신정변 결과 일본에 배상금 지급 및 공사관 신축 비용 부담 공표"],
             [36,"톈진조약","조약","청, 일본","청·일 양국군 조선 철수, 향후 파병 시 상호 사전 통지 합의"],
-            [37,"조러 비밀협약 추진","조약","조선/대한제국, 러시아","청의 내정 간섭을 탈피하기 위해 묄렌도르프 등을 통해 러시아와 협동 추진"],
-            [38,"거문도 사건","전쟁/침략/갈등","조선/대한제국, 영국","러시아의 남하를 견제하기 위해 영국 해군이 거문도를 불법 점령"],
-            [39,"조선 중립국 주장","운동/시위","조선/대한제국","부들러(독일 부영사)와 유길준 등이 한반도 중립화론 제안"],
-            [40,"육영공원, 연무공원 설치","설치/파견/제거","조선/대한제국","상류층 자제 대상 근대식 공립 학교(육영공원) 및 군사학교 설치"],
-            [41,"주미공사관 설치","설치/파견/제거","조선/대한제국, 미국","초대 주미공사 박정양 파견, 청의 간섭 배제 시도"],
+            [37,"조러 비밀협약 추진","조약","조선/대한제국, 러시아","러시아와 협동 비밀 협정 추진"],
+            [38,"거문도 사건","전쟁/침략/갈등","조선/대한제국, 영국","영국 해군이 거문도를 불법 점령"],
+            [39,"조선 중립국 주장","운동/시위","조선/대한제국","부들러와 유길준 등이 한반도 중립화론 제안"],
+            [40,"육영공원, 연무공원 설치","설치/파견/제거","조선/대한제국","상류층 자제 대상 근대식 공립 학교 및 군사학교 설치"],
+            [41,"주미공사관 설치","설치/파견/제거","조선/대한제국, 미국","초대 주미공사 박정양 파견"],
             [42,"제 1차 동학농민운동","운동/시위","조선/대한제국","백산 봉기, 황토현·황룡촌 전투 승리, 전주성 점령"],
-            [43,"청일전쟁","전쟁/침략/갈등","일본, 청, 조선/대한제국","동학농민운동 파병 구실로 들어온 일본군의 경복궁 점령으로 발발"],
+            [43,"청일전쟁","전쟁/침략/갈등","일본, 청, 조선/대한제국","일본군의 경복궁 점령으로 발발"],
             [44,"시모노세키 조약","조약","일본, 청","청일전쟁 결과 청이 일본에 요동반도(랴오둥)와 타이완 할양 합의"],
             [45,"삼국간섭","전쟁/침략/갈등","일본, 청, 프랑스, 영국, 러시아","러시아가 독일·프랑스를 끌어들여 일본의 요동반도 반환 압박"],
-            [46,"포접제 정리","운동/시위","조선/대한제국, 일본, 청","동학의 조직망인 남접(전봉준)과 북접(손병희)의 연합 체제 구축"],
+            [46,"포접제 정리","운동/시위","조선/대한제국, 일본, 청","동학의 조직망인 남접과 북접의 연합 체제 구축"],
             [47,"제 2차 동학농민운동","운동/시위","조선/대한제국, 일본, 청","일본군의 경복궁 점령 및 내정간섭에 반대하여 항일 구국 운동 전개"],
-            [48,"교조 신원 운동","운동/시위","조선/대한제국","최제우의 억울함을 풀고 동학 포교의 자유를 얻기 위한 삼례 집회 등 전개"],
-            [49,"보은 집회","운동/시위","조선/대한제국","동학 교조 신원을 넘어 '척왜양창의'의 정치적 구호를 내건 대규모 집회"],
+            [48,"교조 신원 운동","운동/시위","조선/대한제국","최제우의 억울함을 풀고 동학 포교의 자유를 얻기 위한 운동"],
+            [49,"보은 집회","운동/시위","조선/대한제국","'척왜양창의'의 정치적 구호를 내건 대규모 집회"],
             [50,"고부 농민 봉기","운동/시위","조선/대한제국","군수 조병갑의 만석보 수세 강탈 등 탐학에 맞서 전봉준 주도 봉기"],
             [51,"전주 화약","조약","조선/대한제국","정부와 농민군 사이의 타협, 폐정개혁안 제시 및 집강소 설치 계기"],
             [52,"우금치 전투","운동/시위","조선/대한제국, 일본","제2차 동학농민군이 공주 우금치에서 관군과 일본군 연합군에 패배"],
-            [53,"군국기무처 설치","설치/파견/제거","조선/대한제국","제1차 갑오개혁을 추진하기 위해 설치된 초정부적 직속 개혁 기구"],
+            [53,"군국기무처 설치","설치/파견/제거","조선/대한제국","제1차 갑오개혁을 추진하기 위해 설치된 직속 개혁 기구"],
             [54,"제1차 갑오개혁","개혁","조선/대한제국","김홍집 내각 주도, 신분제 폐지, 과거제 폐지, 은본위제 도입 등"],
-            [55,"홍범 14조","선언문/문서","조선/대한제국","고종이 종묘에서 바친 근대적 개혁 방향을 담은 최초의 헌법적 문서"],
-            [56,"제2차 갑오개혁","개혁","조선/대한제국, 일본","군국기무처 폐지, 재판소 설치(사법권 독립), 23부 지방제도 개편"],
-            [57,"교육 입국 조서","선언문/문서","조선/대한제국","고종이 근대적 학교 교육을 통해 국가를 구하고자 반포, 한성사범학교 설치"],
-            [58,"을미개혁","개혁","조선/대한제국, 일본","단발령 시행, 태양력 채택, 종두법 시행, '건양' 연호 사용"],
-            [59,"을미의병","운동/시위","조선/대한제국, 일본","을미사변(명성황후 시해)과 단발령에 분격하여 일어난 최초의 항일 위정척사의병"],
+            [55,"홍범 14조","선언문/문서","조선/대한제국","근대적 개혁 방향을 담은 최초의 헌법적 문서"],
+            [56,"제2차 갑오개혁","개혁","조선/대한제국, 일본","군국기무처 폐지, 재판소 설치, 23부 지방제도 개편"],
+            [57,"교육 입국 조서","선언문/문서","조선/대한제국","고종이 근대적 학교 교육을 통해 국가를 구하고자 반포"],
+            [58,"을미개혁","개혁","조선/대한제국, 일본","단발령 시행, 태양력 채택, '건양' 연호 사용"],
+            [59,"을미의병","운동/시위","조선/대한제국, 일본","을미사변과 단발령에 분격하여 일어난 최초의 항일 위정척사의병"],
             [60,"아관파천","전쟁/침략/갈등","조선/대한제국, 러시아","고종이 친일 내각의 위협을 피해 러시아 공사관으로 거처를 옮긴 사건"],
-            [61,"독립협회 설립","설치/파견/제거","조선/대한제국","서재필 등이 중심이 되어 독립문 건립 및 독립신문 발행 기반 설립"],
+            [61,"독립협회 설립","설치/파견/제거","조선/대한제국","서재필 등이 중심이 되어 독립문 건립 및 독립신문 발행"],
             [62,"대한제국 선포","선언문/문서","조선/대한제국","고종이 환궁 후 원구단에서 황제 즉위식을 거행하고 국호 선포"],
             [63,"만민 공동회","운동/시위","조선/대한제국","독일·러시아 등의 이권 침탈을 저지하기 위한 대규모 민중 집회"],
-            [64,"자주 국권 운동","운동/시위","조선/대한제국","러시아의 절영도 저탄소 기지 빌려달라는 요구 거부 등 이권 침탈 저지"],
+            [64,"자주 국권 운동","운동/시위","조선/대한제국","러시아의 절영도 저탄소 기지 요구 거부 등 이권 침탈 저지"],
             [65,"자유 민권 운동","운동/시위","조선/대한제국","국민의 신체와 재산권 보호, 언론·출판·집회·결사의 자유 요구"],
             [66,"의회 설립 운동","운동/시위","조선/대한제국","중추원을 개편하여 근대적 의회를 개설하고자 시도한 운동"],
-            [67,"헌의 6조","선언문/문서","조선/대한제국","관민공동회에서 채택되어 황제의 승인을 받은 조세 개혁 및 전제군주권 제한 문서"],
-            [68,"독립협회 해산","설치/파견/제거","조선/대한제국, 일본","보수파가 공화정을 획책한다는 익명서 조작, 황국협회 보부상 동원 강제 해산"],
-            [69,"대한국 국제","선언문/문서","조선/대한제국","황제에게 무한한 군권을 집중시키는 전제군주제 명시 전방위 문서"],
-            [70,"광무개혁","개혁","조선/대한제국","구본신참(옛 것을 근본으로 새 것을 참고) 원칙 하의 점진적 자주 개혁"],
-            [71,"양전 사업","설치/파견/제거","조선/대한제국","정확한 세금 징수와 근대적 토지 소유권 확립을 위한 전국 토지 측량"],
-            [72,"지계 발급 사업","설치/파견/제거","조선/대한제국","양지아문을 설치하여 근대적 토지 소유 증명서인 '지계' 발급"],
-            [73,"파리 만국 박람회","설치/파견/제거","조선/대한제국","대한제국의 독자성과 주권 국가 위상을 알리기 위해 파리 세계박람회에 참가"],
+            [67,"헌의 6조","선언문/문서","조선/대한제국","관민공동회에서 채택되어 황제의 승인을 받은 조세 개혁 문서"],
+            [68,"독립협회 해산","설치/파견/제거","조선/대한제국, 일본","황국협회 보부상 동원 강제 해산"],
+            [69,"대한국 국제","선언문/문서","조선/대한제국","황제에게 무한한 군권을 집중시키는 전제군주제 명시 문서"],
+            [70,"광무개혁","개혁","조선/대한제국","구본신참 원칙 하의 점진적 자주 개혁"],
+            [71,"양전 사업","설치/파견/제거","조선/대한제국","근대적 토지 소유권 확립을 위한 전국 토지 측량"],
+            [72,"지계 발급 사업","설치/파견/제거","조선/대한제국","근대적 토지 소유 증명서인 '지계' 발급"],
+            [73,"파리 만국 박람회","설치/파견/제거","조선/대한제국","대한제국의 독자성과 주권 국가 위상을 알리기 위해 참가"],
             [74,"러일 전쟁","전쟁/침략/갈등","조선/대한제국, 일본, 러시아","한반도와 만주의 지배권을 둘러싸고 발발한 제국주의 전쟁"],
-            [75,"한일의정서","조약","조선/대한제국, 일본","러일전쟁 중 일본이 군사 전략상 필요한 조선의 영토를 마음대로 사용하도록 강요"],
+            [75,"한일의정서","조약","조선/대한제국, 일본","일본이 군사 전략상 필요한 조선의 영토를 마음대로 사용하도록 강요"],
             [76,"제1차 한일 협약","조약","조선/대한제국, 일본","고문 정치 시작 - 재정 고문 메가타, 외교 고문 스티븐스 초빙"],
             [77,"가쓰라/태프트 밀약","조약","일본, 미국","미국의 필리핀 지배와 일본의 대한제국 지배를 상호 묵인한 비밀 협약"],
-            [78,"제2차 영일 동맹","조약","일본, 영국","영국의 인도 지배와 일본의 대한제국 독점 지배권을 상호 승인한 조약"],
-            [79,"포츠머스 조약","조약","일본, 러시아","러일전쟁 승리 후 러시아가 일본의 한국에 대한 독점적 권리를 최종 승인"],
+            [78,"제2차 영일 동맹","조약","일본, 영국","영국의 인도 지배와 일본의 대한제국 독점 지배권을 상호 승인"],
+            [79,"포츠머스 조약","조약","일본, 러시아","러시아가 일본의 한국에 대한 독점적 권리를 최종 승인"],
             [80,"을사늑약(제2차 한일 협약)","조약","조선/대한제국, 일본","외교권 박탈, 통감부 설치 강제 체결"],
-            [81,"헤이그 특사","설치/파견/제거","조선/대한제국, 일본","고종이 만국평화회의에 이준·이상설·이위종을 파견하여 을사늑약 무효 폭로 시도"],
-            [82,"고종 강제 퇴위","전쟁/침략/갈등","조선/대한제국, 일본","헤이그 특사 파견을 구실로 삼아 일본이 고종 황제를 강제로 퇴위시킴"],
-            [83,"한일 신협약","조약","조선/대한제국, 일본","정미7조약 - 차관 정치 시행(일본인 관리 배치), 한국 군대 해산 규정"],
+            [81,"헤이그 특사","설치/파견/제거","조선/대한제국, 일본","만국평화회의에 이준·이상설·이위종을 파견하여 을사늑약 무효 폭로 시도"],
+            [82,"고종 강제 퇴위","전쟁/침략/갈등","조선/대한제국, 일본","헤이그 특사 파견을 구실로 일본이 고종 황제를 강제 퇴위시킴"],
+            [83,"한일 신협약","조약","조선/대한제국, 일본","정미7조약 - 차관 정치 시행, 한국 군대 해산 규정"],
             [84,"한국 병합 조약","조약","조선/대한제국, 일본","경술국치 - 대한제국의 국권을 완전히 상실하고 일제강점기가 시작됨"]
         ];
 
-        // 모르는 문제 저장용 (배열의 ID값 보관)
-        let moruList = JSON.parse(localStorage.getItem('moruList')) || [];
-        let filterActive = false; // '내가 모르는 것만 보기' 활성화 여부
-        
-        let activeDataset = [...baseDataset];
-        let shortIdx = 0;
-        let currentOrderAnswer = []; // 순서 맞추기 정답 저장용
+        let moruIds = JSON.parse(localStorage.getItem('moruIds_v2')) || [];
+        let isMoruOnlyMode = false;
+        let currentPool = [...coreHistoryData];
+        let shortCursor = 0;
+        let orderCorrectSequence = [];
 
         window.onload = function() {
-            updateMoruFilterButtonText();
-            refreshDataset();
-            initShortQuestion();
-            generateOrderQuestion();
-            renderAllList();
+            refreshMoruCounter();
+            rebuildCurrentPool();
+            initShortQuiz();
+            makeOrderQuiz();
+            renderFlowList();
         }
 
-        // 전체 필터 갱신 및 데이터셋 설정
-        function refreshDataset() {
-            if (filterActive) {
-                activeDataset = baseDataset.filter(item => moruList.includes(item[0]));
+        function rebuildCurrentPool() {
+            if (isMoruOnlyMode) {
+                currentPool = coreHistoryData.filter(item => moruIds.includes(item[0]));
             } else {
-                activeDataset = [...baseDataset];
+                currentPool = [...coreHistoryData];
             }
         }
 
-        function updateMoruFilterButtonText() {
-            document.getElementById('filter-text').innerText = `내가 모르는 것만 보기 (${moruList.length})`;
+        function refreshMoruCounter() {
+            document.getElementById('moru-count-text').innerText = `모르는 것 골라보기 (${moruIds.length})`;
         }
 
-        function toggleMoruFilter() {
-            filterActive = !filterActive;
-            const btn = document.getElementById('global-filter-btn');
-            if (filterActive) {
+        function toggleMoruMode() {
+            isMoruOnlyMode = !isMoruOnlyMode;
+            const btn = document.getElementById('moru-filter-toggle');
+            if (isMoruOnlyMode) {
                 btn.classList.add('active');
                 btn.querySelector('span').innerText = 'star';
             } else {
                 btn.classList.remove('active');
                 btn.querySelector('span').innerText = 'star_border';
             }
-            refreshDataset();
-            shortIdx = 0;
-            initShortQuestion();
-            renderAllList();
+            rebuildCurrentPool();
+            shortCursor = 0;
+            initShortQuiz();
+            renderFlowList();
         }
 
-        function toggleMoruState(id) {
-            if (moruList.includes(id)) {
-                moruList = moruList.filter(item => item !== id);
+        function toggleStarItem(id) {
+            if (moruIds.includes(id)) {
+                moruIds = moruIds.filter(v => v !== id);
             } else {
-                moruList.push(id);
+                moruIds.push(id);
             }
-            localStorage.setItem('moruList', JSON.stringify(moruList));
-            updateMoruFilterButtonText();
-            
-            // 현재 화면이 전체보기 리스트인 경우 즉각 UI 변화 반영
-            const icon = document.getElementById(`list-star-${id}`);
-            if (icon) {
-                icon.innerText = moruList.includes(id) ? 'star' : 'star_border';
-                icon.parentElement.classList.toggle('active', moruList.includes(id));
+            localStorage.setItem('moruIds_v2', JSON.stringify(moruIds));
+            refreshMoruCounter();
+
+            // 리스트 뷰 아이콘 업데이트
+            const icon = document.getElementById(`list-star-ico-${id}`);
+            if(icon) {
+                icon.innerText = moruIds.includes(id) ? 'star' : 'star_border';
+                icon.parentElement.classList.toggle('active', moruIds.includes(id));
             }
         }
 
-        // 탭 전환
-        function switchTab(tabName) {
-            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-            document.querySelectorAll('.view-section').forEach(sec => sec.classList.remove('active'));
+        function changeTab(tabId) {
+            document.querySelectorAll('.tab-item').forEach(b => b.classList.remove('active'));
+            document.querySelectorAll('.view-section').forEach(s => s.classList.remove('active'));
             
             event.currentTarget.classList.add('active');
-            document.getElementById(`${tabName}-view`).classList.add('active');
+            document.getElementById(`${tabId}-view`).classList.add('active');
 
-            if(tabName === 'order') generateOrderQuestion();
+            if (tabId === 'order') makeOrderQuiz();
         }
 
-        // --- 1. 단답형 모드 로직 ---
-        function initShortQuestion() {
-            const fb = document.getElementById('short-feedback');
-            fb.style.display = 'none';
-            document.getElementById('short-input').value = '';
+        // --- 단답형 키워드 컴포넌트 로직 ---
+        function initShortQuiz() {
+            const res = document.getElementById('sh-result');
+            res.style.display = 'none';
+            document.getElementById('sh-user-input').value = '';
 
-            if (activeDataset.length === 0) {
-                document.getElementById('short-hint').innerText = "선택된 '모르는 것' 항목이 없습니다. 전체 리스트나 퀴즈에서 모르는 사건을 별(★)로 체크해 보세요!";
-                document.getElementById('short-type').innerText = "-";
-                document.getElementById('short-nations').innerText = "";
-                document.getElementById('short-progress').innerText = "0 / 0";
+            if (currentPool.length === 0) {
+                document.getElementById('sh-hint-text').innerText = "보관된 '모르는 문제'가 없습니다. 전체 흐름 탭에서 기억이 안 나는 사건들을 별표(★) 등록해 보세요.";
+                document.getElementById('sh-cat').innerText = "-";
+                document.getElementById('sh-nations').innerText = "";
+                document.getElementById('sh-progress-text').innerText = "0 / 0";
                 return;
             }
 
-            if (shortIdx >= activeDataset.length) shortIdx = 0;
-            
-            const currentItem = activeDataset[shortIdx];
-            document.getElementById('short-type').innerText = currentItem[2];
-            document.getElementById('short-hint').innerText = currentItem[4] || "세부 힌트가 없습니다. 명칭 자체를 추론해 보세요.";
-            document.getElementById('short-nations').innerText = `🌍 관여 국가/세력: ${currentItem[3]}`;
-            document.getElementById('short-progress').innerText = `${shortIdx + 1} / ${activeDataset.length}`;
-            
-            // 북마크 상태 표시
-            const starBtn = document.getElementById('short-bookmark-btn');
-            if (moruList.includes(currentItem[0])) {
+            if (shortCursor >= currentPool.length) shortCursor = 0;
+            const cur = currentPool[shortCursor];
+
+            document.getElementById('sh-cat').innerText = cur[2];
+            document.getElementById('sh-hint-text').innerText = cur[4] || "세부 사료 힌트가 없습니다. 사건 자체의 가치를 복습해 보세요.";
+            document.getElementById('sh-nations').innerText = `🌍 관련 국가/세력: ${cur[3]}`;
+            document.getElementById('sh-progress-text').innerText = `${shortCursor + 1} / ${currentPool.length}`;
+
+            const starBtn = document.getElementById('sh-star-btn');
+            if (moruIds.includes(cur[0])) {
                 starBtn.classList.add('active');
                 starBtn.innerHTML = '<span class="material-icons-round">star</span>';
             } else {
@@ -540,85 +574,75 @@
             }
         }
 
-        function checkShortAnswer() {
-            if (activeDataset.length === 0) return;
-            const userAns = document.getElementById('short-input').value.replace(/\s+/g, '').toLowerCase();
-            const originalAns = activeDataset[shortIdx][1];
+        function verifyShortAnswer() {
+            if (currentPool.length === 0) return;
+            const userAns = document.getElementById('sh-user-input').value.replace(/\s+/g, '').toLowerCase();
+            const originalAns = currentPool[shortCursor][1];
             const cleanAns = originalAns.replace(/\s+/g, '').toLowerCase();
-            
-            const fb = document.getElementById('short-feedback');
-            
-            if (userAns === cleanAns || (userAns.length > 2 && cleanAns.includes(userAns))) {
-                fb.innerText = `⭕ 정답입니다! [교과서 정식 명칭: ${originalAns}]`;
-                fb.className = "feedback-box correct";
+            const res = document.getElementById('sh-result');
+
+            if (userAns === cleanAns || (userAns.length >= 2 && cleanAns.includes(userAns))) {
+                res.innerText = `⭕ 정답입니다! [정식 교과서 명칭: ${originalAns}]`;
+                res.className = "result-toast correct";
             } else {
-                fb.innerText = `❌ 오답입니다. 정답은 [ ${originalAns} ] 입니다. (현재 사건을 잘 모른다면 상단 별표를 눌러 보관하세요!)`;
-                fb.className = "feedback-box wrong";
+                res.innerText = `❌ 틀렸습니다. 정답은 [ ${originalAns} ] 입니다.`;
+                res.className = "result-toast wrong";
             }
         }
 
-        function handleShortKey(e) { if(e.key === 'Enter') checkShortAnswer(); }
-        
-        function nextShortQuestion() {
-            if (activeDataset.length > 0) {
-                shortIdx = (shortIdx + 1) % activeDataset.length;
-            }
-            initShortQuestion();
+        function handleShortEnter(e) { if(e.key === 'Enter') verifyShortAnswer(); }
+        function moveNextShort() {
+            if (currentPool.length > 0) shortCursor = (shortCursor + 1) % currentPool.length;
+            initShortQuiz();
         }
 
-        function toggleBookmarkCurrent(mode) {
-            if (activeDataset.length === 0) return;
-            const currentItem = activeDataset[shortIdx];
-            toggleMoruState(currentItem[0]);
-            initShortQuestion(); // UI 리프레시
+        function toggleStarCurrent() {
+            if (currentPool.length === 0) return;
+            const cur = currentPool[shortCursor];
+            toggleStarItem(cur[0]);
+            initShortQuiz();
         }
 
+        // --- 순서 맞추기 (드래그형) 로직 ---
+        function makeOrderQuiz() {
+            document.getElementById('order-result').style.display = 'none';
+            const space = document.getElementById('drag-sort-space');
+            space.innerHTML = '';
 
-        // --- 2. 순서 배열 (드래그 앤 드롭) 모드 로직 ---
-        function generateOrderQuestion() {
-            document.getElementById('order-feedback').style.display = 'none';
-            const dragSpace = document.getElementById('drag-space');
-            dragSpace.innerHTML = '';
-
-            // 전체 데이터 중 무작위 4개 선택
-            let pool = [...baseDataset];
-            let selected = [];
-            for(let i=0; i<4; i++) {
-                if(pool.length === 0) break;
-                let rIdx = Math.floor(Math.random() * pool.length);
-                selected.push(pool.splice(rIdx, 1)[0]);
+            let samples = [];
+            let datasetCopy = [...coreHistoryData];
+            for (let i = 0; i < 4; i++) {
+                let rIdx = Math.floor(Math.random() * datasetCopy.length);
+                samples.push(datasetCopy.splice(rIdx, 1)[0]);
             }
 
-            // 고유의 진짜 연도/순서 순서로 정답 정렬 (id 순서가 시간 역순)
-            currentOrderAnswer = [...selected].sort((a,b) => a[0] - b[0]).map(item => item[1]);
+            // 진짜 시간 순 정렬 순서 추출
+            orderCorrectSequence = [...samples].sort((a,b) => a[0] - b[0]).map(v => v[1]);
 
-            // 화면 표시용 무작위 셔플
-            let displayItems = [...selected];
-            displayItems.sort(() => Math.random() - 0.5);
+            // 화면 표시용으로 무작위 셔플
+            samples.sort(() => Math.random() - 0.5);
 
-            displayItems.forEach(item => {
-                const div = document.createElement('div');
-                div.className = 'drag-item';
-                div.draggable = true;
-                div.dataset.name = item[1];
-                div.innerHTML = `
-                    <div class="drag-handle"><span class="material-icons-round">drag_indicator</span></div>
-                    <div style="font-weight:500;">${item[1]}</div>
+            samples.forEach(item => {
+                const el = document.createElement('div');
+                el.className = 'drag-card';
+                el.draggable = true;
+                el.dataset.name = item[1];
+                el.innerHTML = `
+                    <div class="drag-icon"><span class="material-icons-round">drag_indicator</span></div>
+                    <div style="font-weight:500; font-size:15px;">${item[1]}</div>
                 `;
-                
-                // 드래그 이벤트 바인딩
-                div.addEventListener('dragstart', () => div.classList.add('dragging'));
-                div.addEventListener('dragend', () => div.classList.remove('dragging'));
-                
-                dragSpace.appendChild(div);
+
+                el.addEventListener('dragstart', () => el.classList.add('dragging'));
+                el.addEventListener('dragend', () => el.classList.remove('dragging'));
+
+                space.appendChild(el);
             });
 
-            // 모바일 터치 대응용 위치 교환 처리 추가
-            initDragAndDropEvents();
+            bindDragSequenceEvents();
         }
 
-        function initDragAndDropEvents() {
-            const container = document.getElementById('drag-space');
+        function bindDragSequenceEvents() {
+            const container = document.getElementById('drag-sort-space');
             container.addEventListener('dragover', e => {
                 e.preventDefault();
                 const afterElement = getDragAfterElement(container, e.clientY);
@@ -632,8 +656,8 @@
         }
 
         function getDragAfterElement(container, y) {
-            const draggableElements = [...container.querySelectorAll('.drag-item:not(.dragging)')];
-            return draggableElements.reduce((closest, child) => {
+            const elements = [...container.querySelectorAll('.drag-card:not(.dragging)')];
+            return elements.reduce((closest, child) => {
                 const box = child.getBoundingClientRect();
                 const offset = y - box.top - box.height / 2;
                 if (offset < 0 && offset > closest.offset) {
@@ -644,56 +668,55 @@
             }, { offset: Number.NEGATIVE_INFINITY }).element;
         }
 
-        function checkOrderAnswer() {
-            const currentDisplayOrder = [...document.querySelectorAll('.drag-item')].map(el => el.dataset.name);
-            const fb = document.getElementById('order-feedback');
-            
-            let isCorrect = true;
+        function verifyOrderAnswer() {
+            const currentSequence = [...document.querySelectorAll('.drag-card')].map(el => el.dataset.name);
+            const res = document.getElementById('order-result');
+
+            let match = true;
             for(let i=0; i<4; i++) {
-                if(currentDisplayOrder[i] !== currentOrderAnswer[i]) {
-                    isCorrect = false;
+                if(currentSequence[i] !== orderCorrectSequence[i]) {
+                    match = false;
                     break;
                 }
             }
 
-            if(isCorrect) {
-                fb.innerText = "⭕ 대단합니다! 지필평가 순서 배열형 완벽 적중입니다.";
-                fb.className = "feedback-box correct";
+            if (match) {
+                res.innerText = "⭕ 완벽합니다! 사건의 전후 선후 흐름 관계를 완벽하게 파악하고 있습니다.";
+                res.className = "result-toast correct";
             } else {
-                let answerChain = currentOrderAnswer.join(' ➔ ');
-                fb.innerHTML = `❌ 순서가 잘못되었습니다.<br>⏱️ <b>올바른 인과 흐름 순서:</b><br>${answerChain}`;
-                fb.className = "feedback-box wrong";
+                res.innerHTML = `❌ 순서가 맞지 않습니다.<br>⏱️ <b>교과서 정답 기준 시간 연표 순서:</b><br>${orderCorrectSequence.join(' ➔ ')}`;
+                res.className = "result-toast wrong";
             }
         }
 
-        // --- 3. 전체 리스트 및 단순 오답노트 체크 ---
-        function renderAllList() {
-            const container = document.getElementById('list-container');
+        // --- 전체 흐름 리스트 뷰 로직 ---
+        function renderFlowList() {
+            const container = document.getElementById('flow-list-container');
             container.innerHTML = '';
 
-            let listSource = filterActive ? baseDataset.filter(item => moruList.includes(item[0])) : baseDataset;
+            let listDataset = isMoruOnlyMode ? coreHistoryData.filter(item => moruIds.includes(item[0])) : coreHistoryData;
 
-            if(listSource.length === 0) {
-                container.innerHTML = `<p style="text-align:center; padding:40px 0; color:#757575;">표시할 사건이 없습니다.</p>`;
+            if (listDataset.length === 0) {
+                container.innerHTML = `<p style="text-align:center; padding:40px 0; color:var(--text-sub);">조건에 일치하는 사건 리스트가 비어 있습니다.</p>`;
                 return;
             }
 
-            listSource.forEach(item => {
-                const isMoru = moruList.includes(item[0]);
+            listDataset.forEach(item => {
+                const checked = moruIds.includes(item[0]);
                 const card = document.createElement('div');
-                card.className = `m3-card ${isMoru ? 'active' : ''}`;
-                card.style.padding = '12px 16px';
-                card.style.marginBottom = '10px';
-                
+                card.className = `app-card ${checked ? 'active' : ''}`;
+                card.style.padding = '16px 20px';
+                card.style.marginBottom = '12px';
+
                 card.innerHTML = `
-                    <div style="display:flex; justify-content:space-between; align-items:center;">
-                        <div>
-                            <span class="badge badge-index" style="margin-right:4px;">${item[0]}</span>
-                            <strong style="font-size:15px; color:#1a1a1a;">${item[1]}</strong>
-                            <div style="font-size:13px; color:#5f6368; margin-top:4px;">${item[4] || ''}</div>
+                    <div style="display:flex; justify-content:between; align-items:center; gap:12px;">
+                        <div style="flex:1;">
+                            <span class="badge badge-idx" style="margin-right:4px;">${item[0]}</span>
+                            <strong style="font-size:15px;">${item[1]}</strong>
+                            <div style="font-size:13px; color:var(--text-sub); margin-top:4px;">${item[4] || '세부 정보 없음'}</div>
                         </div>
-                        <button class="btn-bookmark ${isMoru ? 'active' : ''}" onclick="toggleMoruState(${item[0]})">
-                            <span class="material-icons-round" id="list-star-${item[0]}">${isMoru ? 'star' : 'star_border'}</span>
+                        <button class="btn-star ${checked ? 'active' : ''}" onclick="toggleStarItem(${item[0]})">
+                            <span class="material-icons-round" id="list-star-ico-${item[0]}">${checked ? 'star' : 'star_border'}</span>
                         </button>
                     </div>
                 `;
