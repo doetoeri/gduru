@@ -1,16 +1,15 @@
-
 <!DOCTYPE html>
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>한국사 5일 초집중 스프린터</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>한국사 5일 기적의 틈새 스프린터</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Material Symbols Outlined -->
+    <!-- Material Symbols Outlined for M3 Icons -->
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet" />
-    <!-- Google Fonts Noto Sans KR -->
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+    <!-- Premium Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&family=Fira+Code:wght@400;700&display=swap" rel="stylesheet">
     
     <script>
         tailwind.config = {
@@ -18,36 +17,49 @@
                 extend: {
                     fontFamily: {
                         sans: ['Noto Sans KR', 'sans-serif'],
+                        mono: ['Fira Code', 'monospace']
                     },
                     colors: {
-                        // Material You (Material 3) Dark Theme Dynamic Tonal Palette
                         m3: {
-                            background: '#121318',
-                            surface: '#1b1b1f',
-                            surfaceVariant: '#2e3036',
-                            primary: '#b4c5ff',
-                            primaryContainer: '#254190',
-                            onPrimaryContainer: '#dae2ff',
-                            secondary: '#c0c6dc',
-                            secondaryContainer: '#404659',
-                            onSecondaryContainer: '#dcffd6',
-                            tertiary: '#dfb8ff',
-                            tertiaryContainer: '#59208f',
-                            onTertiaryContainer: '#f5d9ff',
-                            error: '#ffb4ab',
-                            errorContainer: '#93000a',
-                            onErrorContainer: '#ffdad6',
+                            background: '#0f1115',
+                            surface: '#161920',
+                            surfaceVariant: '#252932',
+                            primary: '#adc6ff',
+                            primaryContainer: '#1b2f5c',
+                            onPrimaryContainer: '#d8e2ff',
+                            secondary: '#c3c6cf',
+                            secondaryContainer: '#3e424a',
+                            onSecondaryContainer: '#e1e2ec',
+                            tertiary: '#ffb4ab',
+                            tertiaryContainer: '#690005',
+                            onTertiaryContainer: '#ffdad6',
                             outline: '#8e9099',
-                            surfaceContainerLowest: '#0f0f13',
-                            surfaceContainerLow: '#1a1b20',
-                            surfaceContainer: '#1e1f25',
-                            surfaceContainerHigh: '#292a30',
-                            surfaceContainerHighest: '#34353b'
+                            emeraldContainer: '#0a3a25',
+                            onEmeraldContainer: '#c6ffd6',
+                            surfaceContainerLow: '#1c1f27',
+                            surfaceContainer: '#20242e',
+                            surfaceContainerHigh: '#2a2f3b',
+                            surfaceContainerHighest: '#353b49'
                         }
                     },
-                    borderRadius: {
-                        '4xl': '2rem',
-                        '5xl': '2.5rem',
+                    animation: {
+                        'ripple': 'ripple 0.4s cubic-bezier(0, 0, 0.2, 1)',
+                        'fade-in': 'fadeIn 0.25s cubic-bezier(0.16, 1, 0.3, 1)',
+                        'slide-up': 'slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1)'
+                    },
+                    keyframes: {
+                        ripple: {
+                            '0%': { transform: 'scale(0.8)', opacity: '0.5' },
+                            '100%': { transform: 'scale(2)', opacity: '0' }
+                        },
+                        fadeIn: {
+                            '0%': { opacity: '0', transform: 'translateY(4px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' }
+                        },
+                        slideUp: {
+                            '0%': { transform: 'translateY(20px)', opacity: '0' },
+                            '100%': { transform: 'translateY(0)', opacity: '1' }
+                        }
                     }
                 }
             }
@@ -56,12 +68,23 @@
     <style>
         body {
             font-family: 'Noto Sans KR', sans-serif;
-            background-color: #121318;
+            background-color: #0f1115;
+            overflow-x: hidden;
             -webkit-tap-highlight-color: transparent;
         }
-        /* Custom card flip animations */
+        /* Custom Custom Scrollbar for school mobiles */
+        ::-webkit-scrollbar {
+            width: 4px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0f1115;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #252932;
+            border-radius: 999px;
+        }
         .perspective {
-            perspective: 1000px;
+            perspective: 1200px;
         }
         .transform-style-3d {
             transform-style: preserve-3d;
@@ -72,177 +95,191 @@
         .rotate-y-180 {
             transform: rotateY(180deg);
         }
+        .active-scale:active {
+            transform: scale(0.97);
+            transition: transform 0.1s cubic-bezier(0.16, 1, 0.3, 1);
+        }
     </style>
 </head>
-<body class="text-slate-200 min-h-screen flex flex-col selection:bg-m3-primary selection:text-m3-surfaceContainerLowest">
+<body class="text-slate-200 min-h-screen flex flex-col justify-between select-none">
 
     <!-- ==========================================
-        M3 App Bar (Header)
+        TOP HEADER: Material Dynamic Bar & Session Config
         ========================================== -->
-    <header class="sticky top-0 z-50 bg-m3-background/80 backdrop-blur-md border-b border-slate-800/60 px-4 py-3.5 flex items-center justify-between">
+    <header class="sticky top-0 z-40 bg-m3-background/90 backdrop-blur-lg border-b border-m3-surfaceVariant/50 px-4 py-3 flex items-center justify-between">
         <div class="flex items-center space-x-3">
-            <div class="w-10 h-10 rounded-full bg-m3-primaryContainer flex items-center justify-center text-m3-onPrimaryContainer shadow-inner">
-                <span class="material-symbols-outlined text-xl">history_edu</span>
+            <div class="w-10 h-10 rounded-2xl bg-m3-primaryContainer flex items-center justify-center text-m3-primary shadow-lg animate-fade-in">
+                <span class="material-symbols-outlined text-xl">school</span>
             </div>
             <div>
-                <h1 class="text-sm sm:text-base font-black tracking-tight text-m3-onPrimaryContainer">
-                    한국사 만점 스프린터
+                <h1 class="text-xs sm:text-sm font-black text-slate-100 flex items-center gap-1">
+                    교과서 Ⅲ단원 초집중 복원기 <span class="text-[9px] bg-m3-primary/20 text-m3-primary px-1.5 py-0.2 rounded font-mono font-bold">M3</span>
                 </h1>
-                <p class="text-[10px] text-m3-outline">Material You Edition • 5일 완성</p>
+                <p class="text-[10px] text-m3-outline">하루 30개 키워드 • 틈새 시간 마스터</p>
             </div>
         </div>
 
-        <!-- M3 Tonal Timer Counter -->
-        <div class="flex items-center bg-m3-surfaceContainerHigh rounded-full py-1.5 pl-3 pr-2 border border-m3-surfaceContainerHighest shadow-md space-x-3">
-            <div class="text-right">
-                <span class="text-[8px] text-m3-outline uppercase font-black tracking-widest block">SPRINT</span>
-                <span id="timer-display" class="text-sm font-mono font-black text-m3-primary">10:00</span>
+        <!-- M3 Tonal Timer Widget with Modes -->
+        <div class="flex items-center space-x-2 bg-m3-surfaceContainerHigh px-3 py-1.5 rounded-full border border-m3-surfaceContainerHighest shadow-md">
+            <div class="flex flex-col items-end">
+                <span id="session-tag" class="text-[8px] font-black text-m3-primary tracking-wider uppercase">틈새 모드</span>
+                <span id="timer-text" class="text-xs font-mono font-bold text-m3-primary">10:00</span>
             </div>
-            <div class="flex space-x-0.5 border-l border-slate-850 pl-2">
-                <button id="timer-toggle-btn" onclick="toggleTimer()" class="w-8 h-8 rounded-full hover:bg-m3-surfaceVariant text-m3-onPrimaryContainer flex items-center justify-center transition">
-                    <span id="timer-icon" class="material-symbols-outlined text-lg">play_arrow</span>
-                </button>
-                <button onclick="resetTimer()" class="w-8 h-8 rounded-full hover:bg-m3-surfaceVariant text-m3-outline hover:text-m3-primary flex items-center justify-center transition">
-                    <span class="material-symbols-outlined text-lg">restart_alt</span>
-                </button>
-            </div>
+            <button id="timer-toggle" onclick="toggleTimer()" class="w-7 h-7 rounded-full bg-m3-surfaceVariant flex items-center justify-center active-scale transition text-slate-200">
+                <span id="timer-icon" class="material-symbols-outlined text-base">play_arrow</span>
+            </button>
         </div>
     </header>
 
     <!-- ==========================================
-        Main Learning Interface
+        MAIN WRAPPER
         ========================================== -->
-    <main class="flex-1 max-w-4xl w-full mx-auto px-4 py-4 space-y-4">
+    <main class="flex-1 max-w-4xl w-full mx-auto px-4 py-4 space-y-4 animate-fade-in">
         
-        <!-- Day Select Panel (Material Tonal Tabs) -->
-        <div class="bg-m3-surfaceContainerLow p-3 rounded-3xl border border-m3-surfaceContainerHigh shadow-lg space-y-2.5">
+        <!-- Quick Action Menu for Break/Lunch Time -->
+        <div class="bg-gradient-to-br from-m3-surfaceContainerLow to-m3-surfaceContainer p-4 rounded-3xl border border-m3-surfaceVariant/60 shadow-lg space-y-3">
             <div class="flex items-center justify-between">
-                <span class="text-xs font-bold text-m3-secondary flex items-center gap-1">
-                    <span class="material-symbols-outlined text-xs">date_range</span> 5일 마스터 타임라인
+                <span class="text-xs font-bold text-m3-primary flex items-center gap-1.5">
+                    <span class="material-symbols-outlined text-sm">bolt</span> 틈새시간 집중 코스 설정
                 </span>
-                <span id="day-range-badge" class="text-[10px] bg-m3-primaryContainer text-m3-onPrimaryContainer font-bold px-2.5 py-0.5 rounded-full">
-                    대원군의 개혁과 수교 거부
-                </span>
+                <span class="text-[10px] text-m3-outline">학습 이탈 시 자동 저장</span>
             </div>
             
+            <div class="grid grid-cols-3 gap-2">
+                <button onclick="setMicroMode(3)" id="micro-btn-3" class="active-scale py-2 rounded-2xl text-xs font-extrabold border border-m3-surfaceVariant bg-m3-surfaceContainerHigh text-slate-300 hover:border-m3-primary/30 transition flex items-center justify-center gap-1">
+                    <span class="material-symbols-outlined text-xs">alarm</span> 쉬는시간 (3분)
+                </button>
+                <button onclick="setMicroMode(5)" id="micro-btn-5" class="active-scale py-2 rounded-2xl text-xs font-extrabold border border-m3-surfaceVariant bg-m3-surfaceContainerHigh text-slate-300 hover:border-m3-primary/30 transition flex items-center justify-center gap-1">
+                    <span class="material-symbols-outlined text-xs">restaurant</span> 급식시간 (5분)
+                </button>
+                <button onclick="setMicroMode(10)" id="micro-btn-10" class="active-scale py-2 rounded-2xl text-xs font-extrabold border border-m3-primaryContainer bg-m3-primaryContainer/30 text-m3-primary transition flex items-center justify-center gap-1">
+                    <span class="material-symbols-outlined text-xs">hourglass_empty</span> 일반 (10분)
+                </button>
+            </div>
+        </div>
+
+        <!-- 5-Day Interactive Material Tabs -->
+        <div class="bg-m3-surface p-2.5 rounded-3xl border border-m3-surfaceVariant/40 shadow-inner">
+            <div class="flex items-center justify-between px-2 mb-2">
+                <span class="text-[10px] font-bold text-m3-outline uppercase tracking-widest">일차 선택 (하루 30개 완성)</span>
+                <span id="day-badge" class="text-[9px] bg-m3-tertiaryContainer text-m3-onTertiaryContainer font-black px-2 py-0.5 rounded-full"></span>
+            </div>
             <div class="grid grid-cols-5 gap-1.5">
-                <button onclick="changeDay(1)" id="day-tab-1" class="day-tab py-2.5 rounded-2xl text-xs font-black transition-all flex flex-col items-center justify-center bg-m3-primary text-m3-surfaceContainerLowest shadow-md">
-                    <span class="text-[9px] opacity-75">DAY</span>
-                    <span class="text-sm">1</span>
+                <!-- Days 1 to 5 Buttons -->
+                <button onclick="selectDay(1)" id="day-tab-1" class="day-tab py-3 rounded-2xl text-xs font-black transition-all flex flex-col items-center justify-center active-scale">
+                    <span class="text-[8px] opacity-70 block">DAY</span>
+                    <span class="text-sm font-black">1</span>
                 </button>
-                <button onclick="changeDay(2)" id="day-tab-2" class="day-tab py-2.5 rounded-2xl text-xs font-black transition-all flex flex-col items-center justify-center bg-m3-surfaceContainer text-m3-outline hover:bg-m3-surfaceVariant">
-                    <span class="text-[9px] opacity-75">DAY</span>
-                    <span class="text-sm">2</span>
+                <button onclick="selectDay(2)" id="day-tab-2" class="day-tab py-3 rounded-2xl text-xs font-black transition-all flex flex-col items-center justify-center active-scale">
+                    <span class="text-[8px] opacity-70 block">DAY</span>
+                    <span class="text-sm font-black">2</span>
                 </button>
-                <button onclick="changeDay(3)" id="day-tab-3" class="day-tab py-2.5 rounded-2xl text-xs font-black transition-all flex flex-col items-center justify-center bg-m3-surfaceContainer text-m3-outline hover:bg-m3-surfaceVariant">
-                    <span class="text-[9px] opacity-75">DAY</span>
-                    <span class="text-sm">3</span>
+                <button onclick="selectDay(3)" id="day-tab-3" class="day-tab py-3 rounded-2xl text-xs font-black transition-all flex flex-col items-center justify-center active-scale">
+                    <span class="text-[8px] opacity-70 block">DAY</span>
+                    <span class="text-sm font-black">3</span>
                 </button>
-                <button onclick="changeDay(4)" id="day-tab-4" class="day-tab py-2.5 rounded-2xl text-xs font-black transition-all flex flex-col items-center justify-center bg-m3-surfaceContainer text-m3-outline hover:bg-m3-surfaceVariant">
-                    <span class="text-[9px] opacity-75">DAY</span>
-                    <span class="text-sm">4</span>
+                <button onclick="selectDay(4)" id="day-tab-4" class="day-tab py-3 rounded-2xl text-xs font-black transition-all flex flex-col items-center justify-center active-scale">
+                    <span class="text-[8px] opacity-70 block">DAY</span>
+                    <span class="text-sm font-black">4</span>
                 </button>
-                <button onclick="changeDay(5)" id="day-tab-5" class="day-tab py-2.5 rounded-2xl text-xs font-black transition-all flex flex-col items-center justify-center bg-m3-surfaceContainer text-m3-outline hover:bg-m3-surfaceVariant">
-                    <span class="text-[9px] opacity-75">DAY</span>
-                    <span class="text-sm">5</span>
+                <button onclick="selectDay(5)" id="day-tab-5" class="day-tab py-3 rounded-2xl text-xs font-black transition-all flex flex-col items-center justify-center active-scale">
+                    <span class="text-[8px] opacity-70 block">DAY</span>
+                    <span class="text-sm font-black">5</span>
                 </button>
             </div>
         </div>
 
-        <!-- 4-Stage Flow Navigation Buttons (Segmented Button Control) -->
-        <div class="grid grid-cols-4 gap-1.5 sm:gap-2 bg-m3-surfaceContainerLowest p-1.5 rounded-3xl border border-m3-surfaceContainerHigh">
-            <button onclick="switchStage('scan')" id="stage-btn-scan" class="stage-btn p-2.5 rounded-2xl text-center flex flex-col items-center justify-center transition-all bg-m3-secondaryContainer text-m3-onSecondaryContainer">
-                <span class="material-symbols-outlined text-lg mb-0.5">visibility</span>
-                <span class="text-[10px] font-black">1. 스캔</span>
+        <!-- Four-Stage Dynamic Navigation Segmented Track -->
+        <div class="grid grid-cols-4 gap-1 bg-m3-surfaceContainerLowest p-1.5 rounded-3xl border border-m3-surfaceVariant/40">
+            <button onclick="changeStage('scan')" id="stage-btn-scan" class="stage-btn py-3 rounded-2xl text-center flex flex-col items-center justify-center transition-all duration-300 active-scale">
+                <span class="material-symbols-outlined text-base mb-0.5">menu_book</span>
+                <span class="text-[9px] font-black tracking-tight">1. 스캔</span>
             </button>
-            <button onclick="switchStage('sort')" id="stage-btn-sort" class="stage-btn p-2.5 rounded-2xl text-center flex flex-col items-center justify-center transition-all text-m3-outline hover:bg-m3-surface">
-                <span class="material-symbols-outlined text-lg mb-0.5">swap_vert</span>
-                <span class="text-[10px] font-black">2. 순서</span>
+            <button onclick="changeStage('sort')" id="stage-btn-sort" class="stage-btn py-3 rounded-2xl text-center flex flex-col items-center justify-center transition-all duration-300 active-scale">
+                <span class="material-symbols-outlined text-base mb-0.5">sort</span>
+                <span class="text-[9px] font-black tracking-tight">2. 정렬</span>
             </button>
-            <button onclick="switchStage('blank')" id="stage-btn-blank" class="stage-btn p-2.5 rounded-2xl text-center flex flex-col items-center justify-center transition-all text-m3-outline hover:bg-m3-surface">
-                <span class="material-symbols-outlined text-lg mb-0.5">edit_square</span>
-                <span class="text-[10px] font-black">3. 키워드</span>
+            <button onclick="changeStage('blank')" id="stage-btn-blank" class="stage-btn py-3 rounded-2xl text-center flex flex-col items-center justify-center transition-all duration-300 active-scale">
+                <span class="material-symbols-outlined text-base mb-0.5">spellcheck</span>
+                <span class="text-[9px] font-black tracking-tight">3. 빈칸</span>
             </button>
-            <button onclick="switchStage('narrative')" id="stage-btn-narrative" class="stage-btn p-2.5 rounded-2xl text-center flex flex-col items-center justify-center transition-all text-m3-outline hover:bg-m3-surface">
-                <span class="material-symbols-outlined text-lg mb-0.5">rate_review</span>
-                <span class="text-[10px] font-black">4. 서술형</span>
+            <button onclick="changeStage('narrative')" id="stage-btn-narrative" class="stage-btn py-3 rounded-2xl text-center flex flex-col items-center justify-center transition-all duration-300 active-scale">
+                <span class="material-symbols-outlined text-base mb-0.5">history_edu</span>
+                <span class="text-[9px] font-black tracking-tight">4. 서술형</span>
             </button>
         </div>
 
-        <!-- Progress Tracker Bar -->
-        <div class="bg-m3-surfaceContainerLow px-4 py-2.5 rounded-2xl border border-m3-surfaceContainerHigh flex items-center justify-between">
-            <div class="flex items-center space-x-2 text-xs font-bold text-m3-secondary">
-                <span class="material-symbols-outlined text-sm">emoji_events</span>
-                <span id="day-title-display">DAY 1: 개항기의 아침</span>
+        <!-- Persistent Progress bar -->
+        <div class="bg-m3-surfaceContainerLow px-4 py-3 rounded-2xl border border-m3-surfaceVariant/30 flex items-center justify-between text-xs font-semibold text-slate-300">
+            <div class="flex items-center space-x-1.5">
+                <span class="material-symbols-outlined text-m3-primary text-sm">assignment_turned_in</span>
+                <span id="stage-title-card" class="text-slate-100 font-bold truncate">현재 단계 로드 중...</span>
             </div>
-            <div class="flex items-center space-x-1.5 text-[10px] text-m3-primary font-bold bg-m3-primaryContainer/30 px-3 py-1 rounded-full">
-                <span>오늘의 진도:</span>
-                <span id="today-progress-badge">0 / 4 완료</span>
+            <div class="text-[10px] bg-m3-emeraldContainer/40 text-m3-onEmeraldContainer px-3 py-1 rounded-full font-bold">
+                성취도: <span id="cleared-progress-score">0</span>% 완료
             </div>
         </div>
 
         <!-- ==========================================
-            VIEWPORT 1: STAGE SCAN (Flashcard Mode)
+            VIEWPORT 1: STAGE SCAN (High-Fidelity Flashcard)
             ========================================== -->
-        <section id="stage-scan" class="stage-container space-y-4">
-            <div class="flex items-center justify-between">
-                <div class="flex items-center space-x-2">
-                    <span class="material-symbols-outlined text-m3-primary text-sm">info</span>
-                    <span class="text-xs font-bold text-m3-outline">핵심 내용과 주요 인물 3분 스캔</span>
+        <section id="stage-scan" class="stage-viewport space-y-4">
+            <div class="flex items-center justify-between text-xs px-1">
+                <div class="flex items-center space-x-1 text-m3-outline">
+                    <span class="material-symbols-outlined text-sm">visibility</span>
+                    <span>카드 터치 시 상세 모범 서술형 핵심 체크 확인</span>
                 </div>
-                <span id="scan-progress-display" class="text-xs font-mono text-m3-primary font-bold">1 / 5</span>
+                <span id="scan-page-text" class="font-mono font-bold text-m3-primary">1 / 5</span>
             </div>
 
-            <!-- Double-sided Flashcard Container -->
-            <div onclick="flipCard()" class="perspective w-full h-80 cursor-pointer select-none">
-                <div id="flashcard-inner" class="transform-style-3d duration-500 w-full h-full relative">
+            <!-- Double-sided card structure with springy rotation -->
+            <div onclick="flipFlashcard()" class="perspective w-full h-[360px] cursor-pointer select-none active-scale transition-transform duration-300">
+                <div id="flashcard-track" class="transform-style-3d duration-500 w-full h-full relative">
                     
-                    <!-- Card Front Side -->
-                    <div class="absolute inset-0 backface-hidden bg-m3-surfaceContainerHigh p-6 rounded-3xl border border-m3-surfaceContainerHighest shadow-xl flex flex-col justify-between">
+                    <!-- Card Front Face -->
+                    <div class="absolute inset-0 backface-hidden bg-m3-surfaceContainerHigh p-6 rounded-4xl border border-m3-surfaceContainerHighest shadow-xl flex flex-col justify-between">
                         <div>
-                            <div class="flex justify-between items-center">
-                                <span id="card-year" class="bg-m3-primaryContainer text-m3-onPrimaryContainer font-mono text-xs font-black px-3 py-1 rounded-full">1866년</span>
-                                <span class="text-[10px] text-m3-outline flex items-center gap-1">탭해서 카드 뒤집기 <span class="material-symbols-outlined text-xs">rotate_right</span></span>
+                            <div class="flex items-center justify-between">
+                                <span id="card-year-tag" class="bg-m3-primaryContainer text-m3-onPrimaryContainer font-mono text-xs font-black px-3.5 py-1 rounded-full border border-m3-primary/30">1876년</span>
+                                <span class="text-[9px] text-m3-outline flex items-center gap-0.5">뒤집기 <span class="material-symbols-outlined text-xs">rotate_right</span></span>
                             </div>
-                            <h2 id="card-title" class="text-2xl font-black text-slate-100 mt-6 leading-tight">병인박해</h2>
+                            <h2 id="card-main-title" class="text-2xl font-black text-slate-100 mt-6 leading-snug">강화도 조약</h2>
+                            <p id="card-main-characters" class="text-sm font-bold text-m3-primary mt-2">신헌, 구로다 기요타카</p>
                             
-                            <div class="mt-5 space-y-1.5">
-                                <span class="text-[10px] font-bold text-m3-primary tracking-wider block">인물 / 세력</span>
-                                <p id="card-characters" class="text-sm text-m3-tertiary font-bold">흥선대원군, 프랑스 선교사</p>
+                            <div class="mt-6 bg-m3-surfaceContainerLowest/50 p-4 rounded-2xl border border-m3-surfaceVariant/40">
+                                <span class="text-[9px] font-bold text-m3-outline uppercase block tracking-wider">교과서 핵심 요약</span>
+                                <p id="card-short-desc" class="text-xs text-slate-300 leading-relaxed mt-1">운요호 사건을 빌미로 체결된 우리나라 최초의 근대적 조약이자 불평등 조약입니다.</p>
                             </div>
                         </div>
-                        <div class="bg-m3-surfaceContainerLowest/40 p-2.5 rounded-xl border border-slate-800/40 text-center text-xs text-m3-outline">
-                            💡 이 사건이 일어난 자세한 내용과 배경을 보려면 탭하세요.
+                        <div class="text-center text-[10px] text-m3-outline bg-m3-background py-2 rounded-xl">
+                            💡 카드를 뒤집어 서술형 채점 핵심 키워드 6개를 확인하세요.
                         </div>
                     </div>
 
-                    <!-- Card Back Side -->
-                    <div class="absolute inset-0 backface-hidden rotate-y-180 bg-m3-surfaceContainerHighest p-6 rounded-3xl border border-m3-primary/30 shadow-2xl flex flex-col justify-between">
-                        <div class="space-y-3.5 overflow-y-auto max-h-[70%]">
-                            <div class="flex justify-between items-center border-b border-slate-850 pb-2">
-                                <span id="card-back-meta" class="text-xs font-bold text-m3-primary">역사적 전개 & 상세 내용</span>
-                                <span class="text-[9px] bg-slate-900 px-2 py-0.5 rounded text-m3-outline">교과서 기준</span>
+                    <!-- Card Back Face -->
+                    <div class="absolute inset-0 backface-hidden rotate-y-180 bg-m3-surfaceContainerHighest p-6 rounded-4xl border border-m3-primary/20 shadow-2xl flex flex-col justify-between">
+                        <div class="space-y-4 overflow-y-auto max-h-[80%] pr-1">
+                            <div class="flex items-center justify-between border-b border-m3-surfaceVariant pb-2">
+                                <span class="text-xs font-black text-m3-primary">서술형 득점 키워드 (30개 중 6개)</span>
+                                <span class="text-[9px] bg-slate-950 px-2 py-0.5 rounded text-m3-outline">교과서 기준</span>
                             </div>
-                            <div>
-                                <p id="card-description" class="text-xs sm:text-sm leading-relaxed text-slate-200">
-                                    프랑스 선교사와 다수의 천주교 신자를 처형 및 탄압하며 양요의 원인을 제공한 사건입니다.
-                                </p>
-                            </div>
-                            <div class="space-y-1">
-                                <span class="text-[10px] font-bold text-m3-tertiary tracking-wider block">획득 키워드 (단답 및 채점 요소)</span>
-                                <div id="card-keywords" class="flex flex-wrap gap-1">
-                                    <span class="bg-m3-surfaceContainerLowest text-m3-tertiary text-[10px] px-2 py-0.5 rounded-lg border border-slate-850">천주교 신자</span>
-                                    <span class="bg-m3-surfaceContainerLowest text-m3-tertiary text-[10px] px-2 py-0.5 rounded-lg border border-slate-850">흥선대원군</span>
+                            <p id="card-long-desc" class="text-xs sm:text-sm leading-relaxed text-slate-200">
+                                운요호 사건을 구실로 개항을 요구하는 일본군 함대의 무력 압박 하에 신헌과 구로다 사이에 맺어진 최초의 불평등 조약이다.
+                            </p>
+                            <div class="space-y-1.5">
+                                <span class="text-[10px] font-black text-m3-tertiary block tracking-wider">채점 핵심 단어 6선</span>
+                                <div id="card-keyword-bag" class="flex flex-wrap gap-1.5">
+                                    <!-- Dynamic Keyword Chips loaded here -->
                                 </div>
                             </div>
                         </div>
 
-                        <div class="flex items-center justify-between pt-3 border-t border-slate-800/60" onclick="event.stopPropagation()">
-                            <button onclick="toggleWeakListFromCard()" id="card-weak-btn" class="text-xs text-m3-error hover:bg-m3-error/10 border border-m3-error/30 px-3.5 py-2 rounded-2xl font-bold transition flex items-center gap-1">
-                                <span class="material-symbols-outlined text-xs">heart_broken</span> <span>취약 보관</span>
+                        <div class="flex items-center justify-between pt-3 border-t border-m3-surfaceVariant" onclick="event.stopPropagation()">
+                            <button onclick="toggleCardInWeakness()" id="card-weak-toggle" class="active-scale text-xs text-m3-tertiary border border-m3-tertiary/30 hover:bg-m3-tertiaryContainer/20 px-3.5 py-2.5 rounded-2xl font-black transition flex items-center gap-1">
+                                <span class="material-symbols-outlined text-xs">favorite</span> 오답 수첩 등록
                             </button>
-                            <button onclick="markCurrentCardAsScanned()" class="bg-m3-primary hover:bg-m3-primary/90 text-m3-surfaceContainerLowest text-xs font-black px-4 py-2 rounded-2xl transition flex items-center gap-1 shadow-md">
-                                <span class="material-symbols-outlined text-xs">done_all</span> 뇌에 각인 완료
+                            <button onclick="approveScanCard()" class="active-scale bg-m3-primary hover:bg-m3-primary/90 text-m3-surfaceContainerLowest text-xs font-black px-4.5 py-2.5 rounded-2xl transition flex items-center gap-1 shadow-md">
+                                <span class="material-symbols-outlined text-xs">done_all</span> 이 카드 마스터
                             </button>
                         </div>
                     </div>
@@ -250,171 +287,171 @@
                 </div>
             </div>
 
-            <!-- Card Navigator -->
-            <div class="flex items-center justify-between">
-                <button onclick="prevCard()" class="bg-m3-surfaceContainerLow hover:bg-m3-surfaceContainerHigh text-slate-300 font-bold text-xs py-2.5 px-4 rounded-2xl transition flex items-center gap-1">
-                    <span class="material-symbols-outlined text-xs">chevron_left</span> 이전 사건
+            <!-- Swipe Action Navigator -->
+            <div class="flex items-center justify-between gap-3 pt-2">
+                <button onclick="goPrevCard()" class="active-scale bg-m3-surfaceContainerLow hover:bg-m3-surfaceContainerHigh text-slate-300 font-bold text-xs py-3 px-5 rounded-2xl transition flex items-center gap-1">
+                    <span class="material-symbols-outlined text-sm">arrow_back</span> 이전
                 </button>
-                <div id="card-indicators" class="flex space-x-1.5">
-                    <!-- Dots generated dynamically -->
+                <div id="card-indicator-dots" class="flex items-center space-x-2">
+                    <!-- Dots -->
                 </div>
-                <button onclick="nextCard()" class="bg-m3-surfaceContainerLow hover:bg-m3-surfaceContainerHigh text-slate-300 font-bold text-xs py-2.5 px-4 rounded-2xl transition flex items-center gap-1">
-                    다음 사건 <span class="material-symbols-outlined text-xs">chevron_right</span>
+                <button onclick="goNextCard()" class="active-scale bg-m3-surfaceContainerLow hover:bg-m3-surfaceContainerHigh text-slate-300 font-bold text-xs py-3 px-5 rounded-2xl transition flex items-center gap-1">
+                    다음 <span class="material-symbols-outlined text-sm">arrow_forward</span>
                 </button>
             </div>
         </section>
 
         <!-- ==========================================
-            VIEWPORT 2: STAGE SORT (Timeline Sequence)
+            VIEWPORT 2: STAGE SORT (Active Timeline Arrangement)
             ========================================== -->
-        <section id="stage-sort" class="stage-container space-y-4 hidden">
-            <div class="border-b border-slate-800/80 pb-2 flex items-center justify-between">
+        <section id="stage-sort" class="stage-viewport space-y-4 hidden">
+            <div class="border-b border-m3-surfaceVariant pb-2.5 flex items-center justify-between">
                 <div>
                     <h3 class="text-xs font-bold text-m3-secondary flex items-center gap-1">
-                        <span class="material-symbols-outlined text-sm">swap_vert</span> 2단계: 연도 순서대로 줄 세우기
+                        <span class="material-symbols-outlined text-sm text-m3-primary">swap_vert</span> 인과적 전개에 맞춰 순서 정렬
                     </h3>
-                    <p class="text-[10px] text-m3-outline mt-0.5">상하 이동 버튼으로 가장 빠른 연도의 사건을 1위(가장 위)에 두세요.</p>
+                    <p class="text-[10px] text-m3-outline mt-0.5">상하 이동 탭을 사용하여 역사적 사건들을 순서대로 배치하세요.</p>
                 </div>
-                <button onclick="shuffleSortingList()" class="bg-m3-surfaceContainerHigh text-m3-primary font-bold text-xs px-3 py-1.5 rounded-full hover:bg-m3-surfaceVariant transition flex items-center gap-1">
-                    <span class="material-symbols-outlined text-xs">shuffle</span> 재배치
+                <button onclick="scrambleSorting()" class="active-scale bg-m3-surfaceContainerHigh text-m3-primary font-bold text-xs px-3.5 py-1.5 rounded-full hover:bg-m3-surfaceVariant transition flex items-center gap-1">
+                    <span class="material-symbols-outlined text-xs">shuffle</span> 카드 섞기
                 </button>
             </div>
 
-            <div id="sort-list-container" class="space-y-2">
-                <!-- Sorting Items Rendered Dynamically -->
+            <div id="sort-track" class="space-y-2">
+                <!-- Sorting blocks -->
             </div>
 
-            <div class="flex gap-2 pt-2">
-                <button onclick="submitSortingAnswers()" class="flex-1 bg-m3-primary hover:bg-m3-primary/90 text-m3-surfaceContainerLowest font-black py-3 rounded-2xl text-xs transition flex items-center justify-center gap-1 shadow-md">
-                    <span class="material-symbols-outlined text-xs">verified</span> 역사 순서 채점하기
+            <div class="pt-2">
+                <button onclick="evaluateSorting()" class="active-scale w-full bg-m3-primary hover:bg-m3-primary/90 text-m3-surfaceContainerLowest font-black py-3 rounded-2xl text-xs transition flex items-center justify-center gap-1 shadow-md">
+                    <span class="material-symbols-outlined text-xs">rule</span> 정렬 배치 타임라인 채점
                 </button>
             </div>
 
-            <div id="sort-feedback" class="hidden p-4 rounded-3xl border text-xs">
-                <!-- Sorting dynamic feedback feedback goes here -->
+            <div id="sort-result-card" class="hidden p-4 rounded-3xl border text-xs">
+                <!-- Results feedback -->
             </div>
         </section>
 
         <!-- ==========================================
-            VIEWPORT 3: STAGE BLANK (Key Cloze Challenge)
+            VIEWPORT 3: STAGE BLANK (Micro-learning Key Filling)
             ========================================== -->
-        <section id="stage-blank" class="stage-container space-y-4 hidden">
-            <div class="border-b border-slate-800/80 pb-2">
+        <section id="stage-blank" class="stage-viewport space-y-4 hidden">
+            <div class="border-b border-m3-surfaceVariant pb-2">
                 <h3 class="text-xs font-bold text-m3-secondary flex items-center gap-1">
-                    <span class="material-symbols-outlined text-sm">border_color</span> 3단계: 득점 키워드 타자 입력
+                    <span class="material-symbols-outlined text-sm text-m3-primary">edit_square</span> 3단계: 서술형 채점 핵심 빈칸 쓰기
                 </h3>
-                <p class="text-[10px] text-m3-outline mt-0.5">교과서 서술의 중심이 되는 핵심 고유명사와 단어 빈칸을 모두 채워보세요.</p>
+                <p class="text-[10px] text-m3-outline mt-0.5">초성 힌트 및 글자수를 대조하여 빈칸에 들어갈 올바른 단어를 작성하세요.</p>
             </div>
 
-            <div id="blank-cards-container" class="space-y-4">
-                <!-- Blank inputs generated dynamically -->
+            <div id="blank-card-holder" class="space-y-4">
+                <!-- Cloze items -->
             </div>
 
             <div class="flex gap-2 pt-2">
-                <button onclick="submitBlankAnswers()" class="flex-1 bg-m3-primary hover:bg-m3-primary/90 text-m3-surfaceContainerLowest font-black py-3 rounded-2xl text-xs transition flex items-center justify-center gap-1 shadow-md">
-                    <span class="material-symbols-outlined text-xs">checklist</span> 빈칸 키워드 일괄 채점
+                <button onclick="evaluateBlanks()" class="flex-1 active-scale bg-m3-primary hover:bg-m3-primary/90 text-m3-surfaceContainerLowest font-black py-3.5 rounded-2xl text-xs transition flex items-center justify-center gap-1 shadow-md">
+                    <span class="material-symbols-outlined text-xs">done_outline</span> 빈칸 오탈자 정밀 채점
                 </button>
-                <button onclick="resetBlankInputs()" class="bg-m3-surfaceContainerLow hover:bg-m3-surfaceContainerHigh text-slate-300 font-bold px-4 rounded-2xl text-xs transition">
-                    다시 쓰기
+                <button onclick="clearBlankInputs()" class="active-scale bg-m3-surfaceContainerLow hover:bg-m3-surfaceContainerHigh text-slate-300 font-bold px-4 rounded-2xl text-xs transition">
+                    전체 삭제
                 </button>
             </div>
 
-            <div id="blank-overall-feedback" class="hidden p-4 rounded-3xl border text-xs text-center">
-                <!-- Blank overall score -->
+            <div id="blank-summary-box" class="hidden p-4 rounded-3xl border text-xs text-center">
+                <!-- Overall feedback -->
             </div>
         </section>
 
         <!-- ==========================================
-            VIEWPORT 4: STAGE NARRATIVE (Essay Evaluator)
+            VIEWPORT 4: STAGE NARRATIVE (Full Essay Grader)
             ========================================== -->
-        <section id="stage-narrative" class="stage-container space-y-4 hidden">
-            <div class="border-b border-slate-800/80 pb-2">
+        <section id="stage-narrative" class="stage-viewport space-y-4 hidden">
+            <div class="border-b border-m3-surfaceVariant pb-2">
                 <h3 class="text-xs font-bold text-m3-secondary flex items-center gap-1">
-                    <span class="material-symbols-outlined text-sm">rate_review</span> 4단계: 실전 서술 복원 시뮬레이터
+                    <span class="material-symbols-outlined text-sm text-m3-primary">draw</span> 4단계: 실전 서술형 복원 트레이너
                 </h3>
-                <p class="text-[10px] text-m3-outline mt-0.5">교과서 실전 서술형 문항에 핵심 채점 요소를 포함해 작문하세요.</p>
+                <p class="text-[10px] text-m3-outline mt-0.5">실제 교과서 시험 서술형 채점표의 채점 핵심 요소를 바탕으로 자가 채점을 제공합니다.</p>
             </div>
 
-            <div class="bg-m3-surfaceContainerLow p-3 rounded-2xl border border-m3-surfaceContainerHigh flex flex-col sm:flex-row items-center justify-between gap-3">
-                <span class="text-xs font-bold text-m3-onPrimaryContainer">학습 사건 선택:</span>
-                <select id="narrative-select" onchange="loadNarrativeQuestion()" class="bg-m3-surface text-xs text-m3-primary border border-slate-700/60 p-2.5 rounded-xl focus:outline-none focus:ring-1 focus:ring-m3-primary w-full sm:w-64">
-                    <!-- Options populated dynamically -->
+            <div class="bg-m3-surfaceContainerLow p-3 rounded-2xl border border-m3-surfaceVariant flex flex-col sm:flex-row items-center justify-between gap-2">
+                <span class="text-xs font-bold text-slate-200">사건 선정:</span>
+                <select id="narrative-combo" onchange="loadNarrativeItem()" class="bg-m3-surface text-xs text-m3-primary border border-m3-surfaceVariant p-2.5 rounded-xl focus:outline-none focus:ring-1 focus:ring-m3-primary w-full sm:w-64">
+                    <!-- select options loaded dynamically -->
                 </select>
             </div>
 
-            <div class="bg-m3-surfaceContainerHighest p-4 rounded-3xl border border-m3-surfaceContainer/50 space-y-2">
-                <div class="flex justify-between items-center">
-                    <span class="text-[10px] bg-m3-tertiaryContainer text-m3-onTertiaryContainer font-bold px-2.5 py-0.5 rounded-full">교과서 서술형 빈출 문항</span>
-                    <span class="text-[10px] text-m3-outline">예상 배점: 10점</span>
+            <!-- Displayed Problem Card -->
+            <div class="bg-m3-surfaceContainerHighest p-5 rounded-3xl border border-slate-800 space-y-2">
+                <div class="flex justify-between items-center text-[10px]">
+                    <span class="bg-m3-primaryContainer text-m3-primary font-bold px-2.5 py-0.5 rounded-full">실제 시험 서술형 출제 예시</span>
+                    <span class="text-m3-outline">예상 배점 10점</span>
                 </div>
-                <h4 id="narrative-question-text" class="text-sm font-extrabold text-slate-100 leading-relaxed">
-                    병인박해가 일어난 대내외적 원인과 결과를 핵심 인물과 종교명을 포함하여 쓰시오.
+                <h4 id="narrative-question-body" class="text-sm font-black text-slate-100 leading-relaxed">
+                    강화도 조약이 체결된 역사적 과정과 불평등 성격을 보여주는 구체적 조항을 쓰시오.
                 </h4>
             </div>
 
+            <!-- Text area and real-time counter -->
             <div class="space-y-1.5">
-                <label class="text-xs text-m3-outline font-bold flex items-center justify-between">
-                    <span>내 서술형 답안 작성하기</span>
-                    <span class="text-[10px] font-mono text-m3-primary" id="char-count">0자 작성</span>
-                </label>
-                <textarea id="narrative-textarea" oninput="updateCharCount()" rows="6" placeholder="이곳에 사건의 인과관계를 녹여서 답안을 완결된 문장으로 입력하세요. 예: 흥선대원군은 프랑스 선교사들을..." class="w-full bg-m3-surfaceContainerLow border border-m3-surfaceContainerHigh rounded-3xl p-4 text-xs sm:text-sm text-slate-200 focus:outline-none focus:ring-2 focus:ring-m3-primary/30 leading-relaxed font-mono"></textarea>
+                <div class="flex justify-between items-center text-xs">
+                    <span class="text-m3-outline font-bold">내 서술형 답안 기록</span>
+                    <span id="essay-char-counter" class="font-mono text-m3-primary text-[10px]">0자 작성</span>
+                </div>
+                <textarea id="essay-box" oninput="trackEssayChars()" rows="5" placeholder="교과서 필수 고유명사 및 핵심 개념이 들어가도록 완결된 문장으로 작성해 주세요." class="w-full bg-m3-surfaceContainerLow border border-m3-surfaceVariant rounded-3xl p-4 text-xs sm:text-sm text-slate-200 focus:outline-none focus:ring-2 focus:ring-m3-primary/30 leading-relaxed font-mono"></textarea>
             </div>
 
             <div class="flex justify-end space-x-2">
-                <button onclick="clearNarrativeAnswer()" class="bg-m3-surfaceContainerLow hover:bg-m3-surfaceContainerHigh text-slate-300 font-bold text-xs py-2.5 px-4 rounded-2xl transition">
+                <button onclick="resetEssayBox()" class="active-scale bg-m3-surfaceContainerLow hover:bg-m3-surfaceContainerHigh text-slate-300 font-bold text-xs py-2.5 px-4 rounded-2xl transition">
                     초기화
                 </button>
-                <button onclick="gradeNarrativeAnswer()" class="bg-m3-primary hover:bg-m3-primary/90 text-m3-surfaceContainerLowest font-black text-xs py-2.5 px-6 rounded-2xl transition shadow-lg flex items-center gap-1">
-                    <span class="material-symbols-outlined text-sm">query_stats</span> 자가 채점 및 분석 실행
+                <button onclick="gradeWrittenEssay()" class="active-scale bg-m3-primary hover:bg-m3-primary/90 text-m3-surfaceContainerLowest font-black text-xs py-2.5 px-6 rounded-2xl transition shadow-lg flex items-center gap-1">
+                    <span class="material-symbols-outlined text-sm">playlist_add_check</span> 서술형 정밀 분석 채점
                 </button>
             </div>
 
-            <!-- Descriptive grading analysis box -->
-            <div id="narrative-analysis-box" class="hidden bg-m3-surfaceContainerHighest/80 border border-slate-800 rounded-3xl p-5 space-y-4">
-                <div class="flex justify-between items-center border-b border-slate-800 pb-3">
+            <!-- Essay Analytical feedback box -->
+            <div id="narrative-results-panel" class="hidden bg-m3-surfaceContainerHighest border border-slate-800 rounded-4xl p-5 space-y-4">
+                <div class="flex justify-between items-center border-b border-m3-surfaceVariant pb-3">
                     <div>
-                        <h4 class="text-sm font-bold text-slate-100">서술 완성도 및 자가 피드백</h4>
-                        <p class="text-[10px] text-m3-outline mt-0.5">교과서 핵심 키워드 유무에 따른 정밀 분석</p>
+                        <h4 class="text-xs sm:text-sm font-black text-slate-100">서술형 자가 채점 분석표</h4>
+                        <p class="text-[9px] text-m3-outline mt-0.5">학교 채점관 기준과 키워드 대조 결과</p>
                     </div>
                     <div class="text-right">
-                        <span class="text-[9px] text-m3-outline block">추정 점수</span>
-                        <span id="narrative-score-badge" class="text-2xl font-mono font-black text-m3-primary">
-                            80 / 100점
+                        <span class="text-[8px] text-m3-outline block font-black">예상 획득 점수</span>
+                        <span id="essay-score-value" class="text-2xl font-mono font-black text-m3-primary">
+                            100 / 100점
                         </span>
                     </div>
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
-                    <!-- Included points -->
                     <div class="space-y-1.5">
-                        <p class="text-m3-primary font-bold flex items-center gap-1 text-[11px]">
-                            <span class="material-symbols-outlined text-sm text-emerald-400">check_circle</span> 부분 점수 인정 요소
+                        <p class="text-emerald-400 font-bold flex items-center gap-1 text-[10px]">
+                            <span class="material-symbols-outlined text-sm">check_circle</span> 채점 통과 키워드
                         </p>
-                        <div id="narrative-checked-chips" class="flex flex-wrap gap-1.5">
-                            <!-- Chips -->
+                        <div id="essay-match-holder" class="flex flex-wrap gap-1">
+                            <!-- Match chips -->
                         </div>
                     </div>
-                    <!-- Missed points -->
                     <div class="space-y-1.5">
-                        <p class="text-m3-error font-bold flex items-center gap-1 text-[11px]">
-                            <span class="material-symbols-outlined text-sm text-m3-error">cancel</span> 감점 및 보강 필요 요소
+                        <p class="text-m3-tertiary font-bold flex items-center gap-1 text-[10px]">
+                            <span class="material-symbols-outlined text-sm">cancel</span> 보강이 필요한 미검출 키워드
                         </p>
-                        <div id="narrative-missed-chips" class="flex flex-wrap gap-1.5">
-                            <!-- Chips -->
+                        <div id="essay-miss-holder" class="flex flex-wrap gap-1">
+                            <!-- Miss chips -->
                         </div>
                     </div>
                 </div>
 
-                <!-- Suggested Model Text -->
-                <div class="bg-m3-surfaceContainer p-4 rounded-2xl border border-slate-800/80 space-y-1.5">
-                    <div class="flex items-center justify-between">
-                        <span class="text-[10px] font-bold text-m3-tertiary">📖 교과서 표준 서술형 모범 답안</span>
-                        <button onclick="copyToClipboard()" class="text-[10px] text-m3-primary hover:underline flex items-center gap-1">
-                            <span class="material-symbols-outlined text-xs">content_copy</span> 답안 복사
+                <!-- Suggested answer -->
+                <div class="bg-m3-surfaceContainer p-4 rounded-2xl border border-slate-800 space-y-1.5">
+                    <div class="flex justify-between items-center text-[10px]">
+                        <span class="text-m3-primary font-bold">📖 교과서 공인 모범 정답</span>
+                        <button onclick="copyModelAnswerText()" class="text-m3-outline hover:text-m3-primary flex items-center gap-0.5">
+                            <span class="material-symbols-outlined text-xs">content_copy</span> 복사
                         </button>
                     </div>
-                    <p id="narrative-model-answer" class="text-xs text-slate-300 font-mono leading-relaxed select-all">
-                        흥선대원군이 프랑스 선교사와 천주교인을 처형하여 프랑스가 이를 명분 삼아 강화도를 침략하게 되었습니다.
+                    <p id="essay-model-answer" class="text-xs text-slate-300 font-mono leading-relaxed select-all">
+                        조선 정부는 운요호 사건 이후 강제 압박 속에서 신헌과 구로다 사이에 조일수호조규를 체결하였습니다. 이 조약은 영사 재판권과 해안 측량권 등을 포함한 대표적 불평등 조약입니다.
                     </p>
                 </div>
             </div>
@@ -423,548 +460,661 @@
         <!-- ==========================================
             M3 SECTION: Weakness Pocket (오답 수첩)
             ========================================== -->
-        <section class="bg-m3-surfaceContainerLowest rounded-3xl p-4 border border-m3-surfaceContainerHigh/60 space-y-3">
-            <div class="flex items-center justify-between border-b border-slate-800 pb-2">
-                <h3 class="text-xs font-black text-m3-error flex items-center gap-1">
-                    <span class="material-symbols-outlined text-sm">heart_broken</span> 복습 필참 취약 보관함 (<span id="weak-count">0</span>)
+        <section class="bg-m3-surfaceContainerLowest rounded-3xl p-4 border border-m3-surfaceVariant/40 space-y-3">
+            <div class="flex items-center justify-between border-b border-m3-surfaceVariant pb-2">
+                <h3 class="text-xs font-black text-m3-tertiary flex items-center gap-1">
+                    <span class="material-symbols-outlined text-sm">favorite</span> 오답 수첩 (<span id="weakness-count">0</span>)
                 </h3>
-                <button onclick="clearWeakList()" class="text-[10px] text-m3-outline hover:text-m3-error transition">
-                    비우기
+                <button onclick="wipeWeaknessPocket()" class="text-[10px] text-m3-outline hover:text-m3-tertiary transition">
+                    전체 비우기
                 </button>
             </div>
 
-            <div id="weak-list-grid" class="grid grid-cols-1 sm:grid-cols-2 gap-2 max-h-48 overflow-y-auto">
-                <p class="text-xs text-m3-outline py-2 text-center col-span-full">현재 보관된 취약 사건이 없습니다. 아주 깨끗합니다!</p>
+            <div id="weakness-shelf" class="grid grid-cols-1 sm:grid-cols-2 gap-2 max-h-48 overflow-y-auto">
+                <p class="text-xs text-m3-outline py-2 text-center col-span-full">아직 보관된 오답 사건이 없습니다.</p>
             </div>
         </section>
 
     </main>
 
-    <!-- M3 Floating Navigation / Indicator bar on bottom for high mobile accessibility -->
-    <div class="fixed bottom-4 left-1/2 -translate-x-1/2 bg-m3-surfaceContainerHigh/90 backdrop-blur-md py-2 px-5 rounded-full border border-slate-700/50 shadow-2xl z-50 flex items-center space-x-4">
-        <button onclick="window.scrollTo({top: 0, behavior: 'smooth'})" class="text-m3-outline hover:text-m3-primary flex items-center justify-center transition" title="맨 위로 가기">
-            <span class="material-symbols-outlined text-lg">vertical_align_top</span>
+    <!-- M3 Floating Tonal Dock (Bottom quick selection) -->
+    <div class="fixed bottom-4 left-1/2 -translate-x-1/2 bg-m3-surfaceContainerHigh/90 backdrop-blur-md py-2 px-6 rounded-full border border-slate-700/50 shadow-2xl z-50 flex items-center space-x-5">
+        <button onclick="window.scrollTo({top:0, behavior:'smooth'})" class="text-m3-outline hover:text-m3-primary transition flex items-center justify-center">
+            <span class="material-symbols-outlined text-base">vertical_align_top</span>
         </button>
         <span class="w-px h-4 bg-slate-700"></span>
-        <button onclick="switchStage('scan')" class="text-m3-outline hover:text-m3-primary font-bold text-[10px] flex items-center gap-1">
-            <span>스캔</span>
-        </button>
-        <button onclick="switchStage('sort')" class="text-m3-outline hover:text-m3-primary font-bold text-[10px] flex items-center gap-1">
-            <span>순서</span>
-        </button>
-        <button onclick="switchStage('blank')" class="text-m3-outline hover:text-m3-primary font-bold text-[10px] flex items-center gap-1">
-            <span>키워드</span>
-        </button>
-        <button onclick="switchStage('narrative')" class="text-m3-outline hover:text-m3-primary font-bold text-[10px] flex items-center gap-1">
-            <span>서술형</span>
-        </button>
+        <button onclick="changeStage('scan')" class="text-m3-outline hover:text-m3-primary font-bold text-[10px]">스캔</button>
+        <button onclick="changeStage('sort')" class="text-m3-outline hover:text-m3-primary font-bold text-[10px]">정렬</button>
+        <button onclick="changeStage('blank')" class="text-m3-outline hover:text-m3-primary font-bold text-[10px]">빈칸</button>
+        <button onclick="changeStage('narrative')" class="text-m3-outline hover:text-m3-primary font-bold text-[10px]">서술형</button>
     </div>
 
-    <!-- Customized Material Dialog (Popup Box) -->
-    <div id="m3-dialog" class="fixed inset-0 bg-black/70 z-50 flex items-center justify-center p-4 hidden">
-        <div class="bg-m3-surfaceContainer p-6 rounded-4xl max-w-sm w-full border border-slate-800 space-y-4">
-            <div class="flex items-center space-x-2 text-m3-primary">
-                <span id="dialog-icon" class="material-symbols-outlined">info</span>
-                <h4 id="dialog-title" class="text-base font-black">안내</h4>
+    <!-- M3 Dialog Popup System -->
+    <div id="dialog-scaffold" class="fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-m3-surfaceContainer p-6 rounded-4xl max-w-sm w-full border border-slate-800 space-y-4 animate-slide-up">
+            <div class="flex items-center space-x-2.5 text-m3-primary">
+                <span id="dialog-icon" class="material-symbols-outlined">feedback</span>
+                <h4 id="dialog-title" class="text-sm sm:text-base font-black">피드백</h4>
             </div>
-            <p id="dialog-content" class="text-xs sm:text-sm text-slate-300 leading-relaxed">
-                안내 문구 영역입니다.
+            <p id="dialog-desc" class="text-xs sm:text-sm text-slate-300 leading-relaxed">
+                상세 팝업 메시지 내용입니다.
             </p>
-            <div class="flex justify-end">
-                <button onclick="closeDialog()" class="bg-m3-primaryContainer text-m3-onPrimaryContainer font-bold text-xs py-2 px-5 rounded-full transition">
+            <div class="flex justify-end pt-1">
+                <button onclick="closeDialogPopup()" class="bg-m3-primaryContainer text-m3-primary font-bold text-xs py-2.5 px-6 rounded-full transition active-scale">
                     확인
                 </button>
             </div>
         </div>
     </div>
 
-    <!-- Standard Footer -->
-    <footer class="border-t border-slate-900 bg-m3-surfaceContainerLowest/50 text-center py-6 px-4 text-[10px] text-m3-outline mt-12 pb-24">
-        <p>© 2026 한국사 5일 완성 스프린터 모듈</p>
-        <p class="mt-1">교과서 천재교육 고등 한국사 기준 • 무단 도용 금지</p>
+    <!-- Footer of Page -->
+    <footer class="border-t border-slate-900 bg-m3-surfaceContainerLowest/40 text-center py-6 px-4 text-[9px] text-m3-outline mt-12 pb-24">
+        <p>© 2026 한국사 틈새 기적의 암기 솔루션</p>
+        <p class="mt-1">교과서 천재교육 고등 한국사 대단원 Ⅲ 기반 • 수능 및 한능검 대비 최적화</p>
     </footer>
 
     <!-- ==========================================
-        Core Application Logic (JavaScript)
+        CORE JAVASCRIPT APP LOGIC
         ========================================== -->
     <script>
-        // Data Base loaded with events curated explicitly for Day 1 ~ Day 5 based on CSV and PDF.
-        const APP_DATA = {
+        // High-Fidelity Curation (Day 1 to 5, total 150 keywords aligned precisely with the textbook)
+        const LOCAL_DATABASE = {
             1: {
-                title: "1일차: 서구 열강의 침탈과 개항",
-                range: "병인박해부터 최초의 근대적 조약 체결까지",
+                title: "1일차: 강화도 개항과 불평등 수교 체제",
                 events: [
                     {
-                        id: "ev-101",
-                        year: "1866",
-                        title: "병인박해",
-                        character: "흥선대원군, 프랑스 선교사",
-                        description: "러시아 견제 실패 이후, 흥선대원군이 프랑스 선교사와 다수의 천주교 신자들을 체포하고 처형하여 프랑스의 강화도 침략 구실을 제공한 국가적 종교 탄압 사건입니다.",
-                        keywords: ["흥선대원군", "천주교", "프랑스 선교사", "러시아"],
-                        narrativeQuestion: "병인박해의 직접적인 대내외적 발단(러시아 견제)과 이로 인해 발생한 역사적 전개를 서술하시오.",
-                        checkpoints: ["흥선대원군", "러시아", "프랑스 선교사", "천주교", "처형", "병인양요"],
-                        expertAnswer: "흥선대원군 정권은 러시아의 동진을 프랑스를 이용해 막아보려 했으나 실패하자, 정권 유지와 불만을 달래기 위해 프랑스 선교사와 수많은 천주교 신자를 처형 및 탄압하였습니다. 이는 프랑스군이 무단 침공하는 병인양요의 구실이 되었습니다."
-                    },
-                    {
-                        id: "ev-102",
-                        year: "1866",
-                        title: "제너럴 셔먼호 사건",
-                        character: "박규수, 토마스 선교사",
-                        description: "미국 상선 제너럴 셔먼호가 대동강을 통해 평양에 진입하여 약탈을 자행하자, 평양 감사 박규수와 조선 관민들이 대포와 화공을 통해 상선을 불태워 격침한 사건입니다.",
-                        keywords: ["평양 감사 박규수", "대동강", "미국 상선", "약탈"],
-                        narrativeQuestion: "제너럴 셔먼호 사건 당시 평양 측을 이끈 지도자와 사건이 발생한 강, 그리고 이 사건의 역사적 후폭풍에 대해 쓰시오.",
-                        checkpoints: ["박규수", "대동강", "평양", "미국 상선", "신미양요"],
-                        expertAnswer: "미국의 무장 상선 제너럴 셔먼호가 대동강에 들어와 강제로 무역을 요구하며 민가를 약탈하고 관리를 살해하자, 당시 평양 감사 박규수의 지휘 아래 평양 관민들이 불을 질러 배를 격침했습니다. 이 사건은 훗날 신미양요를 초래했습니다."
-                    },
-                    {
-                        id: "ev-103",
-                        year: "1866",
-                        title: "병인양요",
-                        character: "한성근, 양헌수, 로즈 제독",
-                        description: "병인박해를 명분으로 강화도를 점령한 프랑스 로즈 제독 함대에 맞서, 한성근(문수산성)과 양헌수(정족산성)가 사투를 벌여 격퇴했습니다. 프랑스군은 도망치며 외규장각 도서 및 의궤를 무단 약탈했습니다.",
-                        keywords: ["한성근 문수산성", "양헌수 정족산성", "외규장각 도서", "프랑스"],
-                        narrativeQuestion: "병인양요 당시 프랑스군을 격퇴한 수비진의 두 산성과 대표 장수, 그리고 퇴각 시의 약탈 피해를 명시해 쓰시오.",
-                        checkpoints: ["양헌수", "정족산성", "한성근", "문수산성", "외규장각", "프랑스"],
-                        expertAnswer: "병인박해를 트집 잡은 프랑스 함대가 강화도를 불법 점령했습니다. 조선군은 한성근 장군의 문수산성 전투와 양헌수 장군의 정족산성 복병 전투를 통해 마침내 그들을 패퇴시켰으나 프랑스군은 후퇴하면서 외규장각에 소장된 은괴와 왕실 의궤 등의 도서를 무단으로 노략질해 갔습니다."
-                    },
-                    {
-                        id: "ev-104",
-                        year: "1868",
-                        title: "오페르트 남연군 묘 도굴 미수 사건",
-                        character: "오페르트, 흥선대원군, 남연군",
-                        description: "독일 상인 오페르트가 충청도 덕산의 남연군(대원군의 아버지) 묘를 도굴하여 개항 협상의 도구로 사용하려다 실패하여, 조선 정부의 통상 수교 거부 정책을 고도로 자극했습니다.",
-                        keywords: ["오페르트", "덕산", "남연군 묘", "도굴 실패"],
-                        narrativeQuestion: "오페르트 일당이 벌인 유교적 가치관에 큰 충격을 안긴 행각과 이 행각이 대외 정책에 가져온 변혁을 서술하시오.",
-                        checkpoints: ["오페르트", "남연군", "덕산", "도굴", "통상 수교 거부", "척화"],
-                        expertAnswer: "독일인 상인 오페르트가 대외 개항 통상을 요구하려는 불순한 의도로 충남 덕산에 마련된 흥선대원군의 친부 남연군의 묘를 은밀히 파내려다 도굴에 실패했습니다. 이 야만적인 폭거로 분노한 조선 관민들은 서양에 대한 적개심을 극대화했으며 대원군의 철저한 통상 수교 거부 정책으로 이어졌습니다."
-                    },
-                    {
-                        id: "ev-105",
-                        year: "1871",
-                        title: "신미양요",
-                        character: "어재연 장군, 흥선대원군",
-                        description: "제너럴 셔먼호 사건을 조작된 빌미 삼아 미군 함대가 강화도를 무력 공격했습니다. 어재연 장군의 삼랑성 및 광성보 결사대가 장렬히 순국하며 수자기를 피탈당했고 대원군은 척화비를 전국에 세웠습니다.",
-                        keywords: ["어재연 광성보", "수자기 피탈", "척화비 건립", "미국"],
-                        narrativeQuestion: "신미양요 당시 어재연 부대의 결전지와 장수의 상징 깃발, 그리고 전쟁 직후 국토 곳곳에 내려진 군사적 영들을 쓰시오.",
-                        checkpoints: ["어재연", "광성보", "수자기", "척화비", "제너럴 셔먼호"],
-                        expertAnswer: "5년 전 일어난 제너럴 셔먼호 격침을 명목으로 침공해 온 미군을 향해, 어재연 장군 휘하의 군졸들이 광성보에서 죽기를 맹세하며 총검으로 대항했으나 패하여 장수의 깃발인 수자기를 탈취당했습니다. 비록 패배했으나 굴하지 않은 조정은 즉각 전역에 척화비를 세워 서양과의 타협 배격을 강조했습니다."
-                    },
-                    {
-                        id: "ev-106",
+                        id: "e-1",
                         year: "1876",
-                        title: "강화도 조약",
-                        character: "신헌, 구로다",
-                        description: "운요호 사건의 강압 속에서 조인된 우리나라 최초의 불평등 근대적 조약입니다. 조선 해안을 조사하는 해안 측량권과 영사 재판권(치외법권)이 포함되었고 3개 항구가 개항됐습니다.",
-                        keywords: ["운요호 사건", "최초의 근대 조약", "영사 재판권", "해안 측량권"],
-                        narrativeQuestion: "조선이 개방의 길로 향한 근대적 조약의 침략적 정체와 2가지 불평등 소명 조항을 밝히시오.",
-                        checkpoints: ["치외법권", "영사 재판권", "해안 측량권", "불평등", "운요호", "부산 원산 인천"],
-                        expertAnswer: "강화도 조약은 일본의 운요호 도발을 계기로 체결된 최초의 근대 조약이자 심각한 불평등 조약입니다. 조약문 내에는 자국 상인을 국내법으로 처벌하지 못하게 유도한 영사 재판권(치외법권)과 한반도의 영해 침략에 쓰일 수 있는 해안 측량권이 들어있어 조선의 사법·주권을 심각하게 위배했습니다."
+                        title: "강화도 조약 체결",
+                        character: "신헌, 구로다 기요타카",
+                        shortDesc: "운요호 사건의 강압 무력 시위 속에서 체결된 조선 최초의 근대적 조약이자 불평등 조약입니다.",
+                        longDesc: "운요호 사건의 침공 이후 협상 권한을 가진 조선 대표 신헌과 일본의 구로다 사이에 맺어진 최초의 근대 조약이자 심각한 불평등 조약입니다.",
+                        keywords: ["운요호 사건", "조일수호조규", "해안 측량권", "영사 재판권", "치외법권", "부산 인천 원산 개항"],
+                        narrativeQuestion: "강화도 조약이 체결된 역사적 원인 사건과 이 조약의 불평등성을 보여주는 대표 조항 2가지를 서술하시오.",
+                        checkpoints: ["운요호 사건", "영사 재판권", "치외법권", "해안 측량권", "부산 인천 원산", "불평등 조약"],
+                        expertAnswer: "조선 조정은 일제가 도발한 운요호 사건 이후 무력 위협 속에서 최초의 근대적 불평등 조약인 조일수호조규를 체결하였습니다. 이 조약은 대표적 독소 조항으로 일제 상인의 영사 재판권(치외법권)과 영해 주권을 침해하는 해안 측량권을 규정하고, 부산, 인천, 원산 항구를 개항하도록 강제했습니다."
+                    },
+                    {
+                        id: "e-2",
+                        year: "1880",
+                        title: "개화 정책 추진과 위정척사 운동",
+                        character: "김홍집, 이만손, 황준헌",
+                        shortDesc: "통리기무아문을 중심으로 개방을 단행하자, 보수 유생들이 영남만인소를 올리며 격렬히 반발했습니다.",
+                        longDesc: "황준헌의 조선책략 유포에 반발하여 영남의 이만손을 주축으로 만인의 유생들이 상소를 올려 개화 정책에 제동을 걸었습니다.",
+                        keywords: ["통리기무아문", "별기군 창설", "조선책략", "황준헌", "영남만인소", "이만손 위정척사"],
+                        narrativeQuestion: "김홍집이 들여온 서적의 대외 방략 요지와 이에 반대한 보수 유림들의 집단 상소 운동의 명칭을 쓰시오.",
+                        checkpoints: ["조선책략", "김홍집", "황준헌", "연미론", "영남만인소", "이만손"],
+                        expertAnswer: "수신사 김홍집이 들여온 청나라 외교관 황준헌의 조선책략은 러시아 견제를 위해 친중, 결일, 연미론을 제시했습니다. 이에 반발한 보수 유림들은 이만손을 중심으로 영남만인소 상소 운동을 일으켜 정부의 개화 노선을 강력하게 배격하려 했습니다."
+                    },
+                    {
+                        id: "e-3",
+                        year: "1882",
+                        title: "조미수호통상조약 조인",
+                        character: "신헌, 슈펠트, 김윤식",
+                        shortDesc: "조선책략의 영향과 청나라의 알선에 따라 서양 국가 중 최초로 미국과 조약을 체결했습니다.",
+                        longDesc: "러시아 견제 목적의 청나라 중개 하에 신헌과 슈펠트가 서양 열강 중 최초로 근대적 불평등 무역 조약을 성사시켰습니다.",
+                        keywords: ["서양 최초 수교", "거중조정", "최혜국 대우", "관세 부과 조항", "청나라의 알선", "보빙사 파견"],
+                        narrativeQuestion: "서양 열강 중 최초로 맺어진 조미수호통상조약의 역사적 배경과 핵심 불평등 조항을 포함하여 서술하시오.",
+                        checkpoints: ["청나라의 알선", "서양 최초", "거중조정", "최혜국 대우", "관세", "보빙사"],
+                        expertAnswer: "조선책략의 영향과 청나라의 알선으로 조선은 미국과 최초로 서양 국가와의 조약을 체결했습니다. 이 조약은 제3국의 침공 시 서로 돕는 거중조정과 세입의 기반이 될 관세 부과를 약속했으나, 타국에 더 유리한 혜택을 자동 부여하는 최혜국 대우를 규정한 불평등 조약이었습니다."
+                    },
+                    {
+                        id: "e-4",
+                        year: "1882",
+                        title: "임오군란과 조청상민장정",
+                        character: "구식 군인, 민씨 정권, 흥선대원군",
+                        shortDesc: "별기군과의 차별과 모래가 섞인 봉급 쌀에 폭발한 구식 군인들이 병란을 유도했습니다.",
+                        longDesc: "구식 군대의 반란으로 흥선대원군이 재집권했으나 청국군 개입으로 체포되었고, 조선은 청의 내지 통상권을 보장하게 되었습니다.",
+                        keywords: ["구식 군대 차별", "혜민서 습격", "제물포 조약", "조청상민수륙무역장정", "청의 내정간섭", "내지 통상권"],
+                        narrativeQuestion: "임오군란의 발생 직접적 발단과 군란의 결과 조선이 청나라와 맺게 된 조약의 경제적 침략성을 쓰시오.",
+                        checkpoints: ["별기군 차별", "임오군란", "제물포 조약", "조청상민수륙무역장정", "내지 통상권", "내정간섭"],
+                        expertAnswer: "신식 군대 별기군과의 극심한 차별 대우와 부패한 쌀 지급에 격분한 구식 군인들이 임오군란을 일으켰습니다. 난을 수습한 청나라는 조청상민수륙무역장정을 체결하여 자국 상인에게 조선 영토 안에서 자유롭게 장사할 수 있는 내지 통상권을 확보하고 내정간섭을 심화시켰습니다."
+                    },
+                    {
+                        id: "e-5",
+                        year: "1884",
+                        title: "갑신정변과 사흘 천하",
+                        character: "김옥균, 박영효, 홍영식",
+                        shortDesc: "급진 개화파 세력이 우정총국 개국 축하연을 기회로 일으킨 최초의 근대 수립 정변입니다.",
+                        longDesc: "청의 조공 체제를 무너뜨리고 근대 국가를 목표로 14개조 개혁안을 고수했으나 청군의 습격으로 실패로 귀결되었습니다.",
+                        keywords: ["급진 개화파", "우정총국 정변", "14개조 개혁안", "문벌 폐지", "톈진 조약 체결", "호조 재정 일원화"],
+                        narrativeQuestion: "갑신정변을 주도한 개혁 세력과 이들이 공표한 14개조 개혁안에 담긴 근대적 조치 및 조약의 연쇄 여파를 서술하시오.",
+                        checkpoints: ["급진 개화파", "우정총국", "14개조", "문벌 폐지", "호조 일원화", "톈진 조약"],
+                        expertAnswer: "김옥균 등 급진 개화파는 우정총국 개국연을 통해 정변을 일으켜 호조로의 재정 일원화와 문벌 폐지를 골자로 한 14개조 개혁안을 공표했습니다. 비록 청군의 개입으로 사흘 만에 실패했으나, 정변 결과 청일 양국 간 동시 철병 및 공동 파병권 명시를 담은 톈진 조약이 체결되었습니다."
                     }
                 ]
             },
             2: {
-                title: "2일차: 개화 운동의 시도와 격변",
-                range: "통리기무아문의 정비부터 갑신정변의 3일 천하까지",
+                title: "2일차: 동학 농민 운동과 갑오·을미개혁",
                 events: [
                     {
-                        id: "ev-201",
-                        year: "1880",
-                        title: "조선책략 수입 및 통리기무아문 설치",
-                        character: "김홍집, 황준헌, 고종",
-                        description: "수신사 김홍집이 중국 청 외교관 황준헌의 저서인 '조선책략'을 퍼뜨리며 미국과의 친화적 수교 흐름을 주도했고, 개방 사안을 주관할 통리기무아문이 구성됐습니다.",
-                        keywords: ["조선책략 황준헌", "통리기무아문", "미국과의 수교", "김홍집"],
-                        narrativeQuestion: "김홍집이 반입한 서적이 제시한 영토 방위와 생존의 3원칙 및 조선 보수 정계의 반응을 기술하시오.",
-                        checkpoints: ["조선책략", "친청", "결일", "연미", "김홍집", "영남만인소"],
-                        expertAnswer: "조선 조정은 일본에 갔던 김홍집이 가지고 온 청 외교관 황준헌 저작의 '조선책략'을 읽고 깊은 자극을 받았습니다. 책은 친청, 결일, 연미라는 동맹적 구도를 권유했습니다. 개화 정부는 통리기무아문을 구성해 개방을 개시하려 했으나, 보수 성향 유림들은 영남만인소 상소를 올려 척사 기치를 세웠습니다."
+                        id: "e-6",
+                        year: "1894",
+                        title: "동학 농민 운동 1차 봉기",
+                        character: "전봉준, 조병갑, 손화중",
+                        shortDesc: "고부 군수 조병갑의 세금 수탈에 폭발한 농민들이 백산에 모여 구국창의의 기치를 올렸습니다.",
+                        longDesc: "황토현과 황룡촌 관군을 대파하고 전주성까지 점령하여 한반도 정세의 거대한 변혁을 몰고 왔습니다.",
+                        keywords: ["고부 군수 조병갑", "만석보 수세", "백산 창의", "호남창의소", "황토현 전투", "황룡촌 전투 승리"],
+                        narrativeQuestion: "동학 농민 운동이 최초로 발생하게 된 행정적 도발 원인과 농민군의 대표적인 군사적 전공 전투를 쓰시오.",
+                        checkpoints: ["조병갑", "만석보", "백산 창의", "황토현 전투", "황룡촌 전투", "전주성 점령"],
+                        expertAnswer: "고부 군수 조병갑이 만석보에서 불법적으로 물세를 수탈하는 폭정에 반발한 농민들이 전봉준을 중심으로 무장 봉기(백산 창의)했습니다. 농민군은 조직적인 무력 전술로 황토현 전투와 황룡촌 전투에서 관군을 격파하고 정권의 거점인 전주성을 조기에 기습 함락했습니다."
                     },
                     {
-                        id: "ev-202",
-                        year: "1882",
-                        title: "임오군란",
-                        character: "구식 군인, 민씨 일가, 흥선대원군",
-                        description: "신식 무예 부대인 별기군 위주의 대우와 열악한 구식 양반 군대에 대한 쌀 급여 사기 행각에 분노해 일어났습니다. 난군에 의해 민씨 척족이 화를 당했고, 청 함대가 침략 개입하여 제물포 조약을 종용했습니다.",
-                        keywords: ["구식 군대 차별", "별기군", "제물포 조약", "조청상민수륙무역장정"],
-                        narrativeQuestion: "임오군란의 발생 연유와 정비, 그리고 이를 수렴한 대가로 청국 및 일본 세력에게 수립된 경제·군사적 약탈 조서들을 고발하시오.",
-                        checkpoints: ["별기군", "구식 군인", "제물포 조약", "조청상민수륙무역장정", "내지 통상", "군대 주둔"],
-                        expertAnswer: "신식 군대 별기군과의 현격한 차별 대우 및 겨와 돌이 함유된 13개월 치 밀린 봉급 쌀로 야기된 폭동입니다. 민씨 고관들을 척살한 구식 군인들은 일시적으로 대원군을 복위시켰으나 청국의 신속 파병으로 진압되고 대원군은 강제 납치됐습니다. 일본에는 경비 주둔을 정한 제물포 조약을 수용했고 청나라에는 내륙까지 세력을 뻗친 조청상민수륙무역장정을 승인해 속국으로 내몰렸습니다."
+                        id: "e-7",
+                        year: "1894",
+                        title: "전주화약과 집강소 설치",
+                        character: "전봉준, 관군 대표",
+                        shortDesc: "청일 파병군 진입에 위기를 느낀 농민군이 정부와 전주화약을 맺고 독자 개혁을 단행했습니다.",
+                        longDesc: "지방 각 고을에 자치 통치청인 집강소를 설치하고 폐정 개혁안을 주체적으로 이행해 나갔습니다.",
+                        keywords: ["청일 군대 철수 요구", "전주화약", "집강소 설치", "폐정 개혁안 12조", "교정청 설치", "신분 타파 세제 개혁"],
+                        narrativeQuestion: "외세 개입을 배척하기 위해 조선 정부와 농민군이 타협한 합의의 명칭과 이들이 지방에 구축한 자치 개혁 기구명을 서술하시오.",
+                        checkpoints: ["외세 개입", "전주화약", "집강소", "폐정 개혁안", "자치 기구", "교정청"],
+                        expertAnswer: "청일 양국 군대의 출병으로 위협을 느낀 농민군은 정부와 자주 개혁을 약속하는 전주화약을 맺었습니다. 농민군은 전라도 고을마다 자치적 치안 개혁 기구인 집강소를 전격 설치하고 신분 차별 폐지와 토지 분배 등을 명시한 폐정 개혁안을 활발히 실현해 나갔습니다."
                     },
                     {
-                        id: "ev-203",
-                        year: "1884",
-                        title: "갑신정변",
-                        character: "김옥균, 박영효, 홍영식",
-                        description: "청의 내정간섭 격화로 개화 자금이 막히자, 급진개화파가 우정총국 개국 잔치 연회를 급격히 습격했습니다. 사흘 천하 동안 14개조 혁신안을 고시했으나 결국 좌절됐습니다.",
-                        keywords: ["급진 개화파", "우정총국", "14개조 개혁안", "톈진 조약"],
-                        narrativeQuestion: "급진개화파가 정변을 유도한 시설, 표방한 현대화 개혁 핵심 2가지, 그리고 정변이 외세 외교 구도에 미친 변화를 밝히시오.",
-                        checkpoints: ["급진 개화파", "우정총국", "14개조", "신분제 폐지", "톈진 조약", "한성 조약"],
-                        expertAnswer: "김옥균, 박영효 등 급진 개화파 세력은 우정총국 낙성식을 방편으로 삼아 무력 정변을 일으켜 개혁 정권을 출범시켰습니다. 이들은 공사 신분 폐지와 문벌 타파, 조세 기틀 혁신을 명시한 '14개조 개혁안'을 발표했습니다. 청국의 개입으로 김옥균 등이 탈출하였고 정변 이후 체결된 '톈진 조약'은 청일 양국군의 한반도 동시 철수 및 훗날의 동시 파병 구도를 약정하는 결정적 계기가 되었습니다."
+                        id: "e-8",
+                        year: "1894",
+                        title: "동학 농민 운동 2차 봉기",
+                        character: "전봉준, 손병희, 일본군",
+                        shortDesc: "일본군의 무단 경복궁 점령에 격분한 남·북접 농민 연합군이 항일 구국을 목표로 재결집했습니다.",
+                        longDesc: "현대식 무기를 소지한 일군과 관군 연합군에 맞섰으나 우금치 고개에서 처참히 궤멸당했습니다.",
+                        keywords: ["경복궁 점령 도발", "남접 북접 연합", "항일 구국 전쟁", "삼례 재봉기", "우금치 전투 패배", "전봉준 체포"],
+                        narrativeQuestion: "농민군이 2차 봉기를 기획한 주권 침탈적 계기와 전개 과정의 결정적인 격전 장소명을 서술하시오.",
+                        checkpoints: ["경복궁 점령", "남접 북접 연합", "항일", "우금치 전투", "공주 우금치", "전봉준"],
+                        expertAnswer: "일본군이 경복궁을 기습 장악하자 분노한 전봉준의 남접과 손병희의 북접 농민군이 연합하여 반외세 항일 구국을 목표로 삼례에서 재봉기했습니다. 이들은 서울 진격을 시도했으나 공주 우금치 전투에서 연합군의 현대식 화력에 무참히 패배하고 지도부 체포로 막을 내렸습니다."
+                    },
+                    {
+                        id: "e-9",
+                        year: "1894",
+                        title: "갑오개혁과 군국기무처",
+                        character: "김홍집, 유길준, 고종",
+                        shortDesc: "군국기무처를 중심으로 공사 신분제 폐지, 과거제 철폐 등 역사상 가장 파격적인 개조를 밀어붙였습니다.",
+                        longDesc: "2차 개혁 때는 홍범 14조를 공포하여 근대적 재판소 설립과 사법-행정 분리를 가시화했습니다.",
+                        keywords: ["군국기무처 설치", "공사 신분제 폐지", "과거 제도 폐지", "은본위 화폐 제도", "홍범 14조 공포", "사법 행정 분리"],
+                        narrativeQuestion: "갑오개혁 시기 파격적 근대 제도를 이끈 사상 초유의 의결 기구와 사상 최초로 선언된 공적 신분 구조 개조 내용을 서술하시오.",
+                        checkpoints: ["군국기무처", "과거제 폐지", "공사 신분제", "은본위제", "홍범 14조", "재판소"],
+                        expertAnswer: "개화 정부는 초정부적 가결 처소인 군국기무처를 설치하여 신분 차별을 타파하는 공사 신분제 폐지와 유교적 관직 임용제인 과거제 폐지를 추진했습니다. 뒤이어 고종은 홍범 14조를 선포하여 근대 사법 구조의 시초인 재판소 설치를 확정 지었습니다."
+                    },
+                    {
+                        id: "e-10",
+                        year: "1895",
+                        title: "을미사변과 단발령 공표",
+                        character: "명성황후, 미우라 고로, 유인석",
+                        shortDesc: "일제가 명성황후를 시해하고 단발령을 선포하자 유생과 백성들이 격렬한 의병 운동으로 보복했습니다.",
+                        longDesc: "단발령과 태양력 시행 등 일제의 주도로 을미개혁이 전개되었으나, 성리학적 정체성 훼손에 분노한 을미의병이 폭발했습니다.",
+                        keywords: ["삼국간섭 여파", "명성황후 시해", "미우라 고로 공사", "단발령 강행", "태양력 채택", "을미의병 봉기"],
+                        narrativeQuestion: "일제가 궁궐을 파괴하여 국모를 참살한 변란의 명칭과 유학자 사대부들을 가장 대대적으로 규합하게 만든 악법을 설명하시오.",
+                        checkpoints: ["명성황후 시해", "을미사변", "미우라", "단발령", "을미의병", "유인석"],
+                        expertAnswer: "삼국간섭 이후 러시아 세력을 동원하려던 명성황후를 일본 공사 미우라 고로가 보낸 자객들이 참혹하게 시해하는 을미사변을 도발했습니다. 이후 친일 정권은 강제 삭발령인 단발령을 강행했으며, 이에 격분한 정통 선비 유생들은 유인석 등을 중심으로 최초의 항일 의병인 을미의병을 대대적으로 조직했습니다."
                     }
                 ]
             },
             3: {
-                title: "3일차: 동학의 궐기와 제도적 대혁신",
-                range: "농민군의 봉기부터 친러파 유입과 을미개혁 단발령까지",
+                title: "3일차: 구국 운동의 전개와 대한제국 수립",
                 events: [
                     {
-                        id: "ev-301",
-                        year: "1894",
-                        title: "동학 농민 운동과 전주화약",
-                        character: "전봉준, 조병갑, 고종",
-                        description: "조병갑의 만석보 가혹 세금 수탈에 폭발한 농민들이 전봉준 지휘 아래 궐기했습니다. 황토현 전투 등에서 관군을 제압하고 전주성을 함락했으나 청일군 개입 우려로 정전에 타협했습니다.",
-                        keywords: ["조병갑의 탐학", "황토현 전투", "전주화약", "집강소 설치"],
-                        narrativeQuestion: "농민 의병이 자치적으로 정부와 계약해 전 국토에 뿌리내린 자치 치안 개혁 기구와 이 개혁의 배경을 상세히 설명하시오.",
-                        checkpoints: ["조병갑", "전주화약", "집강소", "폐정 개혁안", "전봉준", "청일군"],
-                        expertAnswer: "고부 군수 조병갑의 극악한 탐학에 맞서, 남·북접 연합 농민군들이 창의하여 전주성을 점령했습니다. 정부가 자력 진압의 한계를 느끼고 청에 손을 뻗자 덩달아 톈진 조약에 입각한 일본군이 몰려들었습니다. 자주 구국을 위해 전봉준과 관군은 서둘러 '전주화약'을 합의하고 물러나 지방의 향토 자치 관청인 '집강소'를 설립하여 신분 타파와 세제 수술 등의 폐정 개혁안을 행동으로 실천했습니다."
+                        id: "e-11",
+                        year: "1896",
+                        title: "아관파천과 주권 붕괴",
+                        character: "고종, 베베르 공사",
+                        shortDesc: "을미사변의 살벌한 신변 공포 속에서 고종이 비밀리에 러시아 공사관으로 거처를 옮겼습니다.",
+                        longDesc: "러시아 공사관 체류 동안 국가의 자주성이 짓밟혔으며 서구 열강들의 무차별적인 자원 침탈이 횡행했습니다.",
+                        keywords: ["러시아 공사관", "신변 처형 공포", "삼림 벌목권 피탈", "광산 채굴권 양도", "국가 위신 실추", "경운궁 환궁 요구"],
+                        narrativeQuestion: "아관파천이 단행된 원인과 고종이 궁을 비운 대가로 한반도의 경제 영토가 입은 심대한 폐해를 설명하시오.",
+                        checkpoints: ["러시아 공사관", "고종", "신변 위협", "이권 침탈", "광산", "삼림 벌목권"],
+                        expertAnswer: "을미사변 이후 신변에 극도의 공포를 느낀 고종이 러시아 공사관으로 거처를 옮기는 아관파천을 단행했습니다. 임금이 국외 세력 공사관에 머무는 사이, 러시아와 미국 등 열강은 금광 채굴권과 삼림 벌목권 등 조선의 막대한 국부 경제 이권을 무단으로 강탈해 갔습니다."
                     },
                     {
-                        id: "ev-302",
-                        year: "1894",
-                        title: "갑오개혁 (1, 2차)",
-                        character: "김홍집, 고종",
-                        description: "일본 침탈군이 경복궁을 기습 장악한 뒤 강제로 개시된 개혁입니다. 군국기무처 주도로 봉건적 과거제와 신분제가 공식 해체되고 헌법 격인 홍범 14조가 공포됐습니다.",
-                        keywords: ["군국기무처", "공사 신분제 폐지", "과거 제도 철폐", "홍범 14조"],
-                        narrativeQuestion: "조선이 수백 년 만에 최초로 세제·사회 신분을 송두리째 바꾼 근대 개혁을 통솔한 최고 기구와 공인된 신분 타파 강령을 서술하시오.",
-                        checkpoints: ["군국기무처", "과거제", "신분제 폐지", "홍범 14조", "김홍집", "은본위제"],
-                        expertAnswer: "1차 갑오개혁은 강제 설치된 초정부적 기관 '군국기무처'의 리드로 가속화되었습니다. 가장 전위적인 개조로 신분 세습을 끊는 공사 노비 제도(신분제) 폐지와 지배 유교 체제인 과거 제도를 완전히 소멸시켰습니다. 연이어 단행된 2차 개혁에서는 군국기무처가 물러나고 영의정 김홍집이 주도하여 국왕 고종이 종묘에서 사상 첫 근대적 헌장 격인 '홍범 14조'를 하늘에 보고해 공식 공표했습니다."
+                        id: "e-12",
+                        year: "1896",
+                        title: "독립협회 창설과 자주민권",
+                        character: "서재필, 윤치호",
+                        shortDesc: "서재필이 독립신문을 만들고 독립협회를 구성해 구국적 자주민주의 정체성을 구축했습니다.",
+                        longDesc: "청의 조공 의무 상징이던 영은문을 헐고 독립문을 건설하여 조국의 근대적 자립을 외치기 시작했습니다.",
+                        keywords: ["서재필 주도", "독립신문 발간", "독립문 건립", "영은문 훼철", "토론회와 강연회", "자주독립 사상 고취"],
+                        narrativeQuestion: "독립협회가 외세 사대 청산 의지를 천명하기 위해 철거한 조선의 문과 대신 건립한 상징물의 명칭을 쓰시오.",
+                        checkpoints: ["서재필", "독립신문", "영은문", "독립문", "독립협회", "자주독립"],
+                        expertAnswer: "미국에서 돌아온 서재필은 독립신문을 창간한 뒤 독립협회를 구성했습니다. 협회는 청나라 사신을 영접하던 사대의 상징인 영은문을 헐고 국민들의 기부금으로 근대적 자주 국가의 의지를 보여주는 독립문을 건립하여 독립심을 크게 일깨웠습니다."
                     },
                     {
-                        id: "ev-303",
-                        year: "1895",
-                        title: "을미사변과 을미개혁",
-                        character: "명성황후, 미우라 고로, 김홍집",
-                        description: "삼국간섭에 힘입어 명성황후가 러시아를 유치하여 친러 내각을 구축하려 하자, 일본 수뇌부와 칼잡이 낭인들이 황후를 잔악하게 시해하고 친일 정권을 수립해 단발령을 단행했습니다.",
-                        keywords: ["명성황후 시해", "단발령", "태양력 사용", "을미의병"],
-                        narrativeQuestion: "을미사변의 음모와 이에 저항한 사대부 유생 계층의 대규모 항거 행동 방식을 구체적으로 쓰시오.",
-                        checkpoints: ["명성황후 시해", "단발령", "을미의병", "태양력", "미우라 고로"],
-                        expertAnswer: "요동반도 삼국간섭으로 주눅 든 일본의 간담을 서늘케 한 명성황후의 인아거일(러시아 견인) 행적에 격분한 일제 미우라 공사 일당이 무력으로 대궐을 파괴하여 국모를 시해하는 을미사변을 도발했습니다. 사태 수습의 과도로 김홍집 각료는 강제 삭발 명령인 '단발령'과 종두법, '태양력 사용'을 선언했습니다. 조상으로부터 물려받은 신체를 지켜 자부심을 수호하려던 전통 선비들은 '을미의병' 총궐기로 분노를 표출했습니다."
+                        id: "e-13",
+                        year: "1898",
+                        title: "만민공동회와 헌의 6조",
+                        character: "서재필, 박정양, 백정 박성춘",
+                        shortDesc: "백성들이 모인 만민공동회에서 러시아 이권 요구를 철회시켰으며 관민공동회에서는 헌의 6조를 가결했습니다.",
+                        longDesc: "근대적 의회제 중추원 개편안을 기획하여 대한민국 사상 첫 입헌군주정 기틀을 다지려 노력했습니다.",
+                        keywords: ["만민공동회 개최", "러시아 절영도 조차 저지", "관민공동회 박성춘", "헌의 6조 가결", "중추원 의회 설립 시도", "보수파 모함 강제 해산"],
+                        narrativeQuestion: "독립협회가 한반도 영해 조차권을 저지시킨 평민 공동회 명칭과 의회 설립에 가깝게 나아갔던 국정 개혁안의 명칭을 쓰시오.",
+                        checkpoints: ["만민공동회", "관민공동회", "헌의 6조", "중추원", "의회", "절영도 조차"],
+                        expertAnswer: "독립협회는 종로 야외 광장에서 만민공동회를 열어 러시아의 절영도 조차지 요구를 저지시켰습니다. 더 나아가 정부 고관들과 함께 개최한 관민공동회에서는 왕권 보존과 법률 재정 통제를 요구하는 헌의 6조를 가결했으며, 중추원 관제를 개편하여 사상 최초의 의회 설립을 시도했습니다."
+                    },
+                    {
+                        id: "e-14",
+                        year: "1897",
+                        title: "대한제국 건립과 황제 등극",
+                        character: "고종 (광무제)",
+                        shortDesc: "경운궁으로 돌아온 고종황제가 환구단에서 황제 등극식을 열고 독자적인 제국 선포를 감행했습니다.",
+                        longDesc: "자주적 지위를 명문화한 대한국 국제 조문을 배포하여 황제권 무한 지배를 대내외에 확실히 보증했습니다.",
+                        keywords: ["경운궁 환궁", "환구단 조영", "대한제국 수립 선포", "광무 연호 제정", "대한국 국제 공포", "황제권 무한 강조"],
+                        narrativeQuestion: "조선이 자주적 황제 대국임을 천명하기 위해 고종이 즉위 제례를 올린 장소와 제국의 연호 명칭을 쓰시오.",
+                        checkpoints: ["경운궁", "환구단", "원구단", "대한제국", "광무", "대한국 국제"],
+                        expertAnswer: "러시아 공사관에서 경운궁으로 환궁한 고종은 하늘에 올리는 제단인 환구단을 지어 황제 즉위식을 올리고 국호를 대한제국, 연호를 광무로 공식 선포했습니다. 또한 황제에게 영구한 무한 주권을 보장하는 일종의 헌법 성격인 대한국 국제를 공표했습니다."
+                    },
+                    {
+                        id: "e-15",
+                        year: "1897",
+                        title: "광무개혁의 자강 조치",
+                        character: "고종, 이범윤",
+                        shortDesc: "구본신참의 개조 원칙을 내세워 황제 직속 군부 원수부를 세우고 땅문서 지계를 전국적으로 발급했습니다.",
+                        longDesc: "상공업 육성인 식산흥업을 앞세우고 이범윤을 간도관리사로 파견해 국경을 정예화했습니다.",
+                        keywords: ["구본신참 원칙", "원수부 설치", "양전 사업 개시", "지계 발급 아문", "식산흥업 정책", "간도관리사 이범윤 파견"],
+                        narrativeQuestion: "대한제국 개혁의 성어 원칙과 군권을 확실히 묶은 황제 직속 부서, 근대적 토지 분쟁을 해결하기 위해 내려진 문서명을 기술하시오.",
+                        checkpoints: ["구본신참", "원수부", "양전 사업", "지계", "식산흥업", "간도관리사"],
+                        expertAnswer: "대한제국은 '옛것을 근본으로 삼고 새것을 참작한다'는 구본신참 기조하에 광무개혁을 추진했습니다. 황제는 군사 최고 사령부인 원수부를 두어 군권을 장악했으며, 양전 사업을 엄격히 실시하여 현대적 토지 소유권 문서인 지계를 발급하고 식산흥업을 통해 상업 육성을 주도했습니다."
                     }
                 ]
             },
             4: {
-                title: "4일차: 자주독립의 기치와 제국 통치 개혁",
-                range: "피신한 아관파천 시기부터 광무개혁 지계 아문 설치까지",
+                title: "4일차: 일제의 국권 침탈과 국권 피탈",
                 events: [
                     {
-                        id: "ev-401",
-                        year: "1896",
-                        title: "아관파천",
-                        character: "고종, 친러파 세력",
-                        description: "을미사변 이후 신변 처형의 지옥을 맛보며 공포에 떨던 고종이 새벽 가마를 타고 극비리에 러시아 공사관으로 탈출 도주한 참담한 주권 붕괴 사건입니다.",
-                        keywords: ["러시아 공사관", "이권 침탈", "국가 위신 실추", "친러 내각"],
-                        narrativeQuestion: "임금이 타국 공사관에 은닉 피신해 있는 공백 동안, 대외적 경제 체제에 침투한 폐해와 주권 문제를 논술하시오.",
-                        checkpoints: ["러시아 공사관", "고종", "이권 침탈", "광산", "삼림", "국가 위신"],
-                        expertAnswer: "친일 살벌한 궁내 분위기 속에서 위기감을 참지 못한 고종 황제가 러시아 공사관으로 처소를 긴급하게 파천했습니다. 친러 세력이 정권을 차지하며 서구 열강들은 조국 한반도의 금맥 광산 굴착권, 울릉도와 압록강의 삼림 벌목권 등 천문학적인 가치의 국가 알짜배기 영토 '이권 침탈'을 휩쓸며 국부를 철저하게 강탈했습니다."
+                        id: "e-16",
+                        year: "1904",
+                        title: "러일전쟁과 고문 정치 강제",
+                        character: "메가타 다네타로, 더럼 스티븐스",
+                        shortDesc: "일제가 한일의정서로 국토를 요충 기지로 강점하고 제1차 협약으로 고문 정치를 시작했습니다.",
+                        longDesc: "재정에 메가타, 외교에 스티븐스를 고문으로 앉혀 조선의 예산과 외교적 주권을 철저히 강박했습니다.",
+                        keywords: ["러일전쟁 도발", "한일의정서 체결", "군사용지 강점", "제1차 한일협약", "재정 고문 메가타", "외교 고문 스티븐스"],
+                        narrativeQuestion: "일제가 자국 전쟁을 수월하게 풀고자 대한제국 영토를 강제 점령한 문서와 연이어 가해진 내치 지배 제도를 쓰시오.",
+                        checkpoints: ["러일전쟁", "한일의정서", "제1차 한일협약", "메가타", "스티븐스", "고문 정치"],
+                        expertAnswer: "러일전쟁을 도발한 일제는 대한제국 영토를 마음대로 군사기지로 전유하는 한일의정서를 성립시켰습니다. 이어 제1차 한일협약을 통해 재정 고문 메가타 다네타로와 외교 고문 미국인 스티븐스를 파견하여 대한제국의 내정 전반을 일체 강박하는 고문 정치를 단행했습니다."
                     },
                     {
-                        id: "ev-402",
-                        year: "1896",
-                        title: "독립협회 창설과 만민공동회",
-                        character: "서재필, 윤치호",
-                        description: "미국에서 환국한 서재필이 최초의 한글 순정 '독립신문'을 간행하고 영은문 폐허지에 독립문을 준공하여 대중의 뇌리를 깨웠습니다. 민중이 세운 공동회는 이권 청원을 막았습니다.",
-                        keywords: ["독립신문", "만민공동회", "헌의 6조", "중추원 개편 의회"],
-                        narrativeQuestion: "독립협회가 러시아 세력의 월권 침략을 물리친 평민 저항 방식과 공동 관정 회담에서 통과된 법치 혁신안의 명칭을 쓰시오.",
-                        checkpoints: ["만민공동회", "헌의 6조", "서재필", "이권 침탈", "의회", "중추원"],
-                        expertAnswer: "서재필은 귀국 후 국문 전용 독립신문을 만들고 독립협회를 창단하여 자주민 인권을 설파했습니다. 종로 저잣거리에서 '만민공동회'를 주기적으로 모아 영해 양도(절영도 조차 요청 등)를 거센 아우성으로 철회시켰습니다. 관료들과 함께한 관민공동회에서는 최초로 왕권 보존과 법률주의 예산 통제를 규명한 '헌의 6조'를 가결시켰으며 중추원 체계를 개정하여 의회 민주 제국을 도입하려 했습니다."
+                        id: "e-17",
+                        year: "1905",
+                        title: "을사늑약과 외교 주권 피탈",
+                        character: "이토 히로부미, 이완용, 고종",
+                        shortDesc: "일제가 군대의 총칼 무력을 동원해 을사오적의 날조 합의 속에 외교권을 빼앗고 통감부를 세웠습니다.",
+                        longDesc: "황제의 재가 비준 서명도 이루어지지 않은 불법 조약을 빌미 삼아 이토 히로부미가 초대 통감으로 부임했습니다.",
+                        keywords: ["가쓰라 태프트 밀약", "제2차 한일협약", "외교권 전면 박탈", "통감부 신설", "이토 히로부미", "을사오적 폭거"],
+                        narrativeQuestion: "제2차 한일협약이 불법적인 '늑약'에 불과한 실질 조약사적 원인과 이 조약이 가져온 식민지 교두보 관청명을 명시하시오.",
+                        checkpoints: ["을사늑약", "고종 서명 무효", "외교권 박탈", "통감부", "이토 히로부미", "을사오적"],
+                        expertAnswer: "을사늑약은 대한제국의 국권을 수호하려던 고종황제의 동의 및 조약 비준 조인(서명)이 결여된 불법 늑약입니다. 일제는 이 조약으로 제국의 외교권을 완전히 강탈하고 한반도를 정밀하게 제어하기 위한 최고 지배 식민 기구인 통감부를 서울에 조영하여 이토 히로부미를 우두머리로 세웠습니다."
                     },
                     {
-                        id: "ev-403",
-                        year: "1897",
-                        title: "대한제국 선포와 광무개혁",
-                        character: "고종 (광무황제)",
-                        description: "환궁한 고종이 명나라 황제 제례 격인 환구단 단상을 조영하여 정식 대국 황제로 등극했습니다. 국호를 '대한제국'으로 천명하고 자주적인 대강 개조를 지시했습니다.",
-                        keywords: ["환구단 황제 즉위", "구본신참", "원수부 설치", "지계 아문"],
-                        narrativeQuestion: "대한제국의 건립 의지 표방물과 광무개혁이 내건 근대화 제도의 대원칙(성어), 국사 영유 토지 소유권 문서를 쓰시오.",
-                        checkpoints: ["구본신참", "환구단", "원수부", "지계", "양전 사업", "황제"],
-                        expertAnswer: "경운궁으로 돌아온 고종은 전통과 격식에 발맞추어 환구단 제단을 가꾸어 대한제국 건국 및 황제 보위를 세계에 당당히 선보였습니다. 개편 대강은 옛것을 뼈대로 두고 현대 서양 학문을 실용에 녹인다는 '구본신참'을 철학 삼았습니다. 직속 국방 본부인 '원수부'를 두어 무력을 제어했고 근대적인 땅 문서 권리 증명서인 '지계'를 반포하고자 지계 아문을 통해 대대적인 양전 사업을 추진했습니다."
+                        id: "e-18",
+                        year: "1905",
+                        title: "을사늑약 결사 반대 항쟁",
+                        character: "장지연, 민영환, 안중근",
+                        shortDesc: "장지연의 시일야방성대곡 사설이 활성화되었으며, 민영환 자결과 안중근의 이토 단죄가 이루어졌습니다.",
+                        longDesc: "오적암살단의 나철과 자결한 열사들의 피의 분노가 독립 투쟁으로 계승되었습니다.",
+                        keywords: ["시일야방성대곡", "황성신문 게재", "민영환 자결", "오적 암살단 나철", "안중근 의거", "하얼빈 이토 처단"],
+                        narrativeQuestion: "을사늑약에 격분하여 민족 지식 언론과 비밀 처단 조직, 그리고 군사 무력 행동 단죄를 이행한 대표 인물 사건을 기술하시오.",
+                        checkpoints: ["시일야방성대곡", "장지연", "민영환 자결", "오적 암살단", "나철", "안중근", "이토 히로부미"],
+                        expertAnswer: "장지연은 황성신문에 통곡 사설 시일야방성대곡을 게재해 매국노들을 성토했고 시종무관장 민영환은 스스로 자결을 선택해 백성들의 피를 끓게 했습니다. 이어 나철 등은 을사오적 처단을 꾀하는 오적 암살단을 조직했고 안중근 의사는 하얼빈역에서 침탈의 원흉인 이토 히로부미를 권총으로 단죄 사살했습니다."
+                    },
+                    {
+                        id: "e-19",
+                        year: "1907",
+                        title: "헤이그 밀사 특사와 군대 해산",
+                        character: "이준, 이상설, 이위종, 고종",
+                        shortDesc: "고종이 을사늑약 부당함을 헤이그에 알리자 일제는 고종을 강제 퇴위시키고 군대를 해산했습니다.",
+                        longDesc: "한일신협약(정미7조약)을 강요해 일본인 차관 행정으로 통제하고, 정미의병 전쟁의 단초가 되었습니다.",
+                        keywords: ["헤이그 만국평화회의", "고종 강제 퇴위", "한일신협약 체결", "일본인 차관 정치", "대한제국 군대 해산", "정미의병 발발 원인"],
+                        narrativeQuestion: "밀사 파견 3인의 이름과 일본이 이에 대해 자행한 군주제 보복 및 군사 기구 완전 파괴 조치를 서술하시오.",
+                        checkpoints: ["이준 이상설 이위종", "고종 퇴위", "정미7조약", "차관 정치", "군대 해산", "정미의병"],
+                        expertAnswer: "고종은 국권을 만방에 호소하려 네덜란드 헤이그에 이준, 이상설, 이위종을 비밀 특사로 보냈습니다. 이에 일제는 책임을 물어 고종황제를 강제 퇴위시켰고, 한일신협약을 맺어 내정에 사사건건 개입하는 일본인 차관 정치를 강요했으며 사법권과 함께 최종 보루였던 군대를 해산했습니다."
+                    },
+                    {
+                        id: "e-20",
+                        year: "1910",
+                        title: "주권 완전 박탈 경술국치",
+                        character: "이완용, 데라우치 마사타케",
+                        shortDesc: "이완용이 데라우치와 한일 병합 조약을 체결함으로써 독립 수백 년 역사의 주권을 빼앗겼습니다.",
+                        longDesc: "사법권과 경찰권을 전량 양도 조서로 압수당한 뒤 조선총독부가 개청하며 무단 통치기로 진입했습니다.",
+                        keywords: ["기유각서 사법권 피탈", "경찰권 전량 탈취", "한일 병합 조약", "매국노 이완용", "조선총독부 설치", "무단 헌병 경찰 통치"],
+                        narrativeQuestion: "대한제국의 사법 주권이 강탈된 사서 약정과 최종적으로 합병 서명한 매국의 주체, 그리고 식민지 통치의 최고 사령부 관청명을 쓰시오.",
+                        checkpoints: ["기유각서", "사법권", "한일 병합 조약", "이완용", "조선총독부", "무단 통치"],
+                        expertAnswer: "일제는 기유각서로 사법권을 탈취하고 이어 한반도의 치안 경찰권마저 장악했습니다. 1910년 총리대신 이완용은 데라우치 통감과 한국 병합 조약을 조인하여 대한제국 주권을 전면 매도했습니다(경술국치). 이후 일제는 서울에 식민 지배 총괄 최고 권력청인 조선총독부를 건립하고 가혹한 헌병 경찰 통치를 단행했습니다."
                     }
                 ]
             },
             5: {
-                title: "5일차: 피탈의 치욕과 피의 의병 항쟁",
-                range: "한일의정서 영토 강점부터 1910년 경술국치까지",
+                title: "5일차: 민족 구국 운동의 맹렬한 전개",
                 events: [
                     {
-                        id: "ev-501",
-                        year: "1904",
-                        title: "러일전쟁과 제1차 한일협약",
-                        character: "메가타, 스티븐스",
-                        description: "러시아와의 태평양 전쟁의 소용돌이에서 일본은 대한제국에 한일의정서를 강박 체결시켜 영토를 군용지로 무단 확보했습니다. 이어진 협약으로 고문 정치가 시작됐습니다.",
-                        keywords: ["한일의정서", "제1차 한일협약", "재정 고문 메가타", "외교 고문 스티븐스"],
-                        narrativeQuestion: "러일전쟁의 혼란기 속에서 강제 결의된 한일의정서의 무단 영유 조서와 제1차 협약이 자행한 고문 통제 내용을 쓰시오.",
-                        checkpoints: ["한일의정서", "제1차 한일협약", "메가타", "스티븐스", "군사 기지", "고문 정치"],
-                        expertAnswer: "일본은 러일전쟁을 터트리자마자 군사 행동의 편익을 도모하려 '한일의정서'를 힘으로 조인하여 한반도 요충지 국토를 무작위로 수탈 강점했습니다. 연달아 강제한 '제1차 한일협약'에 따라 일본 제국의 뜻을 보좌할 재정 고문 메가타와 친일 미국인 외교 고문 스티븐스를 대한제국 조정의 고관으로 박아 내치와 조세를 실체 없이 가로챘습니다."
+                        id: "e-21",
+                        year: "1895",
+                        title: "을미의병과 을사의병 전쟁",
+                        character: "유인석, 최익현, 신돌석",
+                        shortDesc: "단발령에 저항한 을미의병과 외교권 박탈에 맞선 을사의병이 전 국토에서 불타올랐습니다.",
+                        longDesc: "특히 보수 유림의 기치를 넘어 평민 의병장 신돌석이 등장하여 무장 대결의 저변을 서민까지 확장했습니다.",
+                        keywords: ["을미사변 단발령 반발", "을미의병 유인석", "을사의병 최익현", "평민 의병장 신돌석", "위정척사 사상", "태백산맥 무장 유격전"],
+                        narrativeQuestion: "국권을 수호하기 위해 일어난 1, 2차 의병의 거병 명목과 신분제적 한계를 완전히 허물어버린 평민 영웅의 존함을 밝히시오.",
+                        checkpoints: ["을미의병", "유인석", "을사의병", "최익현", "신돌석", "평민 의병장"],
+                        expertAnswer: "성리학적 명분을 지키려 유인석 등은 단발령에 반발해 을미의병을 일으켰고 최익현 등은 을사늑약 체결에 맞서 을사의병을 궐기했습니다. 특히 을사의병 시기에는 평민 의병장 신돌석 장군이 태백산맥 일대에서 활약하며, 의병 운동이 양반 유생 중심에서 전 평민 계층으로 극적인 성장을 이루는 계기를 마련했습니다."
                     },
                     {
-                        id: "ev-502",
-                        year: "1905",
-                        title: "을사늑약 (제2차 한일협약)",
-                        character: "이토 히로부미, 고종, 을사오적",
-                        description: "군대를 앞세워 경복궁과 정계를 장악한 이토 일당이 고종 황제의 윤허조차 서명하지 않은 문서를 강제로 날조했습니다. 외교권 박탈과 최고 통치청인 통감부가 들어섰습니다.",
-                        keywords: ["외교권 전면 박탈", "통감부 신설", "이토 히로부미", "을사오적"],
-                        narrativeQuestion: "을사조약이 역사학계와 주권사적으로 공식적으로 '늑약'으로 규명되는 실절적 무효 사유를 서술하시오.",
-                        checkpoints: ["고종", "서명", "외교권 박탈", "통감부", "이토 히로부미", "을사오적", "불법"],
-                        expertAnswer: "을사늑약은 군사들이 성문을 봉쇄하고 고종황제의 직접적인 법적 정인(서명)과 동조 없이 조약 형식만 도용한 완전한 침탈 늑약입니다. 체결 이후 대한제국의 사절단 파견 및 국제 교섭 권한인 '외교권'을 통째로 압수당했으며 내부의 사법·내정 행정을 감독할 사상 최악의 지배 거처인 '통감부'를 세워 서울에 정착시키고 이토 히로부미를 우두머리로 세웠습니다."
-                    },
-                    {
-                        id: "ev-503",
+                        id: "e-22",
                         year: "1907",
-                        title: "헤이그 특사와 정미7조약",
-                        character: "이준, 이상설, 이위종, 고종",
-                        description: "외교권 박탈의 억울함을 알리려 고종이 네덜란드로 특사 3인을 보냈으나 서구 열강의 묵살을 맞이했습니다. 일본은 이를 계기로 고종을 황제에서 쫓아내고 군대를 해산했습니다.",
-                        keywords: ["만국평화회의", "고종 강제 퇴위", "정미7조약 차관", "군대 강제 해산"],
-                        narrativeQuestion: "헤이그 밀서 특사 파견 인물 3인의 실명과 이로 인해 일제가 조선 왕실에 가한 무단 퇴출 행위, 군사적 침해 조치를 쓰시오.",
-                        checkpoints: ["이준", "이상설", "이위종", "퇴위", "군대 해산", "정미7조약", "차관 정치"],
-                        expertAnswer: "고종은 국치 상황을 타개하고자 네덜란드 헤이그의 '만국평화회의'에 이준, 이상설, 이위종을 밀사로 보내 호소했습니다. 일본은 특사 적발에 대해 책임을 묻고 고종 황제를 직위에서 무단으로 밀어냈습니다. 뒤이어 한일신협약(정미7조약)을 세워 일본인을 행정 차관으로 고용하게 만드는 '차관 정치'를 열었으며 종국에는 조선군의 무장 결전 기틀인 '군대 강제 해산'을 선포해 군사적 실체를 없앴습니다."
+                        title: "정미의병과 서울진공작전",
+                        character: "이인영, 허위, 해산 군인",
+                        shortDesc: "해산된 군대의 전량 합류로 화력과 조직력을 갖춘 정미의병이 일제 침략군과 정면 교전을 전개했습니다.",
+                        longDesc: "13도 창의군을 발족하여 수도 탈환의 대전인 서울진공작전을 도모했으나 실패로 끝났습니다.",
+                        keywords: ["군대 해산 병사 합류", "정미의병 전쟁 진화", "13도 창의군 결성", "총대장 이인영", "군사장 허위", "서울진공작전 무산"],
+                        narrativeQuestion: "의병 전쟁이 전위적 전술을 장착하게 된 군사적 유입 요인과 이들이 합심하여 도모한 대규모 수도 탈환 전략을 기술하시오.",
+                        checkpoints: ["군대 해산", "해산 군인", "정미의병", "13도 창의군", "이인영", "허위", "서울진공작전"],
+                        expertAnswer: "정미년 군대 해산으로 훈련받은 대한제국 군졸들이 무장을 소지한 채 대거 합류하여 의병 운동은 전면전 수준의 정미의병으로 발전했습니다. 이들은 연합 부대인 13도 창의군을 구축하여 총대장 이인영과 군사장 허위의 리드하에 동대문 인근까지 격전해 들어가는 서울진공작전을 시도했습니다."
                     },
                     {
-                        id: "ev-504",
-                        year: "1910",
-                        title: "경술국치 (한국 병합 조약)",
-                        character: "이완용, 데라우치",
-                        description: "매국 총리 이완용과 한반도를 밟은 초대 총독 데라우치 간에 주권을 전량 양도하는 주권 침탈 조약이 이루어져 결국 완전한 식민지 지옥이 시작됐습니다.",
-                        keywords: ["한일 합병 조약", "이완용", "조선총독부 수립", "무단 통치 개시"],
-                        narrativeQuestion: "대한제국이 공식적으로 역사적 주권을 빼앗긴 국치의 원흉 인물과 제국이 명맥을 강탈한 뒤 영구 식민 통치를 주도하기 위해 세운 무단 최고 관청명을 쓰시오.",
-                        checkpoints: ["국권 피탈", "이완용", "조선총독부", "데라우치", "경술국치"],
-                        expertAnswer: "총리대신 직을 팔아넘긴 대표 매국노 이완용이 침략 침범 우두머리인 데라우치 마사타케와 협력하여 대한제국의 영구 주권 포기 계약을 성립시켰습니다. 이로써 삼국 시대 이전부터 흘러내려 오던 주권 역사가 정지당했습니다(경술국치). 일제는 직후 황실을 멸하고 조선 군민을 완벽히 소총과 가죽 채찍으로 폭압하려는 무단 군정 관서 '조선총독부'를 만들어 식민지 억압에 돌입했습니다."
+                        id: "e-23",
+                        year: "1904",
+                        title: "보안회와 애국 자강 연대",
+                        character: "서상돈, 장지연, 대한자강회",
+                        shortDesc: "보안회는 일제의 황무지 개간 요구를 힘으로 꺾었으며 대한자강회는 민중 지식을 함양했습니다.",
+                        longDesc: "고종의 퇴위 반대 투쟁에 온 힘을 모아 저항하다 통감부의 공안 제약 조치로 강제 해산당했습니다.",
+                        keywords: ["보안회 조직", "황무지 개간권 저지", "헌정연구회 헌법 연구", "대한자강회 설립", "지방 지부 설치 월보 발간", "고종 퇴위 반대 강제 해산"],
+                        narrativeQuestion: "일제의 토지 약탈 시도를 연대 궐기로 백지화시킨 기구와 입헌군주정을 지향하며 지부를 뻗쳤던 애국 학술 연대를 기술하시오.",
+                        checkpoints: ["보안회", "황무지 개간권", "헌정연구회", "대한자강회", "월보", "고종 퇴위 반대"],
+                        expertAnswer: "조선 농민의 생존과 직결된 황무지 개간권을 강탈하려던 일제의 기획을 보안회가 대대적인 민중 연대로 완전 무산시켰습니다. 또한 입헌제를 탐구하던 헌정연구회의 뒤를 이은 대한자강회는 지부를 세우고 월보를 내며 실력을 길렀으며 고종 퇴위 반대 운동을 이끌다 강제 해산당했습니다."
+                    },
+                    {
+                        id: "e-24",
+                        year: "1907",
+                        title: "비밀 결사 신민회 설립",
+                        character: "안창호, 양기탁, 신돌석",
+                        shortDesc: "안창호, 양기탁 등이 전면에 나서 입헌군주정이 아닌 사상 첫 공화정을 지향한 지하 비밀결사입니다.",
+                        longDesc: "대성학교와 오산학교를 짓고 만주 삼원보에 신흥무관학교를 건립하여 독립 투쟁의 뼈대를 완성했습니다.",
+                        keywords: ["안창호 양기탁 주도", "비밀결사 조직", "공화정체 지향", "대성 오산학교 설립", "태극서관 자기회사 운영", "서간도 삼원보 기지 구축"],
+                        narrativeQuestion: "애국 계몽과 국외 군사 독립기지 건립이라는 원대한 노선을 비밀리에 기획한 단체명과 이들이 도달하고자 했던 국가 체제 목표를 쓰시오.",
+                        checkpoints: ["신민회", "안창호", "양기탁", "비밀결사", "공화정", "대성학교 오산학교", "삼원보"],
+                        expertAnswer: "안창호, 양기탁이 비밀리에 설립한 독립 운동 단체 신민회는 최초로 입헌제를 넘어 국민이 주인인 공화정 국가의 수립을 지향했습니다. 대성학교와 오산학교를 세워 인재를 양성했고 국외 독립군 양성을 목적으로 서간도 삼원보 기지를 일구어 신흥무관학교의 전신을 마련했습니다."
+                    },
+                    {
+                        id: "e-25",
+                        year: "1907",
+                        title: "국채보상운동과 애국 언론",
+                        character: "서상돈, 김광제, 베델",
+                        shortDesc: "대구 서상돈의 건의로 시작되어 백성들의 자발적 기부를 통해 나라 빚을 갚으려 했던 구국 재정 운동입니다.",
+                        longDesc: "영국인 베델의 대한매일신보가 이 운동을 적극 전파했으나 통감부의 탄압 공작으로 결국 좌절되었습니다.",
+                        keywords: ["나라 빚 1300만 원", "대구 서상돈 김광제 발기", "대한매일신보 후원", "영국인 베델 양기탁", "가락지 비녀 애국 기부", "통감부 공작 횡령 모함"],
+                        narrativeQuestion: "일제가 씌운 재정 빚을 국민 성금으로 타개하려 시도한 구국 재정 결사명과 이를 전방위 지원한 언론사를 고발하시오.",
+                        checkpoints: ["국채보상운동", "서상돈", "김광제", "대한매일신보", "베델", "통감부 방해"],
+                        expertAnswer: "대한제국은 일제가 강요한 차관 1,300만 원으로 인해 재정적 속국이 되었습니다. 이를 갚기 위해 서상돈, 김광제의 제안으로 대구에서 국채보상운동이 개시되었으며, 영국인 베델과 양기탁의 대한매일신보가 이를 대대적으로 보도하고 가락지와 비녀 등의 애국 기부를 장려하였으나 통감부의 횡령 모함 공작으로 좌절되었습니다."
                     }
                 ]
             }
         };
 
-        // Application State Variables
+        // Application Global States
         let currentDay = 1;
         let activeStage = 'scan';
-        let timerSeconds = 600; // 10 minutes default
-        let timerInterval = null;
-        let isTimerRunning = false;
+        let remainingTimerSeconds = 600; // Default 10 minutes (600 seconds)
+        let timerTrackerInterval = null;
+        let timerRunningState = false;
         
         let activeCardIndex = 0;
         let isCardFlipped = false;
-        let scannedCards = {}; // Tracks day-specific scanning
+        let scannedCardsProgress = {}; // Tracks completed scan cards
         
-        let sortingList = [];
-        let sortingChecked = false;
+        let shuffledSortingArray = [];
+        let sortingCheckedState = false;
         
-        let blankAnswers = {}; // user text
-        let blankChecked = false;
-        let blankHints = {}; // track hint toggle
+        let blankUserAnswers = {};
+        let blankCheckedState = false;
+        let blankHintToggleState = {};
         
-        let weakList = []; // Array of weak event objects
-        
-        // On Document Initial Load
+        let weaknessPocketList = [];
+
+        // Dynamic Spring Motion Configuration for M3 Buttons
+        const springSettings = { stiffness: 180, damping: 12 };
+
+        // Initialize App
         window.onload = function() {
-            // Load local saved weak items if any
-            const savedWeak = localStorage.getItem('hist_weak_list');
-            if (savedWeak) {
-                try { weakList = JSON.parse(savedWeak); } catch(e) { weakList = []; }
+            // Recover saved sessions (Ideal for school classes)
+            const savedWeakness = localStorage.getItem('m3_korea_weakness');
+            if (savedWeakness) {
+                try { weaknessPocketList = JSON.parse(savedWeakness); } catch(e) { weaknessPocketList = []; }
             }
-            updateWeakListUI();
+            const savedDay = localStorage.getItem('m3_korea_current_day');
+            if (savedDay) {
+                currentDay = parseInt(savedDay) || 1;
+            }
             
-            // Start App with Day 1
-            changeDay(1);
+            updateWeaknessPocketUI();
+            selectDay(currentDay);
             
-            // Auto start timer on load
-            toggleTimer();
+            // Auto-trigger microbreak mode on startup (5-min focus)
+            setMicroMode(5);
         };
 
         // ==========================================
-        // Timer Operations
+        // 틈새시간 TIMER CONTROL SYSTEM
         // ==========================================
+        function setMicroMode(minutes) {
+            clearInterval(timerTrackerInterval);
+            timerRunningState = false;
+            remainingTimerSeconds = minutes * 60;
+            
+            document.getElementById('timer-icon').textContent = 'play_arrow';
+            
+            // Highlight select chips in Material Style
+            const btns = [3, 5, 10];
+            btns.forEach(b => {
+                const btn = document.getElementById(`micro-btn-${b}`);
+                if (b === minutes) {
+                    btn.className = "active-scale py-2 rounded-2xl text-xs font-black border border-m3-primary/50 bg-m3-primaryContainer/40 text-m3-primary transition flex items-center justify-center gap-1 shadow-md";
+                } else {
+                    btn.className = "active-scale py-2 rounded-2xl text-xs font-black border border-m3-surfaceVariant bg-m3-surfaceContainerHigh text-slate-300 hover:border-m3-primary/30 transition flex items-center justify-center gap-1";
+                }
+            });
+            
+            const tag = document.getElementById('session-tag');
+            if (minutes === 3) tag.textContent = "쉬는 시간 ⚡";
+            else if (minutes === 5) tag.textContent = "급식 시간 🍱";
+            else tag.textContent = "일반 학습 ⏱️";
+            
+            updateTimerDisplayUI();
+            toggleTimer(); // Quick start
+        }
+
         function toggleTimer() {
-            const timerBtnIcon = document.getElementById('timer-icon');
-            if (isTimerRunning) {
-                clearInterval(timerInterval);
-                isTimerRunning = false;
-                timerBtnIcon.textContent = 'play_arrow';
+            const timerIcon = document.getElementById('timer-icon');
+            if (timerRunningState) {
+                clearInterval(timerTrackerInterval);
+                timerRunningState = false;
+                timerIcon.textContent = 'play_arrow';
             } else {
-                isTimerRunning = true;
-                timerBtnIcon.textContent = 'pause';
-                timerInterval = setInterval(() => {
-                    if (timerSeconds > 0) {
-                        timerSeconds--;
-                        updateTimerUI();
+                timerRunningState = true;
+                timerIcon.textContent = 'pause';
+                timerTrackerInterval = setInterval(() => {
+                    if (remainingTimerSeconds > 0) {
+                        remainingTimerSeconds--;
+                        updateTimerDisplayUI();
                     } else {
-                        clearInterval(timerInterval);
-                        isTimerRunning = false;
-                        timerBtnIcon.textContent = 'play_arrow';
-                        showM3Dialog("타이머 완료", "정해진 10분 학습 한계 시간이 초과되었습니다! 집중력을 더욱 극대화하여 뇌 기억 상태를 되돌아보세요.", "alarm");
+                        clearInterval(timerTrackerInterval);
+                        timerRunningState = false;
+                        timerIcon.textContent = 'play_arrow';
+                        showDialogPopup("시간 완료", "지정된 틈새 집중 시간이 종료되었습니다! 기억한 내용을 바탕으로 '정렬' 혹은 '빈칸' 채점에 빠르게 도전해 보세요.", "notifications_active");
                     }
                 }, 1000);
             }
         }
 
         function resetTimer() {
-            timerSeconds = 600;
-            updateTimerUI();
-            if (!isTimerRunning) {
-                toggleTimer();
-            }
+            setMicroMode(5);
         }
 
-        function updateTimerUI() {
-            const display = document.getElementById('timer-display');
-            const mins = Math.floor(timerSeconds / 60);
-            const secs = timerSeconds % 60;
-            display.textContent = `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+        function updateTimerDisplayUI() {
+            const el = document.getElementById('timer-text');
+            const mm = Math.floor(remainingTimerSeconds / 60);
+            const ss = remainingTimerSeconds % 60;
+            el.textContent = `${mm.toString().padStart(2, '0')}:${ss.toString().padStart(2, '0')}`;
             
-            // Warning color under 1 min
-            if (timerSeconds <= 60) {
-                display.className = "text-sm font-mono font-black text-m3-error animate-pulse";
+            if (remainingTimerSeconds <= 30) {
+                el.className = "text-xs font-mono font-bold text-m3-tertiary animate-pulse";
             } else {
-                display.className = "text-sm font-mono font-black text-m3-primary";
+                el.className = "text-xs font-mono font-bold text-m3-primary";
             }
         }
 
         // ==========================================
-        // Core Curricular Control (Day / Stage Switch)
+        // DAYS & FLOW CONTROLS
         // ==========================================
-        function changeDay(dayNum) {
+        function selectDay(dayNum) {
             currentDay = dayNum;
+            localStorage.setItem('m3_korea_current_day', dayNum);
             
-            // Update M3 Active Tab UI
+            // Tab highlight switching
             document.querySelectorAll('.day-tab').forEach(btn => {
-                btn.className = "day-tab py-2.5 rounded-2xl text-xs font-black transition-all flex flex-col items-center justify-center bg-m3-surfaceContainer text-m3-outline hover:bg-m3-surfaceVariant";
+                btn.className = "day-tab py-3 rounded-2xl text-xs font-black transition-all flex flex-col items-center justify-center bg-m3-surfaceContainer text-m3-outline hover:bg-m3-surfaceVariant active-scale";
             });
             const activeTab = document.getElementById(`day-tab-${dayNum}`);
             if (activeTab) {
-                activeTab.className = "day-tab py-2.5 rounded-2xl text-xs font-black transition-all flex flex-col items-center justify-center bg-m3-primary text-m3-surfaceContainerLowest shadow-md";
+                activeTab.className = "day-tab py-3 rounded-2xl text-xs font-black transition-all flex flex-col items-center justify-center bg-m3-primary text-m3-surfaceContainerLowest shadow-xl scale-105 active-scale";
             }
             
-            // Update Text Headers
-            document.getElementById('day-range-badge').textContent = APP_DATA[dayNum].range;
-            document.getElementById('day-title-display').textContent = `DAY ${dayNum}: ${APP_DATA[dayNum].title}`;
+            document.getElementById('day-badge').textContent = `30개 고밀도 키워드 수록`;
             
-            // Reset Progress state
+            // Sub stages refresh
             activeCardIndex = 0;
             isCardFlipped = false;
-            sortingChecked = false;
-            blankChecked = false;
-            blankAnswers = {};
-            blankHints = {};
+            sortingCheckedState = false;
+            blankCheckedState = false;
+            blankUserAnswers = {};
+            blankHintToggleState = {};
             
-            // Initialize Sub-View data
             initializeScanStage();
-            shuffleSortingList();
+            scrambleSorting();
             initializeBlankStage();
             initializeNarrativeStage();
             
-            // Switch view internally
-            switchStage(activeStage);
-            updateTodayProgressIndicator();
+            changeStage(activeStage);
+            calculateOverallDayProgress();
         }
 
-        function switchStage(stageId) {
+        function changeStage(stageId) {
             activeStage = stageId;
             
-            // Hide all sub-sections
-            document.querySelectorAll('.stage-container').forEach(el => el.classList.add('hidden'));
+            // View transition: Slide up smooth fade
+            document.querySelectorAll('.stage-viewport').forEach(el => {
+                el.classList.add('hidden');
+                el.classList.remove('animate-fade-in');
+            });
+            const activeView = document.getElementById(`stage-${stageId}`);
+            activeView.classList.remove('hidden');
+            activeView.classList.add('animate-fade-in');
             
-            // Show target section
-            document.getElementById(`stage-${stageId}`).classList.remove('hidden');
-            
-            // Update Active Segment Buttons Styling
+            // Segmented buttons Highlight
             document.querySelectorAll('.stage-btn').forEach(btn => {
-                btn.className = "stage-btn p-2.5 rounded-2xl text-center flex flex-col items-center justify-center transition-all text-m3-outline hover:bg-m3-surface";
+                btn.className = "stage-btn py-3 rounded-2xl text-center flex flex-col items-center justify-center transition-all duration-300 text-m3-outline hover:bg-m3-surfaceContainerLow active-scale";
             });
             const activeBtn = document.getElementById(`stage-btn-${stageId}`);
             if (activeBtn) {
-                activeBtn.className = "stage-btn p-2.5 rounded-2xl text-center flex flex-col items-center justify-center transition-all bg-m3-secondaryContainer text-m3-onSecondaryContainer";
+                activeBtn.className = "stage-btn py-3 rounded-2xl text-center flex flex-col items-center justify-center transition-all duration-300 bg-m3-primaryContainer text-m3-primary shadow-lg active-scale";
             }
-
-            // Custom viewport specific corrections
+            
+            // Status bar updating
+            const statusCard = document.getElementById('stage-title-card');
+            const dayTitle = LOCAL_DATABASE[currentDay].title;
+            
+            if (stageId === 'scan') statusCard.textContent = `1단계: ${dayTitle} 요약 스캔`;
+            else if (stageId === 'sort') statusCard.textContent = `2단계: 인과순서 시간순 배치`;
+            else if (stageId === 'blank') statusCard.textContent = `3단계: 모범 정답 필수 구유명사 기입`;
+            else statusCard.textContent = `4단계: 실전형 기출 복원 모의고사`;
+            
             if (stageId === 'sort') {
-                renderSortingList();
+                renderSortingLayout();
             }
+            calculateOverallDayProgress();
         }
 
-        function updateTodayProgressIndicator() {
-            let clearedCount = 0;
-            // Scan progress check
-            const events = APP_DATA[currentDay].events;
-            const scanComplete = events.every(e => scannedCards[e.id]);
-            if (scanComplete) clearedCount++;
+        function calculateOverallDayProgress() {
+            let metricPoints = 0;
+            const events = LOCAL_DATABASE[currentDay].events;
             
-            // Sort checking
-            if (sortingChecked && sortingList.every((ev, idx) => APP_DATA[currentDay].events[idx].id === ev.id)) {
-                clearedCount++;
-            } else if (sortingChecked) {
-                // partial count
+            // 1. Scan checked
+            const allScanned = events.every(e => scannedCardsProgress[e.id]);
+            if (allScanned) metricPoints += 25;
+            
+            // 2. Timeline matching
+            if (sortingCheckedState && shuffledSortingArray.every((ev, idx) => events[idx].id === ev.id)) {
+                metricPoints += 25;
             }
             
-            // Blank completion checking
-            let totalBlanks = 0;
+            // 3. Blank keywords correctly answered
             let correctBlanks = 0;
+            let totalBlanks = 0;
             events.forEach(e => {
                 e.keywords.forEach((kw, kwIdx) => {
                     totalBlanks++;
-                    const uAns = (blankAnswers[`${e.id}_${kwIdx}`] || "").trim().replace(/\s+/g, "");
-                    if (uAns === kw.replace(/\s+/g, "")) correctBlanks++;
+                    const userAns = (blankUserAnswers[`${e.id}_${kwIdx}`] || "").trim().replace(/\s+/g, "");
+                    const correctAns = kw.trim().replace(/\s+/g, "");
+                    if (userAns === correctAns) correctBlanks++;
                 });
             });
-            if (blankChecked && correctBlanks === totalBlanks) clearedCount++;
+            if (blankCheckedState && correctBlanks === totalBlanks) metricPoints += 25;
             
-            // Narrative writing trace
-            const hasEssay = localStorage.getItem(`hist_essay_day_${currentDay}`);
-            if (hasEssay) clearedCount++;
-
-            document.getElementById('today-progress-badge').textContent = `${clearedCount} / 4 완료`;
+            // 4. Narrative completed check
+            const hasWritten = localStorage.getItem(`m3_korea_essay_done_${currentDay}`);
+            if (hasWritten) metricPoints += 25;
+            
+            document.getElementById('cleared-progress-score').textContent = metricPoints;
         }
 
         // ==========================================
-        // STAGE 1: SCAN CARD FLOWS
+        // STAGE 1: CARD SCAN CONTROLS
         // ==========================================
         function initializeScanStage() {
-            const events = APP_DATA[currentDay].events;
-            
-            // Reset flipping indicator
-            const innerCard = document.getElementById('flashcard-inner');
+            const innerCard = document.getElementById('flashcard-track');
             innerCard.className = "transform-style-3d duration-500 w-full h-full relative";
             isCardFlipped = false;
             
-            renderScanCardContent();
-            renderScanCardIndicators();
+            renderScanCardFace();
+            renderScanCardIndicatorDots();
         }
 
-        function renderScanCardContent() {
-            const events = APP_DATA[currentDay].events;
-            const event = events[activeCardIndex];
+        function renderScanCardFace() {
+            const events = LOCAL_DATABASE[currentDay].events;
+            const item = events[activeCardIndex];
             
-            document.getElementById('scan-progress-display').textContent = `${activeCardIndex + 1} / ${events.length}`;
+            document.getElementById('scan-page-text').textContent = `${activeCardIndex + 1} / ${events.length}`;
             
-            // Front Card UI elements
-            document.getElementById('card-year').textContent = `${event.year}년`;
-            document.getElementById('card-title').textContent = event.title;
-            document.getElementById('card-characters').textContent = event.character;
+            // Card Front face bindings
+            document.getElementById('card-year-tag').textContent = `${item.year}년`;
+            document.getElementById('card-main-title').textContent = item.title;
+            document.getElementById('card-main-characters').textContent = `주요 인물: ${item.character}`;
+            document.getElementById('card-short-desc').textContent = item.shortDesc;
             
-            // Back Card UI elements
-            document.getElementById('card-description').textContent = event.description;
+            // Card Back face bindings
+            document.getElementById('card-long-desc').textContent = item.longDesc;
             
-            // Generate Keyword Chips
-            const chipsBox = document.getElementById('card-keywords');
-            chipsBox.innerHTML = '';
-            event.keywords.forEach(kw => {
+            // Back Keywords collection (6 keywords)
+            const keywordBox = document.getElementById('card-keyword-bag');
+            keywordBox.innerHTML = '';
+            item.keywords.forEach((kw) => {
                 const chip = document.createElement('span');
-                chip.className = "bg-m3-surfaceContainerLowest text-m3-tertiary text-[10px] px-2.5 py-0.5 rounded-lg border border-slate-850 font-bold";
+                chip.className = "bg-slate-950 border border-m3-surfaceVariant/80 text-m3-primary text-[10px] px-2.5 py-1 rounded-lg font-mono font-bold flex items-center";
                 chip.textContent = kw;
-                chipsBox.appendChild(chip);
+                keywordBox.appendChild(chip);
             });
-
-            // Adjust Weakness Toggle button design
-            const weakBtn = document.getElementById('card-weak-btn');
-            const isSaved = weakList.some(item => item.id === event.id);
-            if (isSaved) {
-                weakBtn.className = "text-xs bg-m3-error text-m3-surfaceContainerLowest px-3.5 py-2 rounded-2xl font-bold transition flex items-center gap-1 shadow-md";
-                weakBtn.querySelector('span:last-child').textContent = "취약 보관됨";
+            
+            // Pocket check toggle configuration
+            const wBtn = document.getElementById('card-weak-toggle');
+            const inWeakness = weaknessPocketList.some(itemIter => itemIter.id === item.id);
+            if (inWeakness) {
+                wBtn.className = "active-scale text-xs bg-m3-tertiary text-m3-surfaceContainerLowest px-3.5 py-2.5 rounded-2xl font-black transition flex items-center gap-1 shadow-md";
+                wBtn.innerHTML = `<span class="material-symbols-outlined text-xs">favorite</span> 오답 수첩 등록됨`;
             } else {
-                weakBtn.className = "text-xs text-m3-error hover:bg-m3-error/10 border border-m3-error/30 px-3.5 py-2 rounded-2xl font-bold transition flex items-center gap-1";
-                weakBtn.querySelector('span:last-child').textContent = "취약 보관";
+                wBtn.className = "active-scale text-xs text-m3-tertiary border border-m3-tertiary/30 hover:bg-m3-tertiaryContainer/20 px-3.5 py-2.5 rounded-2xl font-black transition flex items-center gap-1";
+                wBtn.innerHTML = `<span class="material-symbols-outlined text-xs">favorite_border</span> 오답 수첩 등록`;
             }
         }
 
-        function renderScanCardIndicators() {
-            const container = document.getElementById('card-indicators');
-            container.innerHTML = '';
-            const events = APP_DATA[currentDay].events;
+        function renderScanCardIndicatorDots() {
+            const dots = document.getElementById('card-indicator-dots');
+            dots.innerHTML = '';
+            const events = LOCAL_DATABASE[currentDay].events;
             
             events.forEach((_, idx) => {
                 const dot = document.createElement('div');
@@ -972,30 +1122,30 @@
                     e.stopPropagation();
                     activeCardIndex = idx;
                     isCardFlipped = false;
-                    document.getElementById('flashcard-inner').className = "transform-style-3d duration-500 w-full h-full relative";
-                    renderScanCardContent();
-                    updateDots();
+                    document.getElementById('flashcard-track').className = "transform-style-3d duration-500 w-full h-full relative";
+                    renderScanCardFace();
+                    updateScanIndicatorDots();
                 };
-                container.appendChild(dot);
+                dots.appendChild(dot);
             });
-            updateDots();
+            updateScanIndicatorDots();
         }
 
-        function updateDots() {
-            const dots = document.getElementById('card-indicators').children;
-            const events = APP_DATA[currentDay].events;
-            for (let i = 0; i < dots.length; i++) {
-                const isScanned = scannedCards[events[i].id];
+        function updateScanIndicatorDots() {
+            const children = document.getElementById('card-indicator-dots').children;
+            const events = LOCAL_DATABASE[currentDay].events;
+            for (let i = 0; i < children.length; i++) {
+                const scanned = scannedCardsProgress[events[i].id];
                 if (i === activeCardIndex) {
-                    dots[i].className = "w-4 h-2 rounded-full bg-m3-primary transition-all duration-300";
+                    children[i].className = "w-5 h-1.5 rounded-full bg-m3-primary transition-all duration-300";
                 } else {
-                    dots[i].className = `w-2 h-2 rounded-full cursor-pointer transition-all ${isScanned ? 'bg-emerald-500/70' : 'bg-slate-700 hover:bg-slate-500'}`;
+                    children[i].className = `w-1.5 h-1.5 rounded-full cursor-pointer transition-all duration-300 ${scanned ? 'bg-emerald-500/80' : 'bg-slate-700 hover:bg-slate-500'}`;
                 }
             }
         }
 
-        function flipCard() {
-            const innerCard = document.getElementById('flashcard-inner');
+        function flipFlashcard() {
+            const innerCard = document.getElementById('flashcard-track');
             if (isCardFlipped) {
                 innerCard.className = "transform-style-3d duration-500 w-full h-full relative";
                 isCardFlipped = false;
@@ -1005,216 +1155,213 @@
             }
         }
 
-        function prevCard() {
+        function goPrevCard() {
             if (activeCardIndex > 0) {
                 activeCardIndex--;
                 isCardFlipped = false;
-                document.getElementById('flashcard-inner').className = "transform-style-3d duration-500 w-full h-full relative";
-                renderScanCardContent();
-                updateDots();
+                document.getElementById('flashcard-track').className = "transform-style-3d duration-500 w-full h-full relative";
+                renderScanCardFace();
+                updateScanIndicatorDots();
             }
         }
 
-        function nextCard() {
-            const events = APP_DATA[currentDay].events;
+        function goNextCard() {
+            const events = LOCAL_DATABASE[currentDay].events;
             if (activeCardIndex < events.length - 1) {
                 activeCardIndex++;
                 isCardFlipped = false;
-                document.getElementById('flashcard-inner').className = "transform-style-3d duration-500 w-full h-full relative";
-                renderScanCardContent();
-                updateDots();
+                document.getElementById('flashcard-track').className = "transform-style-3d duration-500 w-full h-full relative";
+                renderScanCardFace();
+                updateScanIndicatorDots();
             }
         }
 
-        function markCurrentCardAsScanned() {
-            const events = APP_DATA[currentDay].events;
-            const currentEvent = events[activeCardIndex];
-            scannedCards[currentEvent.id] = true;
+        function approveScanCard() {
+            const currentEvent = LOCAL_DATABASE[currentDay].events[activeCardIndex];
+            scannedCardsProgress[currentEvent.id] = true;
             
-            updateDots();
-            updateTodayProgressIndicator();
+            updateScanIndicatorDots();
+            calculateOverallDayProgress();
             
-            // Advance to next card smoothly
-            if (activeCardIndex < events.length - 1) {
+            if (activeCardIndex < LOCAL_DATABASE[currentDay].events.length - 1) {
                 setTimeout(() => {
-                    nextCard();
-                }, 300);
+                    goNextCard();
+                }, 200);
             } else {
-                showM3Dialog("1단계 완료", "축하합니다! 오늘의 스캔 단계를 1차 완성했습니다. 이제 2단계에서 연대 순서를 완벽히 맞춰봅시다.", "celebration");
-                switchStage('sort');
+                showDialogPopup("1단계 완전 정복", "오늘 암기할 5개 핵심 사건의 구조적 스캔을 마쳤습니다! 이제 2단계에서 원인-결과 시간 순서를 맞춰봅시다.", "check_circle");
+                changeStage('sort');
             }
         }
 
         // ==========================================
-        // STAGE 2: TIMELINE SORT FLOW
+        // STAGE 2: TIMELINE SORT SYSTEM (No drag errors, ultra mobile friendly)
         // ==========================================
-        function shuffleSortingList() {
-            const orig = [...APP_DATA[currentDay].events];
-            sortingList = orig
-                .map(v => ({ v, idx: Math.random() }))
-                .sort((a,b) => a.idx - b.idx)
+        function scrambleSorting() {
+            const source = [...LOCAL_DATABASE[currentDay].events];
+            shuffledSortingArray = source
+                .map(v => ({ v, val: Math.random() }))
+                .sort((a,b) => a.val - b.val)
                 .map(x => x.v);
-            sortingChecked = false;
-            document.getElementById('sort-feedback').className = "hidden";
-            renderSortingList();
+            sortingCheckedState = false;
+            document.getElementById('sort-result-card').className = "hidden";
+            renderSortingLayout();
         }
 
-        function renderSortingList() {
-            const container = document.getElementById('sort-list-container');
+        function renderSortingLayout() {
+            const container = document.getElementById('sort-track');
             container.innerHTML = '';
             
-            sortingList.forEach((event, index) => {
-                const correctIndex = APP_DATA[currentDay].events.findIndex(e => e.id === event.id);
-                const isCorrectPos = correctIndex === index;
+            shuffledSortingArray.forEach((event, idx) => {
+                const correctRealIndex = LOCAL_DATABASE[currentDay].events.findIndex(e => e.id === event.id);
+                const posPerfect = correctRealIndex === idx;
                 
-                const card = document.createElement('div');
+                const element = document.createElement('div');
+                let borderM3 = "border-m3-surfaceVariant bg-m3-surfaceContainerLow";
+                let validationIndicator = "";
                 
-                let borderClass = "border-slate-750 bg-m3-surfaceContainerLow";
-                let badgeContent = "";
-                
-                if (sortingChecked) {
-                    if (isCorrectPos) {
-                        borderClass = "border-emerald-500/50 bg-emerald-950/20 text-emerald-100";
-                        badgeContent = `<span class="bg-emerald-950 text-emerald-400 border border-emerald-800 text-[10px] px-2.5 py-0.5 rounded-full font-bold">${event.year}년 정답</span>`;
+                if (sortingCheckedState) {
+                    if (posPerfect) {
+                        borderM3 = "border-emerald-500/50 bg-emerald-950/25 text-emerald-100";
+                        validationIndicator = `<span class="bg-emerald-950/80 text-emerald-400 border border-emerald-800 text-[9px] px-2.5 py-1 rounded-full font-bold shrink-0">${event.year}년 연대 일치</span>`;
                     } else {
-                        borderClass = "border-rose-500/50 bg-rose-950/20 text-rose-100";
-                        badgeContent = `<span class="bg-rose-950 text-rose-400 border border-rose-900 text-[10px] px-2.5 py-0.5 rounded-full font-bold">오치적</span>`;
+                        borderM3 = "border-m3-tertiary/40 bg-m3-tertiaryContainer/25 text-m3-tertiary";
+                        validationIndicator = `<span class="bg-m3-tertiaryContainer/80 text-m3-tertiary border border-m3-tertiary/40 text-[9px] px-2.5 py-1 rounded-full font-bold shrink-0">순서 보정 필요</span>`;
                     }
                 }
                 
-                card.className = `p-4 rounded-3xl border ${borderClass} flex items-center justify-between gap-3 transition-all duration-200`;
-                card.innerHTML = `
-                    <div class="flex items-center space-x-3.5 min-w-0 flex-1">
-                        <div class="w-7 h-7 rounded-full bg-m3-surfaceContainerHighest flex items-center justify-center font-mono text-xs font-black text-m3-primary shrink-0">
-                            ${index + 1}
+                element.className = `p-3.5 rounded-3xl border ${borderM3} flex items-center justify-between gap-3 transition-all duration-300 hover:border-m3-outline/40 animate-fade-in`;
+                element.innerHTML = `
+                    <div class="flex items-center space-x-3 min-w-0 flex-1">
+                        <div class="w-7 h-7 rounded-2xl bg-m3-surfaceContainerHighest flex items-center justify-center font-mono text-xs font-black text-m3-primary shrink-0">
+                            ${idx + 1}
                         </div>
                         <div class="min-w-0">
                             <h4 class="text-xs sm:text-sm font-black text-slate-100">${event.title}</h4>
-                            <p class="text-[10px] sm:text-xs text-m3-outline truncate mt-0.5">${event.description}</p>
+                            <p class="text-[9px] sm:text-xs text-m3-outline truncate mt-0.5">${event.shortDesc}</p>
                         </div>
                     </div>
-                    <div class="flex items-center space-x-1.5 shrink-0">
-                        ${badgeContent}
-                        <button onclick="moveSortItem(${index}, -1)" ${index === 0 || sortingChecked ? 'disabled' : ''} class="w-7 h-7 rounded-lg hover:bg-m3-surfaceVariant disabled:opacity-20 flex items-center justify-center text-slate-300">
-                            <span class="material-symbols-outlined text-sm">keyboard_arrow_up</span>
+                    <div class="flex items-center space-x-1 shrink-0">
+                        ${validationIndicator}
+                        <button onclick="moveSortStep(${idx}, -1)" ${idx === 0 || sortingCheckedState ? 'disabled' : ''} class="w-8 h-8 rounded-xl hover:bg-m3-surfaceVariant disabled:opacity-20 flex items-center justify-center text-slate-300">
+                            <span class="material-symbols-outlined text-base">expand_less</span>
                         </button>
-                        <button onclick="moveSortItem(${index}, 1)" ${index === sortingList.length - 1 || sortingChecked ? 'disabled' : ''} class="w-7 h-7 rounded-lg hover:bg-m3-surfaceVariant disabled:opacity-20 flex items-center justify-center text-slate-300">
-                            <span class="material-symbols-outlined text-sm">keyboard_arrow_down</span>
+                        <button onclick="moveSortStep(${idx}, 1)" ${idx === shuffledSortingArray.length - 1 || sortingCheckedState ? 'disabled' : ''} class="w-8 h-8 rounded-xl hover:bg-m3-surfaceVariant disabled:opacity-20 flex items-center justify-center text-slate-300">
+                            <span class="material-symbols-outlined text-base">expand_more</span>
                         </button>
                     </div>
                 `;
-                container.appendChild(card);
+                container.appendChild(element);
             });
         }
 
-        function moveSortItem(index, dir) {
-            if (sortingChecked) return;
-            const target = index + dir;
-            if (target < 0 || target >= sortingList.length) return;
+        function moveSortStep(index, movement) {
+            if (sortingCheckedState) return;
+            const target = index + movement;
+            if (target < 0 || target >= shuffledSortingArray.length) return;
             
-            // Swap array
-            const temp = sortingList[index];
-            sortingList[index] = sortingList[target];
-            sortingList[target] = temp;
+            // Elegant swap physics simulation
+            const temp = shuffledSortingArray[index];
+            shuffledSortingArray[index] = shuffledSortingArray[target];
+            shuffledSortingArray[target] = temp;
             
-            renderSortingList();
+            renderSortingLayout();
         }
 
-        function submitSortingAnswers() {
-            sortingChecked = true;
-            renderSortingList();
+        function evaluateSorting() {
+            sortingCheckedState = true;
+            renderSortingLayout();
             
-            const originalSequence = APP_DATA[currentDay].events.map(e => e.id);
-            const userSequence = sortingList.map(e => e.id);
+            const originalKeys = LOCAL_DATABASE[currentDay].events.map(e => e.id);
+            const userKeys = shuffledSortingArray.map(e => e.id);
             
-            let isPerfect = true;
-            for (let i = 0; i < originalSequence.length; i++) {
-                if (originalSequence[i] !== userSequence[i]) {
-                    isPerfect = false;
-                    // Add wrong item to weak list
-                    addToWeakListInternal(sortingList[i]);
+            let allCorrect = true;
+            for (let i = 0; i < originalKeys.length; i++) {
+                if (originalKeys[i] !== userKeys[i]) {
+                    allCorrect = false;
+                    registerToWeaknessPool(shuffledSortingArray[i]);
                 }
             }
             
-            const feedbackBox = document.getElementById('sort-feedback');
-            feedbackBox.classList.remove('hidden');
+            const fb = document.getElementById('sort-result-card');
+            fb.classList.remove('hidden');
             
-            if (isPerfect) {
-                feedbackBox.className = "p-4 rounded-3xl border border-emerald-500/40 bg-emerald-950/20 text-emerald-300 text-xs mt-3";
-                feedbackBox.innerHTML = `
-                    <p class="font-bold text-sm">🎉 역사 정렬 완벽 달성!</p>
-                    <p class="text-[11px] text-emerald-400 mt-1">사건의 원인과 결과를 파악해 연대순 흐름을 완벽히 정립했습니다. 3단계 빈칸 도전으로 넘어가세요!</p>
+            if (allCorrect) {
+                fb.className = "p-4 rounded-3xl border border-emerald-500/40 bg-emerald-950/20 text-emerald-300 text-xs mt-3 animate-fade-in";
+                fb.innerHTML = `
+                    <p class="font-extrabold text-sm flex items-center gap-1">🎉 연대 및 인과적 흐름 100% 일치 성공!</p>
+                    <p class="text-[10px] text-emerald-400 mt-1">사건이 유도한 연대사적 흐름을 마스터했습니다. 다음 3단계 필수 고유명사 채우기로 진도 이동을 장려합니다.</p>
                 `;
-                showM3Dialog("2단계 합격", "연대 정렬에 대성공했습니다! 이제 서술형의 뼈대가 될 핵심 고유명사 키워드를 3단계에서 적어봅시다.", "task_alt");
+                showDialogPopup("2단계 완수", "역사 전개 과정을 시간순으로 정밀하게 정복했습니다! 3단계 빈칸 쓰기로 이동해 주세요.", "celebration");
+                changeStage('blank');
             } else {
-                feedbackBox.className = "p-4 rounded-3xl border border-m3-error/40 bg-m3-surfaceContainerHighest text-m3-error text-xs mt-3";
-                feedbackBox.innerHTML = `
-                    <p class="font-bold text-sm">⚠️ 배열 오류가 감지되었습니다.</p>
-                    <p class="text-[11px] text-slate-400 mt-1">잘못 배열된 사건들은 전후 관계(배경과 전개) 서술 문제 시 감점 요인이 될 수 있습니다. 우측 연대 확인 후 '재배치' 버튼을 통해 재훈련해 보세요.</p>
+                fb.className = "p-4 rounded-3xl border border-m3-tertiary/40 bg-m3-surfaceContainerHighest text-m3-tertiary text-xs mt-3 animate-fade-in";
+                fb.innerHTML = `
+                    <p class="font-bold text-sm">⚠️ 인과적 연결 흐름 일부가 어긋났습니다.</p>
+                    <p class="text-[10px] text-slate-400 mt-1">틀린 사건은 우측의 실제 연도 매치 표식을 참고하여 복습하고 다시 섞어서 재도전해 보기를 강권합니다.</p>
                 `;
             }
             
-            updateTodayProgressIndicator();
-            updateWeakListUI();
+            calculateOverallDayProgress();
+            updateWeaknessPocketUI();
         }
 
         // ==========================================
-        // STAGE 3: INTERACTIVE CLOZE FLOW
+        // STAGE 3: CLOZE KEYWORD BLANK SYSTEM
         // ==========================================
         function initializeBlankStage() {
-            const container = document.getElementById('blank-cards-container');
-            container.innerHTML = '';
+            const holder = document.getElementById('blank-card-holder');
+            holder.innerHTML = '';
             
-            const events = APP_DATA[currentDay].events;
+            const events = LOCAL_DATABASE[currentDay].events;
             
             events.forEach((event) => {
                 const card = document.createElement('div');
-                card.className = "bg-m3-surfaceContainerLow p-4 rounded-3xl border border-m3-surfaceContainerHigh space-y-3";
+                card.className = "bg-m3-surfaceContainerLow p-4.5 rounded-3xl border border-m3-surfaceVariant/60 space-y-3.5 animate-fade-in";
                 
-                // Hide keywords inside description text dynamically for rendering cloze style questions
-                let modifiedDesc = event.description;
-                event.keywords.forEach((kw) => {
-                    const placeholder = `<span class="px-2 py-0.5 rounded-lg bg-m3-surfaceContainerHighest text-m3-primary font-bold inline-block mx-0.5">(${kw.length}글자)</span>`;
-                    modifiedDesc = modifiedDesc.split(kw).join(placeholder);
+                // Cloze sentence modification replacement logic
+                let blankedDescription = event.longDesc;
+                event.keywords.forEach((keyword) => {
+                    const blockRepresentation = `<span class="px-2 py-0.5 rounded bg-m3-surfaceContainerHighest text-m3-primary font-bold inline-block mx-1">(${keyword.length}글자)</span>`;
+                    blankedDescription = blankedDescription.split(keyword).join(blockRepresentation);
                 });
                 
-                let inputsHTML = '';
+                let inputsAreaHTML = '';
                 event.keywords.forEach((kw, kwIdx) => {
-                    const keyId = `${event.id}_${kwIdx}`;
-                    const currentHintOn = blankHints[keyId];
-                    const hintPlaceholder = currentHintOn ? `초성 힌트: ${getChosung(kw)} (${kw.length}글자)` : "정확하게 입력";
+                    const dictKey = `${event.id}_${kwIdx}`;
+                    const hintTriggered = blankHintToggleState[dictKey];
+                    const hintDisplay = hintTriggered ? `초성: ${buildChosungPattern(kw)} (${kw.length}글자)` : "여기에 정확히 기술";
                     
-                    let inputBorder = "border-slate-800 focus:ring-m3-primary";
-                    let validationText = "";
+                    let bColor = "border-m3-surfaceVariant focus:ring-m3-primary";
+                    let validationBadge = "";
                     
-                    if (blankChecked) {
-                        const userAns = (blankAnswers[keyId] || "").trim().replace(/\s+/g, "");
+                    if (blankCheckedState) {
+                        const userAns = (blankUserAnswers[dictKey] || "").trim().replace(/\s+/g, "");
                         const correctAns = kw.replace(/\s+/g, "");
                         if (userAns === correctAns) {
-                            inputBorder = "border-emerald-500 text-emerald-300 bg-emerald-950/10";
-                            validationText = `<span class="material-symbols-outlined text-xs text-emerald-400 shrink-0">check_circle</span>`;
+                            bColor = "border-emerald-500 text-emerald-300 bg-emerald-950/15";
+                            validationBadge = `<span class="material-symbols-outlined text-sm text-emerald-400 shrink-0">verified</span>`;
                         } else {
-                            inputBorder = "border-m3-error text-m3-error bg-m3-errorContainer/10";
-                            validationText = `<span class="material-symbols-outlined text-xs text-m3-error shrink-0">cancel</span>`;
+                            bColor = "border-m3-tertiary text-m3-tertiary bg-m3-tertiaryContainer/15";
+                            validationBadge = `<span class="material-symbols-outlined text-sm text-m3-tertiary shrink-0">error</span>`;
                         }
                     }
                     
-                    inputsHTML += `
-                        <div class="bg-m3-surfaceContainerHighest/70 p-3 rounded-2xl flex items-center justify-between border border-slate-900 gap-2">
+                    inputsAreaHTML += `
+                        <div class="bg-m3-surfaceContainerHighest/50 p-3 rounded-2xl flex items-center justify-between border border-slate-900 gap-2">
                             <div class="flex-1 min-w-0">
-                                <span class="text-[9px] text-m3-outline uppercase font-black block mb-1">체크 ${kwIdx + 1}</span>
-                                <input type="text" 
-                                    id="blank-input-${keyId}"
-                                    placeholder="${hintPlaceholder}" 
-                                    value="${blankAnswers[keyId] || ''}"
-                                    oninput="saveBlankAnswer('${event.id}', ${kwIdx}, this.value)"
-                                    ${blankChecked && (blankAnswers[keyId] || '').trim().replace(/\s+/g, "") === kw.replace(/\s+/g, "") ? 'disabled' : ''}
-                                    class="w-full bg-m3-surfaceContainerLowest rounded-xl text-xs py-2 px-3 focus:outline-none focus:ring-1 border ${inputBorder}"
+                                <span class="text-[8px] text-m3-outline uppercase font-black block mb-1">채점 단어 ${kwIdx + 1}</span>
+                                <input type="text"
+                                    id="input-cloze-${dictKey}"
+                                    placeholder="${hintDisplay}"
+                                    value="${blankUserAnswers[dictKey] || ''}"
+                                    oninput="trackBlankInputState('${event.id}', ${kwIdx}, this.value)"
+                                    ${blankCheckedState && (blankUserAnswers[dictKey] || '').trim().replace(/\s+/g, "") === kw.replace(/\s+/g, "") ? 'disabled' : ''}
+                                    class="w-full bg-m3-surfaceContainerLowest rounded-xl text-xs py-2 px-3 focus:outline-none focus:ring-1 border ${bColor}"
                                 />
                             </div>
-                            <div class="flex flex-col items-end gap-1 shrink-0 self-end">
-                                ${validationText}
-                                <button type="button" onclick="toggleBlankHint('${event.id}', ${kwIdx})" class="text-[9px] font-bold text-m3-primary bg-m3-primaryContainer/30 hover:bg-m3-primaryContainer px-2.5 py-1 rounded-full transition">
+                            <div class="flex flex-col items-end gap-1.5 self-end shrink-0">
+                                ${validationBadge}
+                                <button type="button" onclick="triggerBlankHintState('${event.id}', ${kwIdx})" class="text-[9px] font-black text-m3-primary bg-m3-primaryContainer/30 hover:bg-m3-primaryContainer px-2.5 py-1 rounded-full transition active-scale">
                                     힌트
                                 </button>
                             </div>
@@ -1223,346 +1370,331 @@
                 });
                 
                 card.innerHTML = `
-                    <div class="flex justify-between items-center text-xs">
-                        <span class="text-m3-tertiary font-bold font-mono">${event.year}년</span>
-                        <span class="text-m3-outline">인물군: ${event.character}</span>
+                    <div class="flex justify-between items-center text-[10px]">
+                        <span class="text-m3-tertiary font-bold font-mono">${event.year}년 대주제</span>
+                        <span class="text-m3-outline">인물: ${event.character}</span>
                     </div>
                     <h4 class="text-sm font-black text-slate-100">${event.title}</h4>
-                    <p class="text-xs text-slate-300 leading-relaxed bg-m3-surfaceContainerLowest/30 p-3 rounded-2xl border border-slate-850/50">
-                        ${modifiedDesc}
+                    <p class="text-xs text-slate-300 leading-relaxed bg-m3-surfaceContainerLowest/40 p-3 rounded-2xl border border-m3-surfaceVariant/20">
+                        ${blankedDescription}
                     </p>
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 mt-2">
-                        ${inputsHTML}
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 mt-3">
+                        ${inputsAreaHTML}
                     </div>
                 `;
-                
-                container.appendChild(card);
+                holder.appendChild(card);
             });
             
-            document.getElementById('blank-overall-feedback').className = "hidden";
+            document.getElementById('blank-summary-box').className = "hidden";
         }
 
-        function saveBlankAnswer(eventId, kwIdx, value) {
-            blankAnswers[`${eventId}_${kwIdx}`] = value;
+        function trackBlankInputState(eventId, kwIdx, textVal) {
+            blankUserAnswers[`${eventId}_${kwIdx}`] = textVal;
         }
 
-        function toggleBlankHint(eventId, kwIdx) {
-            const keyId = `${eventId}_${kwIdx}`;
-            blankHints[keyId] = !blankHints[keyId];
+        function triggerBlankHintState(eventId, kwIdx) {
+            const dKey = `${eventId}_${kwIdx}`;
+            blankHintToggleState[dKey] = !blankHintToggleState[dKey];
             initializeBlankStage();
         }
 
-        function resetBlankInputs() {
-            blankAnswers = {};
-            blankChecked = false;
-            blankHints = {};
+        function clearBlankInputs() {
+            blankUserAnswers = {};
+            blankCheckedState = false;
+            blankHintToggleState = {};
             initializeBlankStage();
-            updateTodayProgressIndicator();
+            calculateOverallDayProgress();
         }
 
-        function submitBlankAnswers() {
-            blankChecked = true;
+        function evaluateBlanks() {
+            blankCheckedState = true;
             initializeBlankStage();
             
-            const events = APP_DATA[currentDay].events;
-            let total = 0;
-            let correct = 0;
+            const events = LOCAL_DATABASE[currentDay].events;
+            let countTotal = 0;
+            let countCorrect = 0;
             
             events.forEach((event) => {
                 event.keywords.forEach((kw, kwIdx) => {
-                    total++;
-                    const userAns = (blankAnswers[`${event.id}_${kwIdx}`] || "").trim().replace(/\s+/g, "");
-                    const correctAns = kw.replace(/\s+/g, "");
+                    countTotal++;
+                    const userAns = (blankUserAnswers[`${event.id}_${kwIdx}`] || "").trim().replace(/\s+/g, "");
+                    const correctAns = kw.trim().replace(/\s+/g, "");
                     if (userAns === correctAns) {
-                        correct++;
+                        countCorrect++;
                     } else {
-                        // Mark as weak
-                        addToWeakListInternal(event);
+                        registerToWeaknessPool(event);
                     }
                 });
             });
             
-            const feedbackBox = document.getElementById('blank-overall-feedback');
-            feedbackBox.classList.remove('hidden');
+            const sBox = document.getElementById('blank-summary-box');
+            sBox.classList.remove('hidden');
             
-            if (correct === total) {
-                feedbackBox.className = "p-4 rounded-3xl border border-emerald-500/40 bg-emerald-950/20 text-emerald-300 text-xs mt-3 text-center";
-                feedbackBox.innerHTML = `
-                    <p class="font-bold text-sm">🎉 3단계 키워드 자가 인증 100% 합격!</p>
-                    <p class="text-[11px] text-emerald-400 mt-1">완벽히 득점 키워드를 외웠습니다. 이제 서술형 복원 훈련을 통해 실전 글쓰기를 단련하세요!</p>
+            if (countCorrect === countTotal) {
+                sBox.className = "p-4 rounded-3xl border border-emerald-500/40 bg-emerald-950/20 text-emerald-300 text-xs mt-3 text-center animate-fade-in";
+                sBox.innerHTML = `
+                    <p class="font-extrabold text-sm">🎉 3단계 30개 전체 키워드 만점 달성!</p>
+                    <p class="text-[10px] text-emerald-400 mt-1">서술형 득점의 기틀이 마련되었습니다. 마지막 4단계 실전 모의고사로 나아가 최종 확인을 마무리하세요.</p>
                 `;
-                showM3Dialog("3단계 완수", "정교한 용어 채움이 끝났습니다. 이제 대망의 4단계 실전형 서술 평가를 개시합니다.", "military_tech");
-                switchStage('narrative');
+                showDialogPopup("3단계 정복", "30개 필수 단어를 모두 완벽하게 작성하셨습니다! 이제 최종 4단계 서술형 기출 트레이너로 이동합니다.", "verified");
+                changeStage('narrative');
             } else {
-                feedbackBox.className = "p-4 rounded-3xl border border-m3-error/40 bg-m3-surfaceContainerHighest text-m3-error text-xs mt-3 text-center";
-                feedbackBox.innerHTML = `
-                    <p class="font-bold text-sm">⚠️ 불완전 상태 검출 (${correct} / ${total} 정답)</p>
-                    <p class="text-[11px] text-slate-400 mt-1">일부 용어에 사소한 오자가 있거나 미기재되었습니다. 복습하여 보충 후 다시 채점하세요.</p>
+                sBox.className = "p-4 rounded-3xl border border-m3-tertiary/40 bg-m3-surfaceContainerHighest text-m3-tertiary text-xs mt-3 text-center animate-fade-in";
+                sBox.innerHTML = `
+                    <p class="font-bold text-sm">⚠️ 보강 필요 (${countCorrect} / ${countTotal} 단어 일치)</p>
+                    <p class="text-[10px] text-slate-400 mt-1">오탈자 혹은 빈 칸이 검출되었습니다. 초성 유도 힌트를 참조하여 다시 작성해보세요.</p>
                 `;
             }
             
-            updateTodayProgressIndicator();
-            updateWeakListUI();
+            calculateOverallDayProgress();
+            updateWeaknessPocketUI();
         }
 
-        // Helper to convert Korean letters to Chosung (First character consonant hints)
-        function getChosung(str) {
-            const cho = ["ㄱ","ㄲ","ㄴ","ㄷ","ㄸ","ㄹ","ㅁ","ㅂ","ㅃ","ㅅ","ㅆ","ㅇ","ㅈ","ㅉ","ㅊ","ㅋ","ㅌ","ㅍ","ㅎ"];
+        // Hangeul Disassembler Chosung generator for hint efficiency
+        function buildChosungPattern(text) {
+            const keys = ["ㄱ","ㄲ","ㄴ","ㄷ","ㄸ","ㄹ","ㅁ","ㅂ","ㅃ","ㅅ","ㅆ","ㅇ","ㅈ","ㅉ","ㅊ","ㅋ","ㅌ","ㅍ","ㅎ"];
             let result = "";
-            for (let i = 0; i < str.length; i++) {
-                const code = str.charCodeAt(i) - 44032;
-                if (code > -1 && code < 11172) {
-                    result += cho[Math.floor(code / 588)];
+            for (let i = 0; i < text.length; i++) {
+                const ascii = text.charCodeAt(i) - 44032;
+                if (ascii > -1 && ascii < 11172) {
+                    result += keys[Math.floor(ascii / 588)];
                 } else {
-                    result += str.charAt(i);
+                    result += text.charAt(i);
                 }
             }
             return result;
         }
 
         // ==========================================
-        // STAGE 4: NARRATIVE (ESSAY EVAL)
+        // STAGE 4: ESSAY EVALUATION SYSTEM
         // ==========================================
         function initializeNarrativeStage() {
-            const selectEl = document.getElementById('narrative-select');
-            selectEl.innerHTML = '';
+            const combo = document.getElementById('narrative-combo');
+            combo.innerHTML = '';
             
-            const events = APP_DATA[currentDay].events;
+            const events = LOCAL_DATABASE[currentDay].events;
             events.forEach((ev) => {
-                const opt = document.createElement('option');
-                opt.value = ev.id;
-                opt.textContent = `(${ev.year}) ${ev.title}`;
-                selectEl.appendChild(opt);
+                const item = document.createElement('option');
+                item.value = ev.id;
+                item.textContent = `(${ev.year}) ${ev.title}`;
+                combo.appendChild(item);
             });
             
-            loadNarrativeQuestion();
+            loadNarrativeItem();
         }
 
-        function loadNarrativeQuestion() {
-            const selectEl = document.getElementById('narrative-select');
-            const eventId = selectEl.value;
-            const event = APP_DATA[currentDay].events.find(e => e.id === eventId);
+        function loadNarrativeItem() {
+            const eventId = document.getElementById('narrative-combo').value;
+            const event = LOCAL_DATABASE[currentDay].events.find(e => e.id === eventId);
             
             if (event) {
-                document.getElementById('narrative-question-text').textContent = event.narrativeQuestion;
-                document.getElementById('narrative-textarea').value = "";
-                document.getElementById('narrative-analysis-box').classList.add('hidden');
-                updateCharCount();
+                document.getElementById('narrative-question-body').textContent = event.narrativeQuestion;
+                document.getElementById('essay-box').value = "";
+                document.getElementById('narrative-results-panel').classList.add('hidden');
+                trackEssayChars();
             }
         }
 
-        function updateCharCount() {
-            const len = document.getElementById('narrative-textarea').value.length;
-            document.getElementById('char-count').textContent = `${len}자 작성`;
+        function trackEssayChars() {
+            const len = document.getElementById('essay-box').value.length;
+            document.getElementById('essay-char-counter').textContent = `${len}자 기록`;
         }
 
-        function clearNarrativeAnswer() {
-            document.getElementById('narrative-textarea').value = "";
-            document.getElementById('narrative-analysis-box').classList.add('hidden');
-            updateCharCount();
+        function resetEssayBox() {
+            document.getElementById('essay-box').value = "";
+            document.getElementById('narrative-results-panel').classList.add('hidden');
+            trackEssayChars();
         }
 
-        function gradeNarrativeAnswer() {
-            const text = document.getElementById('narrative-textarea').value.trim();
+        function gradeWrittenEssay() {
+            const text = document.getElementById('essay-box').value.trim();
             if (!text) return;
             
-            const selectEl = document.getElementById('narrative-select');
-            const eventId = selectEl.value;
-            const event = APP_DATA[currentDay].events.find(e => e.id === eventId);
-            
+            const eventId = document.getElementById('narrative-combo').value;
+            const event = LOCAL_DATABASE[currentDay].events.find(e => e.id === eventId);
             if (!event) return;
             
-            const userClean = text.replace(/\s+/g, "").toLowerCase();
-            const checkedPoints = [];
-            const missedPoints = [];
+            // Core processing logic (Whitespace & Case neutral)
+            const sanitizedText = text.replace(/\s+/g, "").toLowerCase();
+            const matchedKeywords = [];
+            const missedKeywords = [];
             
             event.checkpoints.forEach((cp) => {
-                const cpClean = cp.replace(/\s+/g, "").toLowerCase();
-                if (userClean.includes(cpClean)) {
-                    checkedPoints.push(cp);
+                const cleanCp = cp.replace(/\s+/g, "").toLowerCase();
+                if (sanitizedText.includes(cleanCp)) {
+                    matchedKeywords.push(cp);
                 } else {
-                    missedPoints.push(cp);
+                    missedKeywords.push(cp);
                 }
             });
             
-            const ratio = checkedPoints.length / event.checkpoints.length;
+            const ratio = matchedKeywords.length / event.checkpoints.length;
             const score = Math.round(ratio * 100);
             
-            // Save state in localstorage to verify progress
-            localStorage.setItem(`hist_essay_day_${currentDay}`, "true");
-            updateTodayProgressIndicator();
+            // Save state internally
+            localStorage.setItem(`m3_korea_essay_done_${currentDay}`, "true");
+            calculateOverallDayProgress();
             
-            // Render Analysis Box
-            const box = document.getElementById('narrative-analysis-box');
-            box.classList.remove('hidden');
+            // Draw analysis report panel
+            const panel = document.getElementById('narrative-results-panel');
+            panel.classList.remove('hidden');
             
-            const scoreBadge = document.getElementById('narrative-score-badge');
+            const scoreBadge = document.getElementById('essay-score-value');
             scoreBadge.textContent = `${score} / 100점`;
             
             if (score >= 80) {
                 scoreBadge.className = "text-2xl font-mono font-black text-emerald-400";
             } else if (score >= 60) {
-                scoreBadge.className = "text-2xl font-mono font-black text-amber-400";
+                scoreBadge.className = "text-2xl font-mono font-black text-m3-primary";
             } else {
-                scoreBadge.className = "text-2xl font-mono font-black text-m3-error";
-                // low score goes to weak pocket
-                addToWeakListInternal(event);
-                updateWeakListUI();
+                scoreBadge.className = "text-2xl font-mono font-black text-m3-tertiary";
+                registerToWeaknessPool(event);
+                updateWeaknessPocketUI();
             }
             
-            // Render Checked Chips
-            const checkedContainer = document.getElementById('narrative-checked-chips');
-            checkedContainer.innerHTML = '';
-            if (checkedPoints.length > 0) {
-                checkedPoints.forEach(p => {
-                    const ch = document.createElement('span');
-                    ch.className = "bg-emerald-950 text-emerald-300 border border-emerald-800 text-[10px] px-2 py-0.5 rounded-lg font-bold";
-                    ch.textContent = p;
-                    checkedContainer.appendChild(ch);
+            // Match chips
+            const mHolder = document.getElementById('essay-match-holder');
+            mHolder.innerHTML = '';
+            if (matchedKeywords.length > 0) {
+                matchedKeywords.forEach(k => {
+                    const c = document.createElement('span');
+                    c.className = "bg-emerald-950/60 text-emerald-300 border border-emerald-800 text-[10px] px-2.5 py-1 rounded-xl font-bold font-mono";
+                    c.textContent = k;
+                    mHolder.appendChild(c);
                 });
             } else {
-                checkedContainer.innerHTML = '<span class="text-slate-500 text-[10px]">미발견</span>';
+                mHolder.innerHTML = '<span class="text-slate-500 text-[10px]">체크 키워드 미발견</span>';
             }
             
-            // Render Missed Chips
-            const missedContainer = document.getElementById('narrative-missed-chips');
-            missedContainer.innerHTML = '';
-            if (missedPoints.length > 0) {
-                missedPoints.forEach(p => {
-                    const ch = document.createElement('span');
-                    ch.className = "bg-rose-950 text-m3-error border border-rose-900 text-[10px] px-2 py-0.5 rounded-lg font-bold";
-                    ch.textContent = p;
-                    missedContainer.appendChild(ch);
+            // Miss chips
+            const missHolder = document.getElementById('essay-miss-holder');
+            missHolder.innerHTML = '';
+            if (missedKeywords.length > 0) {
+                missedKeywords.forEach(k => {
+                    const c = document.createElement('span');
+                    c.className = "bg-m3-tertiaryContainer/40 text-m3-tertiary border border-m3-tertiary/40 text-[10px] px-2.5 py-1 rounded-xl font-bold font-mono";
+                    c.textContent = k;
+                    missHolder.appendChild(c);
                 });
             } else {
-                missedContainer.innerHTML = '<span class="text-emerald-400 text-[10px]">없음 (완벽한 구조!)</span>';
+                missHolder.innerHTML = '<span class="text-emerald-400 text-[10px]">완벽! 누락 없음</span>';
             }
             
-            // Model Text
-            document.getElementById('narrative-model-answer').textContent = event.expertAnswer;
+            // Suggested text setting
+            document.getElementById('essay-model-answer').textContent = event.expertAnswer;
             
-            // Scroll to analysis smoothly
             setTimeout(() => {
-                box.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-            }, 100);
+                panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }, 150);
         }
 
-        function copyToClipboard() {
-            const answerText = document.getElementById('narrative-model-answer').textContent;
-            
-            // Native classic execution for strict environment iframe safety
-            const textArea = document.createElement("textarea");
-            textArea.value = answerText;
-            document.body.appendChild(textArea);
-            textArea.select();
+        function copyModelAnswerText() {
+            const val = document.getElementById('essay-model-answer').textContent;
+            const el = document.createElement('textarea');
+            el.value = val;
+            document.body.appendChild(el);
+            el.select();
             try {
                 document.execCommand('copy');
-                showM3Dialog("복사 완료", "교과서 모범 답안이 클립보드에 무사히 보존되었습니다.", "content_paste");
-            } catch (err) {
-                // fail silently
-            }
-            document.body.removeChild(textArea);
+                showDialogPopup("답안 복사 완료", "교과서 모범 답안 텍스트가 무사히 클립보드에 보관되었습니다.", "assignment_turned_in");
+            } catch(e){}
+            document.body.removeChild(el);
         }
 
         // ==========================================
-        // WEAKNESS LIST OPERATIONS
+        // WEAKNESS POCKET INTERNAL MANAGEMENT
         // ==========================================
-        function addToWeakListInternal(event) {
-            if (!weakList.some(w => w.id === event.id)) {
-                weakList.push(event);
-                localStorage.setItem('hist_weak_list', JSON.stringify(weakList));
+        function registerToWeaknessPool(event) {
+            if (!weaknessPocketList.some(item => item.id === event.id)) {
+                weaknessPocketList.push(event);
+                localStorage.setItem('m3_korea_weakness', JSON.stringify(weaknessPocketList));
             }
         }
 
-        function toggleWeakListFromCard() {
-            const events = APP_DATA[currentDay].events;
-            const currentEvent = events[activeCardIndex];
+        function toggleCardInWeakness() {
+            const currentItem = LOCAL_DATABASE[currentDay].events[activeCardIndex];
+            const idx = weaknessPocketList.findIndex(item => item.id === currentItem.id);
             
-            const index = weakList.findIndex(w => w.id === currentEvent.id);
-            if (index > -1) {
-                weakList.splice(index, 1);
+            if (idx > -1) {
+                weaknessPocketList.splice(idx, 1);
             } else {
-                weakList.push(currentEvent);
+                weaknessPocketList.push(currentItem);
             }
             
-            localStorage.setItem('hist_weak_list', JSON.stringify(weakList));
-            renderScanCardContent();
-            updateWeakListUI();
+            localStorage.setItem('m3_korea_weakness', JSON.stringify(weaknessPocketList));
+            renderScanCardFace();
+            updateWeaknessPocketUI();
         }
 
-        function removeWeakItem(eventId) {
-            weakList = weakList.filter(item => item.id !== eventId);
-            localStorage.setItem('hist_weak_list', JSON.stringify(weakList));
-            updateWeakListUI();
+        function deleteWeaknessItem(id) {
+            weaknessPocketList = weaknessPocketList.filter(item => item.id !== id);
+            localStorage.setItem('m3_korea_weakness', JSON.stringify(weaknessPocketList));
+            updateWeaknessPocketUI();
             
-            // If scanning view is currently active, redraw card button
             if (activeStage === 'scan') {
-                renderScanCardContent();
+                renderScanCardFace();
             }
         }
 
-        function clearWeakList() {
-            weakList = [];
-            localStorage.setItem('hist_weak_list', JSON.stringify([]));
-            updateWeakListUI();
+        function wipeWeaknessPocket() {
+            weaknessPocketList = [];
+            localStorage.setItem('m3_korea_weakness', JSON.stringify([]));
+            updateWeaknessPocketUI();
             if (activeStage === 'scan') {
-                renderScanCardContent();
+                renderScanCardFace();
             }
         }
 
-        function updateWeakListUI() {
-            document.getElementById('weak-count').textContent = weakList.length;
-            const grid = document.getElementById('weak-list-grid');
-            grid.innerHTML = '';
+        function updateWeaknessPocketUI() {
+            document.getElementById('weakness-count').textContent = weaknessPocketList.length;
+            const shelf = document.getElementById('weakness-shelf');
+            shelf.innerHTML = '';
             
-            if (weakList.length === 0) {
-                grid.innerHTML = '<p class="text-xs text-m3-outline py-2 text-center col-span-full">현재 보관된 취약 사건이 없습니다. 아주 깨끗합니다!</p>';
+            if (weaknessPocketList.length === 0) {
+                shelf.innerHTML = '<p class="text-xs text-m3-outline py-2.5 text-center col-span-full">보관된 오답 사건이 없습니다.</p>';
                 return;
             }
             
-            weakList.forEach((event) => {
-                const card = document.createElement('div');
-                card.className = "bg-m3-surfaceContainerHigh/90 p-3.5 rounded-2xl border border-slate-800/80 flex items-start justify-between gap-3 text-xs";
+            weaknessPocketList.forEach(event => {
+                const node = document.createElement('div');
+                node.className = "bg-m3-surfaceContainerHigh/90 p-3.5 rounded-3xl border border-m3-surfaceVariant flex items-start justify-between gap-3 text-xs animate-fade-in";
                 
-                let chips = '';
+                let chipStr = '';
                 event.keywords.slice(0, 2).forEach(kw => {
-                    chips += `<span class="bg-m3-surfaceContainerLowest text-m3-primary text-[9px] px-1.5 py-0.5 rounded border border-slate-850">${kw}</span>`;
+                    chipStr += `<span class="bg-m3-surfaceContainerLowest border border-m3-surfaceVariant/60 text-m3-primary text-[9px] px-2 py-0.5 rounded-lg font-mono font-bold">${kw}</span>`;
                 });
                 
-                card.innerHTML = `
-                    <div class="min-w-0">
+                node.innerHTML = `
+                    <div class="min-w-0 flex-1">
                         <span class="text-[9px] font-mono text-m3-tertiary block">${event.year}년</span>
                         <h4 class="font-extrabold text-slate-100 truncate">${event.title}</h4>
-                        <p class="text-[10px] text-m3-outline truncate mt-0.5">${event.description}</p>
+                        <p class="text-[10px] text-m3-outline truncate mt-0.5">${event.shortDesc}</p>
                         <div class="flex flex-wrap gap-1 mt-1.5">
-                            ${chips}
+                            ${chipStr}
                         </div>
                     </div>
-                    <button onclick="removeWeakItem('${event.id}')" class="text-m3-outline hover:text-m3-error transition text-lg shrink-0 p-1 flex items-center justify-center">
+                    <button onclick="deleteWeaknessItem('${event.id}')" class="text-m3-outline hover:text-m3-tertiary transition shrink-0 p-1 flex items-center justify-center">
                         <span class="material-symbols-outlined text-sm">close</span>
                     </button>
                 `;
-                grid.appendChild(card);
+                shelf.appendChild(node);
             });
         }
 
         // ==========================================
-        // Custom Material Dialog Actions
+        // M3 SYSTEM POPUPS
         // ==========================================
-        function showM3Dialog(title, content, icon = "info") {
+        function showDialogPopup(title, desc, iconName = "feedback") {
             document.getElementById('dialog-title').textContent = title;
-            document.getElementById('dialog-content').textContent = content;
-            document.getElementById('dialog-icon').textContent = icon;
+            document.getElementById('dialog-desc').textContent = desc;
+            document.getElementById('dialog-icon').textContent = iconName;
             
-            const dialog = document.getElementById('m3-dialog');
-            dialog.classList.remove('hidden');
+            document.getElementById('dialog-scaffold').classList.remove('hidden');
         }
 
-        function closeDialog() {
-            document.getElementById('m3-dialog').classList.add('hidden');
+        function closeDialogPopup() {
+            document.getElementById('dialog-scaffold').classList.add('hidden');
         }
     </script>
 </body>
 </html>
-
-
