@@ -20,26 +20,27 @@
                         mono: ['Fira Code', 'monospace']
                     },
                     colors: {
+                        // Material 3 Light Theme Dynamic Tonal Palette
                         m3: {
-                            background: '#0f1115',
-                            surface: '#161920',
-                            surfaceVariant: '#252932',
-                            primary: '#adc6ff',
-                            primaryContainer: '#1b2f5c',
-                            onPrimaryContainer: '#d8e2ff',
-                            secondary: '#c3c6cf',
-                            secondaryContainer: '#3e424a',
-                            onSecondaryContainer: '#e1e2ec',
-                            tertiary: '#ffb4ab',
-                            tertiaryContainer: '#690005',
-                            onTertiaryContainer: '#ffdad6',
-                            outline: '#8e9099',
-                            emeraldContainer: '#0a3a25',
-                            onEmeraldContainer: '#c6ffd6',
-                            surfaceContainerLow: '#1c1f27',
-                            surfaceContainer: '#20242e',
-                            surfaceContainerHigh: '#2a2f3b',
-                            surfaceContainerHighest: '#353b49'
+                            background: '#F8F9FF',
+                            surface: '#FFFFFF',
+                            surfaceVariant: '#E1E2EC',
+                            primary: '#005AC1',
+                            primaryContainer: '#D8E2FF',
+                            onPrimaryContainer: '#001A41',
+                            secondary: '#575E71',
+                            secondaryContainer: '#DDE2F9',
+                            onSecondaryContainer: '#141B2C',
+                            tertiary: '#7E5260',
+                            tertiaryContainer: '#FFD9E3',
+                            onTertiaryContainer: '#31101D',
+                            outline: '#74777F',
+                            emeraldContainer: '#D1E7DD',
+                            onEmeraldContainer: '#0F5132',
+                            surfaceContainerLow: '#F1F3FA',
+                            surfaceContainer: '#ECEFF6',
+                            surfaceContainerHigh: '#E2E7F0',
+                            surfaceContainerHighest: '#D7DEEA'
                         }
                     },
                     animation: {
@@ -68,7 +69,7 @@
     <style>
         body {
             font-family: 'Noto Sans KR', sans-serif;
-            background-color: #0f1115;
+            background-color: #F8F9FF;
             overflow-x: hidden;
             -webkit-tap-highlight-color: transparent;
         }
@@ -77,10 +78,10 @@
             width: 4px;
         }
         ::-webkit-scrollbar-track {
-            background: #0f1115;
+            background: #F8F9FF;
         }
         ::-webkit-scrollbar-thumb {
-            background: #252932;
+            background: #D7DEEA;
             border-radius: 999px;
         }
         .perspective {
@@ -101,33 +102,40 @@
         }
     </style>
 </head>
-<body class="text-slate-200 min-h-screen flex flex-col justify-between select-none">
+<body class="text-slate-800 min-h-screen flex flex-col justify-between select-none">
 
     <!-- ==========================================
-        TOP HEADER: Material Dynamic Bar & Session Config
+        TOP HEADER: Material M3 Light Bar
         ========================================== -->
-    <header class="sticky top-0 z-40 bg-m3-background/90 backdrop-blur-lg border-b border-m3-surfaceVariant/50 px-4 py-3 flex items-center justify-between">
+    <header class="sticky top-0 z-40 bg-m3-background/90 backdrop-blur-lg border-b border-m3-surfaceVariant/60 px-4 py-3 flex items-center justify-between">
         <div class="flex items-center space-x-3">
-            <div class="w-10 h-10 rounded-2xl bg-m3-primaryContainer flex items-center justify-center text-m3-primary shadow-lg animate-fade-in">
+            <div class="w-10 h-10 rounded-2xl bg-m3-primaryContainer flex items-center justify-center text-m3-primary shadow-sm animate-fade-in">
                 <span class="material-symbols-outlined text-xl">school</span>
             </div>
             <div>
-                <h1 class="text-xs sm:text-sm font-black text-slate-100 flex items-center gap-1">
-                    교과서 Ⅲ단원 초집중 복원기 <span class="text-[9px] bg-m3-primary/20 text-m3-primary px-1.5 py-0.2 rounded font-mono font-bold">M3</span>
+                <h1 class="text-xs sm:text-sm font-black text-slate-900 flex items-center gap-1">
+                    교과서 Ⅲ단원 초집중 복원기 <span class="text-[9px] bg-m3-primary/10 text-m3-primary px-1.5 py-0.2 rounded font-mono font-bold">M3 Light</span>
                 </h1>
-                <p class="text-[10px] text-m3-outline">하루 30개 키워드 • 틈새 시간 마스터</p>
+                <p class="text-[10px] text-m3-outline">하루 16개 사건(32개 키워드) • 5일 기적 완성</p>
             </div>
         </div>
 
-        <!-- M3 Tonal Timer Widget with Modes -->
-        <div class="flex items-center space-x-2 bg-m3-surfaceContainerHigh px-3 py-1.5 rounded-full border border-m3-surfaceContainerHighest shadow-md">
-            <div class="flex flex-col items-end">
-                <span id="session-tag" class="text-[8px] font-black text-m3-primary tracking-wider uppercase">틈새 모드</span>
-                <span id="timer-text" class="text-xs font-mono font-bold text-m3-primary">10:00</span>
-            </div>
-            <button id="timer-toggle" onclick="toggleTimer()" class="w-7 h-7 rounded-full bg-m3-surfaceVariant flex items-center justify-center active-scale transition text-slate-200">
-                <span id="timer-icon" class="material-symbols-outlined text-base">play_arrow</span>
+        <div class="flex items-center space-x-2">
+            <!-- M3 Quick Search Button -->
+            <button onclick="toggleSearchDrawer(true)" class="w-10 h-10 rounded-full hover:bg-m3-surfaceContainer flex items-center justify-center active-scale transition text-m3-primary" title="80대 사건 실시간 찾기">
+                <span class="material-symbols-outlined">search</span>
             </button>
+
+            <!-- M3 Tonal Timer Widget with Modes -->
+            <div class="flex items-center space-x-2 bg-m3-surfaceContainer px-3 py-1.5 rounded-full border border-m3-surfaceContainerHigh shadow-sm">
+                <div class="flex flex-col items-end">
+                    <span id="session-tag" class="text-[8px] font-black text-m3-primary tracking-wider uppercase">틈새 모드</span>
+                    <span id="timer-text" class="text-xs font-mono font-bold text-m3-primary">10:00</span>
+                </div>
+                <button id="timer-toggle" onclick="toggleTimer()" class="w-7 h-7 rounded-full bg-m3-surfaceContainerHighest flex items-center justify-center active-scale transition text-m3-primary">
+                    <span id="timer-icon" class="material-symbols-outlined text-base">play_arrow</span>
+                </button>
+            </div>
         </div>
     </header>
 
@@ -137,7 +145,7 @@
     <main class="flex-1 max-w-4xl w-full mx-auto px-4 py-4 space-y-4 animate-fade-in">
         
         <!-- Quick Action Menu for Break/Lunch Time -->
-        <div class="bg-gradient-to-br from-m3-surfaceContainerLow to-m3-surfaceContainer p-4 rounded-3xl border border-m3-surfaceVariant/60 shadow-lg space-y-3">
+        <div class="bg-m3-surface p-4 rounded-3xl border border-m3-surfaceVariant shadow-sm space-y-3">
             <div class="flex items-center justify-between">
                 <span class="text-xs font-bold text-m3-primary flex items-center gap-1.5">
                     <span class="material-symbols-outlined text-sm">bolt</span> 틈새시간 집중 코스 설정
@@ -146,22 +154,22 @@
             </div>
             
             <div class="grid grid-cols-3 gap-2">
-                <button onclick="setMicroMode(3)" id="micro-btn-3" class="active-scale py-2 rounded-2xl text-xs font-extrabold border border-m3-surfaceVariant bg-m3-surfaceContainerHigh text-slate-300 hover:border-m3-primary/30 transition flex items-center justify-center gap-1">
+                <button onclick="setMicroMode(3)" id="micro-btn-3" class="active-scale py-2 rounded-2xl text-xs font-extrabold border border-m3-surfaceVariant bg-m3-surfaceContainerLow text-slate-700 hover:border-m3-primary/30 transition flex items-center justify-center gap-1">
                     <span class="material-symbols-outlined text-xs">alarm</span> 쉬는시간 (3분)
                 </button>
-                <button onclick="setMicroMode(5)" id="micro-btn-5" class="active-scale py-2 rounded-2xl text-xs font-extrabold border border-m3-surfaceVariant bg-m3-surfaceContainerHigh text-slate-300 hover:border-m3-primary/30 transition flex items-center justify-center gap-1">
+                <button onclick="setMicroMode(5)" id="micro-btn-5" class="active-scale py-2 rounded-2xl text-xs font-extrabold border border-m3-surfaceVariant bg-m3-surfaceContainerLow text-slate-700 hover:border-m3-primary/30 transition flex items-center justify-center gap-1">
                     <span class="material-symbols-outlined text-xs">restaurant</span> 급식시간 (5분)
                 </button>
-                <button onclick="setMicroMode(10)" id="micro-btn-10" class="active-scale py-2 rounded-2xl text-xs font-extrabold border border-m3-primaryContainer bg-m3-primaryContainer/30 text-m3-primary transition flex items-center justify-center gap-1">
+                <button onclick="setMicroMode(10)" id="micro-btn-10" class="active-scale py-2 rounded-2xl text-xs font-extrabold border border-m3-primaryContainer bg-m3-primaryContainer text-m3-primary transition flex items-center justify-center gap-1">
                     <span class="material-symbols-outlined text-xs">hourglass_empty</span> 일반 (10분)
                 </button>
             </div>
         </div>
 
         <!-- 5-Day Interactive Material Tabs -->
-        <div class="bg-m3-surface p-2.5 rounded-3xl border border-m3-surfaceVariant/40 shadow-inner">
+        <div class="bg-m3-surface p-2.5 rounded-3xl border border-m3-surfaceVariant shadow-sm">
             <div class="flex items-center justify-between px-2 mb-2">
-                <span class="text-[10px] font-bold text-m3-outline uppercase tracking-widest">일차 선택 (하루 30개 완성)</span>
+                <span class="text-[10px] font-bold text-m3-outline uppercase tracking-widest">일차 선택 (하루 16개 사건 완전정복)</span>
                 <span id="day-badge" class="text-[9px] bg-m3-tertiaryContainer text-m3-onTertiaryContainer font-black px-2 py-0.5 rounded-full"></span>
             </div>
             <div class="grid grid-cols-5 gap-1.5">
@@ -190,7 +198,7 @@
         </div>
 
         <!-- Four-Stage Dynamic Navigation Segmented Track -->
-        <div class="grid grid-cols-4 gap-1 bg-m3-surfaceContainerLowest p-1.5 rounded-3xl border border-m3-surfaceVariant/40">
+        <div class="grid grid-cols-4 gap-1 bg-m3-surfaceContainerLow p-1.5 rounded-3xl border border-m3-surfaceVariant">
             <button onclick="changeStage('scan')" id="stage-btn-scan" class="stage-btn py-3 rounded-2xl text-center flex flex-col items-center justify-center transition-all duration-300 active-scale">
                 <span class="material-symbols-outlined text-base mb-0.5">menu_book</span>
                 <span class="text-[9px] font-black tracking-tight">1. 스캔</span>
@@ -210,12 +218,12 @@
         </div>
 
         <!-- Persistent Progress bar -->
-        <div class="bg-m3-surfaceContainerLow px-4 py-3 rounded-2xl border border-m3-surfaceVariant/30 flex items-center justify-between text-xs font-semibold text-slate-300">
+        <div class="bg-m3-surfaceContainerLow px-4 py-3 rounded-2xl border border-m3-surfaceVariant flex items-center justify-between text-xs font-semibold text-slate-600">
             <div class="flex items-center space-x-1.5">
                 <span class="material-symbols-outlined text-m3-primary text-sm">assignment_turned_in</span>
-                <span id="stage-title-card" class="text-slate-100 font-bold truncate">현재 단계 로드 중...</span>
+                <span id="stage-title-card" class="text-slate-800 font-bold truncate">현재 단계 로드 중...</span>
             </div>
-            <div class="text-[10px] bg-m3-emeraldContainer/40 text-m3-onEmeraldContainer px-3 py-1 rounded-full font-bold">
+            <div class="text-[10px] bg-[#D1E7DD] text-[#0F5132] px-3 py-1 rounded-full font-bold">
                 성취도: <span id="cleared-progress-score">0</span>% 완료
             </div>
         </div>
@@ -229,7 +237,7 @@
                     <span class="material-symbols-outlined text-sm">visibility</span>
                     <span>카드 터치 시 상세 모범 서술형 핵심 체크 확인</span>
                 </div>
-                <span id="scan-page-text" class="font-mono font-bold text-m3-primary">1 / 5</span>
+                <span id="scan-page-text" class="font-mono font-bold text-m3-primary">1 / 16</span>
             </div>
 
             <!-- Double-sided card structure with springy rotation -->
@@ -237,37 +245,40 @@
                 <div id="flashcard-track" class="transform-style-3d duration-500 w-full h-full relative">
                     
                     <!-- Card Front Face -->
-                    <div class="absolute inset-0 backface-hidden bg-m3-surfaceContainerHigh p-6 rounded-4xl border border-m3-surfaceContainerHighest shadow-xl flex flex-col justify-between">
+                    <div class="absolute inset-0 backface-hidden bg-m3-surface p-6 rounded-4xl border border-m3-surfaceVariant shadow-md flex flex-col justify-between">
                         <div>
                             <div class="flex items-center justify-between">
                                 <span id="card-year-tag" class="bg-m3-primaryContainer text-m3-onPrimaryContainer font-mono text-xs font-black px-3.5 py-1 rounded-full border border-m3-primary/30">1876년</span>
                                 <span class="text-[9px] text-m3-outline flex items-center gap-0.5">뒤집기 <span class="material-symbols-outlined text-xs">rotate_right</span></span>
                             </div>
-                            <h2 id="card-main-title" class="text-2xl font-black text-slate-100 mt-6 leading-snug">강화도 조약</h2>
+                            <h2 id="card-main-title" class="text-2xl font-black text-slate-900 mt-6 leading-snug">강화도 조약</h2>
                             <p id="card-main-characters" class="text-sm font-bold text-m3-primary mt-2">신헌, 구로다 기요타카</p>
                             
-                            <div class="mt-6 bg-m3-surfaceContainerLowest/50 p-4 rounded-2xl border border-m3-surfaceVariant/40">
-                                <span class="text-[9px] font-bold text-m3-outline uppercase block tracking-wider">교과서 핵심 요약</span>
-                                <p id="card-short-desc" class="text-xs text-slate-300 leading-relaxed mt-1">운요호 사건을 빌미로 체결된 우리나라 최초의 근대적 조약이자 불평등 조약입니다.</p>
+                            <div class="mt-6 bg-m3-surfaceContainerLow p-4 rounded-2xl border border-m3-surfaceVariant">
+                                <span class="text-[9px] font-bold text-m3-outline uppercase block tracking-wider">주요 특징 (시트 기반 2대 요소)</span>
+                                <div class="mt-1 space-y-1">
+                                    <p id="card-feature-1" class="text-xs text-slate-800 font-bold flex items-center gap-1.5"><span class="w-1.5 h-1.5 bg-m3-primary rounded-full"></span>특징 1</p>
+                                    <p id="card-feature-2" class="text-xs text-slate-800 font-bold flex items-center gap-1.5"><span class="w-1.5 h-1.5 bg-m3-primary rounded-full"></span>특징 2</p>
+                                </div>
                             </div>
                         </div>
-                        <div class="text-center text-[10px] text-m3-outline bg-m3-background py-2 rounded-xl">
-                            💡 카드를 뒤집어 서술형 채점 핵심 키워드 6개를 확인하세요.
+                        <div class="text-center text-[10px] text-m3-outline bg-m3-surfaceContainerLow py-2 rounded-xl">
+                            💡 카드를 뒤집어 교과서 내용 및 핵심 단어 3개를 확인하세요.
                         </div>
                     </div>
 
                     <!-- Card Back Face -->
-                    <div class="absolute inset-0 backface-hidden rotate-y-180 bg-m3-surfaceContainerHighest p-6 rounded-4xl border border-m3-primary/20 shadow-2xl flex flex-col justify-between">
+                    <div class="absolute inset-0 backface-hidden rotate-y-180 bg-m3-surface p-6 rounded-4xl border border-m3-primary/30 shadow-lg flex flex-col justify-between">
                         <div class="space-y-4 overflow-y-auto max-h-[80%] pr-1">
                             <div class="flex items-center justify-between border-b border-m3-surfaceVariant pb-2">
-                                <span class="text-xs font-black text-m3-primary">서술형 득점 키워드 (30개 중 6개)</span>
-                                <span class="text-[9px] bg-slate-950 px-2 py-0.5 rounded text-m3-outline">교과서 기준</span>
+                                <span class="text-xs font-black text-m3-primary">역사 전개 & 서술형 키워드</span>
+                                <span class="text-[9px] bg-m3-surfaceContainerLow px-2 py-0.5 rounded text-m3-outline">교과서 기준</span>
                             </div>
-                            <p id="card-long-desc" class="text-xs sm:text-sm leading-relaxed text-slate-200">
+                            <p id="card-long-desc" class="text-xs sm:text-sm leading-relaxed text-slate-800">
                                 운요호 사건을 구실로 개항을 요구하는 일본군 함대의 무력 압박 하에 신헌과 구로다 사이에 맺어진 최초의 불평등 조약이다.
                             </p>
                             <div class="space-y-1.5">
-                                <span class="text-[10px] font-black text-m3-tertiary block tracking-wider">채점 핵심 단어 6선</span>
+                                <span class="text-[10px] font-black text-m3-tertiary block tracking-wider">채점 핵심 빈칸 키워드 3선</span>
                                 <div id="card-keyword-bag" class="flex flex-wrap gap-1.5">
                                     <!-- Dynamic Keyword Chips loaded here -->
                                 </div>
@@ -278,7 +289,7 @@
                             <button onclick="toggleCardInWeakness()" id="card-weak-toggle" class="active-scale text-xs text-m3-tertiary border border-m3-tertiary/30 hover:bg-m3-tertiaryContainer/20 px-3.5 py-2.5 rounded-2xl font-black transition flex items-center gap-1">
                                 <span class="material-symbols-outlined text-xs">favorite</span> 오답 수첩 등록
                             </button>
-                            <button onclick="approveScanCard()" class="active-scale bg-m3-primary hover:bg-m3-primary/90 text-m3-surfaceContainerLowest text-xs font-black px-4.5 py-2.5 rounded-2xl transition flex items-center gap-1 shadow-md">
+                            <button onclick="approveScanCard()" class="active-scale bg-m3-primary hover:bg-m3-primary/90 text-white text-xs font-black px-4.5 py-2.5 rounded-2xl transition flex items-center gap-1 shadow-md">
                                 <span class="material-symbols-outlined text-xs">done_all</span> 이 카드 마스터
                             </button>
                         </div>
@@ -289,13 +300,13 @@
 
             <!-- Swipe Action Navigator -->
             <div class="flex items-center justify-between gap-3 pt-2">
-                <button onclick="goPrevCard()" class="active-scale bg-m3-surfaceContainerLow hover:bg-m3-surfaceContainerHigh text-slate-300 font-bold text-xs py-3 px-5 rounded-2xl transition flex items-center gap-1">
+                <button onclick="goPrevCard()" class="active-scale bg-m3-surfaceContainerLow hover:bg-m3-surfaceContainer text-slate-700 font-bold text-xs py-3 px-5 rounded-2xl transition flex items-center gap-1">
                     <span class="material-symbols-outlined text-sm">arrow_back</span> 이전
                 </button>
                 <div id="card-indicator-dots" class="flex items-center space-x-2">
                     <!-- Dots -->
                 </div>
-                <button onclick="goNextCard()" class="active-scale bg-m3-surfaceContainerLow hover:bg-m3-surfaceContainerHigh text-slate-300 font-bold text-xs py-3 px-5 rounded-2xl transition flex items-center gap-1">
+                <button onclick="goNextCard()" class="active-scale bg-m3-surfaceContainerLow hover:bg-m3-surfaceContainer text-slate-700 font-bold text-xs py-3 px-5 rounded-2xl transition flex items-center gap-1">
                     다음 <span class="material-symbols-outlined text-sm">arrow_forward</span>
                 </button>
             </div>
@@ -308,11 +319,11 @@
             <div class="border-b border-m3-surfaceVariant pb-2.5 flex items-center justify-between">
                 <div>
                     <h3 class="text-xs font-bold text-m3-secondary flex items-center gap-1">
-                        <span class="material-symbols-outlined text-sm text-m3-primary">swap_vert</span> 인과적 전개에 맞춰 순서 정렬
+                        <span class="material-symbols-outlined text-sm text-m3-primary">swap_vert</span> 인과적 전개에 맞춰 순서 정렬 (16개 사건)
                     </h3>
-                    <p class="text-[10px] text-m3-outline mt-0.5">상하 이동 탭을 사용하여 역사적 사건들을 순서대로 배치하세요.</p>
+                    <p class="text-[10px] text-m3-outline mt-0.5">상하 이동 탭을 사용하여 오늘의 16개 사건들을 역사적 순서대로 배치하세요.</p>
                 </div>
-                <button onclick="scrambleSorting()" class="active-scale bg-m3-surfaceContainerHigh text-m3-primary font-bold text-xs px-3.5 py-1.5 rounded-full hover:bg-m3-surfaceVariant transition flex items-center gap-1">
+                <button onclick="scrambleSorting()" class="active-scale bg-m3-surfaceContainer text-m3-primary font-bold text-xs px-3.5 py-1.5 rounded-full hover:bg-m3-surfaceContainerHighest transition flex items-center gap-1">
                     <span class="material-symbols-outlined text-xs">shuffle</span> 카드 섞기
                 </button>
             </div>
@@ -322,7 +333,7 @@
             </div>
 
             <div class="pt-2">
-                <button onclick="evaluateSorting()" class="active-scale w-full bg-m3-primary hover:bg-m3-primary/90 text-m3-surfaceContainerLowest font-black py-3 rounded-2xl text-xs transition flex items-center justify-center gap-1 shadow-md">
+                <button onclick="evaluateSorting()" class="active-scale w-full bg-m3-primary hover:bg-m3-primary/90 text-white font-black py-3 rounded-2xl text-xs transition flex items-center justify-center gap-1 shadow-md">
                     <span class="material-symbols-outlined text-xs">rule</span> 정렬 배치 타임라인 채점
                 </button>
             </div>
@@ -348,10 +359,10 @@
             </div>
 
             <div class="flex gap-2 pt-2">
-                <button onclick="evaluateBlanks()" class="flex-1 active-scale bg-m3-primary hover:bg-m3-primary/90 text-m3-surfaceContainerLowest font-black py-3.5 rounded-2xl text-xs transition flex items-center justify-center gap-1 shadow-md">
+                <button onclick="evaluateBlanks()" class="flex-1 active-scale bg-m3-primary hover:bg-m3-primary/90 text-white font-black py-3.5 rounded-2xl text-xs transition flex items-center justify-center gap-1 shadow-md">
                     <span class="material-symbols-outlined text-xs">done_outline</span> 빈칸 오탈자 정밀 채점
                 </button>
-                <button onclick="clearBlankInputs()" class="active-scale bg-m3-surfaceContainerLow hover:bg-m3-surfaceContainerHigh text-slate-300 font-bold px-4 rounded-2xl text-xs transition">
+                <button onclick="clearBlankInputs()" class="active-scale bg-m3-surfaceContainer text-slate-700 font-bold px-4 rounded-2xl text-xs transition">
                     전체 삭제
                 </button>
             </div>
@@ -372,20 +383,20 @@
                 <p class="text-[10px] text-m3-outline mt-0.5">실제 교과서 시험 서술형 채점표의 채점 핵심 요소를 바탕으로 자가 채점을 제공합니다.</p>
             </div>
 
-            <div class="bg-m3-surfaceContainerLow p-3 rounded-2xl border border-m3-surfaceVariant flex flex-col sm:flex-row items-center justify-between gap-2">
-                <span class="text-xs font-bold text-slate-200">사건 선정:</span>
+            <div class="bg-m3-surface p-3 rounded-2xl border border-m3-surfaceVariant flex flex-col sm:flex-row items-center justify-between gap-2">
+                <span class="text-xs font-bold text-slate-800">사건 선정:</span>
                 <select id="narrative-combo" onchange="loadNarrativeItem()" class="bg-m3-surface text-xs text-m3-primary border border-m3-surfaceVariant p-2.5 rounded-xl focus:outline-none focus:ring-1 focus:ring-m3-primary w-full sm:w-64">
                     <!-- select options loaded dynamically -->
                 </select>
             </div>
 
             <!-- Displayed Problem Card -->
-            <div class="bg-m3-surfaceContainerHighest p-5 rounded-3xl border border-slate-800 space-y-2">
+            <div class="bg-m3-surfaceContainer p-5 rounded-3xl border border-m3-surfaceVariant space-y-2">
                 <div class="flex justify-between items-center text-[10px]">
                     <span class="bg-m3-primaryContainer text-m3-primary font-bold px-2.5 py-0.5 rounded-full">실제 시험 서술형 출제 예시</span>
                     <span class="text-m3-outline">예상 배점 10점</span>
                 </div>
-                <h4 id="narrative-question-body" class="text-sm font-black text-slate-100 leading-relaxed">
+                <h4 id="narrative-question-body" class="text-sm font-black text-slate-900 leading-relaxed">
                     강화도 조약이 체결된 역사적 과정과 불평등 성격을 보여주는 구체적 조항을 쓰시오.
                 </h4>
             </div>
@@ -396,23 +407,23 @@
                     <span class="text-m3-outline font-bold">내 서술형 답안 기록</span>
                     <span id="essay-char-counter" class="font-mono text-m3-primary text-[10px]">0자 작성</span>
                 </div>
-                <textarea id="essay-box" oninput="trackEssayChars()" rows="5" placeholder="교과서 필수 고유명사 및 핵심 개념이 들어가도록 완결된 문장으로 작성해 주세요." class="w-full bg-m3-surfaceContainerLow border border-m3-surfaceVariant rounded-3xl p-4 text-xs sm:text-sm text-slate-200 focus:outline-none focus:ring-2 focus:ring-m3-primary/30 leading-relaxed font-mono"></textarea>
+                <textarea id="essay-box" oninput="trackEssayChars()" rows="5" placeholder="교과서 필수 고유명사 및 핵심 개념이 들어가도록 완결된 문장으로 작성해 주세요." class="w-full bg-m3-surface border border-m3-surfaceVariant rounded-3xl p-4 text-xs sm:text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-m3-primary/30 leading-relaxed font-mono"></textarea>
             </div>
 
             <div class="flex justify-end space-x-2">
-                <button onclick="resetEssayBox()" class="active-scale bg-m3-surfaceContainerLow hover:bg-m3-surfaceContainerHigh text-slate-300 font-bold text-xs py-2.5 px-4 rounded-2xl transition">
+                <button onclick="resetEssayBox()" class="active-scale bg-m3-surfaceContainer hover:bg-m3-surfaceContainerHighest text-slate-700 font-bold text-xs py-2.5 px-4 rounded-2xl transition">
                     초기화
                 </button>
-                <button onclick="gradeWrittenEssay()" class="active-scale bg-m3-primary hover:bg-m3-primary/90 text-m3-surfaceContainerLowest font-black text-xs py-2.5 px-6 rounded-2xl transition shadow-lg flex items-center gap-1">
+                <button onclick="gradeWrittenEssay()" class="active-scale bg-m3-primary hover:bg-m3-primary/90 text-white font-black text-xs py-2.5 px-6 rounded-2xl transition shadow-sm flex items-center gap-1">
                     <span class="material-symbols-outlined text-sm">playlist_add_check</span> 서술형 정밀 분석 채점
                 </button>
             </div>
 
             <!-- Essay Analytical feedback box -->
-            <div id="narrative-results-panel" class="hidden bg-m3-surfaceContainerHighest border border-slate-800 rounded-4xl p-5 space-y-4">
+            <div id="narrative-results-panel" class="hidden bg-m3-surface border border-m3-surfaceVariant rounded-4xl p-5 space-y-4 shadow-sm">
                 <div class="flex justify-between items-center border-b border-m3-surfaceVariant pb-3">
                     <div>
-                        <h4 class="text-xs sm:text-sm font-black text-slate-100">서술형 자가 채점 분석표</h4>
+                        <h4 class="text-xs sm:text-sm font-black text-slate-900">서술형 자가 채점 분석표</h4>
                         <p class="text-[9px] text-m3-outline mt-0.5">학교 채점관 기준과 키워드 대조 결과</p>
                     </div>
                     <div class="text-right">
@@ -425,8 +436,8 @@
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
                     <div class="space-y-1.5">
-                        <p class="text-emerald-400 font-bold flex items-center gap-1 text-[10px]">
-                            <span class="material-symbols-outlined text-sm">check_circle</span> 채점 통과 키워드
+                        <p class="text-emerald-700 font-bold flex items-center gap-1 text-[10px]">
+                            <span class="material-symbols-outlined text-sm text-emerald-600">check_circle</span> 채점 통과 키워드
                         </p>
                         <div id="essay-match-holder" class="flex flex-wrap gap-1">
                             <!-- Match chips -->
@@ -434,7 +445,7 @@
                     </div>
                     <div class="space-y-1.5">
                         <p class="text-m3-tertiary font-bold flex items-center gap-1 text-[10px]">
-                            <span class="material-symbols-outlined text-sm">cancel</span> 보강이 필요한 미검출 키워드
+                            <span class="material-symbols-outlined text-sm text-m3-tertiary">cancel</span> 보강이 필요한 미검출 키워
                         </p>
                         <div id="essay-miss-holder" class="flex flex-wrap gap-1">
                             <!-- Miss chips -->
@@ -443,14 +454,14 @@
                 </div>
 
                 <!-- Suggested answer -->
-                <div class="bg-m3-surfaceContainer p-4 rounded-2xl border border-slate-800 space-y-1.5">
+                <div class="bg-m3-surfaceContainerLow p-4 rounded-2xl border border-m3-surfaceVariant space-y-1.5">
                     <div class="flex justify-between items-center text-[10px]">
                         <span class="text-m3-primary font-bold">📖 교과서 공인 모범 정답</span>
                         <button onclick="copyModelAnswerText()" class="text-m3-outline hover:text-m3-primary flex items-center gap-0.5">
                             <span class="material-symbols-outlined text-xs">content_copy</span> 복사
                         </button>
                     </div>
-                    <p id="essay-model-answer" class="text-xs text-slate-300 font-mono leading-relaxed select-all">
+                    <p id="essay-model-answer" class="text-xs text-slate-800 font-mono leading-relaxed select-all">
                         조선 정부는 운요호 사건 이후 강제 압박 속에서 신헌과 구로다 사이에 조일수호조규를 체결하였습니다. 이 조약은 영사 재판권과 해안 측량권 등을 포함한 대표적 불평등 조약입니다.
                     </p>
                 </div>
@@ -460,7 +471,7 @@
         <!-- ==========================================
             M3 SECTION: Weakness Pocket (오답 수첩)
             ========================================== -->
-        <section class="bg-m3-surfaceContainerLowest rounded-3xl p-4 border border-m3-surfaceVariant/40 space-y-3">
+        <section class="bg-m3-surface rounded-3xl p-4 border border-m3-surfaceVariant/60 space-y-3">
             <div class="flex items-center justify-between border-b border-m3-surfaceVariant pb-2">
                 <h3 class="text-xs font-black text-m3-tertiary flex items-center gap-1">
                     <span class="material-symbols-outlined text-sm">favorite</span> 오답 수첩 (<span id="weakness-count">0</span>)
@@ -477,12 +488,52 @@
 
     </main>
 
+    <!-- ==========================================
+        INTEGRATED GLOBAL SEARCH DRAWER (80대 사건 전체 실시간 탐색)
+        ========================================== -->
+    <div id="search-drawer" class="fixed inset-0 z-50 bg-black/45 backdrop-blur-sm flex justify-end transition-opacity duration-300 opacity-0 pointer-events-none">
+        <div class="bg-m3-background w-full max-w-md h-full shadow-2xl flex flex-col justify-between transform translate-x-full transition-transform duration-300 ease-out border-l border-m3-surfaceVariant">
+            <!-- Drawer Header -->
+            <div class="p-4 bg-m3-surface border-b border-m3-surfaceVariant flex items-center justify-between">
+                <div class="flex items-center space-x-2">
+                    <span class="material-symbols-outlined text-m3-primary">find_in_page</span>
+                    <h3 class="text-sm font-black text-slate-900">80대 사건/조약 실시간 조회</h3>
+                </div>
+                <button onclick="toggleSearchDrawer(false)" class="w-8 h-8 rounded-full hover:bg-m3-surfaceContainer flex items-center justify-center">
+                    <span class="material-symbols-outlined text-base">close</span>
+                </button>
+            </div>
+
+            <!-- Search input bar -->
+            <div class="p-4 bg-m3-surface border-b border-m3-surfaceVariant">
+                <div class="relative">
+                    <span class="material-symbols-outlined absolute left-3.5 top-3 text-m3-outline text-lg">search</span>
+                    <input oninput="executeGlobalSearch(this.value)" type="text" placeholder="사건 이름, 국가, 조약 키워드 입력..." class="w-full bg-m3-surfaceContainerLow border border-m3-surfaceVariant rounded-full py-2.5 pl-11 pr-4 text-xs focus:outline-none focus:ring-2 focus:ring-m3-primary/30" />
+                </div>
+                <div class="mt-2 flex items-center justify-between text-[10px] text-m3-outline">
+                    <span>검색결과: <span id="search-results-count" class="font-bold text-m3-primary">80</span>건</span>
+                    <span>시트 데이터 연계</span>
+                </div>
+            </div>
+
+            <!-- Results scroll track -->
+            <div id="search-results-track" class="flex-1 overflow-y-auto p-4 space-y-3">
+                <!-- Loaded via JS -->
+            </div>
+
+            <!-- Drawer Footer -->
+            <div class="p-3 bg-m3-surface border-t border-m3-surfaceVariant text-center text-[10px] text-m3-outline">
+                언제 어디서나 틈틈이 찾아보는 한국사 만점 데이터베이스
+            </div>
+        </div>
+    </div>
+
     <!-- M3 Floating Tonal Dock (Bottom quick selection) -->
-    <div class="fixed bottom-4 left-1/2 -translate-x-1/2 bg-m3-surfaceContainerHigh/90 backdrop-blur-md py-2 px-6 rounded-full border border-slate-700/50 shadow-2xl z-50 flex items-center space-x-5">
+    <div class="fixed bottom-4 left-1/2 -translate-x-1/2 bg-m3-surfaceContainer/90 backdrop-blur-md py-2 px-6 rounded-full border border-m3-surfaceVariant shadow-lg z-30 flex items-center space-x-5">
         <button onclick="window.scrollTo({top:0, behavior:'smooth'})" class="text-m3-outline hover:text-m3-primary transition flex items-center justify-center">
             <span class="material-symbols-outlined text-base">vertical_align_top</span>
         </button>
-        <span class="w-px h-4 bg-slate-700"></span>
+        <span class="w-px h-4 bg-m3-surfaceContainerHighest"></span>
         <button onclick="changeStage('scan')" class="text-m3-outline hover:text-m3-primary font-bold text-[10px]">스캔</button>
         <button onclick="changeStage('sort')" class="text-m3-outline hover:text-m3-primary font-bold text-[10px]">정렬</button>
         <button onclick="changeStage('blank')" class="text-m3-outline hover:text-m3-primary font-bold text-[10px]">빈칸</button>
@@ -490,13 +541,13 @@
     </div>
 
     <!-- M3 Dialog Popup System -->
-    <div id="dialog-scaffold" class="fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4 hidden">
-        <div class="bg-m3-surfaceContainer p-6 rounded-4xl max-w-sm w-full border border-slate-800 space-y-4 animate-slide-up">
+    <div id="dialog-scaffold" class="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-m3-surface p-6 rounded-4xl max-w-sm w-full border border-m3-surfaceVariant space-y-4 animate-slide-up">
             <div class="flex items-center space-x-2.5 text-m3-primary">
                 <span id="dialog-icon" class="material-symbols-outlined">feedback</span>
                 <h4 id="dialog-title" class="text-sm sm:text-base font-black">피드백</h4>
             </div>
-            <p id="dialog-desc" class="text-xs sm:text-sm text-slate-300 leading-relaxed">
+            <p id="dialog-desc" class="text-xs sm:text-sm text-slate-700 leading-relaxed">
                 상세 팝업 메시지 내용입니다.
             </p>
             <div class="flex justify-end pt-1">
@@ -508,340 +559,120 @@
     </div>
 
     <!-- Footer of Page -->
-    <footer class="border-t border-slate-900 bg-m3-surfaceContainerLowest/40 text-center py-6 px-4 text-[9px] text-m3-outline mt-12 pb-24">
-        <p>© 2026 한국사 틈새 기적의 암기 솔루션</p>
-        <p class="mt-1">교과서 천재교육 고등 한국사 대단원 Ⅲ 기반 • 수능 및 한능검 대비 최적화</p>
+    <footer class="border-t border-m3-surfaceVariant bg-m3-surfaceContainerLow text-center py-6 px-4 text-[9px] text-m3-outline mt-12 pb-24">
+        <p>© 2026 한국사 80대 사건 틈새 기적의 암기 솔루션</p>
+        <p class="mt-1">교과서 천재교육 고등 한국사 대단원 Ⅲ 기반 • 수능 및 학교 내신 서술형 정밀 대비</p>
     </footer>
 
     <!-- ==========================================
         CORE JAVASCRIPT APP LOGIC
         ========================================== -->
     <script>
-        // High-Fidelity Curation (Day 1 to 5, total 150 keywords aligned precisely with the textbook)
+        // High-Fidelity 80-Event Database loaded cleanly with 5 days
         const LOCAL_DATABASE = {
             1: {
-                title: "1일차: 강화도 개항과 불평등 수교 체제",
+                title: "1일차: 동아시아 개항과 대원군 정권의 대응",
                 events: [
-                    {
-                        id: "e-1",
-                        year: "1876",
-                        title: "강화도 조약 체결",
-                        character: "신헌, 구로다 기요타카",
-                        shortDesc: "운요호 사건의 강압 무력 시위 속에서 체결된 조선 최초의 근대적 조약이자 불평등 조약입니다.",
-                        longDesc: "운요호 사건의 침공 이후 협상 권한을 가진 조선 대표 신헌과 일본의 구로다 사이에 맺어진 최초의 근대 조약이자 심각한 불평등 조약입니다.",
-                        keywords: ["운요호 사건", "조일수호조규", "해안 측량권", "영사 재판권", "치외법권", "부산 인천 원산 개항"],
-                        narrativeQuestion: "강화도 조약이 체결된 역사적 원인 사건과 이 조약의 불평등성을 보여주는 대표 조항 2가지를 서술하시오.",
-                        checkpoints: ["운요호 사건", "영사 재판권", "치외법권", "해안 측량권", "부산 인천 원산", "불평등 조약"],
-                        expertAnswer: "조선 조정은 일제가 도발한 운요호 사건 이후 무력 위협 속에서 최초의 근대적 불평등 조약인 조일수호조규를 체결하였습니다. 이 조약은 대표적 독소 조항으로 일제 상인의 영사 재판권(치외법권)과 영해 주권을 침해하는 해안 측량권을 규정하고, 부산, 인천, 원산 항구를 개항하도록 강제했습니다."
-                    },
-                    {
-                        id: "e-2",
-                        year: "1880",
-                        title: "개화 정책 추진과 위정척사 운동",
-                        character: "김홍집, 이만손, 황준헌",
-                        shortDesc: "통리기무아문을 중심으로 개방을 단행하자, 보수 유생들이 영남만인소를 올리며 격렬히 반발했습니다.",
-                        longDesc: "황준헌의 조선책략 유포에 반발하여 영남의 이만손을 주축으로 만인의 유생들이 상소를 올려 개화 정책에 제동을 걸었습니다.",
-                        keywords: ["통리기무아문", "별기군 창설", "조선책략", "황준헌", "영남만인소", "이만손 위정척사"],
-                        narrativeQuestion: "김홍집이 들여온 서적의 대외 방략 요지와 이에 반대한 보수 유림들의 집단 상소 운동의 명칭을 쓰시오.",
-                        checkpoints: ["조선책략", "김홍집", "황준헌", "연미론", "영남만인소", "이만손"],
-                        expertAnswer: "수신사 김홍집이 들여온 청나라 외교관 황준헌의 조선책략은 러시아 견제를 위해 친중, 결일, 연미론을 제시했습니다. 이에 반발한 보수 유림들은 이만손을 중심으로 영남만인소 상소 운동을 일으켜 정부의 개화 노선을 강력하게 배격하려 했습니다."
-                    },
-                    {
-                        id: "e-3",
-                        year: "1882",
-                        title: "조미수호통상조약 조인",
-                        character: "신헌, 슈펠트, 김윤식",
-                        shortDesc: "조선책략의 영향과 청나라의 알선에 따라 서양 국가 중 최초로 미국과 조약을 체결했습니다.",
-                        longDesc: "러시아 견제 목적의 청나라 중개 하에 신헌과 슈펠트가 서양 열강 중 최초로 근대적 불평등 무역 조약을 성사시켰습니다.",
-                        keywords: ["서양 최초 수교", "거중조정", "최혜국 대우", "관세 부과 조항", "청나라의 알선", "보빙사 파견"],
-                        narrativeQuestion: "서양 열강 중 최초로 맺어진 조미수호통상조약의 역사적 배경과 핵심 불평등 조항을 포함하여 서술하시오.",
-                        checkpoints: ["청나라의 알선", "서양 최초", "거중조정", "최혜국 대우", "관세", "보빙사"],
-                        expertAnswer: "조선책략의 영향과 청나라의 알선으로 조선은 미국과 최초로 서양 국가와의 조약을 체결했습니다. 이 조약은 제3국의 침공 시 서로 돕는 거중조정과 세입의 기반이 될 관세 부과를 약속했으나, 타국에 더 유리한 혜택을 자동 부여하는 최혜국 대우를 규정한 불평등 조약이었습니다."
-                    },
-                    {
-                        id: "e-4",
-                        year: "1882",
-                        title: "임오군란과 조청상민장정",
-                        character: "구식 군인, 민씨 정권, 흥선대원군",
-                        shortDesc: "별기군과의 차별과 모래가 섞인 봉급 쌀에 폭발한 구식 군인들이 병란을 유도했습니다.",
-                        longDesc: "구식 군대의 반란으로 흥선대원군이 재집권했으나 청국군 개입으로 체포되었고, 조선은 청의 내지 통상권을 보장하게 되었습니다.",
-                        keywords: ["구식 군대 차별", "혜민서 습격", "제물포 조약", "조청상민수륙무역장정", "청의 내정간섭", "내지 통상권"],
-                        narrativeQuestion: "임오군란의 발생 직접적 발단과 군란의 결과 조선이 청나라와 맺게 된 조약의 경제적 침략성을 쓰시오.",
-                        checkpoints: ["별기군 차별", "임오군란", "제물포 조약", "조청상민수륙무역장정", "내지 통상권", "내정간섭"],
-                        expertAnswer: "신식 군대 별기군과의 극심한 차별 대우와 부패한 쌀 지급에 격분한 구식 군인들이 임오군란을 일으켰습니다. 난을 수습한 청나라는 조청상민수륙무역장정을 체결하여 자국 상인에게 조선 영토 안에서 자유롭게 장사할 수 있는 내지 통상권을 확보하고 내정간섭을 심화시켰습니다."
-                    },
-                    {
-                        id: "e-5",
-                        year: "1884",
-                        title: "갑신정변과 사흘 천하",
-                        character: "김옥균, 박영효, 홍영식",
-                        shortDesc: "급진 개화파 세력이 우정총국 개국 축하연을 기회로 일으킨 최초의 근대 수립 정변입니다.",
-                        longDesc: "청의 조공 체제를 무너뜨리고 근대 국가를 목표로 14개조 개혁안을 고수했으나 청군의 습격으로 실패로 귀결되었습니다.",
-                        keywords: ["급진 개화파", "우정총국 정변", "14개조 개혁안", "문벌 폐지", "톈진 조약 체결", "호조 재정 일원화"],
-                        narrativeQuestion: "갑신정변을 주도한 개혁 세력과 이들이 공표한 14개조 개혁안에 담긴 근대적 조치 및 조약의 연쇄 여파를 서술하시오.",
-                        checkpoints: ["급진 개화파", "우정총국", "14개조", "문벌 폐지", "호조 일원화", "톈진 조약"],
-                        expertAnswer: "김옥균 등 급진 개화파는 우정총국 개국연을 통해 정변을 일으켜 호조로의 재정 일원화와 문벌 폐지를 골자로 한 14개조 개혁안을 공표했습니다. 비록 청군의 개입으로 사흘 만에 실패했으나, 정변 결과 청일 양국 간 동시 철병 및 공동 파병권 명시를 담은 톈진 조약이 체결되었습니다."
-                    }
+                    { id: 1, year: "1840", title: "제1차 아편전쟁", type: "전쟁/침략/갈등", parties: "청, 영국", characteristics: ["영국 무역적자 해소용 아편 밀무역", "영국의 강제 개항 요구 및 군사 침공"], keywords: ["난징 조약", "홍콩 할양", "공행 폐지"], description: "임칙서의 아편 몰수를 빌미로 영국의 무력 침공이 단행되어 청이 패하였고 난징 조약이 체결되었습니다.", question: "제1차 아편전쟁의 직접적인 배경 사건과 결과물인 최초의 근대 조약 명칭을 서술하시오.", checkpoints: ["아편 밀무역", "임칙서 아편 몰수", "난징 조약"], expertAnswer: "영국이 무역 적자를 보전하기 위해 아편 밀무역을 자행하자, 청나라는 임칙서를 파견하여 아편을 무단 압수했습니다. 이에 영국이 보복 침략하여 전쟁이 벌어졌고, 청의 패배로 최초의 불평등 근대 조약인 난징 조약이 체결되었습니다." },
+                    { id: 2, year: "1856", title: "제2차 아편전쟁", type: "전쟁/침략/갈등", parties: "청, 프랑스, 영국, 러시아", characteristics: ["애로호 사건 및 선교사 피살 빌미", "베이징 조약 체결 및 연해주 러시아 할양"], keywords: ["텐진 조약", "베이징 조약", "연해주 할양"], description: "애로호 사건 등을 구실로 영국과 프랑스가 연합하여 청을 침략하여 개항을 확대하고 텐진·베이징 조약을 강제 조인했습니다.", question: "제2차 아편전쟁의 도발 빌미와 러시아가 중재 대가로 획득한 영토를 서술하시오.", checkpoints: ["애로호 사건", "베이징 조약", "연해주"], expertAnswer: "청나라 관리가 영국 국적선 애로호의 국기를 강탈했다는 누명을 씌운 애로호 사건을 빌미로 영·프 연합군이 베이징을 위협하여 조약을 체결시켰습니다. 러시아는 이를 중재한 대가로 연해주 땅을 획득하여 한반도 북방 경계까지 도달했습니다." },
+                    { id: 3, year: "1861", title: "양무운동", type: "운동/시위", parties: "청", characteristics: ["중체서용 개혁 이념", "군수공장 기기국 등 근대식 공장 설립"], keywords: ["중체서용", "기기국", "북양함대"], description: "태평천국 운동 진압 과정에서 서양 무기의 위력을 절감한 한인 관료들이 전통 제도를 지키고 기술만 도입하려 한 점진적 개혁입니다.", question: "청나라 양무운동의 지도 철학과 군사적 한계를 서술하시오.", checkpoints: ["중체서용", "기술만 도입", "청일전쟁 패배"], expertAnswer: "양무운동은 '중국의 제도를 체로 삼고 서양의 기술을 용으로 삼는다'는 중체서용 사상을 핵심 철학으로 진행되었습니다. 그러나 전통 제도와 사상을 보존한 채 기술 도입에만 치중하여 훗날 청일전쟁에서 처참히 패하며 그 한계가 여실히 드러났습니다." },
+                    { id: 4, year: "1854", title: "미일화친조약", type: "조약", parties: "일본, 미국", characteristics: ["미국 페리 제독의 흑선 무력 압박", "에도 막부의 최초 조약 체결"], keywords: ["페리 제독", "에도 막부", "시모다 하코다테 개항"], description: "미국 페리 함대의 압도적인 함포 시위 속에서 에도 막부가 굴복하여 체결된 일본 최초의 개항 조약입니다.", question: "미일화친조약이 체결된 대외적 계기와 개항된 대표적 항구를 서술하시오.", checkpoints: ["페리 제독", "에도 막부", "시모다 하코다테"], expertAnswer: "미국의 페리 제독이 이끄는 무장 흑선 함대가 도쿄 앞바다에서 함포 사격을 시위하며 압박하자 에도 막부가 이에 굴복하였습니다. 조선보다 앞선 1854년에 조약을 조인하고 시모다와 하코다테 항구를 최초로 열게 되었습니다." },
+                    { id: 5, year: "1858", title: "미일수호통상조약", type: "조약", parties: "일본, 미국", characteristics: ["영사 재판권(치외법권) 조인", "일방적인 협정 관세 및 최혜국 대우"], keywords: ["영사 재판권", "최혜국 대우", "협정 관세"], description: "화친조약 이후 본격적인 무역 통상을 규정한 불평등 조약으로, 일본의 사법 주권과 관세 자주권을 크게 훼손했습니다.", question: "미일수호통상조약 내에 포함된 국가 주권 훼손 독소 조항 2가지를 서술하시오.", checkpoints: ["영사 재판권", "치외법권", "협정 관세"], expertAnswer: "이 조약에는 미국인이 일본 법정의 판결을 배제하고 자국 법정에서 재판을 받도록 보장한 영사 재판권(치외법권)이 포함되어 사법권을 침해했으며, 일본 정부가 세율을 독자 결정하지 못하는 협정 관세를 규정하여 관세 자주권을 박탈당했습니다." },
+                    { id: 6, year: "1868", title: "메이지 유신", type: "운동/시위", parties: "일본", characteristics: ["에도 막부 전면 전복 및 국왕 중심 환원", "서양식 사상, 제도, 문명을 통째로 변경"], keywords: ["문명개화론", "막부 타도", "폐번치현"], description: "하급 무사들이 에도 막부를 무너뜨리고 일왕 중심의 전제적 군주 체제를 확립한 뒤 단기간에 전방위적 서구화를 이룬 대개혁입니다.", question: "메이지 유신 개혁 방식의 정체성과 청나라의 양무운동과의 차별점을 기술하시오.", checkpoints: ["제도와 사상 개혁", "문명개화론", "전면 서구화"], expertAnswer: "기술 도입에만 머무른 청의 양무운동과 달리, 일본의 메이지 유신은 문명개화론을 바탕으로 과학 기술뿐만 아니라 법률, 의복, 헌법, 사상 등 제도적·정신적 기저까지 모두 서구식으로 뒤바꾼 급진적 근대화 개혁이었습니다." },
+                    { id: 7, year: "1866", title: "병인박해", type: "전쟁/침략/갈등", parties: "조선, 프랑스", characteristics: ["흥선대원군의 천주교 금압령", "프랑스 신부 및 대다수 신도 순교"], keywords: ["흥선대원군", "천주교 탄압", "남종삼"], description: "러시아 침투를 프랑스 세력으로 저지하려던 시도가 불발되자 정권 안정을 위해 프랑스 신부들과 천주교 신자들을 처형한 사태입니다.", question: "흥선대원군 정권이 병인박해를 일으킨 원인과 대외적 결과를 쓰시오.", checkpoints: ["러시아 견제 실패", "천주교도 처형", "병인양요 유발"], expertAnswer: "흥선대원군은 남종삼 등을 통해 프랑스 세력을 끌어들여 러시아의 동진을 차단하려 했으나 여론의 반발과 교섭 실패로 불발되었습니다. 이에 대원군은 천주교도를 대량 처형하며 정권을 다졌고, 이는 프랑스가 강화도를 침범하는 병인양요의 빌미가 되었습니다." },
+                    { id: 8, year: "1866", title: "제너럴 셔먼호 사건", type: "전쟁/침략/갈등", parties: "조선, 미국", characteristics: ["미국 무장 상선의 대동강 진입 폭거", "평양 감사 박규수와 조선 관민의 화공"], keywords: ["평양 대동강", "박규수", "미국 상선"], description: "대동강을 거슬러 평양에 들어온 미국 무장상선 제너럴 셔먼호가 무단 통상을 요구하며 약탈을 벌이자 평양 감사 박규수가 관민을 이끌고 배를 소멸시켰습니다.", question: "제너럴 셔먼호 사건의 무대와 당시 조선 관민을 총지휘한 평양 감사의 인명을 쓰시오.", checkpoints: ["박규수", "대동강", "신미양요 원인"], expertAnswer: "사건은 평양 대동강에서 일어났으며, 당시 평양 감사 박규수의 지휘 아래 조선 관민들은 화공을 펼쳐 불법 약탈을 벌이던 미국 상선을 불태워 격침했습니다. 이 사건은 훗날 신미양요의 직접 원인이 되었습니다." },
+                    { id: 9, year: "1866", title: "병인양요", type: "전쟁/침략/갈등", parties: "조선, 프랑스", characteristics: ["프랑스 로즈 제독 함대의 강화도 점령", "수비 장수 양헌수의 정족산성 혈전"], keywords: ["정족산성 양헌수", "문수산성 한성근", "외규장각 도서 피탈"], description: "병인박해를 트집 잡아 강화도를 침입한 프랑스 함대를 한성근, 양헌수가 무력 격퇴하였으나 외규장각 문화재가 약탈당했습니다.", question: "병인양요 당시 프랑스군에 사격을 가해 격퇴한 격전 산성과 장수명을 서술하시오.", checkpoints: ["한성근 문수산성", "양헌수 정족산성", "외규장각 도서"], expertAnswer: "조선군은 한성근 장군이 이끄는 문수산성 전투와 양헌수 장군이 활약한 정족산성 매복 전투에서 프랑스 정규군을 격파했습니다. 격퇴에는 성공했으나 퇴각하는 프랑스군에게 외규장각의 수많은 의궤와 문화재를 노략질당하는 피해를 입었습니다." },
+                    { id: 10, year: "1868", title: "오페르트 남연군 묘 도굴 미수 사건", type: "전쟁/침략/갈등", parties: "조선, 독일(오페르트)", characteristics: ["덕산 남연군(대원군 친부) 묘 기습 도굴", "서양 야만인 인식에 따른 통상 배격 최고조"], keywords: ["독일 상인 오페르트", "덕산 남연군 묘", "통상 요구 목적"], description: "독일인 상인 오페르트가 통상 협상 카드로 사용하고자 대원군의 친부 남연군 분묘 도굴을 시도했으나 관민의 저항으로 미수에 그쳤습니다.", question: "오페르트의 행각이 조선 조정과 백성들의 서양인에 대한 정서에 미친 충격을 서술하시오.", checkpoints: ["남연군 묘 도굴 미수", "유교적 효 가치 훼손", "적개심 폭발"], expertAnswer: "독일 상인 오페르트 일당이 충남 덕산에 마련된 대원군의 부친 남연군의 묘를 밤중에 파내려다 실패했습니다. 조상 묘를 중시하는 유교 문화권인 조선에 엄청난 충격을 안겨주었으며 백성과 관원 모두 서양인을 금수처럼 여겨 통상 거부 정책을 결사 수호하게 만들었습니다." },
+                    { id: 11, year: "1871", title: "신미양요", type: "전쟁/침략/갈등", parties: "조선, 미국", characteristics: ["제너럴 셔먼호 사건 빌미의 강화도 침범", "조선 수비장수 어재연의 광성보 장렬 순국"], keywords: ["광성보 어재연", "수자기 피탈", "통상 수교 거부"], description: "미국 로저스 함대가 제너럴 셔먼호 격침 배상을 조작적 구실 삼아 강화도를 무력 침입하였으나 격렬한 조선 결사대의 저항으로 퇴각했습니다.", question: "신미양요 당시 조선 수비대가 사수하던 격전 진지와 일본군 및 미군에 전탈당한 상징물을 서술하시오.", checkpoints: ["어재연 광성보", "수자기", "미군 함대 퇴각"], expertAnswer: "어재연 장군 휘하의 조선군은 강화도 광성보 돈대에서 미군 특전대와 칼끝으로 맞섰으나 무기 열세로 장렬히 함락되었습니다. 미군은 장군의 군사적 기개 상징인 대형 깃발 수자기를 전리품으로 약탈해 퇴각했습니다." },
+                    { id: 12, year: "1871", title: "척화비 건립", type: "운동/시위", parties: "조선", characteristics: ["두 차례 양요 승리 자만으로 전국 수립", "서양 타협 주장을 매국으로 엄벌 명령"], keywords: ["통상 수교 거부 정책", "대원군 주권 선포", "전국 각지 수립"], description: "프랑스와 미국 세력을 강화도 연해에서 연속 물리친 대원군이 전국 요충지에 통상 거부 의지를 천명한 비석을 수립했습니다.", question: "척화비에 담긴 비문의 뜻과 역사적 의의를 서술하시오.", checkpoints: ["양무운동 거부", "주전론", "근대화 지연"], expertAnswer: "척화비문에는 '서양 오랑캐가 침범함에 싸우지 않으면 화친하는 것이요, 화친을 주장함은 나라를 파는 것이다'라는 강경한 구절이 담겼습니다. 이는 국권을 일시 지켰으나 세계사의 흐름에 발맞춘 근대화를 크게 지연시켰다는 한계를 동시에 갖습니다." },
+                    { id: 13, year: "1875", title: "운요호 사건", type: "전쟁/침략/갈등", parties: "조선, 일본", characteristics: ["일본 운요호 함대의 강화도 불법 침투", "초지진 포격 유도 및 영종도 약탈 방화"], keywords: ["운요호 불법 침입", "영종도 살상 약탈", "개항 강요 의도"], description: "일본 군함 운요호가 강제로 영해에 들어와 식수 보충을 핑계 대며 초지진 포격을 유도한 뒤 영종도에서 무단 약탈 방화를 벌인 도발 사건입니다.", question: "일본이 조선을 무력 위협하여 개항시키고자 단행한 운요호 사건의 양상과 목적을 쓰시오.", checkpoints: ["초지진 포격 유도", "영종도 살상 약탈", "개항 압박"], expertAnswer: "일본은 미군이 자국에 썼던 흑선 포격 위협 전술을 모방하여 조선의 허가 없이 강화도 해역에 진입했습니다. 조선군의 방어 사격을 빌미로 초지진에 보복 포격을 날린 뒤 영종도를 노략질하며 강제 개항 조약을 조인하도록 압박했습니다." },
+                    { id: 14, year: "1876", title: "강화도 조약", type: "조약", parties: "조선, 일본", characteristics: ["조선 최초의 근대적 조약 및 불평등 조약", "영사 재판권 및 해안 측량권 수용"], keywords: ["조일수호조규", "치외법권(영사 재판권)", "해안 측량권"], description: "조선 수교권자 신헌과 일본의 구로다 사이에 맺어진 사법권과 연안 주권을 빼앗긴 획기적 근대 불평등 계약입니다.", question: "강화도 조약의 1조 '조선은 자주국' 조항의 침략적 목적과 불평등성 조항 2가지를 서술하시오.", checkpoints: ["청의 종주권 부인", "영사 재판권", "해안 측량권"], expertAnswer: "1조의 '조선은 자주국' 명시는 청나라의 종주권을 부정하여 일본이 조선을 자유롭게 침략하려는 외교적 꼼수였습니다. 또한 자국인이 죄를 지어도 조선 법이 심판하지 못하는 영사 재판권(치외법권)과 영해 주권을 해치는 해안 측량권을 규정하여 주권을 현격히 위배했습니다." },
+                    { id: 15, year: "1876", title: "조일수호조규 부록", type: "조약", parties: "조선, 일본", characteristics: ["개항장 내 일본 화폐 유통 승인", "일본 상인의 거류지 설정 (간행이정 10리)"], keywords: ["일본 화폐 유통", "간행이정 10리 거류지", "상점 개설권"], description: "강화도 본조약 조인 직후 맺은 세부 조약으로, 개항장에서 일제 엔화의 유통권을 합의해 재정 주권을 위배했습니다.", question: "조일수호조규 부록에서 허용된 일본 화폐의 침탈성과 거류지 활동 한계를 설명하시오.", checkpoints: ["개항장 일본 동전 유통", "간행이정 10리"], expertAnswer: "부록에서는 개항장 내에서 일본인의 화폐를 마음대로 유통할 수 있도록 규정하여 조선의 금융 재정을 침식하는 길을 텄습니다. 또한 일본인의 주거 및 무역 범위를 개항장 10리 안(간행이정 10리)으로 한정하는 거류지 무역을 정했습니다." },
+                    { id: 16, year: "1876", title: "조일무역규칙 (초기)", type: "조약", parties: "조선, 일본", characteristics: ["무관세(수출입 상품 관세 전무)", "양곡의 무제한 유출 허용"], keywords: ["무관세 무항세", "곡물 무제한 유출", "식량난 유발"], description: "일본의 교활한 통상 협상 전략으로, 조선 정부가 세입 관세와 항세를 물리지 못하게 만들고 전라도 곡물을 대량 빼내가게 길을 튼 규칙입니다.", question: "조일무역규칙 초기 약정 내의 대표적인 독소 조항 2가지를 쓰고 초래된 사회적 해악을 서술하시오.", checkpoints: ["무관세 및 무항세", "쌀 무제한 유출", "식량 고갈"], expertAnswer: "무역규칙에는 일본 수입품에 세금을 물리지 못하는 '무관세'와 배가 들고날 때 부과하는 '무항세'가 정해져 재정 타격을 입혔습니다. 또한 쌀과 곡물을 제한 없이 무제한으로 유출할 수 있게 허용하여 조선 내 쌀값이 폭등하고 백성들이 기근에 허덕이는 불행을 초래했습니다." }
                 ]
             },
             2: {
-                title: "2일차: 동학 농민 운동과 갑오·을미개혁",
+                title: "2일차: 개화 노선의 추구와 격렬한 정계 정변",
                 events: [
-                    {
-                        id: "e-6",
-                        year: "1894",
-                        title: "동학 농민 운동 1차 봉기",
-                        character: "전봉준, 조병갑, 손화중",
-                        shortDesc: "고부 군수 조병갑의 세금 수탈에 폭발한 농민들이 백산에 모여 구국창의의 기치를 올렸습니다.",
-                        longDesc: "황토현과 황룡촌 관군을 대파하고 전주성까지 점령하여 한반도 정세의 거대한 변혁을 몰고 왔습니다.",
-                        keywords: ["고부 군수 조병갑", "만석보 수세", "백산 창의", "호남창의소", "황토현 전투", "황룡촌 전투 승리"],
-                        narrativeQuestion: "동학 농민 운동이 최초로 발생하게 된 행정적 도발 원인과 농민군의 대표적인 군사적 전공 전투를 쓰시오.",
-                        checkpoints: ["조병갑", "만석보", "백산 창의", "황토현 전투", "황룡촌 전투", "전주성 점령"],
-                        expertAnswer: "고부 군수 조병갑이 만석보에서 불법적으로 물세를 수탈하는 폭정에 반발한 농민들이 전봉준을 중심으로 무장 봉기(백산 창의)했습니다. 농민군은 조직적인 무력 전술로 황토현 전투와 황룡촌 전투에서 관군을 격파하고 정권의 거점인 전주성을 조기에 기습 함락했습니다."
-                    },
-                    {
-                        id: "e-7",
-                        year: "1894",
-                        title: "전주화약과 집강소 설치",
-                        character: "전봉준, 관군 대표",
-                        shortDesc: "청일 파병군 진입에 위기를 느낀 농민군이 정부와 전주화약을 맺고 독자 개혁을 단행했습니다.",
-                        longDesc: "지방 각 고을에 자치 통치청인 집강소를 설치하고 폐정 개혁안을 주체적으로 이행해 나갔습니다.",
-                        keywords: ["청일 군대 철수 요구", "전주화약", "집강소 설치", "폐정 개혁안 12조", "교정청 설치", "신분 타파 세제 개혁"],
-                        narrativeQuestion: "외세 개입을 배척하기 위해 조선 정부와 농민군이 타협한 합의의 명칭과 이들이 지방에 구축한 자치 개혁 기구명을 서술하시오.",
-                        checkpoints: ["외세 개입", "전주화약", "집강소", "폐정 개혁안", "자치 기구", "교정청"],
-                        expertAnswer: "청일 양국 군대의 출병으로 위협을 느낀 농민군은 정부와 자주 개혁을 약속하는 전주화약을 맺었습니다. 농민군은 전라도 고을마다 자치적 치안 개혁 기구인 집강소를 전격 설치하고 신분 차별 폐지와 토지 분배 등을 명시한 폐정 개혁안을 활발히 실현해 나갔습니다."
-                    },
-                    {
-                        id: "e-8",
-                        year: "1894",
-                        title: "동학 농민 운동 2차 봉기",
-                        character: "전봉준, 손병희, 일본군",
-                        shortDesc: "일본군의 무단 경복궁 점령에 격분한 남·북접 농민 연합군이 항일 구국을 목표로 재결집했습니다.",
-                        longDesc: "현대식 무기를 소지한 일군과 관군 연합군에 맞섰으나 우금치 고개에서 처참히 궤멸당했습니다.",
-                        keywords: ["경복궁 점령 도발", "남접 북접 연합", "항일 구국 전쟁", "삼례 재봉기", "우금치 전투 패배", "전봉준 체포"],
-                        narrativeQuestion: "농민군이 2차 봉기를 기획한 주권 침탈적 계기와 전개 과정의 결정적인 격전 장소명을 서술하시오.",
-                        checkpoints: ["경복궁 점령", "남접 북접 연합", "항일", "우금치 전투", "공주 우금치", "전봉준"],
-                        expertAnswer: "일본군이 경복궁을 기습 장악하자 분노한 전봉준의 남접과 손병희의 북접 농민군이 연합하여 반외세 항일 구국을 목표로 삼례에서 재봉기했습니다. 이들은 서울 진격을 시도했으나 공주 우금치 전투에서 연합군의 현대식 화력에 무참히 패배하고 지도부 체포로 막을 내렸습니다."
-                    },
-                    {
-                        id: "e-9",
-                        year: "1894",
-                        title: "갑오개혁과 군국기무처",
-                        character: "김홍집, 유길준, 고종",
-                        shortDesc: "군국기무처를 중심으로 공사 신분제 폐지, 과거제 철폐 등 역사상 가장 파격적인 개조를 밀어붙였습니다.",
-                        longDesc: "2차 개혁 때는 홍범 14조를 공포하여 근대적 재판소 설립과 사법-행정 분리를 가시화했습니다.",
-                        keywords: ["군국기무처 설치", "공사 신분제 폐지", "과거 제도 폐지", "은본위 화폐 제도", "홍범 14조 공포", "사법 행정 분리"],
-                        narrativeQuestion: "갑오개혁 시기 파격적 근대 제도를 이끈 사상 초유의 의결 기구와 사상 최초로 선언된 공적 신분 구조 개조 내용을 서술하시오.",
-                        checkpoints: ["군국기무처", "과거제 폐지", "공사 신분제", "은본위제", "홍범 14조", "재판소"],
-                        expertAnswer: "개화 정부는 초정부적 가결 처소인 군국기무처를 설치하여 신분 차별을 타파하는 공사 신분제 폐지와 유교적 관직 임용제인 과거제 폐지를 추진했습니다. 뒤이어 고종은 홍범 14조를 선포하여 근대 사법 구조의 시초인 재판소 설치를 확정 지었습니다."
-                    },
-                    {
-                        id: "e-10",
-                        year: "1895",
-                        title: "을미사변과 단발령 공표",
-                        character: "명성황후, 미우라 고로, 유인석",
-                        shortDesc: "일제가 명성황후를 시해하고 단발령을 선포하자 유생과 백성들이 격렬한 의병 운동으로 보복했습니다.",
-                        longDesc: "단발령과 태양력 시행 등 일제의 주도로 을미개혁이 전개되었으나, 성리학적 정체성 훼손에 분노한 을미의병이 폭발했습니다.",
-                        keywords: ["삼국간섭 여파", "명성황후 시해", "미우라 고로 공사", "단발령 강행", "태양력 채택", "을미의병 봉기"],
-                        narrativeQuestion: "일제가 궁궐을 파괴하여 국모를 참살한 변란의 명칭과 유학자 사대부들을 가장 대대적으로 규합하게 만든 악법을 설명하시오.",
-                        checkpoints: ["명성황후 시해", "을미사변", "미우라", "단발령", "을미의병", "유인석"],
-                        expertAnswer: "삼국간섭 이후 러시아 세력을 동원하려던 명성황후를 일본 공사 미우라 고로가 보낸 자객들이 참혹하게 시해하는 을미사변을 도발했습니다. 이후 친일 정권은 강제 삭발령인 단발령을 강행했으며, 이에 격분한 정통 선비 유생들은 유인석 등을 중심으로 최초의 항일 의병인 을미의병을 대대적으로 조직했습니다."
-                    }
+                    { id: 17, year: "1880", title: "통리기무아문 설치", type: "운동/시위", parties: "조선", characteristics: ["근대 개화 정책 총괄 기구", "산하에 군사 재정 등 12사 편제 정비"], keywords: ["통리기무아문", "개화 총괄", "12사 설치"], description: "청의 총리각국의 구도를 참작하여 고종 조정이 개화 정책을 일괄 컨트롤하고자 세운 사상 첫 근대 전담 각료 부처입니다.", question: "통리기무아문이 설치된 이유와 개혁 추진 양상을 기술하시오.", checkpoints: ["개화 총괄", "12사", "별기군 연계"], expertAnswer: "정부는 통상 조약 체결 이후 개화 정책을 주도적이고 전문적으로 추진하기 위해 통리기무아문을 신설했습니다. 산하에 군사, 외교, 무역을 전담하는 12사를 편성하고, 군제 개편의 일환으로 신식 군대인 별기군을 창설해 군사 개혁을 가시화했습니다." },
+                    { id: 18, year: "1876", title: "수신사 파견", type: "운동/시위", parties: "조선, 일본", characteristics: ["1차 김기수, 2차 김홍집 일본 밀착 기행", "근대 문물 견학 및 조선책략 수입"], keywords: ["1차 수신사 김기수", "2차 수신사 김홍집", "조선책략 수입"], description: "개항 직후 수교 세부 동태를 확인하고 신문물을 시찰하기 위해 일본 정부에 파견한 공식 사절단입니다.", question: "2차 수신사 김홍집이 일본 방문에서 조선으로 복귀할 때 가져와 큰 파란을 일으킨 책자는 무엇인가?", checkpoints: ["김홍집", "조선책략", "미국 수교 제안"], expertAnswer: "2차 수신사 김홍집이 귀국할 때 황준헌이라는 청나라 외교관이 쓴 '조선책략'을 가져왔습니다. 이 책은 조선이 러시아의 남하를 막기 위해 미국과 시급히 손을 잡아야 한다고 권유하여 정국에 엄청난 격변을 불러일으켰습니다." },
+                    { id: 19, year: "1881", title: "영선사 파견", type: "운동/시위", parties: "조선, 청", characteristics: ["김윤식 지휘 아래 한인 유학생 청국 파견", "청국 텐진 기기국에서 화약 및 근대 무기법 습득"], keywords: ["영선사 김윤식", "기기국 기술 학습", "기기창 설치 계기"], description: "청나라의 양무 기술과 공장 생산법을 배우기 위해 김윤식과 젊은 공학도 유학생들을 파견하여 텐진에서 근대식 화약 조립법을 배웠습니다.", question: "영선사 사절단의 파견 대상국과 조기 환국 이후 조정에 설립된 무기 제조창의 이름을 쓰시오.", checkpoints: ["청나라 기기국", "김윤식", "기기창 설치"], expertAnswer: "조선은 청나라의 근대식 군사 기술을 습득하기 위해 영선사 김윤식을 영수로 사절단을 보냈습니다. 임오군란 등 정국 혼란으로 조기 환국했으나 이들의 기술 수용 성과를 토대로 최초의 근대 무기 공장인 기기창을 신설했습니다." },
+                    { id: 20, year: "1881", title: "조사시찰단 파견", type: "운동/시위", parties: "조선, 일본", characteristics: ["위정척사 반대를 의식해 암행어사 형식 극비 파견", "박정양, 홍영식 등이 일본 사법 사료 수집"], keywords: ["조사시찰단(신사유람단)", "박정양 홍영식", "비밀 극비 파견"], description: "수정 보수층 유생들의 척사 규탄 상소 세례를 피해 비밀리에 암행어사 가짜 신분 마패를 준 뒤 일본 전역의 법제와 철도 기술을 꼼꼼히 기록해 보고했습니다.", question: "정부가 조사시찰단(신사유람단)을 극비리에 보낸 배경을 서술하시오.", checkpoints: ["척사 유생 반발", "암행어사 위장", "박정양"], expertAnswer: "당시 보수 세력의 개화 반대 여론(위정척사 운동)이 극도로 살벌했기 때문에, 조정은 불필요한 마찰을 피하고자 사절단을 암행어사로 위장하여 극비 파견했습니다. 이들은 정밀한 문물 시찰 보고서를 남겨 정부 개방 개혁의 브레인 역할을 했습니다." },
+                    { id: 21, year: "1880", title: "조선책략 유포", type: "조약", parties: "조선, 청, 미국", characteristics: ["러시아 남하를 방어하려는 황준헌의 저작", "친청, 결일, 연미 3대 외교 지향 제시"], keywords: ["황준헌 조선책략", "연미론 제시", "위정척사 도화선"], description: "김홍집이 반입한 청 외교관 황준헌의 저술로, 러시아의 남진 침투를 우려하여 중국, 일본, 미국과 조력해야 함을 주장했습니다.", question: "조선책략이 제시한 대외 방략 3원칙을 명시하여 서술하시오.", checkpoints: ["친청", "결일", "연미"], expertAnswer: "조선책략은 조선이 처한 지정학적 위기를 벗어나기 위해 중국과 친하고(親淸), 일본과 맺으며(結日), 미국과 연대해야 한다(聯美)는 3대 외교 노선을 제시하여 연미론의 당위성을 조선 보수 유림들의 눈앞에 던졌습니다." },
+                    { id: 22, year: "1881", title: "영남만인소 사건", type: "운동/시위", parties: "조선", characteristics: ["조선책략 유포에 반대한 영남 위정척사 의병 상소", "이만손 주도로 만 명의 사대부 연대 서명"], keywords: ["이만손 영남만인소", "조선책략 규탄", "서양 기독교 배척"], description: "조선책략 배포로 보수 전통 가치가 흔들리자 영남의 유학자 이만손이 주도하여 만 명이 넘는 연서로 사교 배척과 개화 반대를 맹렬히 청원했습니다.", question: "영남만인소 상소 운동의 중심 인물과 이들이 주장한 척사 주장을 기술하시오.", checkpoints: ["이만손", "만인 연서", "조선책략 미국 수교 반대"], expertAnswer: "영남의 대표 유생 이만손을 필두로 영남만인소 상소 운동을 펼쳐 조선책략 유포를 주도한 신료들을 탄핵했습니다. 이들은 특히 미국을 알지 못하는 미개의 야만국으로 규정하며 기독교 사교의 유입을 결사 차단해야 한다고 목청을 높였습니다." },
+                    { id: 23, year: "1882", title: "조미수호통상조약", type: "조약", parties: "조선, 미국", characteristics: ["서양 국가와 맺은 역사상 첫 근대 조약", "거중조정 및 최혜국 대우 명시 불평등성"], keywords: ["서양 최초 수교", "거중조정", "최혜국 대우 규정"], description: "조선책략 수용 결과 청의 알선 하에 미국 슈펠트 제독과 조인한 서양 국가 최초의 관세 포함 불평등 조약입니다.", question: "조미수호통상조약 속 '거중조정'의 가상적 우호성과 실제 '최혜국 대우'의 독소적 해악을 서술하시오.", checkpoints: ["거중조정 동맹적 성격", "최혜국 대우 불평등성", "청나라 알선"], expertAnswer: "거중조정은 타국이 조선을 침해할 때 미국이 중재한다는 동맹적 조항이었으나 훗날 일제 강점 시 미국은 방관했습니다. 반면 최혜국 대우 조항은 미국에 별도 혜택을 자동 갱신해 주는 장치를 심어 조선의 자주 통상권을 근본적으로 강탈하는 결과를 낳았습니다." },
+                    { id: 24, year: "1882", title: "임오군란", type: "전쟁/침략/갈등", parties: "조선, 청, 일본", characteristics: ["구식 무관 차별 및 겨모래 혼합 급여 쌀 도발", "청군의 기습 난입에 따른 대원군 납치 사태"], keywords: ["별기군 구식군대 차별", "선혜청 도봉소 폭동", "흥선대원군 일시 집권"], description: "신식 무관군 별기군과의 현격한 차별 대우와 13달 밀려 나온 쌀 봉급 비리에 분노한 구식 군인들이 대원군을 복위시키고 일으킨 반란입니다.", question: "임오군란의 군사적 발단과 결과 발생한 청나라 군사 세력의 개입 수위를 서술하시오.", checkpoints: ["급여 쌀 모래 비리", "민씨 정권 타격", "청군 진압 및 대원군 납치"], expertAnswer: "신식 별기군에 비해 열악한 처우에 지친 구식 군인들에게 지급된 쌀에 겨와 모래가 섞여 나오자 임오군란이 발발했습니다. 난군을 진압한다는 명분으로 청나라 대군이 난입해 정권을 되찾은 흥선대원군을 청국으로 납치하여 주권을 심각하게 위배했습니다." },
+                    { id: 25, year: "1882", title: "제물포 조약", type: "조약", parties: "조선, 일본", characteristics: ["공사관 습격 배상금 조선 지불 부과", "일본 경비병의 한양 한성 군대 주둔 허용"], keywords: ["일본 공사관 경비병 주둔", "배상금 부과", "주권 침해 조항"], description: "임오군란 시 일제 공사관이 타격을 입었다는 구실로 일본 군대를 서울 도심에 영구 주둔시키는 군사적 늑약입니다.", question: "제물포 조약의 조인 결과 한양 성내에 수용하게 된 군사 침략적 잔해 조항을 쓰시오.", checkpoints: ["배상금 지불", "경비 주둔", "사법 주권 훼손"], expertAnswer: "조선 정부는 일본 공사관 파괴에 대한 막대한 배상금을 허덕이는 제정 속에서 징수당했습니다. 더욱 치명적인 해악으로 공사관 안전 확보라는 구실 하에 일본 군대 경비병력의 서울 한복판 주둔권을 정식 허용하는 치욕적인 양보를 겪었습니다." },
+                    { id: 26, year: "1882", title: "조청상민수륙무역장정", type: "조약", parties: "조선, 청", characteristics: ["조선을 청의 속국으로 조문에 명문화", "청국 상인의 내지(도성 내부) 무역 활동권 전면 승인"], keywords: ["청의 조선 속방 명문화", "내지 통상권(상인 내륙 진입)", "청국 상인 특권"], description: "임오군란 진압 공치사로 청이 강요한 장정으로, 조선을 청의 속국으로 공식 조인하고 청 상인이 내륙에 침투할 내지 통상권을 독점 부여했습니다.", question: "조청상민수륙무역장정의 서문에 적시된 조선의 지위와 조선 상인들이 입은 타격을 쓰시오.", checkpoints: ["속방(속국)", "내지 통상권", "시전 상인 붕괴"], expertAnswer: "이 장정의 서문에는 '조선은 청의 속방'임이 정식 문서로 선포되었습니다. 또한 청국 상인에게 내지 통상권을 승인하여 개항장에서만 장사하던 규칙을 깨고 양화진과 도성 안 상점 개설권을 쓸어가 조선 시전 상인들을 도탄에 빠뜨렸습니다." },
+                    { id: 27, year: "1883", title: "조독수호통상조약", type: "조약", parties: "조선, 독일", characteristics: ["청의 주선 하에 수립된 수교 동조", "사법 치외법권 및 최혜국 수용 불평등성"], keywords: ["뢴도르프 알선", "독일 최초 수교", "최혜국 조항 내재"], description: "독일 자본과 외교 세력을 활용하려는 개방 노선에 따라 청나라 알선 하에 독일 제국과 조인한 전형적인 불평등 조약입니다.", question: "조독수호통상조약 체결의 배경과 조약 내용의 기조를 기술하시오.", checkpoints: ["개방 확장", "불평등 조약", "관세 영사 재판"], expertAnswer: "조선 정부는 서양 열강과의 수교 다변화를 통해 청과 일본을 견제하고자 독일과 수교를 맺었습니다. 조약문 내에는 앞서 조인한 조미수호통상조약과 동일하게 영사 재판권과 일방적 최혜국 대우 등 주권 양보를 승인한 성격이 담겨 있습니다." },
+                    { id: 28, year: "1883", title: "조일통상장정 개정", type: "조약", parties: "조선, 일본", characteristics: ["곡물 유출 방지용 방곡령 선포권 획득", "일본인 상인에 대한 독점적 최혜국 대우 약속"], keywords: ["방곡령 선포 규정", "관세 부과 권리 복원", "최혜국 대우 양도"], description: "무관세와 무제한 곡물 유출을 개정하여 조선에 방곡령 선포 권한과 일본 상품 관세 부과권을 복원했으나, 최혜국 대우를 일본에 양도해 상인 침투를 극대화했습니다.", question: "1883년 조일통상장정 개정 협상에서 조선이 얻어낸 양식 주권 조항과 내준 이권 조항을 서술하시오.", checkpoints: ["방곡령 선포 합의", "관세 자주권 일부 복원", "최혜국 대우 양도"], expertAnswer: "조선은 쌀 유출에 따른 기근을 제어할 방곡령 선포 권리와 일본 물품에 세금을 물릴 관세 자주권을 어렵사리 따냈습니다. 하지만 대가로 일본에 영구 최혜국 대우 특권을 승인해 주어, 일본 상인이 조선 내륙 시장에서 청국 상인과 동일한 특권으로 활동할 침투망을 열어 주었습니다." },
+                    { id: 29, year: "1885", title: "한성조약", type: "조약", parties: "조선, 일본", characteristics: ["갑신정변 피해보상 청구 늑약", "일본 공사관 신축 비용 전량 조선 부담"], keywords: ["갑신정변 피해 배상", "공사관 신축비 부담", "한성조약"], description: "급진 개화파의 갑신정변 무산 이후, 일본이 자국 공사관 소실 책임을 조선에 전가하여 배상금 조달과 공사관 재건축 비용을 강탈한 조약입니다.", question: "갑신정변 진압 후 체결된 한성조약의 피배상 수위를 간략하게 서술하시오.", checkpoints: ["신축 비용", "배상금 지불", "갑신정변 사후"], expertAnswer: "갑신정변에서 일본이 개화파를 돕다 청군에 밀려 퇴각해 놓고도, 정변 시 자국 공사관이 불탄 피해를 보상하라며 대단히 불합리하게 배상금을 뜯어내고 서울에 공사관을 새로 짓는 막대한 건축 세입 비용까지 조선 국고에서 지급하게 강제했습니다." },
+                    { id: 30, year: "1885", title: "거문도 사건", type: "전쟁/침략/갈등", parties: "영국, 러시아, 조선", characteristics: ["영국 해군의 전남 거문도 무단 점령", "러시아 남하를 견제하려는 서구 열강 대결"], keywords: ["해밀턴 항구 명명", "영국 불법 점령", "러시아 남진 저지"], description: "갑신정변 이후 조선 정계의 친러 밀약 기도를 포착한 대영 제국 해군 함대가 남하하는 러시아의 숨통을 죄고자 여수 거문도를 '해밀턴 항구'로 명명하고 무단 점거한 사건입니다.", question: "영국 해군이 남해안의 요충 거문도를 무단 점거한 대외 지정학적 배경 사건을 서술하시오.", checkpoints: ["친러 밀약 기도", "영·러 대결", "거문도 해밀턴"], expertAnswer: "조선 민씨 정권이 청나라를 견제하려 러시아와 비밀 협약을 시도하자, 전 세계에서 러시아와 패권을 다투던 영국이 러시아 극동 함대의 태평양 진출을 길목에서 끊고자 전남 여수의 거문도를 불법 무력 점유하여 영토 주권을 크게 침해했습니다." },
+                    { id: 31, year: "1885", title: "한반도 중립화론", type: "운동/시위", parties: "조선, 독일(부들러)", characteristics: ["독일 부들러 및 유길준의 중립 안건", "스위스 벨기에식 한반도 평화 보장 구상"], keywords: ["유길준 중립화론", "부들러 초안", "열강 보장 무산"], description: "거문도 점령 등 한반도가 서구 열강의 화약고로 전락하자 부들러와 유길준이 한반도를 스위스처럼 영구 중립국으로 선포해 전쟁을 막자고 올린 건의이나 묵살당했습니다.", question: "개항 이후 한반도가 중립국 연대를 모색한 한반도 중립화론의 핵심 아이디어와 한계를 쓰시오.", checkpoints: ["유길준", "열강 보장 중립", "국력 부족 무산"], expertAnswer: "유길준 등은 조선을 둘러싼 열강의 탐욕을 중화하고자 주변 열강들이 조선의 영토를 침략하지 않기로 외교 조약을 맺는 영구 중립국 방안을 구상했습니다. 하지만 조선 자체의 자주 국방력과 국제적 발언권이 미약하여 열강들의 무시 속에 실현되지 못했습니다." },
+                    { id: 32, year: "1884", title: "갑신정변과 14개조 개혁안", type: "운동/시위", parties: "조선, 일본, 청", characteristics: ["급진 개화파의 우정총국 개국 정변", "청군 개입으로 인한 3일 천하 좌절"], keywords: ["급진 개화파", "우정총국 낙성식", "14개조 개혁안 공포"], description: "김옥균, 박영효 등 급진 개화파가 우정총국 개국 잔치 연회를 계기 삼아 청에 얽매인 조공 제도를 허물고 공화정 근사 근대 국가를 도모하려다 청군 진압으로 사흘 만에 무산된 대정변입니다.", question: "갑신정변의 14개조 개혁안 속에 드러난 가장 전향적인 신분 질서 개혁 및 재정 통합 조항을 서술하시오.", checkpoints: ["문벌 폐지 공사 평등", "호조 재정 일원화", "청에 대한 조공 폐지"], expertAnswer: "개혁안에는 신분 질서를 전면 폐지하는 '문벌 폐지 및 인민 평등 권리 확보'를 선포하여 세습적 노비 관행을 깨뜨리려 했고, 각 관서에 나뉘어 국고 횡령을 초래하던 세제 수입을 호조 한 부처로 집중하는 '재정 호조 일원화'를 입법해 국가 근대화를 도모했습니다." }
                 ]
             },
             3: {
-                title: "3일차: 구국 운동의 전개와 대한제국 수립",
+                title: "3일차: 동학의 민중 혁명과 국가 체제 대수술",
                 events: [
-                    {
-                        id: "e-11",
-                        year: "1896",
-                        title: "아관파천과 주권 붕괴",
-                        character: "고종, 베베르 공사",
-                        shortDesc: "을미사변의 살벌한 신변 공포 속에서 고종이 비밀리에 러시아 공사관으로 거처를 옮겼습니다.",
-                        longDesc: "러시아 공사관 체류 동안 국가의 자주성이 짓밟혔으며 서구 열강들의 무차별적인 자원 침탈이 횡행했습니다.",
-                        keywords: ["러시아 공사관", "신변 처형 공포", "삼림 벌목권 피탈", "광산 채굴권 양도", "국가 위신 실추", "경운궁 환궁 요구"],
-                        narrativeQuestion: "아관파천이 단행된 원인과 고종이 궁을 비운 대가로 한반도의 경제 영토가 입은 심대한 폐해를 설명하시오.",
-                        checkpoints: ["러시아 공사관", "고종", "신변 위협", "이권 침탈", "광산", "삼림 벌목권"],
-                        expertAnswer: "을미사변 이후 신변에 극도의 공포를 느낀 고종이 러시아 공사관으로 거처를 옮기는 아관파천을 단행했습니다. 임금이 국외 세력 공사관에 머무는 사이, 러시아와 미국 등 열강은 금광 채굴권과 삼림 벌목권 등 조선의 막대한 국부 경제 이권을 무단으로 강탈해 갔습니다."
-                    },
-                    {
-                        id: "e-12",
-                        year: "1896",
-                        title: "독립협회 창설과 자주민권",
-                        character: "서재필, 윤치호",
-                        shortDesc: "서재필이 독립신문을 만들고 독립협회를 구성해 구국적 자주민주의 정체성을 구축했습니다.",
-                        longDesc: "청의 조공 의무 상징이던 영은문을 헐고 독립문을 건설하여 조국의 근대적 자립을 외치기 시작했습니다.",
-                        keywords: ["서재필 주도", "독립신문 발간", "독립문 건립", "영은문 훼철", "토론회와 강연회", "자주독립 사상 고취"],
-                        narrativeQuestion: "독립협회가 외세 사대 청산 의지를 천명하기 위해 철거한 조선의 문과 대신 건립한 상징물의 명칭을 쓰시오.",
-                        checkpoints: ["서재필", "독립신문", "영은문", "독립문", "독립협회", "자주독립"],
-                        expertAnswer: "미국에서 돌아온 서재필은 독립신문을 창간한 뒤 독립협회를 구성했습니다. 협회는 청나라 사신을 영접하던 사대의 상징인 영은문을 헐고 국민들의 기부금으로 근대적 자주 국가의 의지를 보여주는 독립문을 건립하여 독립심을 크게 일깨웠습니다."
-                    },
-                    {
-                        id: "e-13",
-                        year: "1898",
-                        title: "만민공동회와 헌의 6조",
-                        character: "서재필, 박정양, 백정 박성춘",
-                        shortDesc: "백성들이 모인 만민공동회에서 러시아 이권 요구를 철회시켰으며 관민공동회에서는 헌의 6조를 가결했습니다.",
-                        longDesc: "근대적 의회제 중추원 개편안을 기획하여 대한민국 사상 첫 입헌군주정 기틀을 다지려 노력했습니다.",
-                        keywords: ["만민공동회 개최", "러시아 절영도 조차 저지", "관민공동회 박성춘", "헌의 6조 가결", "중추원 의회 설립 시도", "보수파 모함 강제 해산"],
-                        narrativeQuestion: "독립협회가 한반도 영해 조차권을 저지시킨 평민 공동회 명칭과 의회 설립에 가깝게 나아갔던 국정 개혁안의 명칭을 쓰시오.",
-                        checkpoints: ["만민공동회", "관민공동회", "헌의 6조", "중추원", "의회", "절영도 조차"],
-                        expertAnswer: "독립협회는 종로 야외 광장에서 만민공동회를 열어 러시아의 절영도 조차지 요구를 저지시켰습니다. 더 나아가 정부 고관들과 함께 개최한 관민공동회에서는 왕권 보존과 법률 재정 통제를 요구하는 헌의 6조를 가결했으며, 중추원 관제를 개편하여 사상 최초의 의회 설립을 시도했습니다."
-                    },
-                    {
-                        id: "e-14",
-                        year: "1897",
-                        title: "대한제국 건립과 황제 등극",
-                        character: "고종 (광무제)",
-                        shortDesc: "경운궁으로 돌아온 고종황제가 환구단에서 황제 등극식을 열고 독자적인 제국 선포를 감행했습니다.",
-                        longDesc: "자주적 지위를 명문화한 대한국 국제 조문을 배포하여 황제권 무한 지배를 대내외에 확실히 보증했습니다.",
-                        keywords: ["경운궁 환궁", "환구단 조영", "대한제국 수립 선포", "광무 연호 제정", "대한국 국제 공포", "황제권 무한 강조"],
-                        narrativeQuestion: "조선이 자주적 황제 대국임을 천명하기 위해 고종이 즉위 제례를 올린 장소와 제국의 연호 명칭을 쓰시오.",
-                        checkpoints: ["경운궁", "환구단", "원구단", "대한제국", "광무", "대한국 국제"],
-                        expertAnswer: "러시아 공사관에서 경운궁으로 환궁한 고종은 하늘에 올리는 제단인 환구단을 지어 황제 즉위식을 올리고 국호를 대한제국, 연호를 광무로 공식 선포했습니다. 또한 황제에게 영구한 무한 주권을 보장하는 일종의 헌법 성격인 대한국 국제를 공표했습니다."
-                    },
-                    {
-                        id: "e-15",
-                        year: "1897",
-                        title: "광무개혁의 자강 조치",
-                        character: "고종, 이범윤",
-                        shortDesc: "구본신참의 개조 원칙을 내세워 황제 직속 군부 원수부를 세우고 땅문서 지계를 전국적으로 발급했습니다.",
-                        longDesc: "상공업 육성인 식산흥업을 앞세우고 이범윤을 간도관리사로 파견해 국경을 정예화했습니다.",
-                        keywords: ["구본신참 원칙", "원수부 설치", "양전 사업 개시", "지계 발급 아문", "식산흥업 정책", "간도관리사 이범윤 파견"],
-                        narrativeQuestion: "대한제국 개혁의 성어 원칙과 군권을 확실히 묶은 황제 직속 부서, 근대적 토지 분쟁을 해결하기 위해 내려진 문서명을 기술하시오.",
-                        checkpoints: ["구본신참", "원수부", "양전 사업", "지계", "식산흥업", "간도관리사"],
-                        expertAnswer: "대한제국은 '옛것을 근본으로 삼고 새것을 참작한다'는 구본신참 기조하에 광무개혁을 추진했습니다. 황제는 군사 최고 사령부인 원수부를 두어 군권을 장악했으며, 양전 사업을 엄격히 실시하여 현대적 토지 소유권 문서인 지계를 발급하고 식산흥업을 통해 상업 육성을 주도했습니다."
-                    }
+                    { id: 33, year: "1894", title: "고부 농민 봉기", type: "운동/시위", parties: "조선(농민군)", characteristics: ["고부 군수 조병갑의 만석보 세금 폭정", "사발통문 비밀 결사 격문 전파"], keywords: ["조병갑 만석보 수세", "사발통문 배포", "고부 관아 습격"], description: "전북 고부 군수 조병갑이 아버지를 기리는 비석을 세운다며 돈을 뜯고 만석보 수세를 가혹하게 착취하자 전봉준을 위시한 성난 백성들이 사발통문을 돌리고 봉기했습니다.", question: "동학 농민 운동의 시발점이 된 전라도 고부 농민 봉기의 촉발 원인을 서술하시오.", checkpoints: ["조병갑 폭정", "만석보 불법 세금", "사발통문"], expertAnswer: "고부 군수 조병갑이 농민들을 강제 징용해 대동강 수로 정비도 아닌 불필요한 보인 만석보를 축조하고 과도한 물세(수세)를 강탈하는 등 폭정을 자행했습니다. 이에 전봉준 등 지도부는 사발통문을 작성해 주모자를 가린 뒤 관아를 점령해 수탈 세금을 백성에게 반환했습니다." },
+                    { id: 34, year: "1894", title: "백산 창의", type: "운동/시위", parties: "조선(농민군)", characteristics: ["본격적인 무장 농민 전쟁 1차 봉기", "보국안민과 제폭구민 4대 강령 선포"], keywords: ["1차 봉기 전봉준", "백산 창의 4대 강령", "호남창의소 설립"], description: "정부가 보낸 안핵사 이용태가 농민군을 가혹하게 학살 탄압하자, 전봉준, 손화중, 김개남이 백산에 수만 대군을 규합해 보국안민의 깃발을 치켜올렸습니다.", question: "백산 창의에서 농민군이 내건 혁명적인 4대 행동 강령과 목적을 쓰시오.", checkpoints: ["제폭구민", "보국안민", "한양 진격"], expertAnswer: "농민군은 '사람을 죽이지 말고 가축을 해치지 말라', '포악한 관리를 처단하는 제폭구민', '나라를 돕고 백성을 편안케 할 보국안민', '군대를 이끌고 서울에 진격해 권세를 멸한다'는 창의 행동 지침을 세우고 본격적인 전면 구국 전쟁을 가속화했습니다." },
+                    { id: 35, year: "1894", title: "황토현 전투", type: "전쟁/침략/갈등", parties: "조선(농민군, 관군)", characteristics: ["고부 감영 전라 감영군 기습 파괴", "농민군의 첫 대규모 정규 전술 승리"], keywords: ["황토현 전투 승리", "전라 관군 대파", "농민군 기세 장악"], description: "정읍 황토현에서 정규 전라 감영군이 야간에 무방비인 틈을 타 농민 의병단이 대규모 매복 야습 화공을 가해 대승한 사상 첫 대첩입니다.", question: "황토현 전투의 승리가 동학 농민군에게 가져다준 군사 기세적 의미를 쓰시오.", checkpoints: ["관군 격파", "자신감 획득", "영향력 확장"], expertAnswer: "농민군은 관가의 화력에 위축되지 않고 지형을 활용한 매복 매설 지략으로 정규 관군을 야밤에 불벼락으로 휩쓸어 대승했습니다. 이 승리로 농민군은 군사적 자신감을 무장했고 전라도 전역의 농민들을 연쇄 궐기시켜 전주성을 압박할 기세를 확보했습니다." },
+                    { id: 36, year: "1894", title: "황룡촌 전투", type: "전쟁/침략/갈등", parties: "조선(농민군, 관군)", characteristics: ["장성 황룡촌 경군(한양 정예군) 격파", "독창적 방어 장갑차 장태 전술 동원"], keywords: ["장성 황룡촌 승리", "수도 경군 격퇴", "장태 전술 활용"], description: "장성 황룡촌에서 한양에서 급파된 최첨단 크루프 포를 장착한 경군에 맞서, 닭장 모양의 회전 방패 장태를 굴리며 돌격해 승리한 전투입니다.", question: "황룡촌 전투에서 정예 경군에 맞서 농민군이 창안해 낸 방어 무기와 승리 의의를 쓰시오.", checkpoints: ["장태 전술", "경군 대파", "전주성 진격 통로 확보"], expertAnswer: "농민군은 대나무를 엮어 굴리는 닭장 방패에 솜을 채워 적의 소총탄을 흡수하는 방어 장갑차 '장태'를 창안해 굴리며 돌진했습니다. 이 기발한 전술로 최첨단 화력을 지닌 경군을 무력화시키고 도망치게 만들어 전주성으로 가는 길목을 완벽히 사수했습니다." },
+                    { id: 37, year: "1894", title: "전주성 점령", type: "전쟁/침략/갈등", parties: "조선(농민군, 관군)", characteristics: ["호남 최대 요충지 전주성 기습 함락", "조선 정국의 최고조 위기 위협"], keywords: ["전주성 점령", "전봉준 기습", "청일 군대 파병 유발"], description: "기세등등한 농민군이 마침내 전라도 행정과 군사의 심장부인 전주성에 한 성문을 뚫고 돌입해 완전 장악한 역사적 대사건입니다.", question: "농민군의 전주성 함락 사태에 당황한 조선 정부가 취한 대외 외교적 오판을 서술하시오.", checkpoints: ["청나라 원군 요청", "톈진 조약 발동", "일본군 연쇄 진입"], expertAnswer: "정부는 국가 자력으로 민중 봉기를 통제하지 못하자 청나라에 다급히 군대를 보내달라 간청했습니다. 하지만 이 원군 요청은 톈진 조약에 입각한 일본 제국 대군까지 조선에 무단 상륙하게 만들어 망국적인 청일전쟁의 화약고를 여는 오판이 되었습니다." },
+                    { id: 38, year: "1894", title: "전주화약 체결", type: "조약", parties: "조선(농민군, 조정)", characteristics: ["외세 침략군 개입에 따른 자주 정전", "조정과 농민군 간의 타협안 성립"], keywords: ["전주화약 합의", "정전 선포", "자주적 농민 해산"], description: "청일 대군이 조선 영토를 장악해 국란 조짐이 보이자, 외세에 명분을 주지 않고자 전봉준과 정부 관원 홍계훈이 전주성에서 휴전을 조인했습니다.", question: "동학 농민군이 전주성 함락의 영광을 뒤로하고 돌연 정부와 전주화약을 맺고 해산한 이유를 쓰시오.", checkpoints: ["외세 침범 경계", "전쟁터 전락 방지", "자주 개혁 시도"], expertAnswer: "외국의 침략 함대가 조선 땅에 무단 침공해 전쟁을 벌이려 하자, 전봉준 장군은 나라가 외세의 전장이 되는 큰 불행을 막기 위해 전주성 점령지에서 스스로 용단을 내려 조정의 폐정 개혁 약속을 수용하고 자진 정전 타협을 이뤄냈습니다." },
+                    { id: 39, year: "1894", title: "집강소 설치 및 운영", type: "운동/시위", parties: "조선(농민군)", characteristics: ["사상 초유의 민중 자치 행정 기구", "신분제 폐지 등 자치 개혁안 실현"], keywords: ["농민 자치 기구 집강소", "전라도 53개 군 수립", "폐정 개혁안 실천"], description: "화약 이후 농민군은 전라도 53개 고을에 관민 공동 자치 치안 기구인 집강소를 세우고, 고리대 이자를 수술하고 신분 차별을 물리쳤습니다.", question: "동학 농민군이 전주화약 직후 지방 각지에 설립한 자치 개혁 기구와 개혁 성과를 기술하시오.", checkpoints: ["집강소", "신분 차별 철폐", "세금 착취 교정"], expertAnswer: "농민군은 전라도 전역에 인류사적으로도 획기적인 민중 자치 행정청인 '집강소'를 설립했습니다. 이곳에서 이들은 고질적인 과세 갈취를 금지시켰고 백정의 가락지 착용을 보장하며 과부의 개가를 수용하는 등 생활 밀착형 혁신을 직접 행동으로 실천했습니다." },
+                    { id: 40, year: "1894", title: "교정청 설치", type: "운동/시위", parties: "조선", characteristics: ["자주적 근대 개혁을 표방한 임시 관서", "일본군 간섭으로 설치 단기간 폐지"], keywords: ["자주 개혁 관청 교정청", "정부 주도 개혁", "군국기무처로 대체"], description: "정부가 외세의 간섭 빌미를 완전히 소멸시키고자 궁궐 자체의 내정을 자주적으로 고치려 세운 개혁 본부이나 일제 침탈군에 의해 해체됐습니다.", question: "정부가 교정청을 독자 수립해 자주 개혁을 꾀하고자 했던 내외적 사유를 서술하시오.", checkpoints: ["일본군 간섭 회피", "독자적 폐정 개혁", "일제 강제 폐쇄"], expertAnswer: "정부는 전주화약 이후 일제가 '조선의 내정을 개혁하라'며 대군을 성문에 배치해 압박하자, 외세 간섭 명분을 없애고 자주적으로 국가를 고치고자 교정청을 세웠습니다. 그러나 일본군이 경복궁을 점령하며 강제로 폐쇄하고 친일 군국기무처를 조영했습니다." },
+                    { id: 41, year: "1894", title: "제2차 동학 농민 봉기", type: "운동/시위", parties: "조선(농민군), 일본", characteristics: ["일본군의 무단 경복궁 점령에 맞선 봉기", "남접 전봉준 북접 손병희 연합 의병 전쟁"], keywords: ["삼례 재봉기", "남북접 대연합", "항일 구국 성격"], description: "조정에 군대를 강제 진입시켜 경복궁을 장악하고 대원군을 몰아낸 일제에 맞서, 사상 처음 남접과 북접 농민군이 삼례에서 손을 잡고 항일 거병했습니다.", question: "동학 농민군의 2차 봉기가 1차 봉기와 다르게 갖는 결정적 성격 변화와 지도 노선을 서술하시오.", checkpoints: ["반봉건에서 반외세", "남북접 합류", "경복궁 점령 규탄"], expertAnswer: "1차 봉기가 조병갑 같은 부패 관리를 징치하려 일어난 '반봉건 혁명'이었다면, 2차 봉기는 경복궁을 짓밟은 일본 침략군을 조국 땅에서 축출하려는 자주 '반외세 항일 민족 전쟁'이었습니다. 교리를 달리해 다투던 남접과 북접이 나라를 구하고자 마침내 합심했습니다." },
+                    { id: 42, year: "1894", title: "우금치 전투", type: "전쟁/침략/갈등", parties: "조선(농민군), 일본, 조선 관군", characteristics: ["공주 우금치 고개의 결사항전", "연합군의 최첨단 기관총 화력에 궤멸당함"], keywords: ["공주 우금치 고개", "개틀링 기관총 학살", "농민군 최종 패배"], description: "수도로 가려는 20만 농민 의병대가 공주 우금치 고개에서 연합군의 근대식 화포와 개틀링 기관총 세례에 거의 전멸당하고 만 비극의 역사적 사태입니다.", question: "우금치 전투에서 대규모 농민군이 처참히 패한 전술 무기적 원인과 역사적 아쉬움을 기술하시오.", checkpoints: ["개틀링 화포 격차", "소총 사거리 차이", "의병 궤멸"], expertAnswer: "죽창과 구식 화승총으로만 무장한 농민 의병대는 공주 우금치의 험준한 산고개에서 현대식 소총과 크루프 회전포, 개틀링 기관총으로 진을 친 일군·관군 연합군에 맞섰습니다. 백병전의 거리도 좁히지 못한 채 학살 수준으로 전사해 망국의 슬픔으로 이어졌습니다." },
+                    { id: 43, year: "1894", title: "제1차 갑오개혁", type: "운동/시위", parties: "조선, 일본", characteristics: ["군국기무처 중심의 파격적 근대 개조", "공사 신분제 전면 해체 및 과거제 폐지"], keywords: ["군국기무처 주도", "공사 신분제 폐지", "과거 제도 혁파"], description: "일제의 총칼 감시하에 군국기무처가 출범하여 조선을 지배하던 수백 년 봉건적 계급 신분제와 고문 관행을 전격 무효화한 대혁신입니다.", question: "제1차 갑오개혁 당시 신분 타파와 지배 계급의 세입 권리를 수술한 조항 2가지를 서술하시오.", checkpoints: ["공사 노비비 폐지", "과거제 폐치", "은본위제 수립"], expertAnswer: "갑오개혁은 사대부 지위의 근원인 과거 제도를 과감히 철폐해 사학 유교 지배를 무너뜨렸으며, 노비 거래와 귀천을 파하는 '공사 신분제 공식 폐지'를 선포해 온전한 근대 평민 사회로 나아갈 수 있는 길을 제도적으로 전격 조영해 냈습니다." },
+                    { id: 44, year: "1894", title: "제2차 갑오개혁", type: "운동/시위", parties: "조선, 일본", characteristics: ["군국기무처 폐지 후 고종 친정 가속화", "근대 사상 최초의 헌장 홍범 14조 공포"], keywords: ["홍범 14조 선포", "사법 행정 분리(재판소)", "내각 중심 개편"], description: "박영효, 김홍집 연립 내각 하에 고종 황제가 종묘에 가서 조선의 독립성을 맹세한 홍범 14조를 외치고 사법 재판소를 세운 개혁입니다.", question: "2차 갑오개혁 당시 지방 수령들의 권한을 쪼개어 독립시킨 사법 구조의 혁신을 서술하시오.", checkpoints: ["재판소 설치", "수령 사법권 탈취", "홍범 14조"], expertAnswer: "고종은 국정의 바이블 격인 '홍범 14조'를 공포했습니다. 특히 고을 수령이 백성을 제멋대로 가두고 고문하던 불합리한 폐단을 차단하고자, 한국 역사상 최초로 수령의 행정 영역과 판결 사법 영역을 분리한 '근대식 지방 재판소'를 전격 신설했습니다." },
+                    { id: 45, year: "1895", title: "시모노세키 조약", type: "조약", parties: "청, 일본", characteristics: ["청일전쟁의 종전 조약 체결", "요동반도 및 대만 영토를 일제 할양"], keywords: ["요동반도 할양", "대만 전량 양도", "청일전쟁 일본 승리"], description: "청일전쟁 승리 대가로 일본 이토 히로부미와 청의 이홍장 사이에 조인되어, 요동반도와 금전 배상금을 일본이 갈취한 종전 조약입니다.", question: "시모노세키 조약의 결과 동아시아 패권이 청나라에서 일본으로 전가된 핵심 할양 영토명을 기술하시오.", checkpoints: ["요동반도 할양", "타이완 양도", "러시아의 경계 유발"], expertAnswer: "조약을 통해 일본은 청나라를 속국 지위에서 꺾고, 지정학적으로 만주로 들어가는 길목인 요동반도와 타이완섬을 영토로 빼앗았습니다. 이는 동아시아 역사의 균형을 완벽히 무너뜨려 시베리아에 있던 러시아를 자극하는 직접 도화선이 되었습니다." },
+                    { id: 46, year: "1895", title: "삼국간섭", type: "전쟁/침략/갈등", parties: "러시아, 프랑스, 독일, 일본", characteristics: ["러시아 주도의 3국 군사적 요동 반환 요구", "일제의 요동반도 포기 및 대러 굴복 겪음"], keywords: ["러·프·독 삼국간섭", "요동반도 청국 반환", "일제 굴욕 퇴각"], description: "만주로 일본이 진입하는 것을 저지하고자 러시아가 프랑스, 독일을 꼬드겨 시모노세키 조약으로 뺏은 요동반도를 강제로 돌려주게 만든 사건입니다.", question: "삼국간섭이 발생한 원인 세력 구도와 이 사태를 지켜본 조선 왕실 민씨 정권의 대응을 서술하시오.", checkpoints: ["러시아 주도 외교 압박", "일본군 요동 포기", "친러 내각 유치"], expertAnswer: "러시아는 일제가 만주 요충인 요동을 차지해 자국의 남하 길목을 차단할 것을 우려하여, 유럽 강대국 프랑스·독일과 함께 군사 압박을 가해 일제가 요동반도를 청에 반환케 했습니다. 이를 본 조선 민씨 척족은 러시아의 위력에 탄복하여 대대적인 친러 내각을 기획했습니다." },
+                    { id: 47, year: "1895", title: "을미사변", type: "전쟁/침략/갈등", parties: "조선, 일본", characteristics: ["친러 내각 구성을 주도한 명성황후 무참 시해", "일본 미우라 고로 공사와 낭인들의 만행"], keywords: ["명성황후 시해", "여우사냥 음모명", "미우라 고로 공사"], description: "삼국간섭 굴욕 이후 조선 정계가 러시아 공사 베베르와 결탁해 자국을 배척하려 하자, 일제 미우라 공사가 경복궁에 칼잡이들을 난입시켜 국모를 잔인하게 학살한 만행입니다.", question: "일제가 궁궐을 허물고 국모 명성황후를 처참히 시해하는 을미사변을 도발한 대외적 동기를 서술하시오.", checkpoints: ["인아거일(친러 정책) 저지", "조선 지배력 복원", "여우사냥"], expertAnswer: "명성황후가 러시아를 활용해 한반도에서 일본 군대 세력을 전량 철수시키고 친러 외교 정권을 구축하려 하자 위기감을 느낀 일제 수뇌부는 극비 참살 음모 '여우사냥'을 실행해 궁궐을 침공하고 왕비를 잔악하게 척살하여 수치스런 피의 흔적을 남겼습니다." },
+                    { id: 48, year: "1895", title: "을미개혁", type: "운동/시위", parties: "조선, 일본", characteristics: ["피비린내 나는 시해 직후 수립된 개혁안", "상투를 자르게 한 단발령 및 태양력 시행"], keywords: ["단발령 전격 공표", "태양력 사용 제정", "건양 연호 수립"], description: "명성황후 시해 이후 수립된 친일 김홍집 내각이 백성의 저항 정서를 억압하고 태양력 제정, 종두법, 상투를 밀어버리는 단발령을 선언한 개혁입니다.", question: "을미개혁 조항 중 백성들과 영남 성균관 유림들의 반인륜적 분노를 자극해 무장 의병 투쟁을 유도한 개조안을 쓰시오.", checkpoints: ["단발령", "성리학적 부모 유교", "상투 강제 삭발"], expertAnswer: "조정은 을미개혁에서 신체를 훼손하지 않는 것을 효도의 으뜸으로 여기는 성리학적 조선의 기틀인 상투를 강제로 자르게 만드는 '단발령'을 선언했습니다. 이는 부모가 물려준 뼈와 터럭을 지키고자 목을 내놓을지언정 머리는 자를 수 없다며 대대적인 민중 무장 봉기로 폭발했습니다." }
                 ]
             },
             4: {
-                title: "4일차: 일제의 국권 침탈과 국권 피탈",
+                title: "4일차: 영구 독립의 모색과 일제의 보호조약 마수",
                 events: [
-                    {
-                        id: "e-16",
-                        year: "1904",
-                        title: "러일전쟁과 고문 정치 강제",
-                        character: "메가타 다네타로, 더럼 스티븐스",
-                        shortDesc: "일제가 한일의정서로 국토를 요충 기지로 강점하고 제1차 협약으로 고문 정치를 시작했습니다.",
-                        longDesc: "재정에 메가타, 외교에 스티븐스를 고문으로 앉혀 조선의 예산과 외교적 주권을 철저히 강박했습니다.",
-                        keywords: ["러일전쟁 도발", "한일의정서 체결", "군사용지 강점", "제1차 한일협약", "재정 고문 메가타", "외교 고문 스티븐스"],
-                        narrativeQuestion: "일제가 자국 전쟁을 수월하게 풀고자 대한제국 영토를 강제 점령한 문서와 연이어 가해진 내치 지배 제도를 쓰시오.",
-                        checkpoints: ["러일전쟁", "한일의정서", "제1차 한일협약", "메가타", "스티븐스", "고문 정치"],
-                        expertAnswer: "러일전쟁을 도발한 일제는 대한제국 영토를 마음대로 군사기지로 전유하는 한일의정서를 성립시켰습니다. 이어 제1차 한일협약을 통해 재정 고문 메가타 다네타로와 외교 고문 미국인 스티븐스를 파견하여 대한제국의 내정 전반을 일체 강박하는 고문 정치를 단행했습니다."
-                    },
-                    {
-                        id: "e-17",
-                        year: "1905",
-                        title: "을사늑약과 외교 주권 피탈",
-                        character: "이토 히로부미, 이완용, 고종",
-                        shortDesc: "일제가 군대의 총칼 무력을 동원해 을사오적의 날조 합의 속에 외교권을 빼앗고 통감부를 세웠습니다.",
-                        longDesc: "황제의 재가 비준 서명도 이루어지지 않은 불법 조약을 빌미 삼아 이토 히로부미가 초대 통감으로 부임했습니다.",
-                        keywords: ["가쓰라 태프트 밀약", "제2차 한일협약", "외교권 전면 박탈", "통감부 신설", "이토 히로부미", "을사오적 폭거"],
-                        narrativeQuestion: "제2차 한일협약이 불법적인 '늑약'에 불과한 실질 조약사적 원인과 이 조약이 가져온 식민지 교두보 관청명을 명시하시오.",
-                        checkpoints: ["을사늑약", "고종 서명 무효", "외교권 박탈", "통감부", "이토 히로부미", "을사오적"],
-                        expertAnswer: "을사늑약은 대한제국의 국권을 수호하려던 고종황제의 동의 및 조약 비준 조인(서명)이 결여된 불법 늑약입니다. 일제는 이 조약으로 제국의 외교권을 완전히 강탈하고 한반도를 정밀하게 제어하기 위한 최고 지배 식민 기구인 통감부를 서울에 조영하여 이토 히로부미를 우두머리로 세웠습니다."
-                    },
-                    {
-                        id: "e-18",
-                        year: "1905",
-                        title: "을사늑약 결사 반대 항쟁",
-                        character: "장지연, 민영환, 안중근",
-                        shortDesc: "장지연의 시일야방성대곡 사설이 활성화되었으며, 민영환 자결과 안중근의 이토 단죄가 이루어졌습니다.",
-                        longDesc: "오적암살단의 나철과 자결한 열사들의 피의 분노가 독립 투쟁으로 계승되었습니다.",
-                        keywords: ["시일야방성대곡", "황성신문 게재", "민영환 자결", "오적 암살단 나철", "안중근 의거", "하얼빈 이토 처단"],
-                        narrativeQuestion: "을사늑약에 격분하여 민족 지식 언론과 비밀 처단 조직, 그리고 군사 무력 행동 단죄를 이행한 대표 인물 사건을 기술하시오.",
-                        checkpoints: ["시일야방성대곡", "장지연", "민영환 자결", "오적 암살단", "나철", "안중근", "이토 히로부미"],
-                        expertAnswer: "장지연은 황성신문에 통곡 사설 시일야방성대곡을 게재해 매국노들을 성토했고 시종무관장 민영환은 스스로 자결을 선택해 백성들의 피를 끓게 했습니다. 이어 나철 등은 을사오적 처단을 꾀하는 오적 암살단을 조직했고 안중근 의사는 하얼빈역에서 침탈의 원흉인 이토 히로부미를 권총으로 단죄 사살했습니다."
-                    },
-                    {
-                        id: "e-19",
-                        year: "1907",
-                        title: "헤이그 밀사 특사와 군대 해산",
-                        character: "이준, 이상설, 이위종, 고종",
-                        shortDesc: "고종이 을사늑약 부당함을 헤이그에 알리자 일제는 고종을 강제 퇴위시키고 군대를 해산했습니다.",
-                        longDesc: "한일신협약(정미7조약)을 강요해 일본인 차관 행정으로 통제하고, 정미의병 전쟁의 단초가 되었습니다.",
-                        keywords: ["헤이그 만국평화회의", "고종 강제 퇴위", "한일신협약 체결", "일본인 차관 정치", "대한제국 군대 해산", "정미의병 발발 원인"],
-                        narrativeQuestion: "밀사 파견 3인의 이름과 일본이 이에 대해 자행한 군주제 보복 및 군사 기구 완전 파괴 조치를 서술하시오.",
-                        checkpoints: ["이준 이상설 이위종", "고종 퇴위", "정미7조약", "차관 정치", "군대 해산", "정미의병"],
-                        expertAnswer: "고종은 국권을 만방에 호소하려 네덜란드 헤이그에 이준, 이상설, 이위종을 비밀 특사로 보냈습니다. 이에 일제는 책임을 물어 고종황제를 강제 퇴위시켰고, 한일신협약을 맺어 내정에 사사건건 개입하는 일본인 차관 정치를 강요했으며 사법권과 함께 최종 보루였던 군대를 해산했습니다."
-                    },
-                    {
-                        id: "e-20",
-                        year: "1910",
-                        title: "주권 완전 박탈 경술국치",
-                        character: "이완용, 데라우치 마사타케",
-                        shortDesc: "이완용이 데라우치와 한일 병합 조약을 체결함으로써 독립 수백 년 역사의 주권을 빼앗겼습니다.",
-                        longDesc: "사법권과 경찰권을 전량 양도 조서로 압수당한 뒤 조선총독부가 개청하며 무단 통치기로 진입했습니다.",
-                        keywords: ["기유각서 사법권 피탈", "경찰권 전량 탈취", "한일 병합 조약", "매국노 이완용", "조선총독부 설치", "무단 헌병 경찰 통치"],
-                        narrativeQuestion: "대한제국의 사법 주권이 강탈된 사서 약정과 최종적으로 합병 서명한 매국의 주체, 그리고 식민지 통치의 최고 사령부 관청명을 쓰시오.",
-                        checkpoints: ["기유각서", "사법권", "한일 병합 조약", "이완용", "조선총독부", "무단 통치"],
-                        expertAnswer: "일제는 기유각서로 사법권을 탈취하고 이어 한반도의 치안 경찰권마저 장악했습니다. 1910년 총리대신 이완용은 데라우치 통감과 한국 병합 조약을 조인하여 대한제국 주권을 전면 매도했습니다(경술국치). 이후 일제는 서울에 식민 지배 총괄 최고 권력청인 조선총독부를 건립하고 가혹한 헌병 경찰 통치를 단행했습니다."
-                    }
+                    { id: 49, year: "1895", title: "을미의병", type: "운동/시위", parties: "조선(의병), 일본", characteristics: ["국모 시해와 단발령 분노 폭발", "유인석, 이소응 등 정통 유림 의병장 거병"], keywords: ["최초의 항일 의병", "유인석 제천 거병", "단발령 반발 의병"], description: "국모 참살의 수치와 단발령 강행에 통탄한 전통 유림 선비들이 전국 팔도에서 사냥꾼과 포수들을 규합해 일으킨 대한민국 사상 첫 항일 의병 투쟁입니다.", question: "을미의병이 해산하게 된 국왕 고종황제의 정치적 명명 지시 내용을 서술하시오.", checkpoints: ["아관파천 단발령 철회", "의병 해산 권고 조서", "국왕 복종 회수"], expertAnswer: "유인석 등 정통 선비 의병들은 군대를 일으켜 일군을 격파하며 세력을 불렸으나, 고종 황제가 러시아 공사관으로 파천한 뒤 즉각 단발령을 공식 철회하고 '생업으로 돌아가라'는 칙서를 내리자 근왕 유교 이념에 따라 군대를 자진 해산했습니다." },
+                    { id: 50, year: "1896", title: "아관파천", type: "전쟁/침략/갈등", parties: "조선, 러시아", characteristics: ["을미사변 공포 속에 임금 러시아 공사관 피신", "친일 고관 김홍집 정계 처형 및 친러 내각 구성"], keywords: ["러시아 공사관 가마 파천", "김홍집 노상 처형", "열강의 이권 침탈 극대화"], description: "왕비 처참 시해 이후 신변의 공포를 느끼던 고종 국왕이 궁녀들이 타는 가마로 위장해 경복궁을 탈출하여 정동 러시아 공사관으로 도피한 굴욕적 역사 사건입니다.", question: "아관파천이 자행되는 동안 대한제국의 자주 국격 실추와 열강의 천문학적 자원 침탈 피해를 쓰시오.", checkpoints: ["러시아 공사관 피신", "왕권의 타국 의존", "광산 삼림 이권 양도"], expertAnswer: "한 나라의 주권 영도자가 외교 치외법권 거처인 타국 공사관에 스스로 은닉 신변을 맡김으로써 국권이 바닥으로 추락했습니다. 또한 황제가 부재한 동안 미국, 러시아, 프랑스 등 열강은 금광 채굴권, 삼림 벌채권 등을 무자비하게 헐값에 강취해 갔습니다." },
+                    { id: 51, year: "1896", title: "독립협회 창립", type: "운동/시위", parties: "조선", characteristics: ["서재필 주도의 독립신문 한글 발간", "청 사신 영접지 영은문 헐고 독립문 기공"], keywords: ["서재필 독립신문", "영은문 훼철", "기부금 모금 독립문"], description: "미국 망명에서 돌아온 서재필이 한글 순정 '독립신문'을 창간해 민중의 귀를 틔우고 사대주의 잔재인 영은문 폐허지에 독립문을 세웠습니다.", question: "독립협회가 창립 초기 청나라의 사대 구조를 탈피하고자 파괴한 관청 건축물과 건립한 상징물을 서술하시오.", checkpoints: ["영은문 헐기", "모금 운동", "독립문 준공"], expertAnswer: "독립협회는 청나라 황제 사신을 환영하며 굽신거리던 사대의 잔영인 '영은문'을 백성들이 보는 앞에서 과감히 허물어뜨렸습니다. 이어 민중의 자발적인 기부금을 한 푼 두 푼 모금하여 자주독립의 기틀을 다지는 서양식 석조 '독립문'을 성대히 세웠습니다." },
+                    { id: 52, year: "1898", title: "만민공동회 개최", type: "운동/시위", parties: "조선(민중)", characteristics: ["종로 저잣거리 평민 자치 가두 집회", "러시아의 절영도 석탄 창고 조차 요구 저지"], keywords: ["종로 가두 연설회", "러시아 절영도 조차 거부", "한러은행 철수 유도"], description: "평민, 백정, 상인들이 종로 벌판 광장에 구름처럼 모여 사상 처음 마이크 가두 연설을 펼쳐 러시아 함대의 영해 점유 기도를 강력 철회시킨 대중 시위입니다.", question: "독립협회의 만민공동회가 열강 중 러시아의 경제 침투 요구에 마주해 거둔 구체적 민중 성과를 서술하시오.", checkpoints: ["절영도 석탄 기지 반대", "한러은행 폐쇄", "자주민권 승리"], expertAnswer: "러시아가 군함의 석탄 연료 공급 거점으로 활용하려 부산 절영도(영도) 영토를 대여(조차)해 달라고 노골적으로 다가오자, 종로 거리에 만민공동회가 운집해 규탄 투쟁을 벌였습니다. 민중의 연대로 일제의 이권 침공에 앞서 러시아의 조차지 음모를 완전 백지화시켰습니다." },
+                    { id: 53, year: "1898", title: "관민공동회와 헌의 6조", type: "운동/시위", parties: "조선(민관 연대)", characteristics: ["정부 고관과 독립협회 백성의 공동 회담", "최초의 의회 설립 안건 헌의 6조 가결"], keywords: ["관민공동회 박성춘", "헌의 6조 의결", "중추원 개편 추진"], description: "백정 신분 박성춘이 연단에 서서 연설한 관민공동회에서, 정부 각료들과 연대하여 군주권 보존과 국정 세입 예산 회계 통제를 명문화한 헌의 6조를 가결했습니다.", question: "관민공동회에서 의결되어 황제에게 보고한 최초의 자주 국정 개혁안 명칭과 내용 요지를 기술하시오.", checkpoints: ["헌의 6조", "탁지부 재정 일원화", "중추원 의회"], expertAnswer: "독립협회는 정부 관리들과 관민공동회를 조영해 국정 개조 개혁안인 '헌의 6조'를 가결했습니다. 헌의 6조는 황제권을 지키되 마음대로 국가 조세를 횡령하지 못하게 예산 장부를 탁지부 한 곳으로 묶고, 법관의 판결 승인을 명시한 법치주의 개혁안이었습니다." },
+                    { id: 54, year: "1898", title: "중추원 관제 개편", type: "운동/시위", parties: "조선", characteristics: ["공화정 모함에 따른 독립협회 강제 해산", "의회식 중추원 설립 문턱 좌절"], keywords: ["공화정 모함 익명서", "황국협회 보상 보부상 무력 충돌", "중추원 관제 좌절"], description: "조선 정계에 상·하원 의회를 수립하고자 중추원 관제를 개정하려 했으나, 보수 척신들이 '독립협회가 고종황제를 폐위하고 서재필을 대통령으로 세우려 한다'는 공화정 날조 음모서를 뿌려 대원을 군대로 무자비하게 해산시켰습니다.", question: "독립협회가 기획한 국가 최초의 의회 수립 제도가 수립 문턱에서 좌절된 정적들의 음모 내용을 고발하시오.", checkpoints: ["공화정 음모 익명서", "보부상 황국협회 폭력", "독립협회 강제 폐쇄"], expertAnswer: "보수 척족들은 독립협회가 황제를 폐위하고 '대통령 공화정'을 수립하려 한다는 거짓 음모서를 도성 벽에 붙였습니다. 이에 격노한 고종은 황국협회 보부상 무력 몽둥이패와 정규 군대를 도심에 급파하여 만민공동회 텐트를 파괴하고 협회를 정식 해체시켜 의회 제도를 매장했습니다." },
+                    { id: 55, year: "1897", title: "대한제국 선포", type: "운동/시위", parties: "조선(대한제국)", characteristics: ["황제 국가 등극을 만방에 공포", "명나라 제례 환구단(원구단) 축조 즉위"], keywords: ["경운궁 환궁", "환구단 즉위식", "대한제국 선포 국호 변경"], description: "러시아 공사관에서 돌아온 고종황제가 도심 정가에 환구단을 지어 황제 보위에 오르고, 국호를 '대한제국', 연호를 '광무'로 천명하여 대국 자주성을 드높였습니다.", question: "아관파천을 끝내고 환궁한 고종황제가 제국의 수립을 천명하며 정비한 제단과 국가 공식 국호를 쓰시오.", checkpoints: ["환구단", "경운궁 환궁", "대한제국"], expertAnswer: "고종은 러시아 공사관에서 경운궁(덕수궁)으로 복귀한 뒤, 하늘의 천자만이 올릴 수 있는 둥근 단상의 제례청 '환구단(원구단)'을 지어 성대하게 즉위식을 올렸습니다. 이때 국호를 대한제국으로 선포하고 조선의 소국 사대 역사를 완전히 털어냈습니다." },
+                    { id: 56, year: "1899", title: "대한국 국제 공포", type: "조약", parties: "대한제국", characteristics: ["무한한 황제 전제권을 규정한 제국 헌장", "의회 및 민권 개념을 원천 배제 규정"], keywords: ["대한국 국제 선포", "무한 전제 군주정 명시", "황제 군권 장악"], description: "근대 헌법의 기조 형식을 모방했으나, 속내에는 민주 공화 의회제를 전면 배격하고 황제에게 영구한 사법·군사·행정의 절대무한 전제권을 보장하는 국제 조항입니다.", question: "대한국 국제 9개조에 명문화된 군주 지위의 성격과 독립협회 활동과의 단절성을 서술하시오.", checkpoints: ["무한한 군권 전제", "의회 민권 부정", "황제 1인 전제국가"], expertAnswer: "대한국 국제는 '대한제국은 자주 전제 신권 제국'임을 천명하고, 황제 1인이 군대의 육해군을 통솔하고 법률을 홀로 재가 제정하며 관료를 임면하는 무한 주권을 규정했습니다. 이는 독립협회가 부르짖던 백성 주권과 의회 민주주의를 완전히 밟고 올라선 복고적 헌장이었습니다." },
+                    { id: 57, year: "1897", title: "광무개혁", type: "운동/시위", parties: "대한제국", characteristics: ["구본신참(옛것을 근본 삼고 새것 참작) 기치", "식산흥업 자강 근대화 전개"], keywords: ["구본신참 기치", "식산흥업 상공업 육성", "광무개혁 전개"], description: "서구의 제도적 법률 혁신은 피한 채 옛 성리학적 가치와 황제권을 뼈대로 두면서 점진적으로 공장 기계 설비와 상업 육성만 도모한 대한제국 독자 개혁입니다.", question: "광무개혁이 근대 문명 수용을 진행하는 과정에서 내건 철학적 개혁 원칙(성어)의 한계를 쓰시오.", checkpoints: ["구본신참", "정치 개조 배제", "점진론"], expertAnswer: "광무개혁은 '옛 제도를 근본으로 삼고 서양의 새로운 기술을 참조한다'는 '구본신참'의 철학 아래 전개되었습니다. 기술적 상공업(식산흥업)과 전화선, 전차 도입 등 외적 근대화에는 기여했으나, 정치적 군주 독재 수술(민권 보장)을 배제해 주권 붕괴를 막지 못했습니다." },
+                    { id: 58, year: "1899", title: "원수부 설치", type: "운동/시위", parties: "대한제국", characteristics: ["황제 직속 최고 국방 군사 사령부", "지방 수령 무관 군권의 황제 독점 집중"], keywords: ["원수부 설치", "대원수 황제 임명", "군권 직속 정비"], description: "외세의 군사적 약탈 압박에 마주하여 황제가 전군의 사령 지휘권을 독점 통제하고자 경운궁 내에 설치한 황제 군사 대본영 기구입니다.", question: "대한제국 광무제 황제가 군권을 외세 침탈로부터 보호하고 장악하고자 신설한 궁내 최고 사령부 관청은?", checkpoints: ["원수부", "대원수 고종", "황제 직속"], expertAnswer: "고종은 국방 주권을 자강하고 외세 파병 빌미를 끊고자, 스스로 군대를 총지휘하는 최고 대원수가 되어 궁궐 내부에 황제 직속 최고 국방 사령부 '원수부'를 세웠습니다. 원수부를 통해 친위대와 진위대를 엄격히 제어하며 군권을 장악하려 힘썼습니다." },
+                    { id: 59, year: "1898", title: "양전 사업과 지계 발급", type: "운동/시위", parties: "대한제국", characteristics: ["근대적인 토지 조사 사업 단행", "법적 소유권을 인증하는 종이 땅문서 지계 발급"], keywords: ["양지아문 설치", "근대 토지문서 지계", "양전 사업"], description: "조세 수입 장부를 실체화하고자 미국 측량을 도입해 전 국토 땅을 측량하고, 사상 최초로 농민에게 국가가 보증하는 종이 땅소유 문서 '지계'를 발급했습니다.", question: "대한제국 광무정부가 농민들에게 법적 영토 소유를 최초로 인증해주려 수립한 기구와 문서명을 쓰시오.", checkpoints: ["지계아문 양지아문", "지계", "러일전쟁 중단"], expertAnswer: "황제는 양지아문과 지계아문을 세워 전 국토의 소유주를 정밀 전수조사(양전 사업)했습니다. 이후 한반도 역사상 사상 처음으로 국가가 소유권을 법적으로 절대 보장하는 종이 근대식 토지 권리 증서 '지계'를 발급했으나 러일전쟁 침략으로 중단되었습니다." },
+                    { id: 60, year: "1899", title: "한청통상조약", type: "조약", parties: "대한제국, 청", characteristics: ["역사상 청나라와 대등한 위치에서 조인한 첫 조약", "사대 조공 관계의 공식적 완전 소멸 조인"], keywords: ["최초 대등 조약", "사대 조공 관계 철폐", "통상 조약 조인"], description: "수백 년간 조선을 소국 조공국으로 부려먹던 청나라와 대등한 황제 대 황제 지위에서 평등하게 상호 무역 통상을 약정한 역사적 평등 수교 조약입니다.", question: "한청통상조약이 한국의 대외 사대주의 청산 역사에서 갖는 상징적 의미를 서술하시오.", checkpoints: ["평등한 지위 수교", "사대 사슬 청산", "황제국 간 조약"], expertAnswer: "조선은 전통적으로 북방 대국 청나라에 사신을 보내고 고개를 숙였으나, 대한제국 선포 이후 대등한 주권 대국의 지위에서 통상 관계를 새로 약속했습니다. 이는 한반도 왕조 역사상 수백 년 묵은 사대주의 사슬을 문헌상으로 완전히 파괴한 일대 쾌거였습니다." },
+                    { id: 61, year: "1909", title: "간도협약", type: "조약", parties: "청, 일본 (대한제국 배제)", characteristics: ["대한제국의 외교권 박탈 상황에서 일제 자의적 처분", "만주 안봉선 철도 부설권을 대가로 간도를 청에 넘김"], keywords: ["안봉선 철도 부설권", "간도 영유권 포기", "일제 불법 조약"], description: "외교권을 박탈당한 대한제국 몰래, 일제가 만주 안봉선 철도 가설 이권을 따내는 대가로 한국인의 피땀 서린 간도 영토를 청나라에 무단 양도한 불법 조약입니다.", question: "일제가 한인들이 터를 일구던 북방의 간도 영토 주권을 청나라에 양도하고 가져간 상업적 이권을 고발하시오.", checkpoints: ["안봉선 철도 부설권", "외교권 박탈 상황 늑약", "간도 포기"], expertAnswer: "일제는 을사늑약으로 조선의 외교를 가로챈 뒤, 자국의 만주 이권인 '안봉선 철도 가설 이득'과 '푸순 탄광 채굴권'을 청으로부터 얻어내는 대가로 대한제국 영토인 간도를 중국 땅으로 공인해 버리는 만행을 저질렀습니다." },
+                    { id: 62, year: "1900", title: "대한제국 칙령 제41호", type: "조약", parties: "대한제국", characteristics: ["독도와 울릉도 행정 영유권 법제 공포", "울릉도를 울도로 승격하고 독도를 관할 명시"], keywords: ["칙령 제41호", "울도군 승격", "독도 영유권 공인"], description: "독도에 대한 일본의 불법 이권 침입 기미를 포착한 대한제국 조정이 관보를 통해 울릉도를 독립 군으로 승격하고 독도(석도) 관할권을 법으로 선포한 자주 선언입니다.", question: "일제의 독도 강점에 앞서 대한제국 조정이 독도 주권을 법령으로 공표한 법령 문서의 명칭을 명확히 쓰시오.", checkpoints: ["칙령 제41호", "울도군수 관할", "독도 자주권 입증"], expertAnswer: "대한제국은 일제보다 앞선 1900년 10월 25일, 국가 관보를 통해 '대한제국 칙령 제41호'를 전격 선포했습니다. 이 법령은 울릉도를 울도군으로 승격시키고, 울도군수의 관할 영토 범위에 독도(석도)를 명확히 규정하여 법적 영유권을 입증했습니다." },
+                    { id: 63, year: "1904", title: "러일전쟁 발발", type: "전쟁/침략/갈등", parties: "러시아, 일본, 대한제국", characteristics: ["한반도 지배권을 독점하려는 일제의 선제 기습", "전 영토의 군사 전장화 폭거 전개"], keywords: ["포트아서 뤼순 기습", "한반도 침탈 가속", "러일전쟁 발발"], description: "조선 주도권을 독점 침탈하려 일제 해군이 뤼순항 러시아 함대를 기습 함포 요격하며 일으켜 한반도를 군사 기지로 유린한 전쟁입니다.", question: "러일전쟁이 한반도에 드리운 국가 침탈적 치명상을 서술하시오.", checkpoints: ["중립 선언 묵살", "군사 기지 전유", "식민지 가속화"], expertAnswer: "대한제국 정부는 전쟁 발발 전 '국외 영구 중립국'을 세계에 선포하며 평화를 원했으나, 일본 제국은 이를 완전히 무시하고 인천과 한양을 강점했습니다. 전쟁 물자 징발과 영토 강점을 위해 즉각 무력 조약을 강요하며 본격 피탈을 가속화했습니다." },
+                    { id: 64, year: "1904", title: "한일의정서 체결", type: "조약", parties: "대한제국, 일본", characteristics: ["러일전쟁 무단 수행을 위한 영토 강점 협약", "일제 마음대로 요충 영토를 군사 기지로 전용 승인"], keywords: ["군사 기지 강제 전용", "영토 주권 침해", "러일전쟁 지원 강요"], description: "러일전쟁 도발 직후 일제 헌병대가 황궁을 포위해 억지로 맺은 조약으로, 전쟁 수행용 군사적 요충 영토를 일제 맘대로 수탈하게 한 조서입니다.", question: "한일의정서 조항 속에서 일제가 국토 요충지를 마음대로 수탈하도록 날조한 군사적 조항을 서술하시오.", checkpoints: ["군사 전략상 요충지", "마음대로 사용 보장", "러일전쟁 강박"], expertAnswer: "일제는 전쟁에 방해되는 요소를 제거하고자 조선 조정을 위협해 '전략상 요충지를 수시로 사용할 수 있게 권한을 위임한다'는 조항을 넣었습니다. 이 불평등 강제를 빌미로 용산 등 한반도의 무수한 알짜배기 연해 영토를 군사 기지로 강점당했습니다." }
                 ]
             },
             5: {
-                title: "5일차: 민족 구국 운동의 맹렬한 전개",
+                title: "5일차: 피탈의 슬픔과 의병들의 결사 항쟁",
                 events: [
-                    {
-                        id: "e-21",
-                        year: "1895",
-                        title: "을미의병과 을사의병 전쟁",
-                        character: "유인석, 최익현, 신돌석",
-                        shortDesc: "단발령에 저항한 을미의병과 외교권 박탈에 맞선 을사의병이 전 국토에서 불타올랐습니다.",
-                        longDesc: "특히 보수 유림의 기치를 넘어 평민 의병장 신돌석이 등장하여 무장 대결의 저변을 서민까지 확장했습니다.",
-                        keywords: ["을미사변 단발령 반발", "을미의병 유인석", "을사의병 최익현", "평민 의병장 신돌석", "위정척사 사상", "태백산맥 무장 유격전"],
-                        narrativeQuestion: "국권을 수호하기 위해 일어난 1, 2차 의병의 거병 명목과 신분제적 한계를 완전히 허물어버린 평민 영웅의 존함을 밝히시오.",
-                        checkpoints: ["을미의병", "유인석", "을사의병", "최익현", "신돌석", "평민 의병장"],
-                        expertAnswer: "성리학적 명분을 지키려 유인석 등은 단발령에 반발해 을미의병을 일으켰고 최익현 등은 을사늑약 체결에 맞서 을사의병을 궐기했습니다. 특히 을사의병 시기에는 평민 의병장 신돌석 장군이 태백산맥 일대에서 활약하며, 의병 운동이 양반 유생 중심에서 전 평민 계층으로 극적인 성장을 이루는 계기를 마련했습니다."
-                    },
-                    {
-                        id: "e-22",
-                        year: "1907",
-                        title: "정미의병과 서울진공작전",
-                        character: "이인영, 허위, 해산 군인",
-                        shortDesc: "해산된 군대의 전량 합류로 화력과 조직력을 갖춘 정미의병이 일제 침략군과 정면 교전을 전개했습니다.",
-                        longDesc: "13도 창의군을 발족하여 수도 탈환의 대전인 서울진공작전을 도모했으나 실패로 끝났습니다.",
-                        keywords: ["군대 해산 병사 합류", "정미의병 전쟁 진화", "13도 창의군 결성", "총대장 이인영", "군사장 허위", "서울진공작전 무산"],
-                        narrativeQuestion: "의병 전쟁이 전위적 전술을 장착하게 된 군사적 유입 요인과 이들이 합심하여 도모한 대규모 수도 탈환 전략을 기술하시오.",
-                        checkpoints: ["군대 해산", "해산 군인", "정미의병", "13도 창의군", "이인영", "허위", "서울진공작전"],
-                        expertAnswer: "정미년 군대 해산으로 훈련받은 대한제국 군졸들이 무장을 소지한 채 대거 합류하여 의병 운동은 전면전 수준의 정미의병으로 발전했습니다. 이들은 연합 부대인 13도 창의군을 구축하여 총대장 이인영과 군사장 허위의 리드하에 동대문 인근까지 격전해 들어가는 서울진공작전을 시도했습니다."
-                    },
-                    {
-                        id: "e-23",
-                        year: "1904",
-                        title: "보안회와 애국 자강 연대",
-                        character: "서상돈, 장지연, 대한자강회",
-                        shortDesc: "보안회는 일제의 황무지 개간 요구를 힘으로 꺾었으며 대한자강회는 민중 지식을 함양했습니다.",
-                        longDesc: "고종의 퇴위 반대 투쟁에 온 힘을 모아 저항하다 통감부의 공안 제약 조치로 강제 해산당했습니다.",
-                        keywords: ["보안회 조직", "황무지 개간권 저지", "헌정연구회 헌법 연구", "대한자강회 설립", "지방 지부 설치 월보 발간", "고종 퇴위 반대 강제 해산"],
-                        narrativeQuestion: "일제의 토지 약탈 시도를 연대 궐기로 백지화시킨 기구와 입헌군주정을 지향하며 지부를 뻗쳤던 애국 학술 연대를 기술하시오.",
-                        checkpoints: ["보안회", "황무지 개간권", "헌정연구회", "대한자강회", "월보", "고종 퇴위 반대"],
-                        expertAnswer: "조선 농민의 생존과 직결된 황무지 개간권을 강탈하려던 일제의 기획을 보안회가 대대적인 민중 연대로 완전 무산시켰습니다. 또한 입헌제를 탐구하던 헌정연구회의 뒤를 이은 대한자강회는 지부를 세우고 월보를 내며 실력을 길렀으며 고종 퇴위 반대 운동을 이끌다 강제 해산당했습니다."
-                    },
-                    {
-                        id: "e-24",
-                        year: "1907",
-                        title: "비밀 결사 신민회 설립",
-                        character: "안창호, 양기탁, 신돌석",
-                        shortDesc: "안창호, 양기탁 등이 전면에 나서 입헌군주정이 아닌 사상 첫 공화정을 지향한 지하 비밀결사입니다.",
-                        longDesc: "대성학교와 오산학교를 짓고 만주 삼원보에 신흥무관학교를 건립하여 독립 투쟁의 뼈대를 완성했습니다.",
-                        keywords: ["안창호 양기탁 주도", "비밀결사 조직", "공화정체 지향", "대성 오산학교 설립", "태극서관 자기회사 운영", "서간도 삼원보 기지 구축"],
-                        narrativeQuestion: "애국 계몽과 국외 군사 독립기지 건립이라는 원대한 노선을 비밀리에 기획한 단체명과 이들이 도달하고자 했던 국가 체제 목표를 쓰시오.",
-                        checkpoints: ["신민회", "안창호", "양기탁", "비밀결사", "공화정", "대성학교 오산학교", "삼원보"],
-                        expertAnswer: "안창호, 양기탁이 비밀리에 설립한 독립 운동 단체 신민회는 최초로 입헌제를 넘어 국민이 주인인 공화정 국가의 수립을 지향했습니다. 대성학교와 오산학교를 세워 인재를 양성했고 국외 독립군 양성을 목적으로 서간도 삼원보 기지를 일구어 신흥무관학교의 전신을 마련했습니다."
-                    },
-                    {
-                        id: "e-25",
-                        year: "1907",
-                        title: "국채보상운동과 애국 언론",
-                        character: "서상돈, 김광제, 베델",
-                        shortDesc: "대구 서상돈의 건의로 시작되어 백성들의 자발적 기부를 통해 나라 빚을 갚으려 했던 구국 재정 운동입니다.",
-                        longDesc: "영국인 베델의 대한매일신보가 이 운동을 적극 전파했으나 통감부의 탄압 공작으로 결국 좌절되었습니다.",
-                        keywords: ["나라 빚 1300만 원", "대구 서상돈 김광제 발기", "대한매일신보 후원", "영국인 베델 양기탁", "가락지 비녀 애국 기부", "통감부 공작 횡령 모함"],
-                        narrativeQuestion: "일제가 씌운 재정 빚을 국민 성금으로 타개하려 시도한 구국 재정 결사명과 이를 전방위 지원한 언론사를 고발하시오.",
-                        checkpoints: ["국채보상운동", "서상돈", "김광제", "대한매일신보", "베델", "통감부 방해"],
-                        expertAnswer: "대한제국은 일제가 강요한 차관 1,300만 원으로 인해 재정적 속국이 되었습니다. 이를 갚기 위해 서상돈, 김광제의 제안으로 대구에서 국채보상운동이 개시되었으며, 영국인 베델과 양기탁의 대한매일신보가 이를 대대적으로 보도하고 가락지와 비녀 등의 애국 기부를 장려하였으나 통감부의 횡령 모함 공작으로 좌절되었습니다."
-                    }
+                    { id: 65, year: "1904", title: "제1차 한일협약", type: "조약", parties: "대한제국, 일본", characteristics: ["재정 및 외교 고문 파견 강요", "조선 세입 예산과 외교 전량 일제 보좌 관장"], keywords: ["고문 정치 시작", "재정 고문 메가타", "외교 고문 스티븐스"], description: "러일전쟁 중 체결된 수교로, 재정에 악명 높은 메가타 다네타로, 외교에 미국인 스티븐스를 고문으로 임명해 고문 정치를 열었습니다.", question: "제1차 한일협약이 유치한 내무 간섭 고문 정치인 두 원흉의 실명을 밝히시오.", checkpoints: ["메가타 다네타로", "더럼 스티븐스", "재정 외교 고문"], expertAnswer: "일제는 이 조약을 통해 재정 분야 고문으로 화폐정리사업을 자행한 '메가타 다네타로'를 임명했고, 외교 분야 고문으로 친일 미국인 '스티븐스'를 파견했습니다. 이들은 조선 정부의 장부 결재권을 빼앗고 사사건건 통제하는 고문 정치를 열었습니다." },
+                    { id: 66, year: "1905", title: "메가타의 화폐정리사업", type: "운동/시위", parties: "대한제국, 일본", characteristics: ["백동화를 일본 제일은행권 화폐로 교환 강요", "한국 상인 및 농민들의 금융 자산 고사 파탄"], keywords: ["재정 고문 메가타", "백동화 불평등 등급 교환", "조선 금융 공황 유발"], description: "재정고문 메가타가 조선의 백동화를 일제 제일은행권 동전으로 바꾸어 준다며 질을 트집 잡아 헐값 매기거나 몰수하여 조선 상인을 몰락시킨 약탈 사업입니다.", question: "화폐정리사업이 조선 농민과 한인 상인들에게 가져온 극단적 금융 금융 타격을 서술하시오.", checkpoints: ["백동화 등급 매김", "자산 가치 소멸", "일본 은행 예속"], expertAnswer: "메가타는 조선의 법정 화폐인 백동화의 마모도를 핑계로 갑·을·병 등급을 매겨 을종은 반값만 인정하고 병종은 전량 수거 파기하여 조선 상인들의 현금 자산을 강제 증발시켰습니다. 이로 인해 한인 금융 자산이 폭락하며 경제적 예속이 완성되었습니다." },
+                    { id: 67, year: "1905", title: "을사늑약", type: "조약", parties: "대한제국, 일본", characteristics: ["국가 수반 고종 비준 서명 무효 불법", "대한제국 외교권 완전 박탈 및 통감부 신설"], keywords: ["치욕의 을사늑약", "외교권 영구 박탈", "초대 통감 이토 히로부미"], description: "이토 히로부미와 친일 매국 고관 을사오적에 의해 황제 옥새 서명 비준이 결여된 불법 위조 문서로 외교권을 강제 몰수하고 통감부를 세운 망국 조약입니다.", question: "제2차 한일협약이 정식 국가 조약이 아닌 '불법 늑약'에 불과한 헌법 사료학적 무효 입증 근거를 쓰시오.", checkpoints: ["고종 비준 서명 결여", "군대 협박 위조", "외교권 몰수"], expertAnswer: "이 조약은 당시 국가 영도자 고종 황제가 끝까지 서명을 거부하여 옥새 국인이 빠진 원천 위조문서입니다. 일본군 총칼로 대신들을 감금하고 날조한 불법 계약(늑약)으로, 조약의 형식 요건을 결여한 국제법상 원천무효 무효 문서에 해당합니다." },
+                    { id: 68, year: "1905", title: "을사의병", type: "운동/시위", parties: "대한제국(의병), 일본", characteristics: ["외교권 몰수 분노 전국 무장 창의", "신돌석 등 사상 첫 평민 출신 의병장 맹활약"], keywords: ["태백산 신돌석", "유학자 최익현 태인 거병", "홍성의병 민종식"], description: "외교권 상실의 을사늑약 직후, 대유학자 최익현이 호남에서 거병하였고 특히 백성 영웅 신돌석이 평민 출신으로 태백산맥 게릴라전을 펼쳐 공포를 불어넣었습니다.", question: "을사의병 시기 의병 지도부의 인적 신분 구성에 나타난 극적 현대화 변혁 양상을 서술하시오.", checkpoints: ["신돌석 평민 의병장", "양반 중심 탈피", "민중 참여 확대"], expertAnswer: "유인석 등 정통 양반 유림들이 주도하던 을미의병과 달리, 을사의병 때는 사상 최초로 평민 출신 의병장 '신돌석' 장군이 등장했습니다. 신돌석 장군은 경북 일대에서 상인과 포수들을 모아 태백산맥 유격전으로 일군을 궤멸시켜 민중 저항의 전성기를 열었습니다." },
+                    { id: 69, year: "1907", title: "한일신협약", type: "조약", parties: "대한제국, 일본", characteristics: ["헤이그 밀사 빌미 고종 황제 강제 퇴위 보복", "일본 고관을 조선 각 행정 부서 차관 임명 권리 압수"], keywords: ["고종 강제 퇴위 사태", "정미7조약 체결", "일본인 차관 정치 시작"], description: "헤이그 특사를 빌미 삼아 고종 황제를 직위에서 끌어내린 일제가 행정 차관직에 일본인을 강제 기용하여 정치를 삼켜 버린 정미7조약입니다.", question: "정미7조약이 가져온 한반도 내치 행정권의 심각한 장악 양상 명칭을 쓰시오.", checkpoints: ["일본인 차관 정치", "각 부서 장악", "정미7조약"], expertAnswer: "일제는 이 조약(정미7조약)을 통해 조선 행정부의 장관 아래 실제 행정과 장부 자금 처리를 총괄하는 '차관' 자리에 일본 관료들을 전격 기용하게 강박했습니다. 이로 인해 내치 장악이 이완용의 부서 아래 일본 차관들의 직접 지배로 편입되었습니다." },
+                    { id: 70, year: "1907", title: "대한제국 군대 해산", type: "전쟁/침략/갈등", parties: "대한제국, 일본", characteristics: ["정미7조약 세부 비밀 각서 강제 실행", "숭례문 인근에서 시위대의 목숨을 건 시가 격전"], keywords: ["군대 해산식", "남대문 시가전 박승환 자결", "시위대 친위대 무장 해제"], description: "대한제국의 무력 실체를 말살하고자 일본 통감이 군졸들을 숭례문 훈련원에 강제 비무장 소집하여 헐값 퇴직금을 던지고 군대를 해제해버린 비극입니다.", question: "군대 해산 명령에 죽음으로 저항한 시위대 대장과 숭례문 남대문 전투의 의미를 기술하시오.", checkpoints: ["박승환 자결", "남대문 전투", "정미의병 합류"], expertAnswer: "군대 해산 칙서가 당도하자 시위대 1연대장 '박승환' 참령이 권총으로 자결하며 군인 주권을 주장했습니다. 분노한 해산 군인들은 무기고를 부수고 남대문 일대에서 일제 기관총에 대적해 시가전을 벌였고, 이 패배 군사들이 산으로 들어가 의병에 합류했습니다." },
+                    { id: 71, year: "1907", title: "정미의병", type: "운동/시위", parties: "대한제국(의병), 일본", characteristics: ["해산 군인들의 조직과 화력 합류", "단순 농민 의병에서 정규 의병 전쟁으로 진화"], keywords: ["해산 군인 의병 합류", "정미의병 조직화", "최첨단 총기 전술 장착"], description: "무장 해산당한 황실 시위대 군졸들이 무기를 챙겨 전 국토 산림 의병 부대에 투신하면서, 의병 전술이 정규 군대급 전술과 화력으로 무장한 정미의병 전쟁입니다.", question: "정미의병이 앞서 일어난 을미·을사의병에 비해 비약적인 군사 전술 전투력을 장착하게 된 계기를 쓰시오.", checkpoints: ["해산 군인 합류", "신식 소총과 사격 전술", "전국적 전쟁화"], expertAnswer: "남대문 격전에서 살아남은 대한제국 정규 신식 군인들이 대거 의병 부대에 편입되었습니다. 군대식 제식 훈련과 소총 사격법, 군사 지도 제작법 등의 군사 무예가 의병단에 이식되면서, 일제 정규군과 정면 교전을 나누는 강력한 의병 전쟁으로 격상되었습니다." },
+                    { id: 72, year: "1908", title: "13도 창의군과 서울진공작전", type: "운동/시위", parties: "대한제국(의병), 일본", characteristics: ["전국 팔도 의병 부대의 연합 창의군 결성", "총대장 이인영의 부친상 퇴각 및 군사장 허위 결사 돌격"], keywords: ["13도 창의군 이인영", "군사장 허위 선발대", "동대문 인근 무산"], description: "전국 의병 부대가 연합하여 '13도 창의군'을 세우고, 수도를 일제로부터 되찾고자 한양 동대문 30리 밖까지 치고 들어갔으나 아쉽게 패한 작전입니다.", question: "13도 창의군의 수도 탈환 작전인 서울진공작전 과정에서 벌어진 군사 지휘부의 비현실적 복고적 행동의 아쉬움을 쓰시오.", checkpoints: ["총대장 이인영 부친상 회군", "허위 선발대 고립", "정통 성리학 의병 한계"], expertAnswer: "연합군 총대장 이인영은 한양 진격을 눈앞에 두고 부친상을 당하자 '불효는 불충'이라며 상례를 지키려 군사를 물리고 귀향하는 성리학적 행태를 보였습니다. 지휘권을 이끈 군사장 허위의 선발대만 동대문 밖에서 일군 정밀 요격망에 고립되어 작전이 허무하게 붕괴되었습니다." },
+                    { id: 73, year: "1909", title: "기유각서 사법권 피탈", type: "조약", parties: "대한제국, 일본", characteristics: ["대한제국의 사법 판결 권한 전량 압수", "한반도의 법정 법원 제도를 일제 감옥 제도로 개편"], keywords: ["기유각서 체결", "사법 주권 전면 박탈", "한일 합병 예비 조치"], description: "한일 합병을 완성하기 위한 예비적 독소 서서 조항으로, 대한제국의 사법 주권과 법원 재판 권한을 전량 몰수해 일제가 한인을 구속 심판하게 만든 늑약입니다.", question: "기유각서 체결 결과 대한제국이 최종적으로 빼앗기게 된 근대 자주 국가의 지탱 사법 권한을 서술하시오.", checkpoints: ["사법 주권 박탈", "감옥 관할권 전량 양도", "사후 병합 가속"], expertAnswer: "일제는 기유각서 조인을 통해 대한제국 정부의 독자적 재판 판결 권한과 범죄인 수감 감옥 관리권을 빼앗아 통감부 법정으로 넘겼습니다. 이로써 국가 주권을 지탱하는 삼권분립의 '사법권'마저 완전히 강탈당해 법적 식민지가 먼저 도래했습니다." },
+                    { id: 74, year: "1910", title: "경찰권 피탈", type: "조약", parties: "대한제국, 일본", characteristics: ["치안과 거리를 지키던 경찰 권리 전량 상실", "일제 헌병 헌병들이 칼을 차고 조선인을 즉결 즉결 심판"], keywords: ["경찰 주권 강탈", "치안 수사권 일제 인계", "경찰권 피탈 조서"], description: "사법권 상실에 이어, 한반도의 거리를 순찰하고 범죄를 단속하는 경찰권마저 통감부 헌병 부서로 전량 양도하여 한인의 손발을 묶은 사건입니다.", question: "일제가 사법권 피탈에 이어 경찰권마저 빼앗아 자국 헌병 경찰에게 넘긴 궁극적 식민 지배 의도를 쓰시오.", checkpoints: ["백성 무력 통제", "독립 의지 사전 봉쇄", "병합 늑약 강압"], expertAnswer: "조선인 백성들이 나라가 망할 때 폭동이나 만세 의병을 조직하지 못하도록, 거리 순찰과 수사권, 즉결 심판권까지 일제 헌병 경찰 조직에 흡수시켰습니다. 치안을 마비시키고 전 민중을 공포에 떨게 만들어 병합 조약을 손쉽게 성립시키려 한 잔학한 정지 작업이었습니다." },
+                    { id: 75, year: "1910", title: "한국 병합 조약", type: "조약", parties: "대한제국, 일본", characteristics: ["대한제국 국권 최종 완전 소멸 및 식민지 완성", "조선총독부 설치 및 이완용 데라우치 주도"], keywords: ["치욕스런 경술국치", "조선총독부 개청", "데라우치 초대 총독"], description: "친일 매국노 이완용과 일제 통감 데라우치 사이에 체결되어 대한제국의 주권을 최종 박탈하고 조선총독부를 건립한 수치스런 경술국치 조약입니다.", question: "한국 병합 조약 조인 결과 건국 이후 수천 년간 지탱한 주권이 몰수된 날의 역사적 명칭과 최고 식민 통치 기구명을 기술하시오.", checkpoints: ["경술국치", "조선총독부", "이완용 매국 조인"], expertAnswer: "1910년 8월 29일, 대한제국 주권이 영구 몰수된 치욕을 '경술국치'라 부릅니다. 이 조약에 서명한 매국노 이완용 등에 의해 일제는 황실을 허수아비로 만들고 서울 남산에 최고의 철권 통치 사령부인 '조선총독부'를 세워 무단 지배의 서막을 열었습니다." },
+                    { id: 76, year: "1904", title: "보안회 활동", type: "운동/시위", parties: "대한제국(보안회), 일본", characteristics: ["일제의 황무지 개간 요구를 연대 궐기로 격퇴", "구국 협회 연대의 효시 성립"], keywords: ["황무지 개간권 요구 저지", "농광회사 설립 추진", "민중 자강 결사"], description: "일제가 러일전쟁 중 군사 기지 배후지로 황무지를 공짜 개간하려 덤벼들자, 전 사대부 민중이 보안회를 조직해 규탄 투쟁을 벌여 취소시킨 단체입니다.", question: "보안회가 일제에 맞서 우리 농토를 지켜낸 애국적 성과와 이들이 연계해 설립하려 한 농업 개발 회사의 이름을 쓰시오.", checkpoints: ["황무지 개간권 저지", "농광회사", "러일전쟁 특권 배격"], expertAnswer: "일제가 '황무지를 비워두었으니 우리가 개조해 주겠다'며 토지 수탈 야욕을 부리자, 보안회는 도심 만세 연설과 격문 배포로 이를 무산시켰습니다. 또한 자력으로 황무지를 일구어 국부를 지키고자 사상 첫 자본가 자금 모금 영농 개발사 '농광회사'를 기획 설립해 맞대응했습니다." },
+                    { id: 77, year: "1906", title: "대한자강회 활동", type: "운동/시위", parties: "대한제국", characteristics: ["전국 25개 지부를 세운 거대 계몽 단체", "월보 발간 및 교육과 실업(상업) 자강 강조"], keywords: ["지방 지부 25개 개설", "자강 월보 정기 간행", "고종 강제 퇴위 거센 반대"], description: "헌정연구회의 헌법 연구 기틀을 계승하여 지방 전국에 지부를 뻗쳐 교육을 일깨우고, 고종 강제 퇴위 늑약에 사생결단 반대하다 해산당한 자강회입니다.", question: "대한자강회가 표방한 국가 구국 방법론과 이들이 강제 해산당하게 된 격렬한 대정부 항거 사안을 쓰시오.", checkpoints: ["교육과 산업 자강", "고종 퇴위 반대 시위", "보안법 강제 해산"], expertAnswer: "자강회는 실력을 키워 국권을 수호하자는 기조 하에 '교육과 산업(식산) 혁신'을 전개하고 정기 월보를 내어 뇌를 채웠습니다. 1907년 헤이그 특사를 트집 잡아 고종황제를 일제가 폐위하려 들자 전국 지부를 동원해 결사 퇴위 반대 운동을 이끌다 일제 보안법의 칼날에 강제 해산되었습니다." },
+                    { id: 78, year: "1907", title: "신민회 창립", type: "운동/시위", parties: "대한제국(신민회)", characteristics: ["안창호 양기탁 주도의 지하 비밀결사 독립 연대", "사상 최초로 입헌제를 탈피해 공화정 지향"], keywords: ["지하 비밀결사 신민회", "최초의 공화정 수립 목표", "서간도 삼원보 기지 구축"], description: "안창호, 양기탁이 보수 척신과 통감부 감시망을 피해 극비리에 설립한 애국 비밀결사로, 최초로 국민이 주인이 되는 '공화정'을 수립하려 전방위로 기틀을 닦았습니다.", question: "비밀결사 신민회가 추진한 애국 교육 사업과 이들이 해외 만주에 개척한 국외 군사 독립군 양성소의 정체를 기술하시오.", checkpoints: ["대성학교 오산학교", "공화주의", "서간도 삼원보 신흥무관학교"], expertAnswer: "신민회는 실력을 기르고자 평양 대성학교, 정주 오산학교를 건립해 민족 인재를 키웠습니다. 또한 국내 저항의 한계를 넘고자 서간도 삼원보 개척지에 조선인들을 이주시키고 독립 무관을 길러내는 군사 사관학교 '신흥무관학교(전신 신흥강습소)'를 건립해 독립 투쟁의 뼈대를 다졌습니다." },
+                    { id: 79, year: "1907", title: "국채보상운동", type: "운동/시위", parties: "대한제국, 일본", characteristics: ["대구 서상돈 김광제 제안에서 전국 확산", "백성들이 담배 끊고 가락지 비녀 성금 모금"], keywords: ["대구 서상돈 발기", "나라 빚 1,300만 원 보상", "통감부 양기탁 횡령 조작 모함"], description: "메가타의 음모 차관 1,300만 원에 예속된 조국 재정을 해방하고자, 대구 서상돈이 제안해 전 백성들이 비녀와 폐물을 은전 성금으로 낸 사상 첫 기부 운동입니다.", question: "일제가 씌운 외교 차관 빚을 백성의 손으로 타개하려 시도한 국채보상운동의 발상 도시와 지원 언론의 정체를 밝히시오.", checkpoints: ["대구 서상돈", "대한매일신보 전폭 지원", "통감부 횡령 모함 무산"], expertAnswer: "운동은 '대구'의 서상돈, 김광제 발기로 시작되어 삽시간에 온 나라로 불타올랐습니다. 영국인 베델이 발행인인 '대한매일신보'가 성금 장부를 연일 대대적으로 후원 게재하여 여성들의 비녀 가락지 기부를 기적적으로 이끌었으나, 통감부가 양기탁 선생에게 횡령 누명을 씌워 조작 수사해 결국 무산시켰습니다." },
+                    { id: 80, year: "1907", title: "대한매일신보 등 언론 구국", type: "운동/시위", parties: "대한제국, 영국(베델)", characteristics: ["영국인 베델 발행으로 통감부 검열 우회 관서", "의병 전쟁의 피비린내 나는 저항을 정직하게 보도"], keywords: ["영국인 베델 양기탁", "대한매일신보 창간", "일제 검열 치외법권 우회"], description: "일제 통감부의 엄격한 기사 검열에 맞서, 영국인 베델의 치외법권 신분을 활용해 을사늑약 폭거와 의병 활약상을 조선 땅에 한글과 한문으로 고발한 언론사입니다.", question: "대한매일신보가 일제 통감부의 무자비한 보도 검열을 뚫고 의병 투쟁을 온전히 보도할 수 있었던 발행인의 외교적 특권을 서술하시오.", checkpoints: ["발행인 영국인 베델", "영일동맹 치외법권 우회", "가장 정직한 항일 언론"], expertAnswer: "신문 공동 발행인인 '베델'은 영일동맹 관계인 대영제국의 국적자였습니다. 영국 신문사 신분은 통감부 식민 경찰이 함부로 신문사를 덮치거나 기사를 검열할 수 없는 '외교 치외법권 특권'을 가졌습니다. 이를 방패막이 삼아 을사늑약 무효 호소문과 의병장들의 공전투를 실시간으로 가장 뜨겁고 용감하게 배포했습니다." }
                 ]
             }
         };
@@ -865,9 +696,7 @@
         let blankHintToggleState = {};
         
         let weaknessPocketList = [];
-
-        // Dynamic Spring Motion Configuration for M3 Buttons
-        const springSettings = { stiffness: 180, damping: 12 };
+        let globalSearchQuery = "";
 
         // Initialize App
         window.onload = function() {
@@ -903,9 +732,9 @@
             btns.forEach(b => {
                 const btn = document.getElementById(`micro-btn-${b}`);
                 if (b === minutes) {
-                    btn.className = "active-scale py-2 rounded-2xl text-xs font-black border border-m3-primary/50 bg-m3-primaryContainer/40 text-m3-primary transition flex items-center justify-center gap-1 shadow-md";
+                    btn.className = "active-scale py-2 rounded-2xl text-xs font-black border border-m3-primary/50 bg-m3-primaryContainer text-m3-primary transition flex items-center justify-center gap-1 shadow-sm";
                 } else {
-                    btn.className = "active-scale py-2 rounded-2xl text-xs font-black border border-m3-surfaceVariant bg-m3-surfaceContainerHigh text-slate-300 hover:border-m3-primary/30 transition flex items-center justify-center gap-1";
+                    btn.className = "active-scale py-2 rounded-2xl text-xs font-black border border-m3-surfaceVariant bg-m3-surfaceContainerLow text-slate-700 hover:border-m3-primary/30 transition flex items-center justify-center gap-1";
                 }
             });
             
@@ -941,10 +770,6 @@
             }
         }
 
-        function resetTimer() {
-            setMicroMode(5);
-        }
-
         function updateTimerDisplayUI() {
             const el = document.getElementById('timer-text');
             const mm = Math.floor(remainingTimerSeconds / 60);
@@ -967,14 +792,14 @@
             
             // Tab highlight switching
             document.querySelectorAll('.day-tab').forEach(btn => {
-                btn.className = "day-tab py-3 rounded-2xl text-xs font-black transition-all flex flex-col items-center justify-center bg-m3-surfaceContainer text-m3-outline hover:bg-m3-surfaceVariant active-scale";
+                btn.className = "day-tab py-3 rounded-2xl text-xs font-black transition-all flex flex-col items-center justify-center bg-m3-surfaceContainerLow text-slate-700 hover:bg-m3-surfaceContainerHighest active-scale";
             });
             const activeTab = document.getElementById(`day-tab-${dayNum}`);
             if (activeTab) {
-                activeTab.className = "day-tab py-3 rounded-2xl text-xs font-black transition-all flex flex-col items-center justify-center bg-m3-primary text-m3-surfaceContainerLowest shadow-xl scale-105 active-scale";
+                activeTab.className = "day-tab py-3 rounded-2xl text-xs font-black transition-all flex flex-col items-center justify-center bg-m3-primary text-white shadow-md scale-105 active-scale";
             }
             
-            document.getElementById('day-badge').textContent = `30개 고밀도 키워드 수록`;
+            document.getElementById('day-badge').textContent = `16개 사건 수록 (전체 80개)`;
             
             // Sub stages refresh
             activeCardIndex = 0;
@@ -991,6 +816,9 @@
             
             changeStage(activeStage);
             calculateOverallDayProgress();
+            
+            // Reset global search default rendering
+            executeGlobalSearch("");
         }
 
         function changeStage(stageId) {
@@ -1011,7 +839,7 @@
             });
             const activeBtn = document.getElementById(`stage-btn-${stageId}`);
             if (activeBtn) {
-                activeBtn.className = "stage-btn py-3 rounded-2xl text-center flex flex-col items-center justify-center transition-all duration-300 bg-m3-primaryContainer text-m3-primary shadow-lg active-scale";
+                activeBtn.className = "stage-btn py-3 rounded-2xl text-center flex flex-col items-center justify-center transition-all duration-300 bg-m3-primaryContainer text-m3-primary shadow-sm active-scale";
             }
             
             // Status bar updating
@@ -1019,8 +847,8 @@
             const dayTitle = LOCAL_DATABASE[currentDay].title;
             
             if (stageId === 'scan') statusCard.textContent = `1단계: ${dayTitle} 요약 스캔`;
-            else if (stageId === 'sort') statusCard.textContent = `2단계: 인과순서 시간순 배치`;
-            else if (stageId === 'blank') statusCard.textContent = `3단계: 모범 정답 필수 구유명사 기입`;
+            else if (stageId === 'sort') statusCard.textContent = `2단계: 16개 사건 타임라인 연대 배치`;
+            else if (stageId === 'blank') statusCard.textContent = `3단계: 모범 정답 필수 고유명사 기입`;
             else statusCard.textContent = `4단계: 실전형 기출 복원 모의고사`;
             
             if (stageId === 'sort') {
@@ -1083,18 +911,22 @@
             // Card Front face bindings
             document.getElementById('card-year-tag').textContent = `${item.year}년`;
             document.getElementById('card-main-title').textContent = item.title;
-            document.getElementById('card-main-characters').textContent = `주요 인물: ${item.character}`;
-            document.getElementById('card-short-desc').textContent = item.shortDesc;
+            document.getElementById('card-main-characters').textContent = `수교/대상 세력: ${item.parties}`;
+            document.getElementById('card-short-desc').textContent = item.description;
+            
+            // 2 Main Characteristics bindings
+            document.getElementById('card-feature-1').innerHTML = `<span class="w-1.5 h-1.5 bg-m3-primary rounded-full"></span> ${item.characteristics[0]}`;
+            document.getElementById('card-feature-2').innerHTML = `<span class="w-1.5 h-1.5 bg-m3-primary rounded-full"></span> ${item.characteristics[1] || "기타 교과서 특징 수록"}`;
             
             // Card Back face bindings
-            document.getElementById('card-long-desc').textContent = item.longDesc;
+            document.getElementById('card-long-desc').textContent = item.description;
             
-            // Back Keywords collection (6 keywords)
+            // Back Keywords collection (3 keywords)
             const keywordBox = document.getElementById('card-keyword-bag');
             keywordBox.innerHTML = '';
             item.keywords.forEach((kw) => {
                 const chip = document.createElement('span');
-                chip.className = "bg-slate-950 border border-m3-surfaceVariant/80 text-m3-primary text-[10px] px-2.5 py-1 rounded-lg font-mono font-bold flex items-center";
+                chip.className = "bg-m3-surfaceContainerLow border border-m3-surfaceVariant text-m3-primary text-[10px] px-2.5 py-1 rounded-lg font-mono font-bold flex items-center";
                 chip.textContent = kw;
                 keywordBox.appendChild(chip);
             });
@@ -1103,7 +935,7 @@
             const wBtn = document.getElementById('card-weak-toggle');
             const inWeakness = weaknessPocketList.some(itemIter => itemIter.id === item.id);
             if (inWeakness) {
-                wBtn.className = "active-scale text-xs bg-m3-tertiary text-m3-surfaceContainerLowest px-3.5 py-2.5 rounded-2xl font-black transition flex items-center gap-1 shadow-md";
+                wBtn.className = "active-scale text-xs bg-m3-tertiary text-white px-3.5 py-2.5 rounded-2xl font-black transition flex items-center gap-1 shadow-sm";
                 wBtn.innerHTML = `<span class="material-symbols-outlined text-xs">favorite</span> 오답 수첩 등록됨`;
             } else {
                 wBtn.className = "active-scale text-xs text-m3-tertiary border border-m3-tertiary/30 hover:bg-m3-tertiaryContainer/20 px-3.5 py-2.5 rounded-2xl font-black transition flex items-center gap-1";
@@ -1116,6 +948,7 @@
             dots.innerHTML = '';
             const events = LOCAL_DATABASE[currentDay].events;
             
+            // Make compact rendering if events are 16 items
             events.forEach((_, idx) => {
                 const dot = document.createElement('div');
                 dot.onclick = (e) => {
@@ -1137,9 +970,9 @@
             for (let i = 0; i < children.length; i++) {
                 const scanned = scannedCardsProgress[events[i].id];
                 if (i === activeCardIndex) {
-                    children[i].className = "w-5 h-1.5 rounded-full bg-m3-primary transition-all duration-300";
+                    children[i].className = "w-4 h-1.5 rounded-full bg-m3-primary transition-all duration-300";
                 } else {
-                    children[i].className = `w-1.5 h-1.5 rounded-full cursor-pointer transition-all duration-300 ${scanned ? 'bg-emerald-500/80' : 'bg-slate-700 hover:bg-slate-500'}`;
+                    children[i].className = `w-1 h-1 rounded-full cursor-pointer transition-all duration-300 ${scanned ? 'bg-[#006D44]' : 'bg-m3-surfaceContainerHighest hover:bg-slate-400'}`;
                 }
             }
         }
@@ -1186,15 +1019,15 @@
             if (activeCardIndex < LOCAL_DATABASE[currentDay].events.length - 1) {
                 setTimeout(() => {
                     goNextCard();
-                }, 200);
+                }, 150);
             } else {
-                showDialogPopup("1단계 완전 정복", "오늘 암기할 5개 핵심 사건의 구조적 스캔을 마쳤습니다! 이제 2단계에서 원인-결과 시간 순서를 맞춰봅시다.", "check_circle");
+                showDialogPopup("1단계 완전 정복", "오늘 암기할 16개 핵심 사건의 구조적 스캔을 마쳤습니다! 이제 2단계에서 원인-결과 시간 순서를 맞춰봅시다.", "check_circle");
                 changeStage('sort');
             }
         }
 
         // ==========================================
-        // STAGE 2: TIMELINE SORT SYSTEM (No drag errors, ultra mobile friendly)
+        // STAGE 2: TIMELINE SORT SYSTEM (chronological order)
         // ==========================================
         function scrambleSorting() {
             const source = [...LOCAL_DATABASE[currentDay].events];
@@ -1216,37 +1049,37 @@
                 const posPerfect = correctRealIndex === idx;
                 
                 const element = document.createElement('div');
-                let borderM3 = "border-m3-surfaceVariant bg-m3-surfaceContainerLow";
+                let borderM3 = "border-m3-surfaceVariant bg-m3-surface";
                 let validationIndicator = "";
                 
                 if (sortingCheckedState) {
                     if (posPerfect) {
-                        borderM3 = "border-emerald-500/50 bg-emerald-950/25 text-emerald-100";
-                        validationIndicator = `<span class="bg-emerald-950/80 text-emerald-400 border border-emerald-800 text-[9px] px-2.5 py-1 rounded-full font-bold shrink-0">${event.year}년 연대 일치</span>`;
+                        borderM3 = "border-emerald-500/50 bg-[#E8F5E9] text-[#1B5E20]";
+                        validationIndicator = `<span class="bg-[#2E7D32]/10 text-[#2E7D32] border border-[#2E7D32]/30 text-[9px] px-2 py-0.5 rounded-full font-bold shrink-0">${event.year}년 일치</span>`;
                     } else {
-                        borderM3 = "border-m3-tertiary/40 bg-m3-tertiaryContainer/25 text-m3-tertiary";
-                        validationIndicator = `<span class="bg-m3-tertiaryContainer/80 text-m3-tertiary border border-m3-tertiary/40 text-[9px] px-2.5 py-1 rounded-full font-bold shrink-0">순서 보정 필요</span>`;
+                        borderM3 = "border-m3-tertiary/40 bg-m3-tertiaryContainer text-m3-tertiary";
+                        validationIndicator = `<span class="bg-[#C62828]/10 text-[#C62828] border border-[#C62828]/30 text-[9px] px-2 py-0.5 rounded-full font-bold shrink-0">재배치 필요</span>`;
                     }
                 }
                 
-                element.className = `p-3.5 rounded-3xl border ${borderM3} flex items-center justify-between gap-3 transition-all duration-300 hover:border-m3-outline/40 animate-fade-in`;
+                element.className = `p-3 rounded-2xl border ${borderM3} flex items-center justify-between gap-3 transition-all duration-300 hover:border-m3-outline/40 animate-fade-in`;
                 element.innerHTML = `
-                    <div class="flex items-center space-x-3 min-w-0 flex-1">
-                        <div class="w-7 h-7 rounded-2xl bg-m3-surfaceContainerHighest flex items-center justify-center font-mono text-xs font-black text-m3-primary shrink-0">
+                    <div class="flex items-center space-x-2.5 min-w-0 flex-1">
+                        <div class="w-6 h-6 rounded-xl bg-m3-surfaceContainer flex items-center justify-center font-mono text-xs font-black text-m3-primary shrink-0">
                             ${idx + 1}
                         </div>
                         <div class="min-w-0">
-                            <h4 class="text-xs sm:text-sm font-black text-slate-100">${event.title}</h4>
-                            <p class="text-[9px] sm:text-xs text-m3-outline truncate mt-0.5">${event.shortDesc}</p>
+                            <h4 class="text-xs font-black text-slate-800 truncate">${event.title}</h4>
+                            <p class="text-[9px] text-m3-outline truncate">${event.parties} • ${event.year}년</p>
                         </div>
                     </div>
                     <div class="flex items-center space-x-1 shrink-0">
                         ${validationIndicator}
-                        <button onclick="moveSortStep(${idx}, -1)" ${idx === 0 || sortingCheckedState ? 'disabled' : ''} class="w-8 h-8 rounded-xl hover:bg-m3-surfaceVariant disabled:opacity-20 flex items-center justify-center text-slate-300">
-                            <span class="material-symbols-outlined text-base">expand_less</span>
+                        <button onclick="moveSortStep(${idx}, -1)" ${idx === 0 || sortingCheckedState ? 'disabled' : ''} class="w-7 h-7 rounded-xl hover:bg-m3-surfaceContainerLow disabled:opacity-20 flex items-center justify-center text-slate-500">
+                            <span class="material-symbols-outlined text-sm">expand_less</span>
                         </button>
-                        <button onclick="moveSortStep(${idx}, 1)" ${idx === shuffledSortingArray.length - 1 || sortingCheckedState ? 'disabled' : ''} class="w-8 h-8 rounded-xl hover:bg-m3-surfaceVariant disabled:opacity-20 flex items-center justify-center text-slate-300">
-                            <span class="material-symbols-outlined text-base">expand_more</span>
+                        <button onclick="moveSortStep(${idx}, 1)" ${idx === shuffledSortingArray.length - 1 || sortingCheckedState ? 'disabled' : ''} class="w-7 h-7 rounded-xl hover:bg-m3-surfaceContainerLow disabled:opacity-20 flex items-center justify-center text-slate-500">
+                            <span class="material-symbols-outlined text-sm">expand_more</span>
                         </button>
                     </div>
                 `;
@@ -1259,7 +1092,6 @@
             const target = index + movement;
             if (target < 0 || target >= shuffledSortingArray.length) return;
             
-            // Elegant swap physics simulation
             const temp = shuffledSortingArray[index];
             shuffledSortingArray[index] = shuffledSortingArray[target];
             shuffledSortingArray[target] = temp;
@@ -1286,18 +1118,18 @@
             fb.classList.remove('hidden');
             
             if (allCorrect) {
-                fb.className = "p-4 rounded-3xl border border-emerald-500/40 bg-emerald-950/20 text-emerald-300 text-xs mt-3 animate-fade-in";
+                fb.className = "p-4 rounded-3xl border border-emerald-500/40 bg-[#E8F5E9] text-[#2E7D32] text-xs mt-3 animate-fade-in";
                 fb.innerHTML = `
-                    <p class="font-extrabold text-sm flex items-center gap-1">🎉 연대 및 인과적 흐름 100% 일치 성공!</p>
-                    <p class="text-[10px] text-emerald-400 mt-1">사건이 유도한 연대사적 흐름을 마스터했습니다. 다음 3단계 필수 고유명사 채우기로 진도 이동을 장려합니다.</p>
+                    <p class="font-extrabold text-sm flex items-center gap-1">🎉 16개 사건 순서 완벽 일치!</p>
+                    <p class="text-[10px] text-[#2E7D32]/80 mt-1">인과가 뚜렷한 사건 전개도를 마스터했습니다. 3단계 필수 단답형 퀴즈로 진도를 이행하세요!</p>
                 `;
-                showDialogPopup("2단계 완수", "역사 전개 과정을 시간순으로 정밀하게 정복했습니다! 3단계 빈칸 쓰기로 이동해 주세요.", "celebration");
+                showDialogPopup("2단계 통과", "16개 사건의 타임라인 연대를 완벽하게 줄 세웠습니다! 다음은 3단계 단답식 빈칸입니다.", "celebration");
                 changeStage('blank');
             } else {
-                fb.className = "p-4 rounded-3xl border border-m3-tertiary/40 bg-m3-surfaceContainerHighest text-m3-tertiary text-xs mt-3 animate-fade-in";
+                fb.className = "p-4 rounded-3xl border border-m3-tertiary/40 bg-m3-surfaceContainerHigh text-m3-tertiary text-xs mt-3 animate-fade-in";
                 fb.innerHTML = `
-                    <p class="font-bold text-sm">⚠️ 인과적 연결 흐름 일부가 어긋났습니다.</p>
-                    <p class="text-[10px] text-slate-400 mt-1">틀린 사건은 우측의 실제 연도 매치 표식을 참고하여 복습하고 다시 섞어서 재도전해 보기를 강권합니다.</p>
+                    <p class="font-bold text-sm">⚠️ 일부 배치에 오류가 포착되었습니다.</p>
+                    <p class="text-[10px] text-slate-600 mt-1">오답 수첩에 자동 보존되었으며, '카드 섞기'를 눌러 다시 훈련해 보기를 제안합니다.</p>
                 `;
             }
             
@@ -1316,12 +1148,11 @@
             
             events.forEach((event) => {
                 const card = document.createElement('div');
-                card.className = "bg-m3-surfaceContainerLow p-4.5 rounded-3xl border border-m3-surfaceVariant/60 space-y-3.5 animate-fade-in";
+                card.className = "bg-m3-surface p-4.5 rounded-3xl border border-m3-surfaceVariant space-y-3 animate-fade-in";
                 
-                // Cloze sentence modification replacement logic
-                let blankedDescription = event.longDesc;
+                let blankedDescription = event.description;
                 event.keywords.forEach((keyword) => {
-                    const blockRepresentation = `<span class="px-2 py-0.5 rounded bg-m3-surfaceContainerHighest text-m3-primary font-bold inline-block mx-1">(${keyword.length}글자)</span>`;
+                    const blockRepresentation = `<span class="px-2 py-0.5 rounded bg-m3-surfaceContainer text-m3-primary font-bold inline-block mx-1">(${keyword.length}글자)</span>`;
                     blankedDescription = blankedDescription.split(keyword).join(blockRepresentation);
                 });
                 
@@ -1329,39 +1160,39 @@
                 event.keywords.forEach((kw, kwIdx) => {
                     const dictKey = `${event.id}_${kwIdx}`;
                     const hintTriggered = blankHintToggleState[dictKey];
-                    const hintDisplay = hintTriggered ? `초성: ${buildChosungPattern(kw)} (${kw.length}글자)` : "여기에 정확히 기술";
+                    const hintDisplay = hintTriggered ? `초성: ${buildChosungPattern(kw)} (${kw.length}글자)` : "정확히 기입";
                     
-                    let bColor = "border-m3-surfaceVariant focus:ring-m3-primary";
+                    let bColor = "border-m3-surfaceVariant focus:ring-m3-primary bg-m3-surfaceContainerLow";
                     let validationBadge = "";
                     
                     if (blankCheckedState) {
                         const userAns = (blankUserAnswers[dictKey] || "").trim().replace(/\s+/g, "");
                         const correctAns = kw.replace(/\s+/g, "");
                         if (userAns === correctAns) {
-                            bColor = "border-emerald-500 text-emerald-300 bg-emerald-950/15";
-                            validationBadge = `<span class="material-symbols-outlined text-sm text-emerald-400 shrink-0">verified</span>`;
+                            bColor = "border-emerald-500 text-emerald-700 bg-emerald-50";
+                            validationBadge = `<span class="material-symbols-outlined text-sm text-emerald-600 shrink-0">verified</span>`;
                         } else {
-                            bColor = "border-m3-tertiary text-m3-tertiary bg-m3-tertiaryContainer/15";
+                            bColor = "border-m3-tertiary text-m3-tertiary bg-m3-tertiaryContainer/20";
                             validationBadge = `<span class="material-symbols-outlined text-sm text-m3-tertiary shrink-0">error</span>`;
                         }
                     }
                     
                     inputsAreaHTML += `
-                        <div class="bg-m3-surfaceContainerHighest/50 p-3 rounded-2xl flex items-center justify-between border border-slate-900 gap-2">
+                        <div class="bg-m3-surfaceContainer/50 p-3 rounded-2xl flex items-center justify-between border border-m3-surfaceVariant gap-2">
                             <div class="flex-1 min-w-0">
-                                <span class="text-[8px] text-m3-outline uppercase font-black block mb-1">채점 단어 ${kwIdx + 1}</span>
+                                <span class="text-[8px] text-m3-outline uppercase font-black block mb-1">체크 ${kwIdx + 1}</span>
                                 <input type="text"
                                     id="input-cloze-${dictKey}"
                                     placeholder="${hintDisplay}"
                                     value="${blankUserAnswers[dictKey] || ''}"
                                     oninput="trackBlankInputState('${event.id}', ${kwIdx}, this.value)"
                                     ${blankCheckedState && (blankUserAnswers[dictKey] || '').trim().replace(/\s+/g, "") === kw.replace(/\s+/g, "") ? 'disabled' : ''}
-                                    class="w-full bg-m3-surfaceContainerLowest rounded-xl text-xs py-2 px-3 focus:outline-none focus:ring-1 border ${bColor}"
+                                    class="w-full rounded-xl text-xs py-2 px-3 focus:outline-none focus:ring-1 border ${bColor}"
                                 />
                             </div>
                             <div class="flex flex-col items-end gap-1.5 self-end shrink-0">
                                 ${validationBadge}
-                                <button type="button" onclick="triggerBlankHintState('${event.id}', ${kwIdx})" class="text-[9px] font-black text-m3-primary bg-m3-primaryContainer/30 hover:bg-m3-primaryContainer px-2.5 py-1 rounded-full transition active-scale">
+                                <button type="button" onclick="triggerBlankHintState('${event.id}', ${kwIdx})" class="text-[9px] font-black text-m3-primary bg-m3-primaryContainer/50 hover:bg-m3-primaryContainer px-2.5 py-1 rounded-full transition active-scale">
                                     힌트
                                 </button>
                             </div>
@@ -1371,11 +1202,11 @@
                 
                 card.innerHTML = `
                     <div class="flex justify-between items-center text-[10px]">
-                        <span class="text-m3-tertiary font-bold font-mono">${event.year}년 대주제</span>
-                        <span class="text-m3-outline">인물: ${event.character}</span>
+                        <span class="text-m3-tertiary font-bold font-mono">${event.year}년 • ${event.type}</span>
+                        <span class="text-m3-outline">참여: ${event.parties}</span>
                     </div>
-                    <h4 class="text-sm font-black text-slate-100">${event.title}</h4>
-                    <p class="text-xs text-slate-300 leading-relaxed bg-m3-surfaceContainerLowest/40 p-3 rounded-2xl border border-m3-surfaceVariant/20">
+                    <h4 class="text-sm font-black text-slate-900">${event.title}</h4>
+                    <p class="text-xs text-slate-700 leading-relaxed bg-m3-surfaceContainerLow p-3 rounded-2xl">
                         ${blankedDescription}
                     </p>
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 mt-3">
@@ -1431,18 +1262,18 @@
             sBox.classList.remove('hidden');
             
             if (countCorrect === countTotal) {
-                sBox.className = "p-4 rounded-3xl border border-emerald-500/40 bg-emerald-950/20 text-emerald-300 text-xs mt-3 text-center animate-fade-in";
+                sBox.className = "p-4 rounded-3xl border border-emerald-500/40 bg-[#E8F5E9] text-[#2E7D32] text-xs mt-3 text-center animate-fade-in";
                 sBox.innerHTML = `
-                    <p class="font-extrabold text-sm">🎉 3단계 30개 전체 키워드 만점 달성!</p>
-                    <p class="text-[10px] text-emerald-400 mt-1">서술형 득점의 기틀이 마련되었습니다. 마지막 4단계 실전 모의고사로 나아가 최종 확인을 마무리하세요.</p>
+                    <p class="font-extrabold text-sm">🎉 오늘의 모든 빈칸 키워드 100% 정답!</p>
+                    <p class="text-[10px] text-[#2E7D32]/80 mt-1">서술형 득점을 보장하는 핵심 개념을 모두 정확히 기술했습니다. 마지막 4단계 서술형 기출에 도전하세요.</p>
                 `;
-                showDialogPopup("3단계 정복", "30개 필수 단어를 모두 완벽하게 작성하셨습니다! 이제 최종 4단계 서술형 기출 트레이너로 이동합니다.", "verified");
+                showDialogPopup("3단계 완료", "지정 키워드 퀴즈를 전량 올바르게 암기하셨습니다! 4단계 서술 훈련으로 직행합니다.", "verified");
                 changeStage('narrative');
             } else {
-                sBox.className = "p-4 rounded-3xl border border-m3-tertiary/40 bg-m3-surfaceContainerHighest text-m3-tertiary text-xs mt-3 text-center animate-fade-in";
+                sBox.className = "p-4 rounded-3xl border border-m3-tertiary/40 bg-m3-surfaceContainer text-m3-tertiary text-xs mt-3 text-center animate-fade-in";
                 sBox.innerHTML = `
-                    <p class="font-bold text-sm">⚠️ 보강 필요 (${countCorrect} / ${countTotal} 단어 일치)</p>
-                    <p class="text-[10px] text-slate-400 mt-1">오탈자 혹은 빈 칸이 검출되었습니다. 초성 유도 힌트를 참조하여 다시 작성해보세요.</p>
+                    <p class="font-bold text-sm">⚠️ 채움 불량 및 미달성 상태 (${countCorrect} / ${countTotal} 정답)</p>
+                    <p class="text-[10px] text-slate-650 mt-1">초성 힌트를 클릭해 틀린 부분을 고쳐서 내 손끝에 온전히 각인시키세요.</p>
                 `;
             }
             
@@ -1450,7 +1281,6 @@
             updateWeaknessPocketUI();
         }
 
-        // Hangeul Disassembler Chosung generator for hint efficiency
         function buildChosungPattern(text) {
             const keys = ["ㄱ","ㄲ","ㄴ","ㄷ","ㄸ","ㄹ","ㅁ","ㅂ","ㅃ","ㅅ","ㅆ","ㅇ","ㅈ","ㅉ","ㅊ","ㅋ","ㅌ","ㅍ","ㅎ"];
             let result = "";
@@ -1488,7 +1318,7 @@
             const event = LOCAL_DATABASE[currentDay].events.find(e => e.id === eventId);
             
             if (event) {
-                document.getElementById('narrative-question-body').textContent = event.narrativeQuestion;
+                document.getElementById('narrative-question-body').textContent = event.question;
                 document.getElementById('essay-box').value = "";
                 document.getElementById('narrative-results-panel').classList.add('hidden');
                 trackEssayChars();
@@ -1514,7 +1344,6 @@
             const event = LOCAL_DATABASE[currentDay].events.find(e => e.id === eventId);
             if (!event) return;
             
-            // Core processing logic (Whitespace & Case neutral)
             const sanitizedText = text.replace(/\s+/g, "").toLowerCase();
             const matchedKeywords = [];
             const missedKeywords = [];
@@ -1531,11 +1360,9 @@
             const ratio = matchedKeywords.length / event.checkpoints.length;
             const score = Math.round(ratio * 100);
             
-            // Save state internally
             localStorage.setItem(`m3_korea_essay_done_${currentDay}`, "true");
             calculateOverallDayProgress();
             
-            // Draw analysis report panel
             const panel = document.getElementById('narrative-results-panel');
             panel.classList.remove('hidden');
             
@@ -1543,7 +1370,7 @@
             scoreBadge.textContent = `${score} / 100점`;
             
             if (score >= 80) {
-                scoreBadge.className = "text-2xl font-mono font-black text-emerald-400";
+                scoreBadge.className = "text-2xl font-mono font-black text-emerald-600";
             } else if (score >= 60) {
                 scoreBadge.className = "text-2xl font-mono font-black text-m3-primary";
             } else {
@@ -1552,35 +1379,32 @@
                 updateWeaknessPocketUI();
             }
             
-            // Match chips
             const mHolder = document.getElementById('essay-match-holder');
             mHolder.innerHTML = '';
             if (matchedKeywords.length > 0) {
                 matchedKeywords.forEach(k => {
                     const c = document.createElement('span');
-                    c.className = "bg-emerald-950/60 text-emerald-300 border border-emerald-800 text-[10px] px-2.5 py-1 rounded-xl font-bold font-mono";
+                    c.className = "bg-emerald-50 text-emerald-700 border border-emerald-200 text-[10px] px-2.5 py-1 rounded-xl font-bold font-mono";
                     c.textContent = k;
                     mHolder.appendChild(c);
                 });
             } else {
-                mHolder.innerHTML = '<span class="text-slate-500 text-[10px]">체크 키워드 미발견</span>';
+                mHolder.innerHTML = '<span class="text-slate-400 text-[10px]">채점 기준 용어 없음</span>';
             }
             
-            // Miss chips
             const missHolder = document.getElementById('essay-miss-holder');
             missHolder.innerHTML = '';
             if (missedKeywords.length > 0) {
                 missedKeywords.forEach(k => {
                     const c = document.createElement('span');
-                    c.className = "bg-m3-tertiaryContainer/40 text-m3-tertiary border border-m3-tertiary/40 text-[10px] px-2.5 py-1 rounded-xl font-bold font-mono";
+                    c.className = "bg-m3-tertiaryContainer text-m3-tertiary border border-m3-tertiary/20 text-[10px] px-2.5 py-1 rounded-xl font-bold font-mono";
                     c.textContent = k;
                     missHolder.appendChild(c);
                 });
             } else {
-                missHolder.innerHTML = '<span class="text-emerald-400 text-[10px]">완벽! 누락 없음</span>';
+                missHolder.innerHTML = '<span class="text-emerald-600 text-[10px]">완벽! 득점 충족</span>';
             }
             
-            // Suggested text setting
             document.getElementById('essay-model-answer').textContent = event.expertAnswer;
             
             setTimeout(() => {
@@ -1657,18 +1481,18 @@
             
             weaknessPocketList.forEach(event => {
                 const node = document.createElement('div');
-                node.className = "bg-m3-surfaceContainerHigh/90 p-3.5 rounded-3xl border border-m3-surfaceVariant flex items-start justify-between gap-3 text-xs animate-fade-in";
+                node.className = "bg-m3-surfaceContainerLow p-3.5 rounded-3xl border border-m3-surfaceVariant flex items-start justify-between gap-3 text-xs animate-fade-in";
                 
                 let chipStr = '';
                 event.keywords.slice(0, 2).forEach(kw => {
-                    chipStr += `<span class="bg-m3-surfaceContainerLowest border border-m3-surfaceVariant/60 text-m3-primary text-[9px] px-2 py-0.5 rounded-lg font-mono font-bold">${kw}</span>`;
+                    chipStr += `<span class="bg-m3-surface border border-m3-surfaceVariant text-m3-primary text-[9px] px-2 py-0.5 rounded-lg font-mono font-bold">${kw}</span>`;
                 });
                 
                 node.innerHTML = `
                     <div class="min-w-0 flex-1">
                         <span class="text-[9px] font-mono text-m3-tertiary block">${event.year}년</span>
-                        <h4 class="font-extrabold text-slate-100 truncate">${event.title}</h4>
-                        <p class="text-[10px] text-m3-outline truncate mt-0.5">${event.shortDesc}</p>
+                        <h4 class="font-extrabold text-slate-900 truncate">${event.title}</h4>
+                        <p class="text-[10px] text-m3-outline truncate mt-0.5">${event.characteristics[0]}</p>
                         <div class="flex flex-wrap gap-1 mt-1.5">
                             ${chipStr}
                         </div>
@@ -1679,6 +1503,115 @@
                 `;
                 shelf.appendChild(node);
             });
+        }
+
+        // ==========================================
+        // GLOBAL INTERACTIVE SEARCH DRAWER (80 EVENTS)
+        // ==========================================
+        function toggleSearchDrawer(isOpen) {
+            const drawer = document.getElementById('search-drawer');
+            const drawerContent = drawer.querySelector('div');
+            
+            if (isOpen) {
+                drawer.classList.remove('pointer-events-none');
+                drawer.classList.add('opacity-100');
+                drawerContent.classList.remove('translate-x-full');
+                executeGlobalSearch(""); // render default
+            } else {
+                drawer.classList.add('pointer-events-none');
+                drawer.classList.remove('opacity-100');
+                drawerContent.classList.add('translate-x-full');
+            }
+        }
+
+        function executeGlobalSearch(query) {
+            globalSearchQuery = query.trim().toLowerCase();
+            const track = document.getElementById('search-results-track');
+            track.innerHTML = '';
+            
+            // Gather all 80 items across 5 days
+            let allItems = [];
+            for (let day in LOCAL_DATABASE) {
+                allItems = allItems.concat(LOCAL_DATABASE[day].events);
+            }
+            
+            const filtered = allItems.filter(item => {
+                return item.title.toLowerCase().includes(globalSearchQuery) ||
+                       item.parties.toLowerCase().includes(globalSearchQuery) ||
+                       item.type.toLowerCase().includes(globalSearchQuery) ||
+                       item.characteristics.some(c => c.toLowerCase().includes(globalSearchQuery)) ||
+                       item.keywords.some(k => k.toLowerCase().includes(globalSearchQuery)) ||
+                       item.description.toLowerCase().includes(globalSearchQuery);
+            });
+            
+            document.getElementById('search-results-count').textContent = filtered.length;
+            
+            if (filtered.length === 0) {
+                track.innerHTML = `
+                    <div class="text-center py-12 text-xs text-m3-outline">
+                        <span class="material-symbols-outlined text-2xl block mb-2 text-m3-surfaceVariant">warning</span>
+                        검색 조건에 맞는 사건이 존재하지 않습니다.
+                    </div>
+                `;
+                return;
+            }
+            
+            filtered.forEach(item => {
+                const card = document.createElement('div');
+                const isSaved = weaknessPocketList.some(w => w.id === item.id);
+                
+                card.className = "bg-m3-surface p-4 rounded-3xl border border-m3-surfaceVariant shadow-sm space-y-2.5 animate-fade-in";
+                card.innerHTML = `
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <span class="text-[9px] font-bold text-m3-tertiary bg-m3-tertiaryContainer text-m3-onTertiaryContainer px-2 py-0.5 rounded-full font-mono">${item.year}년</span>
+                            <span class="text-[9px] text-m3-outline ml-1">${item.type}</span>
+                        </div>
+                        <button onclick="toggleWeaknessFromSearch('${item.id}', this)" class="text-xs transition flex items-center justify-center p-1 rounded-full ${isSaved ? 'text-rose-500 hover:text-rose-600' : 'text-slate-400 hover:text-m3-primary'}">
+                            <span class="material-symbols-outlined text-base">${isSaved ? 'favorite' : 'favorite_border'}</span>
+                        </button>
+                    </div>
+                    <h4 class="text-xs sm:text-sm font-black text-slate-900">${item.title}</h4>
+                    <p class="text-[11px] text-slate-700 leading-relaxed bg-m3-surfaceContainerLow p-2.5 rounded-2xl border border-slate-200/50">${item.description}</p>
+                    <div class="space-y-1">
+                        <span class="text-[8px] uppercase tracking-widest font-black text-m3-outline block">시트 기반 2대 세부 특징</span>
+                        <div class="flex flex-col gap-0.5 text-[10px] text-slate-800">
+                            <span class="flex items-center gap-1"><span class="w-1 h-1 bg-m3-primary rounded-full"></span> ${item.characteristics[0]}</span>
+                            <span class="flex items-center gap-1"><span class="w-1 h-1 bg-m3-primary rounded-full"></span> ${item.characteristics[1] || "교과서 추가 요소"}</span>
+                        </div>
+                    </div>
+                `;
+                track.appendChild(card);
+            });
+        }
+
+        function toggleWeaknessFromSearch(id, btnElement) {
+            let foundEvent = null;
+            for (let d in LOCAL_DATABASE) {
+                const match = LOCAL_DATABASE[d].events.find(e => e.id == id);
+                if (match) { foundEvent = match; break; }
+            }
+            
+            if (!foundEvent) return;
+            
+            const idx = weaknessPocketList.findIndex(w => w.id === foundEvent.id);
+            const icon = btnElement.querySelector('span');
+            
+            if (idx > -1) {
+                weaknessPocketList.splice(idx, 1);
+                icon.textContent = "favorite_border";
+                btnElement.className = "text-xs text-slate-400 hover:text-m3-primary transition flex items-center justify-center p-1 rounded-full";
+            } else {
+                weaknessPocketList.push(foundEvent);
+                icon.textContent = "favorite";
+                btnElement.className = "text-xs text-rose-500 hover:text-rose-600 transition flex items-center justify-center p-1 rounded-full";
+            }
+            
+            localStorage.setItem('m3_korea_weakness', JSON.stringify(weaknessPocketList));
+            updateWeaknessPocketUI();
+            if (activeStage === 'scan') {
+                renderScanCardFace();
+            }
         }
 
         // ==========================================
