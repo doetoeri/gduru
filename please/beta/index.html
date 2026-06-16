@@ -1,0 +1,702 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>제발 한국사 만점! - 근현대사 암기 앱</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
+    <style>
+        :root {
+            /* Material You Dynamic Colors (Indigo/Lavender Base) */
+            --md-sys-color-primary: #4f5baf;
+            --md-sys-color-on-primary: #ffffff;
+            --md-sys-color-primary-container: #e0e0ff;
+            --md-sys-color-on-primary-container: #051065;
+            --md-sys-color-secondary: #5b5d72;
+            --md-sys-color-on-secondary: #ffffff;
+            --md-sys-color-secondary-container: #e0e1f9;
+            --md-sys-color-on-secondary-container: #181a2c;
+            --md-sys-color-background: #fefbff;
+            --md-sys-color-on-background: #1b1b1f;
+            --md-sys-color-surface: #fbf8fd;
+            --md-sys-color-on-surface: #1b1b1f;
+            --md-sys-color-surface-variant: #e3e1ec;
+            --md-sys-color-on-surface-variant: #46464f;
+            --md-sys-color-outline: #777680;
+            --md-shape-corner-medium: 12px;
+            --md-shape-corner-large: 28px;
+            --md-shape-corner-full: 9999px;
+            --transition-bounce: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+            background-color: var(--md-sys-color-background);
+            color: var(--md-sys-color-on-background);
+            line-height: 1.5;
+            padding-bottom: 80px;
+        }
+
+        /* Top App Bar */
+        header {
+            background-color: var(--md-sys-color-surface);
+            padding: 16px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .header-title {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--md-sys-color-primary);
+        }
+
+        /* Material 3 Segmented Buttons (Tabs) */
+        .tab-container {
+            display: flex;
+            background-color: var(--md-sys-color-surface-variant);
+            border-radius: var(--md-shape-corner-full);
+            padding: 4px;
+            overflow: hidden;
+        }
+
+        .tab-btn {
+            flex: 1;
+            border: none;
+            background: none;
+            padding: 10px 4px;
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--md-sys-color-on-surface-variant);
+            cursor: pointer;
+            border-radius: var(--md-shape-corner-full);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            transition: var(--transition-bounce);
+        }
+
+        .tab-btn.active {
+            background-color: var(--md-sys-color-primary-container);
+            color: var(--md-sys-color-on-primary-container);
+        }
+
+        /* Content Container */
+        main {
+            padding: 16px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .view-section {
+            display: none;
+        }
+
+        .view-section.active {
+            display: block;
+        }
+
+        /* 1. Timeline View */
+        .search-box {
+            display: flex;
+            align-items: center;
+            background-color: var(--md-sys-color-surface-variant);
+            border-radius: var(--md-shape-corner-large);
+            padding: 0 16px;
+            margin-bottom: 16px;
+        }
+
+        .search-box input {
+            border: none;
+            background: none;
+            width: 100%;
+            padding: 14px 8px;
+            font-size: 16px;
+            outline: none;
+            color: var(--md-sys-color-on-surface-variant);
+        }
+
+        .timeline {
+            position: relative;
+            padding-left: 20px;
+            border-left: 2px solid var(--md-sys-color-primary-container);
+        }
+
+        .timeline-item {
+            position: relative;
+            margin-bottom: 20px;
+        }
+
+        .timeline-dot {
+            position: absolute;
+            left: -27px;
+            top: 4px;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background-color: var(--md-sys-color-primary);
+            border: 3px solid var(--md-sys-color-background);
+        }
+
+        .card {
+            background-color: var(--md-sys-color-surface);
+            border: 1px solid var(--md-sys-color-surface-variant);
+            border-radius: var(--md-shape-corner-medium);
+            padding: 16px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 8px;
+        }
+
+        .badge-index {
+            background-color: var(--md-sys-color-primary-container);
+            color: var(--md-sys-color-on-primary-container);
+            padding: 2px 8px;
+            border-radius: var(--md-shape-corner-full);
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .badge-type {
+            background-color: var(--md-sys-color-secondary-container);
+            color: var(--md-sys-color-on-secondary-container);
+            padding: 2px 8px;
+            border-radius: var(--md-shape-corner-full);
+            font-size: 12px;
+        }
+
+        .event-title {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 6px;
+        }
+
+        .event-nations {
+            font-size: 13px;
+            color: var(--md-sys-color-outline);
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .event-content {
+            font-size: 14px;
+            color: var(--md-sys-color-on-surface-variant);
+            background: #f5f3f7;
+            padding: 10px;
+            border-radius: 8px;
+        }
+
+        /* 2. Flashcard View */
+        .flashcard-wrapper {
+            perspective: 1000px;
+            width: 100%;
+            height: 320px;
+            margin: 20px 0;
+            cursor: pointer;
+        }
+
+        .flashcard {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .flashcard.flipped {
+            transform: rotateY(180deg);
+        }
+
+        .card-face {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            border-radius: var(--md-shape-corner-large);
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.06);
+            border: 2px solid var(--md-sys-color-primary-container);
+        }
+
+        .card-front {
+            background-color: var(--md-sys-color-primary-container);
+            color: var(--md-sys-color-on-primary-container);
+        }
+
+        .card-back {
+            background-color: var(--md-sys-color-surface);
+            color: var(--md-sys-color-on-surface);
+            transform: rotateY(180deg);
+        }
+
+        .card-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 16px;
+        }
+
+        .btn-action {
+            background-color: var(--md-sys-color-primary);
+            color: var(--md-sys-color-on-primary);
+            border: none;
+            padding: 12px 24px;
+            border-radius: var(--md-shape-corner-full);
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+        }
+
+        /* 3. Quiz View */
+        .quiz-card {
+            background-color: var(--md-sys-color-surface);
+            padding: 20px;
+            border-radius: var(--md-shape-corner-large);
+            border: 1px solid var(--md-sys-color-surface-variant);
+            margin-bottom: 16px;
+        }
+
+        .quiz-hint {
+            background: var(--md-sys-color-secondary-container);
+            color: var(--md-sys-color-on-secondary-container);
+            padding: 12px;
+            border-radius: var(--md-shape-corner-medium);
+            margin-bottom: 16px;
+            font-size: 15px;
+        }
+
+        .quiz-input-group {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+
+        .quiz-input-group input {
+            flex: 1;
+            padding: 14px;
+            border: 2px solid var(--md-sys-color-outline);
+            border-radius: var(--md-shape-corner-medium);
+            font-size: 16px;
+            outline: none;
+        }
+
+        .quiz-input-group input:focus {
+            border-color: var(--md-sys-color-primary);
+        }
+
+        .quiz-feedback {
+            padding: 12px;
+            border-radius: var(--md-shape-corner-medium);
+            display: none;
+            font-weight: 500;
+        }
+
+        .quiz-feedback.correct {
+            display: block;
+            background-color: #e8f5e9;
+            color: #2e7d32;
+        }
+
+        .quiz-feedback.wrong {
+            display: block;
+            background-color: #ffebee;
+            color: #c62828;
+        }
+
+        /* Floating Action Button for Shuffle */
+        .fab {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            background-color: var(--md-sys-color-primary-container);
+            color: var(--md-sys-color-on-primary-container);
+            border: none;
+            width: 56px;
+            height: 56px;
+            border-radius: var(--md-shape-corner-medium);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition-bounce);
+            z-index: 99;
+        }
+
+        .fab:active {
+            transform: scale(0.9);
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="header-title">
+            <span class="material-icons-round">auto_stories</span>
+            <span>제발 한국사 만점!</span>
+        </div>
+        <div class="tab-container">
+            <button class="tab-btn active" onclick="switchTab('timeline')">
+                <span class="material-icons-round">format_list_numbered</span>연표 흐름
+            </button>
+            <button class="tab-btn" onclick="switchTab('flashcard')">
+                <span class="material-icons-round">style</span>플래시카드
+            </button>
+            <button class="tab-btn" onclick="switchTab('quiz')">
+                <span class="material-icons-round">extension</span>초성/내용 퀴즈
+            </button>
+        </div>
+    </header>
+
+    <main>
+        <section id="timeline-view" class="view-section active">
+            <div class="search-box">
+                <span class="material-icons-round">search</span>
+                <input type="text" id="search-input" placeholder="사건명, 관련 국가, 내용 검색..." oninput="filterTimeline()">
+            </div>
+            <div class="timeline" id="timeline-container"></div>
+        </section>
+
+        <section id="flashcard-view" class="view-section">
+            <p style="text-align: center; color: var(--md-sys-color-outline); font-size: 14px;">카드를 누르면 내용이 뒤집힙니다.</p>
+            <div class="flashcard-wrapper" onclick="toggleCard()">
+                <div class="flashcard" id="flashcard">
+                    <div class="card-face card-front">
+                        <span class="badge-index" id="fc-index" style="margin-bottom: 12px;"></span>
+                        <h2 id="fc-title" style="font-size: 24px; font-weight: 700;">사건명</h2>
+                    </div>
+                    <div class="card-face card-back">
+                        <span class="badge-type" id="fc-type" style="margin-bottom: 8px;"></span>
+                        <div id="fc-nations" class="event-nations"></div>
+                        <p id="fc-content" class="event-content" style="width: 100%; font-size: 16px;"></p>
+                    </div>
+                </div>
+            </div>
+            <div class="card-controls">
+                <button class="btn-action" style="background: transparent; color: var(--md-sys-color-primary);" onclick="prevCard()">이전</button>
+                <span id="fc-progress" style="font-weight: 500;">1 / 84</span>
+                <button class="btn-action" onclick="nextCard()">다음</button>
+            </div>
+        </section>
+
+        <section id="quiz-view" class="view-section">
+            <div class="quiz-card">
+                <div style="display: flex; justify-content: space-between; margin-bottom: 12px;">
+                    <span class="badge-type" id="quiz-type">분류</span>
+                    <span id="quiz-progress" style="font-size: 14px; font-weight: 500;"></span>
+                </div>
+                <h3>💡 아래 내용을 보고 사건명을 맞추세요!</h3>
+                <div class="quiz-hint" id="quiz-hint-content" style="margin-top: 12px;">힌트 내용</div>
+                <div class="event-nations" id="quiz-hint-nations"></div>
+                
+                <div class="quiz-input-group">
+                    <input type="text" id="quiz-input" placeholder="정답 입력 (공백/문장부호 무시)" onkeypress="handleKeyPress(event)">
+                    <button class="btn-action" onclick="checkQuizAnswer()">확인</button>
+                </div>
+                <div class="quiz-feedback" id="quiz-feedback">결과 메세지</div>
+            </div>
+            <div style="display: flex; justify-content: flex-end;">
+                <button class="btn-action" onclick="nextQuiz()">패스 / 다음 문제</button>
+            </div>
+        </section>
+    </main>
+
+    <button class="fab" onclick="shuffleData()" title="사건 순서 무작위 섞기">
+        <span class="material-icons-round">shuffle</span>
+    </button>
+
+    <script>
+        // CSV 로우 데이터를 객체 배열로 정제
+        const rawData = [
+            [1,"제1차 아편전쟁","전쟁/침략/갈등","청, 영국","영국 개항"],
+            [2,"제2차 아편전쟁","전쟁/침략/갈등","청, 프랑스, 영국, 러시아","연해주 할양, 프랑스 개항"],
+            [3,"양무운동","운동/시위","청","중체서용, 기기국"],
+            [4,"미일화친조약","조약","일본, 미국","에도막부, 개항"],
+            [5,"미일수호통상조약","조약","일본, 미국","영사재판권, 최혜국 대우"],
+            [6,"메이지유신","운동/시위","일본","정신까지 싹다 변경"],
+            [7,"고종 즉위","설치/파견/제거","조선/대한제국","흥선대원군 집권"],
+            [8,"병인박해","전쟁/침략/갈등","조선/대한제국, 프랑스","흥선대원군, 프랑스 선교사"],
+            [9,"제너럴 셔먼호 사건","전쟁/침략/갈등","조선/대한제국, 미국","박규수, 함경도, 약탈"],
+            [10,"병인양요","전쟁/침략/갈등","조선/대한제국, 프랑스","강화도, 한성근 부대 & 문수산성, 양헌수 부대 & 정족산성, 외규장각의궤"],
+            [11,"남연군 묘 도굴 미수 사건","전쟁/침략/갈등","조선/대한제국, 미국","독일 상인 오페르트, 흥선대원군"],
+            [12,"신미양요","전쟁/침략/갈등","조선/대한제국, 미국","덕진진 점령, 광성보 & 어재연 장군"],
+            [13,"척화비 건립","설치/파견/제거","조선/대한제국","흥선대원군"],
+            [14,"개화세력의 등장","운동/시위","조선/대한제국","박규수, 오경석, 유홍기 --> 통상개화파(1세대) 김옥균, 박영효 --> 개화파(2세대)"],
+            [15,"정한론","운동/시위","일본, 조선/대한제국","문서 형식 다름을 구실로 거절, 조선 정벌"],
+            [16,"흥선대원군 하야","설치/파견/제거","조선/대한제국","고종의 실권 장악"],
+            [17,"운요호 사건","전쟁/침략/갈등","조선/대한제국, 일본","박규수 등의 통상 개화론의 인기 상승, 영종도 상륙"],
+            [18,"강화도조약(조일수호조규)","조약","조선/대한제국, 일본","자주국, 부산, 원산, 인천 개항, 해안측량권, 영사재판권"],
+            [19,"조일수호조규부록","조약","조선/대한제국, 일본","일본 화폐 유통 인정"],
+            [20,"조일무역규칙","조약","조선/대한제국, 일본","양곡 무제한 유출, 무관세"],
+            [21,"조미수호통상조약","조약","조선/대한제국, 미국, 청","거중 조정, 최혜국 대우, 영사 재판권"],
+            [22,"통리기무아문 설치","설치/파견/제거","조선/대한제국","기존 5군영 --> 2군영 체제, 별기군 창설"],
+            [23,"수신사 파견","설치/파견/제거","조선/대한제국","일본의 근대 문물 시찰"],
+            [24,"별기군 창설","설치/파견/제거","조선/대한제국","통리기무아문의 정책"],
+            [25,"조사 시찰단 파견","설치/파견/제거","조선/대한제국, 일본","비밀리 파견, 박정양, 어윤중 등, 보고서 작성"],
+            [26,"영선사/보빙사 파견","설치/파견/제거","조선/대한제국, 청, 미국","김윤식(영선사), 기기창 설치, 민영익(보빙사)"],
+            [27,"임오군란","운동/시위","조선/대한제국, 일본, 청","별기군 일본인 교관 살해, 흥선 대원군 재집권, 통리기무아문 폐지, 별기군 폐지, 청의 흥선대원군 납치"],
+            [28,"제물포 조약","조약","조선/대한제국, 일본","배상금 지급, 일본군의 한성 주둔"],
+            [29,"조청상민수륙무역장정","조약","조선/대한제국, 청","조선을 청의 속국으로 명시, 조선 군대 주둔, 마젠창과 묄렌도르프 고문 파견"],
+            [30,"영독러프오 수교","조약","조선/대한제국","영국, 독일, 러시아, 프랑스, 오스트리아와 차례로 수교"],
+            [31,"척화비 제거","설치/파견/제거","조선/대한제국","임오군란 이후 개화 정책 재개 과정에서 철거"],
+            [32,"박문국 설치","설치/파견/제거","조선/대한제국","한성순보 발행을 위한 신문 인쇄 관청"],
+            [33,"청불 전쟁","전쟁/침략/갈등","청, 프랑스","베트남 지배권을 둘러싼 전쟁, 조선 주둔 청군 일부 철수 원인"],
+            [34,"갑신정변","전쟁/침략/갈등","조선/대한제국","김옥균 등 급진개화파의 우정총국 개국 축하연 이용 정변, 3일천하"],
+            [35,"한성조약","조약","조선/대한제국, 일본","갑신정변 결과 일본에 배상금 지급 및 공사관 신축 비용 부담 공표"],
+            [36,"톈진조약","조약","청, 일본","청·일 양국군 조선 철수, 향후 파병 시 상호 사전 통지 합의"],
+            [37,"조러 비밀협약 추진","조약","조선/대한제국, 러시아","청의 내정 간섭을 탈피하기 위해 묄렌도르프 등을 통해 러시아와 협동 추진"],
+            [38,"거문도 사건","전쟁/침략/갈등","조선/대한제국, 영국","러시아의 남하를 견제하기 위해 영국 해군이 거문도를 불법 점령"],
+            [39,"조선 중립국 주장","운동/시위","조선/대한제국","부들러(독일 부영사)와 유길준 등이 한반도 중립화론 제안"],
+            [40,"육영공원, 연무공원 설치","설치/파견/제거","조선/대한제국","상류층 자제 대상 근대식 공립 학교(육영공원) 및 군사학교 설치"],
+            [41,"주미공사관 설치","설치/파견/제거","조선/대한제국, 미국","초대 주미공사 박정양 파견, 청의 간섭 배제 시도"],
+            [42,"제 1차 동학농민운동","운동/시위","조선/대한제국","백산 봉기, 황토현·황룡촌 전투 승리, 전주성 점령"],
+            [43,"청일전쟁","전쟁/침략/갈등","일본, 청, 조선/대한제국","동학농민운동 파병 구실로 들어온 일본군의 경복궁 점령으로 발발"],
+            [44,"시모노세키 조약","조약","일본, 청","청일전쟁 결과 청이 일본에 요동반도(랴오둥)와 타이완 할양 합의"],
+            [45,"삼국간섭","전쟁/침략/갈등","일본, 청, 프랑스, 영국, 러시아","러시아가 독일·프랑스를 끌어들여 일본의 요동반도 반환 압박"],
+            [46,"포접제 정리","운동/시위","조선/대한제국, 일본, 청","동학의 조직망인 남접(전봉준)과 북접(손병희)의 연합 체제 구축"],
+            [47,"제 2차 동학농민운동","운동/시위","조선/대한제국, 일본, 청","일본군의 경복궁 점령 및 내정간섭에 반대하여 항일 구국 운동 전개"],
+            [48,"교조 신원 운동","운동/시위","조선/대한제국","최제우의 억울함을 풀고 동학 포교의 자유를 얻기 위한 삼례 집회 등 전개"],
+            [49,"보은 집회","운동/시위","조선/대한제국","동학 교조 신원을 넘어 '척왜양창의'의 정치적 구호를 내건 대규모 집회"],
+            [50,"고부 농민 봉기","운동/시위","조선/대한제국","군수 조병갑의 만석보 수세 강탈 등 탐학에 맞서 전봉준 주도 봉기"],
+            [51,"전주 화약","조약","조선/대한제국","정부와 농민군 사이의 타협, 폐정개혁안 제시 및 집강소 설치 계기"],
+            [52,"우금치 전투","운동/시위","조선/대한제국, 일본","제2차 동학농민군이 공주 우금치에서 관군과 일본군 연합군에 패배"],
+            [53,"군국기무처 설치","설치/파견/제거","조선/대한제국","제1차 갑오개혁을 추진하기 위해 설치된 초정부적 직속 개혁 기구"],
+            [54,"제1차 갑오개혁","개혁","조선/대한제국","김홍집 내각 주도, 신분제 폐지, 과거제 폐지, 은본위제 도입 등"],
+            [55,"홍범 14조","선언문/문서","조선/대한제국","고종이 종묘에서 바친 근대적 개혁 방향을 담은 최초의 헌법적 문서"],
+            [56,"제2차 갑오개혁","개혁","조선/대한제국, 일본","군국기무처 폐지, 재판소 설치(사법권 독립), 23부 지방제도 개편"],
+            [57,"교육 입국 조서","선언문/문서","조선/대한제국","고종이 근대적 학교 교육을 통해 국가를 구하고자 반포, 한성사범학교 설치"],
+            [58,"을미개혁","개혁","조선/대한제국, 일본","단발령 시행, 태양력 채택, 종두법 시행, '건양' 연호 사용"],
+            [59,"을미의병","운동/시위","조선/대한제국, 일본","을미사변(명성황후 시해)과 단발령에 분격하여 일어난 최초의 항일 위정척사의병"],
+            [60,"아관파천","전쟁/침략/갈등","조선/대한제국, 러시아","고종이 친일 내각의 위협을 피해 러시아 공사관으로 거처를 옮긴 사건"],
+            [61,"독립협회 설립","설치/파견/제거","조선/대한제국","서재필 등이 중심이 되어 독립문 건립 및 독립신문 발행 기반 설립"],
+            [62,"대한제국 선포","선언문/문서","조선/대한제국","고종이 환궁 후 원구단에서 황제 즉위식을 거행하고 국호 선포"],
+            [63,"만민 공동회","운동/시위","조선/대한제국","독일·러시아 등의 이권 침탈을 저지하기 위한 대규모 민중 집회"],
+            [64,"자주 국권 운동","운동/시위","조선/대한제국","러시아의 절영도 저탄소 기지 빌려달라는 요구 거부 등 이권 침탈 저지"],
+            [65,"자유 민권 운동","운동/시위","조선/대한제국","국민의 신체와 재산권 보호, 언론·출판·집회·결사의 자유 요구"],
+            [66,"의회 설립 운동","운동/시위","조선/대한제국","중추원을 개편하여 근대적 의회를 개설하고자 시도한 운동"],
+            [67,"헌의 6조","선언문/문서","조선/대한제국","관민공동회에서 채택되어 황제의 승인을 받은 조세 개혁 및 전제군주권 제한 문서"],
+            [68,"독립협회 해산","설치/파견/제거","조선/대한제국, 일본","보수파가 공화정을 획책한다는 익명서 조작, 황국협회 보부상 동원 강제 해산"],
+            [69,"대한국 국제","선언문/문서","조선/대한제국","황제에게 무한한 군권을 집중시키는 전제군주제 명시 전방위 문서"],
+            [70,"광무개혁","개혁","조선/대한제국","구본신참(옛 것을 근본으로 새 것을 참고) 원칙 하의 점진적 자주 개혁"],
+            [71,"양전 사업","설치/파견/제거","조선/대한제국","정확한 세금 징수와 근대적 토지 소유권 확립을 위한 전국 토지 측량"],
+            [72,"지계 발급 사업","설치/파견/제거","조선/대한제국","양지아문을 설치하여 근대적 토지 소유 증명서인 '지계' 발급 (러일전쟁으로 중단)"],
+            [73,"파리 만국 박람회","설치/파견/제거","조선/대한제국","대한제국의 독자성과 주권 국가 위상을 알리기 위해 파리 세계박람회에 참가"],
+            [74,"러일 전쟁","전쟁/침략/갈등","조선/대한제국, 일본, 러시아","한반도와 만주의 지배권을 둘러싸고 발발한 제국주의 전쟁, 일본의 선제공격"],
+            [75,"한일의정서","조약","조선/대한제국, 일본","러일전쟁 중 일본이 군사 전략상 필요한 조선의 영토를 마음대로 사용하도록 강요"],
+            [76,"제1차 한일 협약","조약","조선/대한제국, 일본","고문 정치 시작 - 재정 고문 메가타(화폐정리사업), 외교 고문 스티븐스 초빙"],
+            [77,"가쓰라/태프트 밀약","조약","일본, 미국","미국의 필리핀 지배와 일본의 대한제국 지배를 상호 묵인한 비밀 협약"],
+            [78,"제2차 영일 동맹","조약","일본, 영국","영국의 인도 지배와 일본의 대한제국 독점 지배권을 상호 승인한 조약"],
+            [79,"포츠머스 조약","조약","일본, 러시아","러일전쟁 승리 후 러시아가 일본의 한국에 대한 독점적 권리를 최종 승인"],
+            [80,"을사늑약(제2차 한일 협약)","조약","조선/대한제국, 일본","외교권 박탈, 통감부 설치(초대 통감 이토 히로부미) 강제 체결"],
+            [81,"헤이그 특사","설치/파견/제거","조선/대한제국, 일본","고종이 만국평화회의에 이준·이상설·이위종을 파견하여 을사늑약 무효 폭로 시도"],
+            [82,"고종 강제 퇴위","전쟁/침략/갈등","조선/대한제국, 일본","헤이그 특사 파견을 구실로 삼아 일본이 고종 황제를 강제로 강등 및 퇴위시킴"],
+            [83,"한일 신협약","조약","조선/대한제국, 일본","정미7조약 - 차관 정치 시행(각 부서에 일본인 관리 배치), 한국 군대 해산 규정"],
+            [84,"한국 병합 조약","조약","조선/대한제국, 일본","경술국치 - 대한제국의 국권을 완전히 상실하고 일제강점기가 시작됨"]
+        ];
+
+        let currentData = [...rawData];
+        let currentCardIndex = 0;
+        let currentQuizIndex = 0;
+
+        // 1. 초기 렌더링
+        function initApp() {
+            renderTimeline();
+            updateFlashcard();
+            updateQuiz();
+        }
+
+        // 탭 전환
+        function switchTab(tabName) {
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.view-section').forEach(sec => sec.classList.remove('active'));
+            
+            event.currentTarget.classList.add('active');
+            document.getElementById(`${tabName}-view`).classList.add('active');
+        }
+
+        // 데이터 셔플 기능 (FAB 작동 전용)
+        function shuffleData() {
+            for (let i = currentData.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [currentData[i], currentData[j]] = [currentData[j], currentData[i]];
+            }
+            alert("🎯 사건 데이터가 무작위로 섞였습니다. 연표/카드/퀴즈에서 실력을 확인해 보세요!");
+            currentCardIndex = 0;
+            currentQuizIndex = 0;
+            renderTimeline();
+            updateFlashcard();
+            updateQuiz();
+        }
+
+        // 2. 연표 구현부
+        function renderTimeline() {
+            const container = document.getElementById('timeline-container');
+            container.innerHTML = '';
+            
+            currentData.forEach(item => {
+                const html = `
+                    <div class="timeline-item">
+                        <div class="timeline-dot"></div>
+                        <div class="card">
+                            <div class="card-header">
+                                <span class="badge-index">순번 ${item[0]}</span>
+                                <span class="badge-type">${item[2]}</span>
+                            </div>
+                            <h3 class="event-title">${item[1]}</h3>
+                            <div class="event-nations">
+                                <span class="material-icons-round" style="font-size: 16px;">public</span>
+                                <span>${item[3]}</span>
+                            </div>
+                            <div class="event-content">${item[4] || "세부 내용 준비 중"}</div>
+                        </div>
+                    </div>
+                `;
+                container.innerHTML += html;
+            });
+        }
+
+        function filterTimeline() {
+            const query = document.getElementById('search-input').value.toLowerCase();
+            const filtered = currentData.filter(item => {
+                return item[1].toLowerCase().includes(query) || 
+                       item[2].toLowerCase().includes(query) || 
+                       item[3].toLowerCase().includes(query) || 
+                       item[4].toLowerCase().includes(query);
+            });
+            
+            const container = document.getElementById('timeline-container');
+            container.innerHTML = '';
+            filtered.forEach(item => {
+                // 상단 구조와 동일하게 필터링 적용
+                const html = `
+                    <div class="timeline-item">
+                        <div class="timeline-dot"></div>
+                        <div class="card">
+                            <div class="card-header">
+                                <span class="badge-index">순번 ${item[0]}</span>
+                                <span class="badge-type">${item[2]}</span>
+                            </div>
+                            <h3 class="event-title">${item[1]}</h3>
+                            <div class="event-nations"><span class="material-icons-round" style="font-size:16px;">public</span>${item[3]}</div>
+                            <div class="event-content">${item[4] || "내용 없음"}</div>
+                        </div>
+                    </div>`;
+                container.innerHTML += html;
+            });
+        }
+
+        // 3. 플래시카드 구현부
+        function updateFlashcard() {
+            const item = currentData[currentCardIndex];
+            document.getElementById('flashcard').classList.remove('flipped');
+            
+            setTimeout(() => {
+                document.getElementById('fc-index').innerText = `순서 번호: ${item[0]}`;
+                document.getElementById('fc-title').innerText = item[1];
+                document.getElementById('fc-type').innerText = item[2];
+                document.getElementById('fc-nations').innerHTML = `<span class="material-icons-round" style="font-size:16px;">public</span> ${item[3]}`;
+                document.getElementById('fc-content').innerText = item[4] || "세부 특징 요약 없음";
+                document.getElementById('fc-progress').innerText = `${currentCardIndex + 1} / ${currentData.length}`;
+            }, 150);
+        }
+
+        function toggleCard() {
+            document.getElementById('flashcard').classList.toggle('flipped');
+        }
+
+        function nextCard() {
+            if(currentCardIndex < currentData.length - 1) {
+                currentCardIndex++;
+                updateFlashcard();
+            }
+        }
+
+        function prevCard() {
+            if(currentCardIndex > 0) {
+                currentCardIndex--;
+                updateFlashcard();
+            }
+        }
+
+        // 4. 타이핑 주관식 퀴즈 구현부
+        function updateQuiz() {
+            const item = currentData[currentQuizIndex];
+            document.getElementById('quiz-type').innerText = item[2];
+            document.getElementById('quiz-hint-content').innerText = item[4] || "내용 힌트가 없습니다. 사건 이름 자체를 유추하세요.";
+            document.getElementById('quiz-hint-nations').innerHTML = `<span class="material-icons-round" style="font-size:16px;">public</span> 관련 주체: ${item[3]}`;
+            document.getElementById('quiz-progress').innerText = `${currentQuizIndex + 1} / ${currentData.length}`;
+            
+            const feedback = document.getElementById('quiz-feedback');
+            feedback.style.display = 'none';
+            feedback.className = 'quiz-feedback';
+            document.getElementById('quiz-input').value = '';
+        }
+
+        function checkQuizAnswer() {
+            const userAnswer = document.getElementById('quiz-input').value.replace(/\s+/g, '').toLowerCase();
+            const correctRealAnswer = currentData[currentQuizIndex][1];
+            const answerClean = correctRealAnswer.replace(/\s+/g, '').toLowerCase();
+
+            const feedback = document.getElementById('quiz-feedback');
+            
+            if(userAnswer === answerClean || answerClean.includes(userAnswer) && userAnswer.length > 1) {
+                feedback.innerText = `⭕ 정답입니다! 정답 명칭: ${correctRealAnswer}`;
+                feedback.className = 'quiz-feedback correct';
+            } else {
+                feedback.innerText = `❌ 틀렸습니다! 정답은 [ ${correctRealAnswer} ] 입니다.`;
+                feedback.className = 'quiz-feedback wrong';
+            }
+        }
+
+        function handleKeyPress(e) {
+            if(e.key === 'Enter') {
+                checkQuizAnswer();
+            }
+        }
+
+        function nextQuiz() {
+            if(currentQuizIndex < currentData.length - 1) {
+                currentQuizIndex++;
+            } else {
+                currentQuizIndex = 0; // 한바퀴 다 돌면 처음으로
+            }
+            updateQuiz();
+        }
+
+        // 실행
+        window.onload = initApp;
+    </script>
+</body>
+</html>
+
