@@ -3,31 +3,28 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>제발 한국사 만점! - 근현대사 암기 앱</title>
+    <title>고1 지필 만점 타겟 - 한국사 근현대사 마스터</title>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
     <style>
         :root {
-            /* Material You Dynamic Colors (Indigo/Lavender Base) */
-            --md-sys-color-primary: #4f5baf;
+            --md-sys-color-primary: #3f51b5;
             --md-sys-color-on-primary: #ffffff;
-            --md-sys-color-primary-container: #e0e0ff;
-            --md-sys-color-on-primary-container: #051065;
-            --md-sys-color-secondary: #5b5d72;
-            --md-sys-color-on-secondary: #ffffff;
-            --md-sys-color-secondary-container: #e0e1f9;
-            --md-sys-color-on-secondary-container: #181a2c;
-            --md-sys-color-background: #fefbff;
-            --md-sys-color-on-background: #1b1b1f;
-            --md-sys-color-surface: #fbf8fd;
-            --md-sys-color-on-surface: #1b1b1f;
-            --md-sys-color-surface-variant: #e3e1ec;
-            --md-sys-color-on-surface-variant: #46464f;
-            --md-sys-color-outline: #777680;
+            --md-sys-color-primary-container: #e8eaf6;
+            --md-sys-color-on-primary-container: #1a237e;
+            --md-sys-color-secondary: #009688;
+            --md-sys-color-secondary-container: #e0f2f1;
+            --md-sys-color-on-secondary-container: #004d40;
+            --md-sys-color-background: #fbfbfd;
+            --md-sys-color-surface: #ffffff;
+            --md-sys-color-surface-variant: #f1f3f4;
+            --md-sys-color-on-surface-variant: #5f6368;
+            --md-sys-color-error: #d32f2f;
+            --md-sys-color-error-container: #fdecea;
             --md-shape-corner-medium: 12px;
-            --md-shape-corner-large: 28px;
+            --md-shape-corner-large: 24px;
             --md-shape-corner-full: 9999px;
-            --transition-bounce: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            --transition-smooth: all 0.25s ease;
         }
 
         * {
@@ -40,48 +37,49 @@
         body {
             font-family: 'Noto Sans KR', sans-serif;
             background-color: var(--md-sys-color-background);
-            color: var(--md-sys-color-on-background);
-            line-height: 1.5;
-            padding-bottom: 80px;
+            color: #202124;
+            padding-bottom: 60px;
         }
 
-        /* Top App Bar */
         header {
             background-color: var(--md-sys-color-surface);
             padding: 16px;
             position: sticky;
             top: 0;
             z-index: 100;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+        }
+
+        .header-top {
             display: flex;
-            flex-direction: column;
-            gap: 12px;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
         }
 
         .header-title {
             display: flex;
             align-items: center;
             gap: 8px;
-            font-size: 20px;
+            font-size: 18px;
             font-weight: 700;
             color: var(--md-sys-color-primary);
         }
 
-        /* Material 3 Segmented Buttons (Tabs) */
         .tab-container {
             display: flex;
             background-color: var(--md-sys-color-surface-variant);
             border-radius: var(--md-shape-corner-full);
             padding: 4px;
-            overflow: hidden;
+            gap: 4px;
         }
 
         .tab-btn {
             flex: 1;
             border: none;
             background: none;
-            padding: 10px 4px;
-            font-size: 14px;
+            padding: 10px 2px;
+            font-size: 13px;
             font-weight: 500;
             color: var(--md-sys-color-on-surface-variant);
             cursor: pointer;
@@ -89,19 +87,18 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 6px;
-            transition: var(--transition-bounce);
+            gap: 4px;
+            transition: var(--transition-smooth);
         }
 
         .tab-btn.active {
-            background-color: var(--md-sys-color-primary-container);
-            color: var(--md-sys-color-on-primary-container);
+            background-color: var(--md-sys-color-primary);
+            color: var(--md-sys-color-on-primary);
         }
 
-        /* Content Container */
         main {
             padding: 16px;
-            max-width: 800px;
+            max-width: 650px;
             margin: 0 auto;
         }
 
@@ -113,332 +110,244 @@
             display: block;
         }
 
-        /* 1. Timeline View */
-        .search-box {
-            display: flex;
-            align-items: center;
-            background-color: var(--md-sys-color-surface-variant);
-            border-radius: var(--md-shape-corner-large);
-            padding: 0 16px;
-            margin-bottom: 16px;
-        }
-
-        .search-box input {
-            border: none;
-            background: none;
-            width: 100%;
-            padding: 14px 8px;
-            font-size: 16px;
-            outline: none;
-            color: var(--md-sys-color-on-surface-variant);
-        }
-
-        .timeline {
-            position: relative;
-            padding-left: 20px;
-            border-left: 2px solid var(--md-sys-color-primary-container);
-        }
-
-        .timeline-item {
-            position: relative;
-            margin-bottom: 20px;
-        }
-
-        .timeline-dot {
-            position: absolute;
-            left: -27px;
-            top: 4px;
-            width: 12px;
-            height: 12px;
-            border-radius: 50%;
-            background-color: var(--md-sys-color-primary);
-            border: 3px solid var(--md-sys-color-background);
-        }
-
-        .card {
+        /* 공통 스타일 카드 */
+        .m3-card {
             background-color: var(--md-sys-color-surface);
-            border: 1px solid var(--md-sys-color-surface-variant);
+            border: 1px solid #e0e0e0;
             border-radius: var(--md-shape-corner-medium);
             padding: 16px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+            margin-bottom: 16px;
+            position: relative;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.02);
         }
 
-        .card-header {
+        .card-meta {
             display: flex;
             justify-content: space-between;
-            align-items: flex-start;
-            margin-bottom: 8px;
+            align-items: center;
+            margin-bottom: 10px;
         }
 
-        .badge-index {
+        .badge {
+            font-size: 11px;
+            padding: 3px 8px;
+            border-radius: var(--md-shape-corner-full);
+            font-weight: 500;
+        }
+
+        .badge-index { background-color: var(--md-sys-color-primary-container); color: var(--md-sys-color-on-primary-container); }
+        .badge-type { background-color: var(--md-sys-color-secondary-container); color: var(--md-sys-color-on-secondary-container); }
+
+        .btn-bookmark {
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: #757575;
+            display: flex;
+            align-items: center;
+        }
+
+        .btn-bookmark.active {
+            color: #fbc02d;
+        }
+
+        /* 단답형 지필 평가 모드 */
+        .quiz-instruction {
+            font-size: 15px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            color: #1a1a1a;
+        }
+
+        .quiz-box {
+            background-color: #f8f9fa;
+            padding: 14px;
+            border-radius: 8px;
+            margin-bottom: 16px;
+            border-left: 4px solid var(--md-sys-color-primary);
+            font-size: 15px;
+        }
+
+        .input-wrapper {
+            display: flex;
+            gap: 8px;
+        }
+
+        .m3-input {
+            flex: 1;
+            padding: 12px;
+            border: 2px solid #bdc1c6;
+            border-radius: 8px;
+            font-size: 15px;
+            outline: none;
+        }
+
+        .m3-input:focus {
+            border-color: var(--md-sys-color-primary);
+        }
+
+        .m3-btn {
+            background-color: var(--md-sys-color-primary);
+            color: var(--md-sys-color-on-primary);
+            border: none;
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-weight: 500;
+            cursor: pointer;
+        }
+
+        .feedback-box {
+            margin-top: 12px;
+            padding: 12px;
+            border-radius: 8px;
+            font-weight: 500;
+            display: none;
+        }
+
+        .feedback-box.correct { display: block; background-color: #e6f4ea; color: #137333; }
+        .feedback-box.wrong { display: block; background-color: var(--md-sys-color-error-container); color: var(--md-sys-color-error); }
+
+        /* 드래그 앤 드롭 순서 배열 모드 */
+        .drag-container {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin: 16px 0;
+        }
+
+        .drag-item {
+            background-color: var(--md-sys-color-surface);
+            border: 2px dashed #bdc1c6;
+            padding: 14px;
+            border-radius: 8px;
+            cursor: grab;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            user-select: none;
+            transition: var(--transition-smooth);
+        }
+
+        .drag-item:active { cursor: grabbing; }
+        .drag-item.dragging {
+            opacity: 0.5;
             background-color: var(--md-sys-color-primary-container);
-            color: var(--md-sys-color-on-primary-container);
-            padding: 2px 8px;
+        }
+
+        .drag-handle {
+            color: #757575;
+            display: flex;
+            align-items: center;
+        }
+
+        /* 오답노트 필터 스위치 */
+        .filter-wrapper {
+            display: flex;
+            justify-content: flex-end;
+            margin-bottom: 12px;
+        }
+        
+        .btn-filter-toggle {
+            background-color: #f1f3f4;
+            border: 1px solid #dadce0;
+            padding: 6px 12px;
             border-radius: var(--md-shape-corner-full);
             font-size: 12px;
-            font-weight: 700;
-        }
-
-        .badge-type {
-            background-color: var(--md-sys-color-secondary-container);
-            color: var(--md-sys-color-on-secondary-container);
-            padding: 2px 8px;
-            border-radius: var(--md-shape-corner-full);
-            font-size: 12px;
-        }
-
-        .event-title {
-            font-size: 18px;
-            font-weight: 700;
-            margin-bottom: 6px;
-        }
-
-        .event-nations {
-            font-size: 13px;
-            color: var(--md-sys-color-outline);
-            margin-bottom: 8px;
+            cursor: pointer;
             display: flex;
             align-items: center;
             gap: 4px;
         }
 
-        .event-content {
-            font-size: 14px;
-            color: var(--md-sys-color-on-surface-variant);
-            background: #f5f3f7;
-            padding: 10px;
-            border-radius: 8px;
+        .btn-filter-toggle.active {
+            background-color: #fff9c4;
+            border-color: #fbc02d;
         }
 
-        /* 2. Flashcard View */
-        .flashcard-wrapper {
-            perspective: 1000px;
-            width: 100%;
-            height: 320px;
-            margin: 20px 0;
-            cursor: pointer;
-        }
-
-        .flashcard {
-            width: 100%;
-            height: 100%;
-            position: relative;
-            transform-style: preserve-3d;
-            transition: transform 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        }
-
-        .flashcard.flipped {
-            transform: rotateY(180deg);
-        }
-
-        .card-face {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            backface-visibility: hidden;
-            border-radius: var(--md-shape-corner-large);
-            padding: 24px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-            box-shadow: 0 8px 16px rgba(0,0,0,0.06);
-            border: 2px solid var(--md-sys-color-primary-container);
-        }
-
-        .card-front {
-            background-color: var(--md-sys-color-primary-container);
-            color: var(--md-sys-color-on-primary-container);
-        }
-
-        .card-back {
-            background-color: var(--md-sys-color-surface);
-            color: var(--md-sys-color-on-surface);
-            transform: rotateY(180deg);
-        }
-
-        .card-controls {
+        .control-panel {
             display: flex;
             justify-content: space-between;
             align-items: center;
             margin-top: 16px;
-        }
-
-        .btn-action {
-            background-color: var(--md-sys-color-primary);
-            color: var(--md-sys-color-on-primary);
-            border: none;
-            padding: 12px 24px;
-            border-radius: var(--md-shape-corner-full);
-            font-weight: 500;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            cursor: pointer;
-        }
-
-        /* 3. Quiz View */
-        .quiz-card {
-            background-color: var(--md-sys-color-surface);
-            padding: 20px;
-            border-radius: var(--md-shape-corner-large);
-            border: 1px solid var(--md-sys-color-surface-variant);
-            margin-bottom: 16px;
-        }
-
-        .quiz-hint {
-            background: var(--md-sys-color-secondary-container);
-            color: var(--md-sys-color-on-secondary-container);
-            padding: 12px;
-            border-radius: var(--md-shape-corner-medium);
-            margin-bottom: 16px;
-            font-size: 15px;
-        }
-
-        .quiz-input-group {
-            display: flex;
-            gap: 8px;
-            margin-bottom: 12px;
-        }
-
-        .quiz-input-group input {
-            flex: 1;
-            padding: 14px;
-            border: 2px solid var(--md-sys-color-outline);
-            border-radius: var(--md-shape-corner-medium);
-            font-size: 16px;
-            outline: none;
-        }
-
-        .quiz-input-group input:focus {
-            border-color: var(--md-sys-color-primary);
-        }
-
-        .quiz-feedback {
-            padding: 12px;
-            border-radius: var(--md-shape-corner-medium);
-            display: none;
-            font-weight: 500;
-        }
-
-        .quiz-feedback.correct {
-            display: block;
-            background-color: #e8f5e9;
-            color: #2e7d32;
-        }
-
-        .quiz-feedback.wrong {
-            display: block;
-            background-color: #ffebee;
-            color: #c62828;
-        }
-
-        /* Floating Action Button for Shuffle */
-        .fab {
-            position: fixed;
-            bottom: 24px;
-            right: 24px;
-            background-color: var(--md-sys-color-primary-container);
-            color: var(--md-sys-color-on-primary-container);
-            border: none;
-            width: 56px;
-            height: 56px;
-            border-radius: var(--md-shape-corner-medium);
-            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: var(--transition-bounce);
-            z-index: 99;
-        }
-
-        .fab:active {
-            transform: scale(0.9);
         }
     </style>
 </head>
 <body>
 
     <header>
-        <div class="header-title">
-            <span class="material-icons-round">auto_stories</span>
-            <span>제발 한국사 만점!</span>
+        <div class="header-top">
+            <div class="header-title">
+                <span class="material-icons-round">fact_check</span>
+                <span>고1 한국사 지필평가 완벽 대비</span>
+            </div>
+            <button class="btn-filter-toggle" id="global-filter-btn" onclick="toggleMoruFilter()">
+                <span class="material-icons-round" style="font-size:16px;">star_border</span>
+                <span id="filter-text">내가 모르는 것만 보기 (0)</span>
+            </button>
         </div>
         <div class="tab-container">
-            <button class="tab-btn active" onclick="switchTab('timeline')">
-                <span class="material-icons-round">format_list_numbered</span>연표 흐름
+            <button class="tab-btn active" onclick="switchTab('short')">
+                <span class="material-icons-round">edit</span>단답형 키워드
             </button>
-            <button class="tab-btn" onclick="switchTab('flashcard')">
-                <span class="material-icons-round">style</span>플래시카드
+            <button class="tab-btn" onclick="switchTab('order')">
+                <span class="material-icons-round">low_priority</span>순서 배열(드래그)
             </button>
-            <button class="tab-btn" onclick="switchTab('quiz')">
-                <span class="material-icons-round">extension</span>초성/내용 퀴즈
+            <button class="tab-btn" onclick="switchTab('list')">
+                <span class="material-icons-round">view_list</span>전체 연표/체크
             </button>
         </div>
     </header>
 
     <main>
-        <section id="timeline-view" class="view-section active">
-            <div class="search-box">
-                <span class="material-icons-round">search</span>
-                <input type="text" id="search-input" placeholder="사건명, 관련 국가, 내용 검색..." oninput="filterTimeline()">
-            </div>
-            <div class="timeline" id="timeline-container"></div>
-        </section>
-
-        <section id="flashcard-view" class="view-section">
-            <p style="text-align: center; color: var(--md-sys-color-outline); font-size: 14px;">카드를 누르면 내용이 뒤집힙니다.</p>
-            <div class="flashcard-wrapper" onclick="toggleCard()">
-                <div class="flashcard" id="flashcard">
-                    <div class="card-face card-front">
-                        <span class="badge-index" id="fc-index" style="margin-bottom: 12px;"></span>
-                        <h2 id="fc-title" style="font-size: 24px; font-weight: 700;">사건명</h2>
-                    </div>
-                    <div class="card-face card-back">
-                        <span class="badge-type" id="fc-type" style="margin-bottom: 8px;"></span>
-                        <div id="fc-nations" class="event-nations"></div>
-                        <p id="fc-content" class="event-content" style="width: 100%; font-size: 16px;"></p>
-                    </div>
+        <section id="short-view" class="view-section active">
+            <div class="m3-card">
+                <div class="card-meta">
+                    <span class="badge badge-type" id="short-type">분류</span>
+                    <button class="btn-bookmark" id="short-bookmark-btn" onclick="toggleBookmarkCurrent('short')">
+                        <span class="material-icons-round">star_border</span>
+                    </button>
                 </div>
-            </div>
-            <div class="card-controls">
-                <button class="btn-action" style="background: transparent; color: var(--md-sys-color-primary);" onclick="prevCard()">이전</button>
-                <span id="fc-progress" style="font-weight: 500;">1 / 84</span>
-                <button class="btn-action" onclick="nextCard()">다음</button>
-            </div>
-        </section>
-
-        <section id="quiz-view" class="view-section">
-            <div class="quiz-card">
-                <div style="display: flex; justify-content: space-between; margin-bottom: 12px;">
-                    <span class="badge-type" id="quiz-type">분류</span>
-                    <span id="quiz-progress" style="font-size: 14px; font-weight: 500;"></span>
-                </div>
-                <h3>💡 아래 내용을 보고 사건명을 맞추세요!</h3>
-                <div class="quiz-hint" id="quiz-hint-content" style="margin-top: 12px;">힌트 내용</div>
-                <div class="event-nations" id="quiz-hint-nations"></div>
+                <div class="quiz-instruction">❓ 제시된 단서를 보고 알맞은 사건/조약명을 쓰시오.</div>
+                <div class="quiz-box" id="short-hint">핵심 힌트 내용</div>
+                <div style="font-size: 13px; color:#5f6368; margin-bottom:12px;" id="short-nations"></div>
                 
-                <div class="quiz-input-group">
-                    <input type="text" id="quiz-input" placeholder="정답 입력 (공백/문장부호 무시)" onkeypress="handleKeyPress(event)">
-                    <button class="btn-action" onclick="checkQuizAnswer()">확인</button>
+                <div class="input-wrapper">
+                    <input type="text" id="short-input" class="m3-input" placeholder="정답을 입력하세요 (띄어쓰기 무관)" onkeypress="handleShortKey(event)">
+                    <button class="m3-btn" onclick="checkShortAnswer()">제출</button>
                 </div>
-                <div class="quiz-feedback" id="quiz-feedback">결과 메세지</div>
+                <div class="feedback-box" id="short-feedback">결과 출력창</div>
             </div>
-            <div style="display: flex; justify-content: flex-end;">
-                <button class="btn-action" onclick="nextQuiz()">패스 / 다음 문제</button>
+            <div class="control-panel">
+                <span id="short-progress" style="font-size:13px; color:#5f6368;">1 / 84</span>
+                <button class="m3-btn" style="background-color:#5f6368;" onclick="nextShortQuestion()">다음 문제 ▶</button>
             </div>
+        </section>
+
+        <section id="order-view" class="view-section">
+            <div class="m3-card" style="margin-bottom: 8px;">
+                <div class="quiz-instruction">⏳ 다음 제시된 4개의 사건을 일어난 시간 순서대로 배열하시오.</div>
+                <p style="font-size:12px; color:#5f6368;">마우스나 손가락으로 드래그하여 위아래 순서를 바꾼 뒤 확인을 누르세요.</p>
+            </div>
+            
+            <div class="drag-container" id="drag-space">
+                </div>
+
+            <div class="feedback-box" id="order-feedback" style="margin-bottom: 16px;">배열 결과 창</div>
+
+            <div class="control-panel">
+                <button class="m3-btn" style="background-color:#5f6368;" onclick="generateOrderQuestion()">새 문제 만들기</button>
+                <button class="m3-btn" style="background-color:var(--md-sys-color-secondary);" onclick="checkOrderAnswer()">정답 확인</button>
+            </div>
+        </section>
+
+        <section id="list-view" class="view-section">
+            <div id="list-container"></div>
         </section>
     </main>
 
-    <button class="fab" onclick="shuffleData()" title="사건 순서 무작위 섞기">
-        <span class="material-icons-round">shuffle</span>
-    </button>
-
     <script>
-        // CSV 로우 데이터를 객체 배열로 정제
-        const rawData = [
+        // 보낸 데이터 기반 전체 데이터셋 (1~84)
+        const baseDataset = [
             [1,"제1차 아편전쟁","전쟁/침략/갈등","청, 영국","영국 개항"],
             [2,"제2차 아편전쟁","전쟁/침략/갈등","청, 프랑스, 영국, 러시아","연해주 할양, 프랑스 개항"],
             [3,"양무운동","운동/시위","청","중체서용, 기기국"],
@@ -510,30 +419,81 @@
             [69,"대한국 국제","선언문/문서","조선/대한제국","황제에게 무한한 군권을 집중시키는 전제군주제 명시 전방위 문서"],
             [70,"광무개혁","개혁","조선/대한제국","구본신참(옛 것을 근본으로 새 것을 참고) 원칙 하의 점진적 자주 개혁"],
             [71,"양전 사업","설치/파견/제거","조선/대한제국","정확한 세금 징수와 근대적 토지 소유권 확립을 위한 전국 토지 측량"],
-            [72,"지계 발급 사업","설치/파견/제거","조선/대한제국","양지아문을 설치하여 근대적 토지 소유 증명서인 '지계' 발급 (러일전쟁으로 중단)"],
+            [72,"지계 발급 사업","설치/파견/제거","조선/대한제국","양지아문을 설치하여 근대적 토지 소유 증명서인 '지계' 발급"],
             [73,"파리 만국 박람회","설치/파견/제거","조선/대한제국","대한제국의 독자성과 주권 국가 위상을 알리기 위해 파리 세계박람회에 참가"],
-            [74,"러일 전쟁","전쟁/침략/갈등","조선/대한제국, 일본, 러시아","한반도와 만주의 지배권을 둘러싸고 발발한 제국주의 전쟁, 일본의 선제공격"],
+            [74,"러일 전쟁","전쟁/침략/갈등","조선/대한제국, 일본, 러시아","한반도와 만주의 지배권을 둘러싸고 발발한 제국주의 전쟁"],
             [75,"한일의정서","조약","조선/대한제국, 일본","러일전쟁 중 일본이 군사 전략상 필요한 조선의 영토를 마음대로 사용하도록 강요"],
-            [76,"제1차 한일 협약","조약","조선/대한제국, 일본","고문 정치 시작 - 재정 고문 메가타(화폐정리사업), 외교 고문 스티븐스 초빙"],
+            [76,"제1차 한일 협약","조약","조선/대한제국, 일본","고문 정치 시작 - 재정 고문 메가타, 외교 고문 스티븐스 초빙"],
             [77,"가쓰라/태프트 밀약","조약","일본, 미국","미국의 필리핀 지배와 일본의 대한제국 지배를 상호 묵인한 비밀 협약"],
             [78,"제2차 영일 동맹","조약","일본, 영국","영국의 인도 지배와 일본의 대한제국 독점 지배권을 상호 승인한 조약"],
             [79,"포츠머스 조약","조약","일본, 러시아","러일전쟁 승리 후 러시아가 일본의 한국에 대한 독점적 권리를 최종 승인"],
-            [80,"을사늑약(제2차 한일 협약)","조약","조선/대한제국, 일본","외교권 박탈, 통감부 설치(초대 통감 이토 히로부미) 강제 체결"],
+            [80,"을사늑약(제2차 한일 협약)","조약","조선/대한제국, 일본","외교권 박탈, 통감부 설치 강제 체결"],
             [81,"헤이그 특사","설치/파견/제거","조선/대한제국, 일본","고종이 만국평화회의에 이준·이상설·이위종을 파견하여 을사늑약 무효 폭로 시도"],
-            [82,"고종 강제 퇴위","전쟁/침략/갈등","조선/대한제국, 일본","헤이그 특사 파견을 구실로 삼아 일본이 고종 황제를 강제로 강등 및 퇴위시킴"],
-            [83,"한일 신협약","조약","조선/대한제국, 일본","정미7조약 - 차관 정치 시행(각 부서에 일본인 관리 배치), 한국 군대 해산 규정"],
+            [82,"고종 강제 퇴위","전쟁/침략/갈등","조선/대한제국, 일본","헤이그 특사 파견을 구실로 삼아 일본이 고종 황제를 강제로 퇴위시킴"],
+            [83,"한일 신협약","조약","조선/대한제국, 일본","정미7조약 - 차관 정치 시행(일본인 관리 배치), 한국 군대 해산 규정"],
             [84,"한국 병합 조약","조약","조선/대한제국, 일본","경술국치 - 대한제국의 국권을 완전히 상실하고 일제강점기가 시작됨"]
         ];
 
-        let currentData = [...rawData];
-        let currentCardIndex = 0;
-        let currentQuizIndex = 0;
+        // 모르는 문제 저장용 (배열의 ID값 보관)
+        let moruList = JSON.parse(localStorage.getItem('moruList')) || [];
+        let filterActive = false; // '내가 모르는 것만 보기' 활성화 여부
+        
+        let activeDataset = [...baseDataset];
+        let shortIdx = 0;
+        let currentOrderAnswer = []; // 순서 맞추기 정답 저장용
 
-        // 1. 초기 렌더링
-        function initApp() {
-            renderTimeline();
-            updateFlashcard();
-            updateQuiz();
+        window.onload = function() {
+            updateMoruFilterButtonText();
+            refreshDataset();
+            initShortQuestion();
+            generateOrderQuestion();
+            renderAllList();
+        }
+
+        // 전체 필터 갱신 및 데이터셋 설정
+        function refreshDataset() {
+            if (filterActive) {
+                activeDataset = baseDataset.filter(item => moruList.includes(item[0]));
+            } else {
+                activeDataset = [...baseDataset];
+            }
+        }
+
+        function updateMoruFilterButtonText() {
+            document.getElementById('filter-text').innerText = `내가 모르는 것만 보기 (${moruList.length})`;
+        }
+
+        function toggleMoruFilter() {
+            filterActive = !filterActive;
+            const btn = document.getElementById('global-filter-btn');
+            if (filterActive) {
+                btn.classList.add('active');
+                btn.querySelector('span').innerText = 'star';
+            } else {
+                btn.classList.remove('active');
+                btn.querySelector('span').innerText = 'star_border';
+            }
+            refreshDataset();
+            shortIdx = 0;
+            initShortQuestion();
+            renderAllList();
+        }
+
+        function toggleMoruState(id) {
+            if (moruList.includes(id)) {
+                moruList = moruList.filter(item => item !== id);
+            } else {
+                moruList.push(id);
+            }
+            localStorage.setItem('moruList', JSON.stringify(moruList));
+            updateMoruFilterButtonText();
+            
+            // 현재 화면이 전체보기 리스트인 경우 즉각 UI 변화 반영
+            const icon = document.getElementById(`list-star-${id}`);
+            if (icon) {
+                icon.innerText = moruList.includes(id) ? 'star' : 'star_border';
+                icon.parentElement.classList.toggle('active', moruList.includes(id));
+            }
         }
 
         // 탭 전환
@@ -543,160 +503,203 @@
             
             event.currentTarget.classList.add('active');
             document.getElementById(`${tabName}-view`).classList.add('active');
+
+            if(tabName === 'order') generateOrderQuestion();
         }
 
-        // 데이터 셔플 기능 (FAB 작동 전용)
-        function shuffleData() {
-            for (let i = currentData.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
-                [currentData[i], currentData[j]] = [currentData[j], currentData[i]];
+        // --- 1. 단답형 모드 로직 ---
+        function initShortQuestion() {
+            const fb = document.getElementById('short-feedback');
+            fb.style.display = 'none';
+            document.getElementById('short-input').value = '';
+
+            if (activeDataset.length === 0) {
+                document.getElementById('short-hint').innerText = "선택된 '모르는 것' 항목이 없습니다. 전체 리스트나 퀴즈에서 모르는 사건을 별(★)로 체크해 보세요!";
+                document.getElementById('short-type').innerText = "-";
+                document.getElementById('short-nations').innerText = "";
+                document.getElementById('short-progress').innerText = "0 / 0";
+                return;
             }
-            alert("🎯 사건 데이터가 무작위로 섞였습니다. 연표/카드/퀴즈에서 실력을 확인해 보세요!");
-            currentCardIndex = 0;
-            currentQuizIndex = 0;
-            renderTimeline();
-            updateFlashcard();
-            updateQuiz();
+
+            if (shortIdx >= activeDataset.length) shortIdx = 0;
+            
+            const currentItem = activeDataset[shortIdx];
+            document.getElementById('short-type').innerText = currentItem[2];
+            document.getElementById('short-hint').innerText = currentItem[4] || "세부 힌트가 없습니다. 명칭 자체를 추론해 보세요.";
+            document.getElementById('short-nations').innerText = `🌍 관여 국가/세력: ${currentItem[3]}`;
+            document.getElementById('short-progress').innerText = `${shortIdx + 1} / ${activeDataset.length}`;
+            
+            // 북마크 상태 표시
+            const starBtn = document.getElementById('short-bookmark-btn');
+            if (moruList.includes(currentItem[0])) {
+                starBtn.classList.add('active');
+                starBtn.innerHTML = '<span class="material-icons-round">star</span>';
+            } else {
+                starBtn.classList.remove('active');
+                starBtn.innerHTML = '<span class="material-icons-round">star_border</span>';
+            }
         }
 
-        // 2. 연표 구현부
-        function renderTimeline() {
-            const container = document.getElementById('timeline-container');
-            container.innerHTML = '';
+        function checkShortAnswer() {
+            if (activeDataset.length === 0) return;
+            const userAns = document.getElementById('short-input').value.replace(/\s+/g, '').toLowerCase();
+            const originalAns = activeDataset[shortIdx][1];
+            const cleanAns = originalAns.replace(/\s+/g, '').toLowerCase();
             
-            currentData.forEach(item => {
-                const html = `
-                    <div class="timeline-item">
-                        <div class="timeline-dot"></div>
-                        <div class="card">
-                            <div class="card-header">
-                                <span class="badge-index">순번 ${item[0]}</span>
-                                <span class="badge-type">${item[2]}</span>
-                            </div>
-                            <h3 class="event-title">${item[1]}</h3>
-                            <div class="event-nations">
-                                <span class="material-icons-round" style="font-size: 16px;">public</span>
-                                <span>${item[3]}</span>
-                            </div>
-                            <div class="event-content">${item[4] || "세부 내용 준비 중"}</div>
+            const fb = document.getElementById('short-feedback');
+            
+            if (userAns === cleanAns || (userAns.length > 2 && cleanAns.includes(userAns))) {
+                fb.innerText = `⭕ 정답입니다! [교과서 정식 명칭: ${originalAns}]`;
+                fb.className = "feedback-box correct";
+            } else {
+                fb.innerText = `❌ 오답입니다. 정답은 [ ${originalAns} ] 입니다. (현재 사건을 잘 모른다면 상단 별표를 눌러 보관하세요!)`;
+                fb.className = "feedback-box wrong";
+            }
+        }
+
+        function handleShortKey(e) { if(e.key === 'Enter') checkShortAnswer(); }
+        
+        function nextShortQuestion() {
+            if (activeDataset.length > 0) {
+                shortIdx = (shortIdx + 1) % activeDataset.length;
+            }
+            initShortQuestion();
+        }
+
+        function toggleBookmarkCurrent(mode) {
+            if (activeDataset.length === 0) return;
+            const currentItem = activeDataset[shortIdx];
+            toggleMoruState(currentItem[0]);
+            initShortQuestion(); // UI 리프레시
+        }
+
+
+        // --- 2. 순서 배열 (드래그 앤 드롭) 모드 로직 ---
+        function generateOrderQuestion() {
+            document.getElementById('order-feedback').style.display = 'none';
+            const dragSpace = document.getElementById('drag-space');
+            dragSpace.innerHTML = '';
+
+            // 전체 데이터 중 무작위 4개 선택
+            let pool = [...baseDataset];
+            let selected = [];
+            for(let i=0; i<4; i++) {
+                if(pool.length === 0) break;
+                let rIdx = Math.floor(Math.random() * pool.length);
+                selected.push(pool.splice(rIdx, 1)[0]);
+            }
+
+            // 고유의 진짜 연도/순서 순서로 정답 정렬 (id 순서가 시간 역순)
+            currentOrderAnswer = [...selected].sort((a,b) => a[0] - b[0]).map(item => item[1]);
+
+            // 화면 표시용 무작위 셔플
+            let displayItems = [...selected];
+            displayItems.sort(() => Math.random() - 0.5);
+
+            displayItems.forEach(item => {
+                const div = document.createElement('div');
+                div.className = 'drag-item';
+                div.draggable = true;
+                div.dataset.name = item[1];
+                div.innerHTML = `
+                    <div class="drag-handle"><span class="material-icons-round">drag_indicator</span></div>
+                    <div style="font-weight:500;">${item[1]}</div>
+                `;
+                
+                // 드래그 이벤트 바인딩
+                div.addEventListener('dragstart', () => div.classList.add('dragging'));
+                div.addEventListener('dragend', () => div.classList.remove('dragging'));
+                
+                dragSpace.appendChild(div);
+            });
+
+            // 모바일 터치 대응용 위치 교환 처리 추가
+            initDragAndDropEvents();
+        }
+
+        function initDragAndDropEvents() {
+            const container = document.getElementById('drag-space');
+            container.addEventListener('dragover', e => {
+                e.preventDefault();
+                const afterElement = getDragAfterElement(container, e.clientY);
+                const dragging = document.querySelector('.dragging');
+                if (afterElement == null) {
+                    container.appendChild(dragging);
+                } else {
+                    container.insertBefore(dragging, afterElement);
+                }
+            });
+        }
+
+        function getDragAfterElement(container, y) {
+            const draggableElements = [...container.querySelectorAll('.drag-item:not(.dragging)')];
+            return draggableElements.reduce((closest, child) => {
+                const box = child.getBoundingClientRect();
+                const offset = y - box.top - box.height / 2;
+                if (offset < 0 && offset > closest.offset) {
+                    return { offset: offset, element: child };
+                } else {
+                    return closest;
+                }
+            }, { offset: Number.NEGATIVE_INFINITY }).element;
+        }
+
+        function checkOrderAnswer() {
+            const currentDisplayOrder = [...document.querySelectorAll('.drag-item')].map(el => el.dataset.name);
+            const fb = document.getElementById('order-feedback');
+            
+            let isCorrect = true;
+            for(let i=0; i<4; i++) {
+                if(currentDisplayOrder[i] !== currentOrderAnswer[i]) {
+                    isCorrect = false;
+                    break;
+                }
+            }
+
+            if(isCorrect) {
+                fb.innerText = "⭕ 대단합니다! 지필평가 순서 배열형 완벽 적중입니다.";
+                fb.className = "feedback-box correct";
+            } else {
+                let answerChain = currentOrderAnswer.join(' ➔ ');
+                fb.innerHTML = `❌ 순서가 잘못되었습니다.<br>⏱️ <b>올바른 인과 흐름 순서:</b><br>${answerChain}`;
+                fb.className = "feedback-box wrong";
+            }
+        }
+
+        // --- 3. 전체 리스트 및 단순 오답노트 체크 ---
+        function renderAllList() {
+            const container = document.getElementById('list-container');
+            container.innerHTML = '';
+
+            let listSource = filterActive ? baseDataset.filter(item => moruList.includes(item[0])) : baseDataset;
+
+            if(listSource.length === 0) {
+                container.innerHTML = `<p style="text-align:center; padding:40px 0; color:#757575;">표시할 사건이 없습니다.</p>`;
+                return;
+            }
+
+            listSource.forEach(item => {
+                const isMoru = moruList.includes(item[0]);
+                const card = document.createElement('div');
+                card.className = `m3-card ${isMoru ? 'active' : ''}`;
+                card.style.padding = '12px 16px';
+                card.style.marginBottom = '10px';
+                
+                card.innerHTML = `
+                    <div style="display:flex; justify-content:space-between; align-items:center;">
+                        <div>
+                            <span class="badge badge-index" style="margin-right:4px;">${item[0]}</span>
+                            <strong style="font-size:15px; color:#1a1a1a;">${item[1]}</strong>
+                            <div style="font-size:13px; color:#5f6368; margin-top:4px;">${item[4] || ''}</div>
                         </div>
+                        <button class="btn-bookmark ${isMoru ? 'active' : ''}" onclick="toggleMoruState(${item[0]})">
+                            <span class="material-icons-round" id="list-star-${item[0]}">${isMoru ? 'star' : 'star_border'}</span>
+                        </button>
                     </div>
                 `;
-                container.innerHTML += html;
+                container.appendChild(card);
             });
         }
-
-        function filterTimeline() {
-            const query = document.getElementById('search-input').value.toLowerCase();
-            const filtered = currentData.filter(item => {
-                return item[1].toLowerCase().includes(query) || 
-                       item[2].toLowerCase().includes(query) || 
-                       item[3].toLowerCase().includes(query) || 
-                       item[4].toLowerCase().includes(query);
-            });
-            
-            const container = document.getElementById('timeline-container');
-            container.innerHTML = '';
-            filtered.forEach(item => {
-                // 상단 구조와 동일하게 필터링 적용
-                const html = `
-                    <div class="timeline-item">
-                        <div class="timeline-dot"></div>
-                        <div class="card">
-                            <div class="card-header">
-                                <span class="badge-index">순번 ${item[0]}</span>
-                                <span class="badge-type">${item[2]}</span>
-                            </div>
-                            <h3 class="event-title">${item[1]}</h3>
-                            <div class="event-nations"><span class="material-icons-round" style="font-size:16px;">public</span>${item[3]}</div>
-                            <div class="event-content">${item[4] || "내용 없음"}</div>
-                        </div>
-                    </div>`;
-                container.innerHTML += html;
-            });
-        }
-
-        // 3. 플래시카드 구현부
-        function updateFlashcard() {
-            const item = currentData[currentCardIndex];
-            document.getElementById('flashcard').classList.remove('flipped');
-            
-            setTimeout(() => {
-                document.getElementById('fc-index').innerText = `순서 번호: ${item[0]}`;
-                document.getElementById('fc-title').innerText = item[1];
-                document.getElementById('fc-type').innerText = item[2];
-                document.getElementById('fc-nations').innerHTML = `<span class="material-icons-round" style="font-size:16px;">public</span> ${item[3]}`;
-                document.getElementById('fc-content').innerText = item[4] || "세부 특징 요약 없음";
-                document.getElementById('fc-progress').innerText = `${currentCardIndex + 1} / ${currentData.length}`;
-            }, 150);
-        }
-
-        function toggleCard() {
-            document.getElementById('flashcard').classList.toggle('flipped');
-        }
-
-        function nextCard() {
-            if(currentCardIndex < currentData.length - 1) {
-                currentCardIndex++;
-                updateFlashcard();
-            }
-        }
-
-        function prevCard() {
-            if(currentCardIndex > 0) {
-                currentCardIndex--;
-                updateFlashcard();
-            }
-        }
-
-        // 4. 타이핑 주관식 퀴즈 구현부
-        function updateQuiz() {
-            const item = currentData[currentQuizIndex];
-            document.getElementById('quiz-type').innerText = item[2];
-            document.getElementById('quiz-hint-content').innerText = item[4] || "내용 힌트가 없습니다. 사건 이름 자체를 유추하세요.";
-            document.getElementById('quiz-hint-nations').innerHTML = `<span class="material-icons-round" style="font-size:16px;">public</span> 관련 주체: ${item[3]}`;
-            document.getElementById('quiz-progress').innerText = `${currentQuizIndex + 1} / ${currentData.length}`;
-            
-            const feedback = document.getElementById('quiz-feedback');
-            feedback.style.display = 'none';
-            feedback.className = 'quiz-feedback';
-            document.getElementById('quiz-input').value = '';
-        }
-
-        function checkQuizAnswer() {
-            const userAnswer = document.getElementById('quiz-input').value.replace(/\s+/g, '').toLowerCase();
-            const correctRealAnswer = currentData[currentQuizIndex][1];
-            const answerClean = correctRealAnswer.replace(/\s+/g, '').toLowerCase();
-
-            const feedback = document.getElementById('quiz-feedback');
-            
-            if(userAnswer === answerClean || answerClean.includes(userAnswer) && userAnswer.length > 1) {
-                feedback.innerText = `⭕ 정답입니다! 정답 명칭: ${correctRealAnswer}`;
-                feedback.className = 'quiz-feedback correct';
-            } else {
-                feedback.innerText = `❌ 틀렸습니다! 정답은 [ ${correctRealAnswer} ] 입니다.`;
-                feedback.className = 'quiz-feedback wrong';
-            }
-        }
-
-        function handleKeyPress(e) {
-            if(e.key === 'Enter') {
-                checkQuizAnswer();
-            }
-        }
-
-        function nextQuiz() {
-            if(currentQuizIndex < currentData.length - 1) {
-                currentQuizIndex++;
-            } else {
-                currentQuizIndex = 0; // 한바퀴 다 돌면 처음으로
-            }
-            updateQuiz();
-        }
-
-        // 실행
-        window.onload = initApp;
     </script>
 </body>
 </html>
-
