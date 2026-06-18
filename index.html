@@ -1,172 +1,37 @@
-<!DOCTYPE html>
-<html lang="ko">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Duru - 고촌고 1학년 8반</title>
-    <!-- PWA -->
-    <link rel="manifest" href="./duru-manifest.json">
-    <meta name="theme-color" content="#6366F1">
-    <meta name="mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="Duru">
-    <link rel="apple-touch-icon" href="./duru-icon-192.png">
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
-    <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
-    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
-    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700;900&display=swap" rel="stylesheet">
-    <style>
-        body {
-            font-family: 'Noto Sans KR', sans-serif;
-            background-color: #E5E9F0;
-            color: #1E293B;
-            -webkit-tap-highlight-color: transparent;
-            overflow-x: hidden;
-        }
-        .tactile-card {
-            background: linear-gradient(145deg, #EEF2F6, #D8DFE8);
-            border: 1.5px solid rgba(255,255,255,0.9);
-            box-shadow: 6px 8px 18px rgba(163,177,198,0.55), -6px -6px 18px rgba(255,255,255,0.95), inset 1px 1px 2px rgba(255,255,255,0.9);
-            border-radius: 28px;
-        }
-        .tactile-pill-btn {
-            background: linear-gradient(180deg, #F1F5F9 0%, #D8DFE8 100%);
-            border: 3px solid #CBD5E1;
-            outline: 1.5px solid #F1F5F9;
-            box-shadow: inset 0px 2.5px 5px rgba(0,0,0,0.1), inset 0px -2.5px 5px rgba(255,255,255,0.95), 0px 5px 12px rgba(148,163,184,0.45);
-            border-radius: 9999px;
-            transition: all 0.1s cubic-bezier(0.2,0.8,0.2,1);
-            color: #475569; font-weight: 800;
-            display: inline-flex; align-items: center; justify-content: center; cursor: pointer;
-        }
-        .tactile-pill-btn:hover { background: linear-gradient(180deg,#F8FAFC 0%,#D1D5DB 100%); transform: translateY(-1px); }
-        .tactile-pill-btn:active {
-            background: linear-gradient(180deg,#CBD5E1 0%,#94A3B8 100%);
-            border-color: #94A3B8; box-shadow: inset 0px 4px 8px rgba(0,0,0,0.24); transform: translateY(1.5px); color: #1E293B;
-        }
-        .tactile-pill-btn-primary {
-            background: linear-gradient(180deg,#93C5FD 0%,#2563EB 100%);
-            border: 3px solid #1D4ED8; outline: 1.5px solid #93C5FD;
-            box-shadow: inset 0px 2.5px 5px rgba(0,0,0,0.15), inset 0px -2.5px 5px rgba(255,255,255,0.45), 0px 5px 12px rgba(37,99,235,0.35);
-            border-radius: 9999px; transition: all 0.1s cubic-bezier(0.2,0.8,0.2,1);
-            color: white; font-weight: 800; display: inline-flex; align-items: center; justify-content: center; cursor: pointer;
-        }
-        .tactile-pill-btn-primary:hover:not(:disabled) { background: linear-gradient(180deg,#A1CFFF 0%,#1D4ED8 100%); transform: translateY(-1px); }
-        .tactile-pill-btn-primary:active:not(:disabled) { background: linear-gradient(180deg,#2563EB 0%,#1E3A8A 100%); transform: translateY(1.5px); }
-        .tactile-plate {
-            background: linear-gradient(145deg,#EEF2F6,#D8DFE8);
-            border: 1.5px solid rgba(255,255,255,0.85);
-            box-shadow: 8px 10px 24px rgba(163,177,198,0.55), -8px -8px 24px rgba(255,255,255,0.95), inset 1px 1px 2px rgba(255,255,255,0.9);
-            border-radius: 32px;
-        }
-        .debossed-well {
-            background: #E2E8F0; border-radius: 24px;
-            box-shadow: inset 3.5px 3.5px 8px rgba(163,177,198,0.8), inset -3.5px -3.5px 8px rgba(255,255,255,0.95), 1px 1.5px 2px rgba(255,255,255,0.75);
-            border: 1px solid rgba(255,255,255,0.45);
-        }
-
-        /* ── 모바일 하단 네비게이션 ── */
-        .tactile-nav-container {
-            background: linear-gradient(145deg,#EEF2F6,#D8DFE8);
-            border: 2px solid rgba(255,255,255,0.9);
-            box-shadow: 0px 10px 32px rgba(163,177,198,0.45), inset 1px 1.5px 3px rgba(255,255,255,0.9);
-            border-radius: 40px; transition: all 0.3s cubic-bezier(0.2,0.8,0.2,1);
-        }
-        .tactile-nav-btn {
-            border-radius: 32px; transition: all 0.2s cubic-bezier(0.2,0.8,0.2,1);
-            color: #64748B; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; cursor: pointer;
-        }
-        .tactile-nav-btn-active {
-            background: #E2E8F0;
-            box-shadow: inset 3.5px 3.5px 8px rgba(163,177,198,0.85), inset -3.5px -3.5px 8px rgba(255,255,255,0.95);
-            color: #2563EB; transform: translateY(1.5px);
-        }
-
-        /* ── 데스크톱 사이드바 ── */
-        .sidebar {
-            background: linear-gradient(180deg,#EEF2F6,#D8DFE8);
-            border-right: 1.5px solid rgba(255,255,255,0.9);
-            box-shadow: 4px 0 24px rgba(163,177,198,0.3);
-        }
-        .sidebar-btn {
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            padding: 14px 8px; border-radius: 20px; cursor: pointer;
-            transition: all 0.15s cubic-bezier(0.2,0.8,0.2,1); color: #64748B; gap: 6px;
-        }
-        .sidebar-btn:hover { background: rgba(255,255,255,0.6); color: #1E293B; }
-        .sidebar-btn-active {
-            background: #E2E8F0;
-            box-shadow: inset 3px 3px 7px rgba(163,177,198,0.85), inset -3px -3px 7px rgba(255,255,255,0.95);
-            color: #2563EB; transform: translateY(1px);
-        }
-
-        /* ── 캘린더 셀 ── */
-        .cal-cell {
-            aspect-ratio: 1 / 1;
-            border-radius: 14px;
-            display: flex; flex-direction: column; align-items: center; justify-content: flex-start;
-            padding: 6px 2px 4px; cursor: pointer;
-            transition: all 0.12s cubic-bezier(0.2,0.8,0.2,1);
-            background: rgba(255,255,255,0.5);
-            border: 1.5px solid transparent;
-            position: relative;
-            min-height: 56px;
-        }
-        .cal-cell:hover { background: #FFFFFF; border-color: #CBD5E1; transform: translateY(-1px); }
-        .cal-cell:active { transform: translateY(1px) scale(0.97); }
-        .cal-cell-other { background: transparent; opacity: 0.35; }
-        .cal-cell-today {
-            background: linear-gradient(180deg,#93C5FD 0%,#2563EB 100%);
-            color: #FFF;
-            border: 1.5px solid #1D4ED8;
-            box-shadow: 0 4px 10px rgba(37,99,235,0.35), inset 0 1px 2px rgba(255,255,255,0.4);
-        }
-        .cal-cell-today:hover { background: linear-gradient(180deg,#A1CFFF 0%,#1D4ED8 100%); }
-        .cal-cell-selected {
-            background: #FFFFFF;
-            border: 2px solid #2563EB;
-            box-shadow: 0 4px 12px rgba(37,99,235,0.3);
-        }
-        .cal-dot { width: 6px; height: 6px; border-radius: 50%; }
-
-        .live-badge { display: flex; align-items: center; gap: 6px; background: white; padding: 6px 12px; border-radius: 100px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
-        .pulse-dot { width: 6px; height: 6px; border-radius: 50%; animation: pulse 1.5s infinite; }
-        @keyframes pulse { 0%,100% { opacity:1; } 50% { opacity:0.3; } }
-        @keyframes spin { to { transform: rotate(360deg); } }
-        .hidden-text { max-height:0; opacity:0; margin-top:0; pointer-events:none; }
-    </style>
-</head>
-<body class="selection:bg-blue-100">
-<div id="root"></div>
-
-<script type="text/babel">
-const { useState, useEffect, useRef, useCallback, useMemo } = React;
-
-const Icons = {
-    Home: ({size=22}) => <svg width={size} height={size} fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24"><path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>,
-    Clock: ({size=22}) => <svg width={size} height={size} fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24"><path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>,
-    Meal: ({size=22}) => <svg width={size} height={size} fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24"><path d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>,
-    Class: ({size=22}) => <svg width={size} height={size} fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24"><path d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 002-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>,
-    Calendar: ({size=22}) => <svg width={size} height={size} fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>,
-    Trash: () => <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>,
-    Plus: () => <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>,
-    Alert: () => <svg className="w-12 h-12 text-amber-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>,
-    Refresh: () => <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>,
-    ChevL: () => <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3"><polyline points="15 18 9 12 15 6"/></svg>,
-    ChevR: () => <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3"><polyline points="9 18 15 12 9 6"/></svg>,
-    X: () => <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>,
-};
+import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
+import { initializeApp, getApps } from 'firebase/app';
+import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from 'firebase/auth';
+import { getFirestore, doc, setDoc, addDoc, updateDoc, deleteDoc, collection, onSnapshot } from 'firebase/firestore';
 
 // ── NEIS 설정 ──
 const NEIS_URL   = 'https://open.neis.go.kr/hub';
 const ATPT_CODE  = 'J10';
 const SCHUL_CODE = '7531375';
 const NEIS_KEY   = '4b9aa5aa974e4963ab8714cfb9850e41';
+
+const PERIODS = [
+    { label:'1교시', start:'08:30', end:'09:20' },
+    { label:'2교시', start:'09:30', end:'10:20' },
+    { label:'3교시', start:'10:30', end:'11:20' },
+    { label:'4교시', start:'11:30', end:'12:20' },
+    { label:'5교시', start:'13:10', end:'14:00' },
+    { label:'6교시', start:'14:10', end:'15:00' },
+    { label:'7교시', start:'15:10', end:'16:00' },
+];
+
+// 타임아웃을 지원하는 안전한 fetch 래퍼
+const fetchWithTimeout = async (url, options = {}, timeout = 10000) => {
+    const controller = new AbortController();
+    const id = setTimeout(() => controller.abort(), timeout);
+    try {
+        const response = await fetch(url, { ...options, signal: controller.signal });
+        clearTimeout(id);
+        return response;
+    } catch (error) {
+        clearTimeout(id);
+        throw error;
+    }
+};
 
 async function fetchNEIS(endpoint, params) {
     const qs = Object.entries({ KEY: NEIS_KEY, Type: 'json', pIndex: '1', pSize: '100', ...params })
@@ -178,7 +43,7 @@ async function fetchNEIS(endpoint, params) {
     ];
     for (const u of attempts) {
         try {
-            const res = await fetch(u, { signal: AbortSignal.timeout(10000) });
+            const res = await fetchWithTimeout(u, {}, 10000);
             if (!res.ok) continue;
             const data = await res.json();
             if (data) return data;
@@ -203,41 +68,6 @@ function fmtDate(d) {
     return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
 }
 
-// Firebase
-const fbConfig = {
-    apiKey: "AIzaSyAP8WRXAjmPdmATfWKnCrCRQNH0ftbBV9w",
-    authDomain: "duru108.firebaseapp.com",
-    projectId: "duru108",
-    storageBucket: "duru108.firebasestorage.app",
-    messagingSenderId: "669255987956",
-    appId: "1:669255987956:web:7479e73d084a2faafb24a1"
-};
-if (!firebase.apps.length) {
-    firebase.initializeApp(fbConfig);
-}
-const db   = firebase.firestore();
-const auth = firebase.auth();
-const APP_ID = 'duru-stable-v1';
-const pubCol = col => db.collection('artifacts').doc(APP_ID).collection('public').doc('data').collection(col);
-const privCol = (uid, col) => db.collection('artifacts').doc(APP_ID).collection('users').doc(uid).collection(col);
-
-function vibrate(type) {
-    if (!navigator.vibrate) return;
-    if (type === 'click')   navigator.vibrate(20);
-    if (type === 'success') navigator.vibrate([30,40,30]);
-    if (type === 'delete')  navigator.vibrate([80,50,80]);
-}
-
-const PERIODS = [
-    { label:'1교시', start:'08:30', end:'09:20' },
-    { label:'2교시', start:'09:30', end:'10:20' },
-    { label:'3교시', start:'10:30', end:'11:20' },
-    { label:'4교시', start:'11:30', end:'12:20' },
-    { label:'5교시', start:'13:10', end:'14:00' },
-    { label:'6교시', start:'14:10', end:'15:00' },
-    { label:'7교시', start:'15:10', end:'16:00' },
-];
-
 function getCurrentPeriod() {
     const now = new Date();
     const hhmm = now.getHours() * 60 + now.getMinutes();
@@ -249,8 +79,53 @@ function getCurrentPeriod() {
     return -1;
 }
 
-// ── 메인 앱 ──
-function App() {
+// ── 진동 피드백 ──
+function vibrate(type) {
+    if (!navigator.vibrate) return;
+    if (type === 'click')   navigator.vibrate(20);
+    if (type === 'success') navigator.vibrate([30,40,30]);
+    if (type === 'delete')  navigator.vibrate([80,50,80]);
+}
+
+// ── Neumorphic Icons ──
+const Icons = {
+    Home: ({size=22}) => <svg width={size} height={size} fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24"><path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>,
+    Clock: ({size=22}) => <svg width={size} height={size} fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24"><path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>,
+    Meal: ({size=22}) => <svg width={size} height={size} fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24"><path d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>,
+    Class: ({size=22}) => <svg width={size} height={size} fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24"><path d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 002-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>,
+    Calendar: ({size=22}) => <svg width={size} height={size} fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>,
+    Trash: () => <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>,
+    Plus: () => <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>,
+    Alert: () => <svg className="w-12 h-12 text-amber-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>,
+    Refresh: () => <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>,
+    ChevL: () => <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3"><polyline points="15 18 9 12 15 6"/></svg>,
+    ChevR: () => <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3"><polyline points="9 18 15 12 9 6"/></svg>,
+    X: () => <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>,
+};
+
+// ── Firebase 연동 초기화 ──
+const firebaseConfig = typeof __firebase_config !== 'undefined'
+    ? JSON.parse(__firebase_config)
+    : {
+        apiKey: "AIzaSyAP8WRXAjmPdmATfWKnCrCRQNH0ftbBV9w",
+        authDomain: "duru108.firebaseapp.com",
+        projectId: "duru108",
+        storageBucket: "duru108.firebasestorage.app",
+        messagingSenderId: "669255987956",
+        appId: "1:669255987956:web:7479e73d084a2faafb24a1"
+      };
+
+const app  = !getApps().length ? initializeApp(firebaseConfig) : getApps()[0];
+const auth = getAuth(app);
+const db   = getFirestore(app);
+const appId = typeof __app_id !== 'undefined' ? __app_id : 'duru-stable-v1';
+
+// RULE 1: 지켜야 할 엄격한 수집 경로 정의
+const getPubColRef = (collectionName) => collection(db, 'artifacts', appId, 'public', 'data', collectionName);
+const getPrivColRef = (userId, collectionName) => collection(db, 'artifacts', appId, 'users', userId, collectionName);
+
+export default function App() {
+    const [user, setUser] = useState(null);
     const [activeTab, setActiveTab]       = useState('home');
     const [isLoading, setIsLoading]       = useState(true);
     const [statusText, setStatusText]     = useState('CONNECTING');
@@ -261,8 +136,8 @@ function App() {
     const [announcements, setAnnouncements] = useState([]);
     const [schedules, setSchedules]         = useState([]);
     const [materials, setMaterials]         = useState([]);
-    const [messages, setMessages]           = useState([]); // 학급톡톡 상태
-    const [links, setLinks]                 = useState([]); // 바로가기 버튼 상태
+    const [messages, setMessages]           = useState([]);
+    const [links, setLinks]                 = useState([]);
     const [planner, setPlanner]             = useState([]);
     const [memos, setMemos]                 = useState({});
     const [meals, setMeals]                 = useState({});
@@ -301,16 +176,23 @@ function App() {
     useEffect(() => { memosRef.current      = memos;      }, [memos]);
     useEffect(() => { timetablesRef.current = timetables; }, [timetables]);
 
+    // Google 폰트 강제 로드 및 화면 설정
     useEffect(() => {
-        const handler = () => setIsDesktop(window.innerWidth >= 768);
-        window.addEventListener('resize', handler);
-        return () => window.removeEventListener('resize', handler);
-    }, []);
+        const link = document.createElement('link');
+        link.href = "https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700;900&display=swap";
+        link.rel = "stylesheet";
+        document.head.appendChild(link);
 
-    useEffect(() => {
-        const handler = () => setIsScrolled(window.scrollY > 40);
-        window.addEventListener('scroll', handler);
-        return () => window.removeEventListener('scroll', handler);
+        const resizeHandler = () => setIsDesktop(window.innerWidth >= 768);
+        const scrollHandler = () => setIsScrolled(window.scrollY > 40);
+
+        window.addEventListener('resize', resizeHandler);
+        window.addEventListener('scroll', scrollHandler);
+
+        return () => {
+            window.removeEventListener('resize', resizeHandler);
+            window.removeEventListener('scroll', scrollHandler);
+        };
     }, []);
 
     const setTab = (tab) => {
@@ -320,9 +202,6 @@ function App() {
 
     useEffect(() => {
         if ('Notification' in window) setNotiPerm(Notification.permission);
-        if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('./duru-sw.js').catch(() => {});
-        }
         const handler = (e) => { e.preventDefault(); setInstallPrompt(e); };
         window.addEventListener('beforeinstallprompt', handler);
         return () => window.removeEventListener('beforeinstallprompt', handler);
@@ -331,14 +210,7 @@ function App() {
     const fireNotif = (title, body) => {
         if (!('Notification' in window) || Notification.permission !== 'granted') return;
         const opts = { body, icon: './duru-icon-192.png', badge: './duru-icon-192.png' };
-        if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.getRegistration().then(reg => {
-                if (reg) reg.showNotification(title, opts).catch(() => { try { new Notification(title, opts); } catch(e){} });
-                else { try { new Notification(title, opts); } catch(e){} }
-            }).catch(() => { try { new Notification(title, opts); } catch(e){} });
-        } else {
-            try { new Notification(title, opts); } catch(e) {}
-        }
+        try { new Notification(title, opts); } catch (e) {}
     };
 
     const NOTIF_SCHEDULE = [
@@ -350,6 +222,7 @@ function App() {
         { hhmm: '14:05', type: 'memo', periodIdx: 5 },
         { hhmm: '15:05', type: 'memo', periodIdx: 6 },
     ];
+
     useEffect(() => {
         const tick = () => {
             if (!('Notification' in window) || Notification.permission !== 'granted') return;
@@ -375,30 +248,89 @@ function App() {
         const id = setInterval(tick, 30000);
         tick();
         return () => clearInterval(id);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
+    // ── RULE 3: 선인증 실행 & UI 바인딩 ──
     useEffect(() => {
-        auth.signInAnonymously()
-            .then(() => setStatusText('LIVE'))
-            .catch(() => setStatusText('ERROR'))
-            .finally(() => setIsLoading(false));
+        const initAuth = async () => {
+            try {
+                if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+                    await signInWithCustomToken(auth, __initial_auth_token);
+                } else {
+                    await signInAnonymously(auth);
+                }
+            } catch (e) {
+                console.error("Auth init error:", e);
+                setStatusText('ERROR');
+            } finally {
+                setIsLoading(false);
+            }
+        };
+        initAuth();
 
-        return auth.onAuthStateChanged(user => {
-            if (!user) return;
-            pubCol('announcements').onSnapshot(s => setAnnouncements(s.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>b.at-a.at)));
-            pubCol('schedules').onSnapshot(s => setSchedules(s.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>new Date(a.date)-new Date(b.date))));
-            pubCol('materials').onSnapshot(s => setMaterials(s.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>b.at-a.at)));
-            pubCol('messages').onSnapshot(s => setMessages(s.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>b.at-a.at)));
-            pubCol('links').onSnapshot(s => setLinks(s.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>a.at-b.at)));
-            pubCol('memos').onSnapshot(s => { const t={}; s.docs.forEach(d=>t[d.id]=d.data().content); setMemos(t); });
-            pubCol('meals').onSnapshot(s => { const t={}; s.docs.forEach(d=>t[d.id]=d.data().menu); setMeals(t); });
-            pubCol('timetables').onSnapshot(s => { const t={}; s.docs.forEach(d=>t[d.id]=d.data().periods); setTimetables(t); });
-            privCol(user.uid,'planner').onSnapshot(s => setPlanner(s.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>b.at-a.at)));
+        const unsubscribe = onAuthStateChanged(auth, (u) => {
+            setUser(u);
+            if (u) setStatusText('LIVE');
         });
+        return () => unsubscribe();
     }, []);
+
+    // ── 실시간 데이터 구독 ──
+    useEffect(() => {
+        if (!user) return;
+
+        // RULE 2: 클라이언트 측 정렬/필터링을 위해 단순 수집 후 클라이언트 연산 수행
+        const unsubAnnouncements = onSnapshot(getPubColRef('announcements'), (s) => {
+            setAnnouncements(s.docs.map(d => ({ id: d.id, ...d.data() })).sort((a,b) => b.at - a.at));
+        }, (err) => console.error("Announcements error", err));
+
+        const unsubSchedules = onSnapshot(getPubColRef('schedules'), (s) => {
+            setSchedules(s.docs.map(d => ({ id: d.id, ...d.data() })).sort((a,b) => new Date(a.date) - new Date(b.date)));
+        }, (err) => console.error("Schedules error", err));
+
+        const unsubMaterials = onSnapshot(getPubColRef('materials'), (s) => {
+            setMaterials(s.docs.map(d => ({ id: d.id, ...d.data() })).sort((a,b) => b.at - a.at));
+        }, (err) => console.error("Materials error", err));
+
+        const unsubMessages = onSnapshot(getPubColRef('messages'), (s) => {
+            setMessages(s.docs.map(d => ({ id: d.id, ...d.data() })).sort((a,b) => b.at - a.at));
+        }, (err) => console.error("Messages error", err));
+
+        const unsubLinks = onSnapshot(getPubColRef('links'), (s) => {
+            setLinks(s.docs.map(d => ({ id: d.id, ...d.data() })).sort((a,b) => a.at - b.at));
+        }, (err) => console.error("Links error", err));
+
+        const unsubMemos = onSnapshot(getPubColRef('memos'), (s) => {
+            const t = {}; s.docs.forEach(d => t[d.id] = d.data().content); setMemos(t);
+        }, (err) => console.error("Memos error", err));
+
+        const unsubMeals = onSnapshot(getPubColRef('meals'), (s) => {
+            const t = {}; s.docs.forEach(d => t[d.id] = d.data().menu); setMeals(t);
+        }, (err) => console.error("Meals error", err));
+
+        const unsubTimetables = onSnapshot(getPubColRef('timetables'), (s) => {
+            const t = {}; s.docs.forEach(d => t[d.id] = d.data().periods); setTimetables(t);
+        }, (err) => console.error("Timetables error", err));
+
+        const unsubPlanner = onSnapshot(getPrivColRef(user.uid, 'planner'), (s) => {
+            setPlanner(s.docs.map(d => ({ id: d.id, ...d.data() })).sort((a,b) => b.at - a.at));
+        }, (err) => console.error("Planner error", err));
+
+        return () => {
+            unsubAnnouncements();
+            unsubSchedules();
+            unsubMaterials();
+            unsubMessages();
+            unsubLinks();
+            unsubMemos();
+            unsubMeals();
+            unsubTimetables();
+            unsubPlanner();
+        };
+    }, [user]);
 
     const syncMeal = useCallback(async (dateStr) => {
+        if (!user) return;
         if (synced.current.has('meal_'+dateStr)) return;
         synced.current.add('meal_'+dateStr);
         try {
@@ -408,12 +340,14 @@ function App() {
             });
             const rows = data?.mealServiceDietInfo?.[1]?.row;
             if (rows?.length) {
-                await pubCol('meals').doc(dateStr).set({ menu: parseMealMenu(rows[0].DDISH_NM), at: Date.now() });
+                const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'meals', dateStr);
+                await setDoc(docRef, { menu: parseMealMenu(rows[0].DDISH_NM), at: Date.now() });
             }
         } catch(e) { console.error('급식 조회 실패:', e.message); }
-    }, []);
+    }, [user]);
 
     const syncTimetable = useCallback(async (dateStr) => {
+        if (!user) return;
         if (synced.current.has('tt_'+dateStr)) return;
         synced.current.add('tt_'+dateStr);
 
@@ -442,9 +376,10 @@ function App() {
                     if (!map[ds]) map[ds] = Array(7).fill('-');
                     if (idx >= 0 && idx < 7) map[ds][idx] = sub;
                 });
-                await Promise.all(Object.entries(map).map(([ds, periods]) =>
-                    pubCol('timetables').doc(ds).set({ periods, at: Date.now() })
-                ));
+                await Promise.all(Object.entries(map).map(([ds, periods]) => {
+                    const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'timetables', ds);
+                    return setDoc(docRef, { periods, at: Date.now() });
+                }));
                 setSyncState(p => ({...p, [dateStr]: 'done'}));
             } else {
                 setSyncState(p => ({...p, [dateStr]: 'done'}));
@@ -453,36 +388,33 @@ function App() {
             console.error('시간표 조회 실패:', e.message);
             setSyncState(p => ({...p, [dateStr]: 'error'}));
         }
-    }, []);
+    }, [user]);
 
     useEffect(() => {
-        if (!auth.currentUser) return;
+        if (!user) return;
         syncMeal(mealDate);
-    }, [mealDate, syncMeal]);
+    }, [mealDate, syncMeal, user]);
 
     useEffect(() => {
-        if (!auth.currentUser) return;
+        if (!user) return;
         syncTimetable(ttDate);
-    }, [ttDate, syncTimetable]);
+    }, [ttDate, syncTimetable, user]);
 
     useEffect(() => {
         if (statusText !== 'LIVE') return;
         syncMeal(today);
         syncTimetable(today);
-    }, [statusText]);
+    }, [statusText, today, syncMeal, syncTimetable]);
 
-    // 캘린더에서 날짜 선택 시 해당 날짜 데이터 동기화
     useEffect(() => {
-        if (!selectedDate || !auth.currentUser) return;
+        if (!selectedDate || !user) return;
         syncMeal(selectedDate);
         syncTimetable(selectedDate);
-    }, [selectedDate, syncMeal, syncTimetable]);
+    }, [selectedDate, syncMeal, syncTimetable, user]);
 
-    // 캘린더 탭으로 이동했을 때, 보이는 달의 평일들에 대해 시간표/급식 미리 동기화
     useEffect(() => {
         if (activeTab !== 'cal' || statusText !== 'LIVE') return;
         const last = new Date(calYear, calMonth + 1, 0).getDate();
-        // 평일(월~금)만 prefetch — 부담 줄이기
         for (let day = 1; day <= last; day++) {
             const d = new Date(calYear, calMonth, day);
             const dow = d.getDay();
@@ -500,14 +432,20 @@ function App() {
         vibrate('success');
     };
 
-    const deleteDoc = (col, id, isPrivate=false) => {
+    const handleDelete = (col, id, isPrivate=false) => {
         vibrate('delete');
         setCustomDialog({
             type: 'confirm',
             message: '이 데이터를 영구히 삭제할까요?',
             onConfirm: async () => {
-                const ref = isPrivate ? privCol(auth.currentUser.uid, col) : pubCol(col);
-                await ref.doc(id).delete();
+                try {
+                    const ref = isPrivate
+                        ? doc(db, 'artifacts', appId, 'users', user.uid, col, id)
+                        : doc(db, 'artifacts', appId, 'public', 'data', col, id);
+                    await deleteDoc(ref);
+                } catch(e) {
+                    console.error("삭제 중 오류 발생:", e);
+                }
                 setCustomDialog(null);
             }
         });
@@ -525,59 +463,73 @@ function App() {
     };
 
     const submitModal = async () => {
-        const user = auth.currentUser; if (!user) return;
+        if (!user) return;
         vibrate('success');
         try {
-            if (modalType==='NOTICE') await pubCol('announcements').add({title:val1,content:val2,image:file,at:Date.now()});
-            else if (modalType==='PLAN') await privCol(user.uid,'planner').add({text:val1,done:false,date:today,at:Date.now()});
-            else if (modalType==='SCHED') await pubCol('schedules').add({title:val1,date:val2,at:Date.now()});
-            else if (modalType==='FILE') await pubCol('materials').add({title:val1,subject:val2,file,at:Date.now()});
-            else if (modalType==='MEMO') await pubCol('memos').doc(modalTarget).set({content:val1,at:Date.now()});
-            else if (modalType==='MEAL') await pubCol('meals').doc(modalTarget).set({menu:val1,at:Date.now()});
-            else if (modalType==='TIME') await pubCol('timetables').doc(modalTarget).set({periods:val1.split(',').map(s=>s.trim()),at:Date.now()});
+            if (modalType==='NOTICE') {
+                await addDoc(getPubColRef('announcements'), {title:val1, content:val2, image:file, at:Date.now()});
+            }
+            else if (modalType==='PLAN') {
+                await addDoc(getPrivColRef(user.uid, 'planner'), {text:val1, done:false, date:today, at:Date.now()});
+            }
+            else if (modalType==='SCHED') {
+                await addDoc(getPubColRef('schedules'), {title:val1, date:val2, at:Date.now()});
+            }
+            else if (modalType==='FILE') {
+                await addDoc(getPubColRef('materials'), {title:val1, subject:val2, file, at:Date.now()});
+            }
+            else if (modalType==='MEMO') {
+                const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'memos', modalTarget);
+                await setDoc(docRef, {content:val1, at:Date.now()});
+            }
+            else if (modalType==='MEAL') {
+                const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'meals', modalTarget);
+                await setDoc(docRef, {menu:val1, at:Date.now()});
+            }
+            else if (modalType==='TIME') {
+                const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'timetables', modalTarget);
+                await setDoc(docRef, {periods:val1.split(',').map(s=>s.trim()), at:Date.now()});
+            }
             else if (modalType==='MSG') {
                 if(!val2.trim()) return;
-                await pubCol('messages').add({author:val1.trim()||'익명', content:val2.trim(), at:Date.now()});
+                await addDoc(getPubColRef('messages'), {author:val1.trim()||'익명', content:val2.trim(), at:Date.now()});
             }
             else if (modalType==='LINK') {
                 if(!val1.trim() || !val2.trim()) return;
-                await pubCol('links').add({title:val1.trim(), url:val2.trim(), at:Date.now()});
+                await addDoc(getPubColRef('links'), {title:val1.trim(), url:val2.trim(), at:Date.now()});
             }
-        } catch(e) { console.error(e); }
+        } catch(e) { console.error("제출 중 오류 발생:", e); }
         setShowModal(false);
     };
 
-    // ✨ 날짜 비교 오류 수정 (Timezone 이슈 방지를 위해 연/월/일 분리)
     const dday = (ds) => {
         const [y1, m1, d1] = ds.split('-').map(Number);
         const [y2, m2, d2] = today.split('-').map(Number);
         const targetDate = new Date(y1, m1 - 1, d1);
         const currentDate = new Date(y2, m2 - 1, d2);
-        
         const diffDays = Math.round((targetDate - currentDate) / 86400000);
         return diffDays === 0 ? 'D-Day' : diffDays > 0 ? `D-${diffDays}` : `D+${Math.abs(diffDays)}`;
     };
 
-    const nextSchedule = schedules.find(s => s.date >= today);
+    const nextSchedule = useMemo(() => {
+        return schedules.find(s => s.date >= today);
+    }, [schedules, today]);
+
     const todayTt = timetables[today] || [];
     const curPeriod = getCurrentPeriod();
 
-    // ── 캘린더 그리드 계산 ──
     const calCells = useMemo(() => {
         const first = new Date(calYear, calMonth, 1);
-        const startDow = first.getDay(); // 0=일
+        const startDow = first.getDay();
         const last = new Date(calYear, calMonth + 1, 0).getDate();
         const cells = [];
-        // 앞 패딩 (이전 달 일부)
         for (let i = startDow - 1; i >= 0; i--) {
             const d = new Date(calYear, calMonth, -i);
             cells.push({ date: d, current: false });
         }
-        // 현재 달
         for (let i = 1; i <= last; i++) {
             cells.push({ date: new Date(calYear, calMonth, i), current: true });
         }
-        // 뒤 패딩 (6주 = 42칸)
         while (cells.length < 42) {
             const idx = cells.length - startDow - last + 1;
             cells.push({ date: new Date(calYear, calMonth + 1, idx), current: false });
@@ -603,9 +555,18 @@ function App() {
 
     if (isLoading) return (
         <div className="flex items-center justify-center h-screen bg-[#E5E9F0]">
+            <style dangerouslySetInnerHTML={{__html: `
+                .tactile-plate {
+                    background: linear-gradient(145deg,#EEF2F6,#D8DFE8);
+                    border: 1.5px solid rgba(255,255,255,0.85);
+                    box-shadow: 8px 10px 24px rgba(163,177,198,0.55), -8px -8px 24px rgba(255,255,255,0.95), inset 1px 1px 2px rgba(255,255,255,0.9);
+                    border-radius: 32px;
+                }
+                @keyframes spin { to { transform: rotate(360deg); } }
+            `}} />
             <div className="tactile-plate p-10 flex flex-col items-center gap-6">
                 <div className="relative w-24 h-24 flex items-center justify-center">
-                    <div className="absolute inset-0 rounded-full border-4 border-[#E2E8F0] border-t-[#2563EB] animate-spin"></div>
+                    <div className="absolute inset-0 rounded-full border-4 border-[#E2E8F0] border-t-[#2563EB]" style={{animation: 'spin 1s linear infinite'}}></div>
                     <span className="text-lg font-black text-[#1E293B]">DURU</span>
                 </div>
                 <p className="text-xs font-bold text-slate-500">고촌고 기판 부팅 중...</p>
@@ -613,7 +574,6 @@ function App() {
         </div>
     );
 
-    // ── 탭별 콘텐츠 ──
     const TAB_HOME = (
         <div className="space-y-6">
             <div className={`grid gap-4 ${isDesktop ? 'grid-cols-2' : 'grid-cols-1'}`}>
@@ -646,7 +606,6 @@ function App() {
                 </div>
             </div>
 
-            {/* ✨ 신기능: 바로가기 (서브도메인/외부링크 바로가기 버튼 추가) */}
             <div className="tactile-card p-6">
                 <div className="flex justify-between items-center mb-4">
                     <h2 className="font-[900] text-[20px]">바로가기 🔗</h2>
@@ -658,7 +617,7 @@ function App() {
                             <a href={l.url} target={l.url.startsWith('/') ? '_self' : '_blank'} rel="noopener noreferrer" className="px-4 py-2.5 text-[14px] font-[900] text-slate-700 hover:text-blue-600 transition-colors">
                                 {l.title}
                             </a>
-                            <button onClick={() => deleteDoc('links', l.id)} className="w-8 h-8 flex items-center justify-center text-slate-300 hover:text-red-500 font-black text-lg rounded-full transition-colors pb-0.5">
+                            <button onClick={() => handleDelete('links', l.id)} className="w-8 h-8 flex items-center justify-center text-slate-300 hover:text-red-500 font-black text-lg rounded-full transition-colors pb-0.5">
                                 ×
                             </button>
                         </div>
@@ -689,8 +648,8 @@ function App() {
                         <div key={a.id} className="debossed-well p-5 relative">
                             <h3 className="font-[900] text-[16px] pr-8">{a.title}</h3>
                             <p className="text-[13px] text-slate-600 mt-1 font-[600] leading-relaxed whitespace-pre-wrap">{a.content}</p>
-                            {a.image && <img src={a.image} className="mt-3 rounded-xl max-h-48 object-cover w-full"/>}
-                            <button onClick={() => deleteDoc('announcements', a.id)} className="absolute top-4 right-4 tactile-pill-btn p-1.5 text-red-500" style={{minWidth:28,minHeight:28}}><Icons.Trash/></button>
+                            {a.image && <img src={a.image} alt="알림 이미지" className="mt-3 rounded-xl max-h-48 object-cover w-full"/>}
+                            <button onClick={() => handleDelete('announcements', a.id)} className="absolute top-4 right-4 tactile-pill-btn p-1.5 text-red-500" style={{minWidth:28,minHeight:28}}><Icons.Trash/></button>
                         </div>
                     )) : <p className="text-center text-gray-400 py-4 font-[600]">등록된 공지사항이 없습니다.</p>}
                 </div>
@@ -698,11 +657,9 @@ function App() {
         </div>
     );
 
-    // ── 캘린더 탭 ──
     const DOW_LABEL = ['일','월','화','수','목','금','토'];
     const TAB_CAL = (
         <div className="space-y-4">
-            {/* 월 네비게이션 */}
             <div className="tactile-card p-4 flex items-center justify-between">
                 <button onClick={goPrevMonth} className="tactile-pill-btn w-11 h-11"><Icons.ChevL/></button>
                 <div className="text-center">
@@ -712,15 +669,12 @@ function App() {
                 <button onClick={goNextMonth} className="tactile-pill-btn w-11 h-11"><Icons.ChevR/></button>
             </div>
 
-            {/* 캘린더 그리드 */}
             <div className="tactile-card p-3">
-                {/* 요일 헤더 */}
                 <div className="grid grid-cols-7 mb-2 px-1">
                     {DOW_LABEL.map((d,i) => (
                         <div key={i} className={`text-center text-[11px] font-[900] py-2 ${i===0?'text-red-500':i===6?'text-blue-500':'text-slate-600'}`}>{d}</div>
                     ))}
                 </div>
-                {/* 날짜 */}
                 <div className="grid grid-cols-7 gap-1">
                     {calCells.map((cell, i) => {
                         const ds = fmtDate(cell.date);
@@ -754,7 +708,6 @@ function App() {
                         );
                     })}
                 </div>
-                {/* 범례 */}
                 <div className="mt-3 flex gap-4 justify-center text-[10px] font-bold text-slate-500 flex-wrap">
                     <span className="flex items-center gap-1"><div className="cal-dot" style={{background:'#EF4444'}}></div>학급일정</span>
                     <span className="flex items-center gap-1"><div className="cal-dot" style={{background:'#3B82F6'}}></div>시간표</span>
@@ -762,7 +715,6 @@ function App() {
                 </div>
             </div>
 
-            {/* 이달의 일정 요약 */}
             <div className="tactile-card p-5">
                 <div className="flex items-center justify-between mb-3">
                     <h3 className="font-[900] text-[16px]">{calMonth+1}월 일정 한눈에</h3>
@@ -871,13 +823,13 @@ function App() {
                 <div className="space-y-3">
                     {planner.length ? planner.map(t => (
                         <div key={t.id} className="bg-white border border-slate-200 rounded-[22px] p-4 flex items-center justify-between shadow-sm">
-                            <button onClick={async () => { vibrate('click'); await privCol(auth.currentUser.uid,'planner').doc(t.id).update({done:!t.done}); }} className="flex items-center gap-3 flex-1 text-left">
+                            <button onClick={async () => { vibrate('click'); await updateDoc(doc(db, 'artifacts', appId, 'users', user.uid, 'planner', t.id), {done: !t.done}); }} className="flex items-center gap-3 flex-1 text-left">
                                 <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center text-xs ${t.done ? 'bg-blue-600 border-blue-600 text-white' : 'border-slate-300'}`}>
                                     {t.done ? '✓' : ''}
                                 </div>
                                 <span className={`font-[900] text-[15px] ${t.done ? 'line-through text-gray-400' : ''}`}>{t.text}</span>
                             </button>
-                            <button onClick={() => deleteDoc('planner', t.id, true)} className="text-red-400 p-1 font-bold text-lg">×</button>
+                            <button onClick={() => handleDelete('planner', t.id, true)} className="text-red-400 p-1 font-bold text-lg">×</button>
                         </div>
                     )) : <p className="text-center text-gray-400 py-4 font-bold text-sm">오늘 할 일을 추가하세요.</p>}
                 </div>
@@ -896,7 +848,7 @@ function App() {
                                     <h3 className="font-[900] text-slate-800 text-[15px]">{s.title}</h3>
                                     <p className="text-[12px] text-slate-500 font-bold mt-0.5">{s.date} · <span className="text-blue-600">{dday(s.date)}</span></p>
                                 </div>
-                                <button onClick={() => deleteDoc('schedules', s.id)} className="text-red-500 p-1 font-black text-lg">×</button>
+                                <button onClick={() => handleDelete('schedules', s.id)} className="text-red-500 p-1 font-black text-lg">×</button>
                             </div>
                         )) : <p className="text-center text-gray-400 py-4 font-bold text-sm">일정이 없습니다.</p>}
                     </div>
@@ -915,14 +867,13 @@ function App() {
                                     <p className="text-[12px] text-slate-500 font-bold">{m.subject}</p>
                                     {m.file && <a href={m.file} download={`${m.title}.jpg`} className="inline-block mt-2 bg-white border px-3 py-1 rounded-full text-[11px] font-black text-blue-600">📥 받기</a>}
                                 </div>
-                                <button onClick={() => deleteDoc('materials', m.id)} className="text-red-500 p-1 font-black text-lg shrink-0">×</button>
+                                <button onClick={() => handleDelete('materials', m.id)} className="text-red-500 p-1 font-black text-lg shrink-0">×</button>
                             </div>
                         )) : <p className="text-center text-gray-400 py-4 font-bold text-sm">공유 자료가 없습니다.</p>}
                     </div>
                 </div>
             </div>
 
-            {/* ✨ 신기능: 학급 톡톡 게시판 추가 */}
             <div className="tactile-card p-6 mt-6">
                 <div className="flex justify-between items-center mb-4">
                     <h2 className="text-[20px] font-[900]">학급 톡톡 💬</h2>
@@ -943,7 +894,7 @@ function App() {
                                 </div>
                             </div>
                             <p className="text-[14px] font-[600] text-slate-800 leading-relaxed whitespace-pre-wrap">{m.content}</p>
-                            <button onClick={() => deleteDoc('messages', m.id)} className="absolute top-4 right-4 tactile-pill-btn p-1.5 text-red-400" style={{minWidth:28,minHeight:28}}><Icons.Trash/></button>
+                            <button onClick={() => handleDelete('messages', m.id)} className="absolute top-4 right-4 tactile-pill-btn p-1.5 text-red-400" style={{minWidth:28,minHeight:28}}><Icons.Trash/></button>
                         </div>
                     )) : <p className="text-center text-gray-400 py-6 font-bold text-sm">자유롭게 의견이나 건의사항을 남겨보세요!</p>}
                 </div>
@@ -961,7 +912,6 @@ function App() {
 
     const CONTENT = { home: TAB_HOME, cal: TAB_CAL, time: TAB_TIME, meal: TAB_MEAL, class: TAB_CLASS };
 
-    // ── 선택 날짜 상세 정보 ──
     const selDate = selectedDate;
     const selSchedules = selDate ? schedules.filter(s => s.date === selDate) : [];
     const selTt = selDate ? (timetables[selDate] || []) : [];
@@ -974,6 +924,119 @@ function App() {
 
     return (
         <div className="min-h-screen flex bg-[#E5E9F0]">
+            <style dangerouslySetInnerHTML={{__html: `
+                body {
+                    background-color: #E5E9F0;
+                    color: #1E293B;
+                    font-family: 'Noto Sans KR', sans-serif;
+                    -webkit-tap-highlight-color: transparent;
+                    overflow-x: hidden;
+                    margin: 0;
+                }
+                .tactile-card {
+                    background: linear-gradient(145deg, #EEF2F6, #D8DFE8);
+                    border: 1.5px solid rgba(255,255,255,0.9);
+                    box-shadow: 6px 8px 18px rgba(163,177,198,0.55), -6px -6px 18px rgba(255,255,255,0.95), inset 1px 1px 2px rgba(255,255,255,0.9);
+                    border-radius: 28px;
+                }
+                .tactile-pill-btn {
+                    background: linear-gradient(180deg, #F1F5F9 0%, #D8DFE8 100%);
+                    border: 3px solid #CBD5E1;
+                    outline: 1.5px solid #F1F5F9;
+                    box-shadow: inset 0px 2.5px 5px rgba(0,0,0,0.1), inset 0px -2.5px 5px rgba(255,255,255,0.95), 0px 5px 12px rgba(148,163,184,0.45);
+                    border-radius: 9999px;
+                    transition: all 0.1s cubic-bezier(0.2,0.8,0.2,1);
+                    color: #475569; font-weight: 800;
+                    display: inline-flex; align-items: center; justify-content: center; cursor: pointer;
+                }
+                .tactile-pill-btn:hover { background: linear-gradient(180deg,#F8FAFC 0%,#D1D5DB 100%); transform: translateY(-1px); }
+                .tactile-pill-btn:active {
+                    background: linear-gradient(180deg,#CBD5E1 0%,#94A3B8 100%);
+                    border-color: #94A3B8; box-shadow: inset 0px 4px 8px rgba(0,0,0,0.24); transform: translateY(1.5px); color: #1E293B;
+                }
+                .tactile-pill-btn-primary {
+                    background: linear-gradient(180deg,#93C5FD 0%,#2563EB 100%);
+                    border: 3px solid #1D4ED8; outline: 1.5px solid #93C5FD;
+                    box-shadow: inset 0px 2.5px 5px rgba(0,0,0,0.15), inset 0px -2.5px 5px rgba(255,255,255,0.45), 0px 5px 12px rgba(37,99,235,0.35);
+                    border-radius: 9999px; transition: all 0.1s cubic-bezier(0.2,0.8,0.2,1);
+                    color: white; font-weight: 800; display: inline-flex; align-items: center; justify-content: center; cursor: pointer;
+                }
+                .tactile-pill-btn-primary:hover:not(:disabled) { background: linear-gradient(180deg,#A1CFFF 0%,#1D4ED8 100%); transform: translateY(-1px); }
+                .tactile-pill-btn-primary:active:not(:disabled) { background: linear-gradient(180deg,#2563EB 0%,#1E3A8A 100%); transform: translateY(1.5px); }
+                .tactile-plate {
+                    background: linear-gradient(145deg,#EEF2F6,#D8DFE8);
+                    border: 1.5px solid rgba(255,255,255,0.85);
+                    box-shadow: 8px 10px 24px rgba(163,177,198,0.55), -8px -8px 24px rgba(255,255,255,0.95), inset 1px 1px 2px rgba(255,255,255,0.9);
+                    border-radius: 32px;
+                }
+                .debossed-well {
+                    background: #E2E8F0; border-radius: 24px;
+                    box-shadow: inset 3.5px 3.5px 8px rgba(163,177,198,0.8), inset -3.5px -3.5px 8px rgba(255,255,255,0.95), 1px 1.5px 2px rgba(255,255,255,0.75);
+                    border: 1px solid rgba(255,255,255,0.45);
+                }
+                .tactile-nav-container {
+                    background: linear-gradient(145deg,#EEF2F6,#D8DFE8);
+                    border: 2px solid rgba(255,255,255,0.9);
+                    box-shadow: 0px 10px 32px rgba(163,177,198,0.45), inset 1px 1.5px 3px rgba(255,255,255,0.9);
+                    border-radius: 40px; transition: all 0.3s cubic-bezier(0.2,0.8,0.2,1);
+                }
+                .tactile-nav-btn {
+                    border-radius: 32px; transition: all 0.2s cubic-bezier(0.2,0.8,0.2,1);
+                    color: #64748B; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; cursor: pointer;
+                }
+                .tactile-nav-btn-active {
+                    background: #E2E8F0;
+                    box-shadow: inset 3.5px 3.5px 8px rgba(163,177,198,0.85), inset -3.5px -3.5px 8px rgba(255,255,255,0.95);
+                    color: #2563EB; transform: translateY(1.5px);
+                }
+                .sidebar {
+                    background: linear-gradient(180deg,#EEF2F6,#D8DFE8);
+                    border-right: 1.5px solid rgba(255,255,255,0.9);
+                    box-shadow: 4px 0 24px rgba(163,177,198,0.3);
+                }
+                .sidebar-btn {
+                    display: flex; flex-direction: column; align-items: center; justify-content: center;
+                    padding: 14px 8px; border-radius: 20px; cursor: pointer;
+                    transition: all 0.15s cubic-bezier(0.2,0.8,0.2,1); color: #64748B; gap: 6px;
+                }
+                .sidebar-btn:hover { background: rgba(255,255,255,0.6); color: #1E293B; }
+                .sidebar-btn-active {
+                    background: #E2E8F0;
+                    box-shadow: inset 3px 3px 7px rgba(163,177,198,0.85), inset -3px -3px 7px rgba(255,255,255,0.95);
+                    color: #2563EB; transform: translateY(1px);
+                }
+                .cal-cell {
+                    aspect-ratio: 1 / 1;
+                    border-radius: 14px;
+                    display: flex; flex-direction: column; align-items: center; justify-content: flex-start;
+                    padding: 6px 2px 4px; cursor: pointer;
+                    transition: all 0.12s cubic-bezier(0.2,0.8,0.2,1);
+                    background: rgba(255,255,255,0.5);
+                    border: 1.5px solid transparent;
+                    position: relative;
+                    min-height: 56px;
+                }
+                .cal-cell:hover { background: #FFFFFF; border-color: #CBD5E1; transform: translateY(-1px); }
+                .cal-cell:active { transform: translateY(1px) scale(0.97); }
+                .cal-cell-other { background: transparent; opacity: 0.35; }
+                .cal-cell-today {
+                    background: linear-gradient(180deg,#93C5FD 0%,#2563EB 100%);
+                    color: #FFF;
+                    border: 1.5px solid #1D4ED8;
+                    box-shadow: 0 4px 10px rgba(37,99,235,0.35), inset 0 1px 2px rgba(255,255,255,0.4);
+                }
+                .cal-cell-today:hover { background: linear-gradient(180deg,#A1CFFF 0%,#1D4ED8 100%); }
+                .cal-cell-selected {
+                    background: #FFFFFF;
+                    border: 2px solid #2563EB;
+                    box-shadow: 0 4px 12px rgba(37,99,235,0.3);
+                }
+                .cal-dot { width: 6px; height: 6px; border-radius: 50%; }
+                .live-badge { display: flex; align-items: center; gap: 6px; background: white; padding: 6px 12px; border-radius: 100px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+                .pulse-dot { width: 6px; height: 6px; border-radius: 50%; animation: pulse 1.5s infinite; }
+                @keyframes pulse { 0%,100% { opacity:1; } 50% { opacity:0.3; } }
+                .hidden-text { max-height:0; opacity:0; margin-top:0; pointer-events:none; }
+            `}} />
 
             {/* 데스크톱 사이드바 */}
             {isDesktop && (
@@ -1102,12 +1165,10 @@ function App() {
                                         onChange={e => { const f=e.target.files[0]; if(!f) return; const r=new FileReader(); r.onload=ev=>setFile(ev.target.result); r.readAsDataURL(f); }}/>
                                 </label>
                             </>}
-                            {/* ✨ 학급 톡톡 모달 입력 필드 */}
                             {modalType==='MSG' && <>
                                 <input value={val1} onChange={e=>setVal1(e.target.value)} placeholder="닉네임 (비워두면 익명)" className="w-full debossed-well p-4 text-sm font-bold outline-none"/>
                                 <textarea value={val2} onChange={e=>setVal2(e.target.value)} placeholder="친구들에게 전할 말이나 건의사항을 남겨주세요." className="w-full debossed-well p-4 min-h-[100px] text-sm font-bold resize-none outline-none"/>
                             </>}
-                            {/* ✨ 바로가기 모달 입력 필드 */}
                             {modalType==='LINK' && <>
                                 <input value={val1} onChange={e=>setVal1(e.target.value)} placeholder="버튼 이름 (예: 성적확인)" className="w-full debossed-well p-4 text-sm font-bold outline-none"/>
                                 <input value={val2} onChange={e=>setVal2(e.target.value)} placeholder="연결할 주소 (예: /grades 또는 https://...)" className="w-full debossed-well p-4 text-sm font-bold outline-none"/>
@@ -1127,7 +1188,6 @@ function App() {
                     onClick={() => setSelectedDate(null)}>
                     <div className="tactile-card w-full max-w-lg p-6 m-4 max-h-[85vh] overflow-y-auto"
                         onClick={e => e.stopPropagation()}>
-                        {/* 헤더 */}
                         <div className="flex justify-between items-start mb-5">
                             <div>
                                 <p className="text-[11px] font-[900] text-blue-600 tracking-widest uppercase mb-1">DATE</p>
@@ -1147,7 +1207,7 @@ function App() {
                                 {selSchedules.length ? selSchedules.map(s => (
                                     <div key={s.id} className="bg-white px-3 py-2 rounded-xl flex items-center justify-between shadow-sm">
                                         <span className="font-[900] text-[14px] text-slate-800">{s.title}</span>
-                                        <button onClick={() => deleteDoc('schedules', s.id)} className="text-red-400 text-sm font-black px-1">×</button>
+                                        <button onClick={() => handleDelete('schedules', s.id)} className="text-red-400 text-sm font-black px-1">×</button>
                                     </div>
                                 )) : <p className="text-[12px] text-slate-400 font-bold text-center py-2">등록된 일정이 없습니다.</p>}
                             </div>
@@ -1207,8 +1267,3 @@ function App() {
         </div>
     );
 }
-
-ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
-</script>
-</body>
-</html>
