@@ -2,727 +2,100 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>고1 지필평가 완벽 대비 - 한국사 근현대사 퀴즈</title>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
+    <title>한국사 1등급 최종병기</title>
+    <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        :root {
-            /* 정제된 UI 컬러 테마 */
-            --primary: #3f51b5;
-            --primary-light: #e8eaf6;
-            --primary-dark: #1a237e;
-            --secondary: #009688;
-            --secondary-light: #e0f2f1;
-            --background: #f8f9fa;
-            --surface: #ffffff;
-            --text-main: #202124;
-            --text-sub: #5f6368;
-            --border: #dadce0;
-            --error: #d32f2f;
-            --error-light: #fdecea;
-            --success: #137333;
-            --success-light: #e6f4ea;
-            
-            --radius-main: 16px;
-            --radius-full: 9999px;
-            --shadow: 0 4px 12px rgba(0,0,0,0.05);
-            --transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            -webkit-tap-highlight-color: transparent;
-        }
-
-        body {
-            font-family: 'Noto Sans KR', sans-serif;
-            background-color: var(--background);
-            color: var(--text-main);
-            line-height: 1.6;
-            padding-bottom: 40px;
-        }
-
-        /* 스마트 헤더 영역 */
-        header {
-            background-color: var(--surface);
-            padding: 20px 16px;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
-            border-bottom: 1px solid var(--border);
-        }
-
-        .header-container {
-            max-width: 600px;
-            margin: 0 auto;
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
-        }
-
-        .header-top {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .header-title {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 20px;
-            font-weight: 700;
-            color: var(--primary-dark);
-        }
-
-        /* 상단 모르는 것 전용 토글 토스트/버튼 */
-        .btn-moru-toggle {
-            background-color: var(--background);
-            border: 1px solid var(--border);
-            padding: 8px 16px;
-            border-radius: var(--radius-full);
-            font-size: 13px;
-            font-weight: 500;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            transition: var(--transition);
-        }
-
-        .btn-moru-toggle.active {
-            background-color: #fff9c4;
-            border-color: #fbc02d;
-            color: #f57f17;
-        }
-
-        /* 탭 내비게이션 */
-        .tab-box {
-            display: flex;
-            background-color: var(--background);
-            border-radius: var(--radius-full);
-            padding: 4px;
-            gap: 4px;
-            border: 1px solid var(--border);
-        }
-
-        .tab-item {
-            flex: 1;
-            border: none;
-            background: none;
-            padding: 12px 4px;
-            font-size: 14px;
-            font-weight: 500;
-            color: var(--text-sub);
-            cursor: pointer;
-            border-radius: var(--radius-full);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 6px;
-            transition: var(--transition);
-        }
-
-        .tab-item.active {
-            background-color: var(--primary);
-            color: white;
-            box-shadow: 0 2px 6px rgba(63, 81, 181, 0.3);
-        }
-
-        /* 메인 콘텐츠 구조 */
-        main {
-            padding: 20px 16px;
-            max-width: 632px;
-            margin: 0 auto;
-        }
-
-        .view-section {
-            display: none;
-        }
-
-        .view-section.active {
-            display: block;
-        }
-
-        /* 카드 컴포넌트 */
-        .app-card {
-            background-color: var(--surface);
-            border: 1px solid var(--border);
-            border-radius: var(--radius-main);
-            padding: 24px;
-            margin-bottom: 20px;
-            position: relative;
-            box-shadow: var(--shadow);
-        }
-
-        .card-header-line {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 16px;
-        }
-
-        .badge-container {
-            display: flex;
-            gap: 6px;
-        }
-
-        .badge {
-            font-size: 11px;
-            padding: 4px 10px;
-            border-radius: var(--radius-full);
-            font-weight: 500;
-        }
-
-        .badge-idx { background-color: var(--primary-light); color: var(--primary-dark); }
-        .badge-cat { background-color: var(--secondary-light); color: var(--secondary); }
-
-        .btn-star {
-            background: none;
-            border: none;
-            cursor: pointer;
-            color: #b0bec5;
-            display: flex;
-            align-items: center;
-            transition: var(--transition);
-        }
-
-        .btn-star.active {
-            color: #fbc02d;
-            transform: scale(1.1);
-        }
-
-        /* 단답형 문제 스타일 */
-        .q-title {
-            font-size: 16px;
-            font-weight: 700;
-            margin-bottom: 12px;
-            color: var(--text-main);
-        }
-
-        .q-box {
-            background-color: var(--background);
-            padding: 16px;
-            border-radius: 12px;
-            margin-bottom: 20px;
-            border-left: 4px solid var(--primary);
-            font-size: 15px;
-            color: #333;
-        }
-
-        .input-group {
-            display: flex;
-            gap: 8px;
-        }
-
-        .form-input {
-            flex: 1;
-            padding: 14px;
-            border: 2px solid var(--border);
-            border-radius: 10px;
-            font-size: 15px;
-            outline: none;
-            transition: var(--transition);
-        }
-
-        .form-input:focus {
-            border-color: var(--primary);
-        }
-
-        .action-btn {
-            background-color: var(--primary);
-            color: white;
-            border: none;
-            padding: 14px 24px;
-            border-radius: 10px;
-            font-weight: 500;
-            cursor: pointer;
-            transition: var(--transition);
-        }
-
-        .action-btn:active {
-            transform: scale(0.98);
-        }
-
-        .result-toast {
-            margin-top: 16px;
-            padding: 14px;
-            border-radius: 10px;
-            font-weight: 500;
-            display: none;
-            font-size: 14px;
-        }
-
-        .result-toast.correct { display: block; background-color: var(--success-light); color: var(--success); }
-        .result-toast.wrong { display: block; background-color: var(--error-light); color: var(--error); }
-
-        /* 순서 정렬형 드래그 앤 드롭 영역 */
-        .drag-list {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            margin: 20px 0;
-        }
-
-        .drag-card {
-            background-color: var(--surface);
-            border: 2px dashed var(--border);
-            padding: 16px;
-            border-radius: 12px;
-            cursor: grab;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            transition: var(--transition);
-        }
-
-        .drag-card.dragging {
-            opacity: 0.4;
-            background-color: var(--primary-light);
-            border-color: var(--primary);
-        }
-
-        .drag-icon {
-            color: var(--text-sub);
-            display: flex;
-            align-items: center;
-        }
-
-        /* 하단 내비게이션 바 패널 */
-        .bottom-panel {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-top: 24px;
-        }
-
-        .progress-txt {
-            font-size: 13px;
-            color: var(--text-sub);
-            font-weight: 500;
-        }
+        .view { display: none; }
+        .view.active { display: block; }
+        .hidden-answer { color: transparent; background: #ddd; border-radius: 4px; padding: 2px 8px; cursor: pointer; }
+        .hidden-answer:hover { background: #bbb; }
     </style>
 </head>
-<body>
+<body class="bg-gray-50 text-gray-900 pb-20">
 
-    <header>
-        <div class="header-container">
-            <div class="header-top">
-                <div class="header-title">
-                    <span class="material-icons-round">fact_check</span>
-                    <span>한국사 지필평가 마스터</span>
-                </div>
-                <button class="btn-moru-toggle" id="moru-filter-toggle" onclick="toggleMoruMode()">
-                    <span class="material-icons-round" style="font-size:18px;">star_border</span>
-                    <span id="moru-count-text">모르는 것 골라보기 (0)</span>
-                </button>
-            </div>
-            <div class="tab-box">
-                <button class="tab-item active" onclick="changeTab('short')">
-                    <span class="material-icons-round" style="font-size:18px;">edit</span>단답형 키워드
-                </button>
-                <button class="tab-item" onclick="changeTab('order')">
-                    <span class="material-icons-round" style="font-size:18px;">low_priority</span>순서 맞추기
-                </button>
-                <button class="tab-item" onclick="changeTab('list')">
-                    <span class="material-icons-round" style="font-size:18px;">view_list</span>전체 흐름
-                </button>
-            </div>
+<header class="bg-blue-600 text-white p-6 shadow-lg">
+    <h1 class="text-xl font-bold">한국사 최종 병기</h1>
+</header>
+
+<nav class="flex gap-2 p-2 overflow-x-auto bg-white border-b shadow-sm sticky top-0">
+    <button onclick="showView('timeline')" class="px-4 py-2 bg-blue-100 rounded-full text-sm font-bold">연표</button>
+    <button onclick="showView('treaty')" class="px-4 py-2 bg-blue-100 rounded-full text-sm font-bold">조약테스트</button>
+    <button onclick="showView('mnemonic')" class="px-4 py-2 bg-blue-100 rounded-full text-sm font-bold">암기법</button>
+    <button onclick="showView('person')" class="px-4 py-2 bg-blue-100 rounded-full text-sm font-bold">인물주관식</button>
+    <button onclick="showView('wrong')" class="px-4 py-2 bg-red-100 rounded-full text-sm font-bold">오답노트</button>
+</nav>
+
+<div id="timeline" class="view active p-4">
+    <h2 class="font-bold mb-4">개편된 연표 (겹침 방지)</h2>
+    <div class="bg-white p-4 rounded-xl shadow overflow-x-auto">
+        <div class="h-64 flex items-center gap-12 px-10 relative border-b-4 border-gray-300">
+            <div class="text-center"><div class="w-4 h-4 bg-blue-500 rounded-full mb-2"></div><div class="text-xs">1876<br>강화도</div></div>
+            <div class="text-center"><div class="w-4 h-4 bg-red-500 rounded-full mb-2"></div><div class="text-xs">1882<br>임오군란</div></div>
+            <div class="text-center"><div class="w-4 h-4 bg-blue-500 rounded-full mb-2"></div><div class="text-xs">1884<br>갑신정변</div></div>
+            <div class="text-center"><div class="w-4 h-4 bg-green-500 rounded-full mb-2"></div><div class="text-xs">1894<br>갑오개혁</div></div>
+            <div class="text-center"><div class="w-4 h-4 bg-red-500 rounded-full mb-2"></div><div class="text-xs">1905<br>을사늑약</div></div>
         </div>
-    </header>
+    </div>
+</div>
 
-    <main>
-        <section id="short-view" class="view-section active">
-            <div class="app-card">
-                <div class="card-header-line">
-                    <div class="badge-container">
-                        <span class="badge badge-cat" id="sh-cat">분류</span>
-                    </div>
-                    <button class="btn-star" id="sh-star-btn" onclick="toggleStarCurrent()">
-                        <span class="material-icons-round">star_border</span>
-                    </button>
-                </div>
-                <div class="q-title">❓ 아래 탐구 힌트 및 키워드를 읽고 올바른 명칭을 쓰시오.</div>
-                <div class="q-box" id="sh-hint-text">힌트 내용</div>
-                <div style="font-size: 13px; color: var(--text-sub); margin-bottom:16px;" id="sh-nations"></div>
-                
-                <div class="input-group">
-                    <input type="text" id="sh-user-input" class="form-input" placeholder="정답을 입력하세요 (공백 무관)" onkeypress="handleShortEnter(event)">
-                    <button class="action-btn" onclick="verifyShortAnswer()">제출</button>
-                </div>
-                <div class="result-toast" id="sh-result">결과</div>
-            </div>
-            <div class="bottom-panel">
-                <span class="progress-txt" id="sh-progress-text">1 / 84</span>
-                <button class="action-btn" style="background-color: var(--text-sub);" onclick="moveNextShort()">다음 문제 ▶</button>
-            </div>
-        </section>
+<div id="treaty" class="view p-4">
+    <h2 class="font-bold mb-4">조약 내용 단답형 테스트</h2>
+    <div class="bg-white p-4 rounded shadow mb-4">
+        <p class="mb-2"><strong>질문:</strong> 영사 재판권(치외법권)이 처음으로 명시된 조약은?</p>
+        <input type="text" id="treaty-ans" class="border p-2 w-full rounded" placeholder="정답 입력">
+        <button onclick="checkTreaty()" class="mt-2 bg-blue-500 text-white px-4 py-2 rounded">채점</button>
+    </div>
+</div>
 
-        <section id="order-view" class="view-section">
-            <div class="app-card" style="margin-bottom: 12px;">
-                <div class="q-title">⏳ 다음 사건들을 역사적 인과 관계 및 시간 순서대로 나열하시오.</div>
-                <p style="font-size:13px; color: var(--text-sub);">항목을 위아래로 드래그하여 순서를 바꾼 후 정답 확인 버튼을 누르세요.</p>
-            </div>
-            
-            <div class="drag-list" id="drag-sort-space">
-                </div>
+<div id="person" class="view p-4">
+    <h2 class="font-bold mb-4">인물 특화 주관식</h2>
+    <div class="bg-white p-4 rounded shadow">
+        <p class="mb-2"><strong>힌트:</strong> "일본에 파견되어 조선책략을 들여옴"</p>
+        <input type="text" id="person-ans" class="border p-2 w-full rounded" placeholder="인물 이름 입력">
+        <button onclick="checkPerson()" class="mt-2 bg-blue-500 text-white px-4 py-2 rounded">채점</button>
+    </div>
+</div>
 
-            <div class="result-toast" id="order-result" style="margin-bottom: 16px;">결과</div>
+<div id="wrong" class="view p-4">
+    <h2 class="font-bold mb-4 text-red-600">오답 노트</h2>
+    <div id="wrong-list" class="bg-white p-4 rounded shadow text-sm">
+        <p>오답이 발생하면 이곳에 기록됩니다.</p>
+    </div>
+</div>
 
-            <div class="bottom-panel">
-                <button class="action-btn" style="background-color: var(--text-sub);" onclick="makeOrderQuiz()">새로운 무작위 배열</button>
-                <button class="action-btn" style="background-color: var(--secondary);" onclick="verifyOrderAnswer()">정답 확인</button>
-            </div>
-        </section>
+<script>
+    const wrongAnswers = [];
+    
+    function showView(id) {
+        document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+        document.getElementById(id).classList.add('active');
+    }
 
-        <section id="list-view" class="view-section">
-            <div id="flow-list-container"></div>
-        </section>
-    </main>
-
-    <script>
-        // 고1 필수 근현대사 핵심 데이터셋 (1~84)
-        const coreHistoryData = [
-            [1,"제1차 아편전쟁","전쟁/침략/갈등","청, 영국","영국 개항"],
-            [2,"제2차 아편전쟁","전쟁/침략/갈등","청, 프랑스, 영국, 러시아","연해주 할양, 프랑스 개항"],
-            [3,"양무운동","운동/시위","청","중체서용, 기기국"],
-            [4,"미일화친조약","조약","일본, 미국","에도막부, 개항"],
-            [5,"미일수호통상조약","조약","일본, 미국","영사재판권, 최혜국 대우"],
-            [6,"메이지유신","운동/시위","일본","정신까지 싹다 변경"],
-            [7,"고종 즉위","설치/파견/제거","조선/대한제국","흥선대원군 집권"],
-            [8,"병인박해","전쟁/침략/갈등","조선/대한제국, 프랑스","흥선대원군, 프랑스 선교사"],
-            [9,"제너럴 셔먼호 사건","전쟁/침략/갈등","조선/대한제국, 미국","박규수, 함경도, 약탈"],
-            [10,"병인양요","전쟁/침략/갈등","조선/대한제국, 프랑스","강화도, 한성근 부대 & 문수산성, 양헌수 부대 & 정족산성, 외규장각의궤"],
-            [11,"남연군 묘 도굴 미수 사건","전쟁/침략/갈등","조선/대한제국, 미국","독일 상인 오페르트, 흥선대원군"],
-            [12,"신미양요","전쟁/침략/갈등","조선/대한제국, 미국","덕진진 점령, 광성보 & 어재연 장군"],
-            [13,"척화비 건립","설치/파견/제거","조선/대한제국","흥선대원군"],
-            [14,"개화세력의 등장","운동/시위","조선/대한제국","박규수, 오경석, 유홍기 --> 통상개화파(1세대) 김옥균, 박영효 --> 개화파(2세대)"],
-            [15,"정한론","운동/시위","일본, 조선/대한제국","문서 형식 다름을 구실로 거절, 조선 정벌"],
-            [16,"흥선대원군 하야","설치/파견/제거","조선/대한제국","고종의 실권 장악"],
-            [17,"운요호 사건","전쟁/침략/갈등","조선/대한제국, 일본","박규수 등의 통상 개화론의 인기 상승, 영종도 상륙"],
-            [18,"강화도조약(조일수호조규)","조약","조선/대한제국, 일본","자주국, 부산, 원산, 인천 개항, 해안측량권, 영사재판권"],
-            [19,"조일수호조규부록","조약","조선/대한제국, 일본","일본 화폐 유통 인정"],
-            [20,"조일무역규칙","조약","조선/대한제국, 일본","양곡 무제한 유출, 무관세"],
-            [21,"조미수호통상조약","조약","조선/대한제국, 미국, 청","거중 조정, 최혜국 대우, 영사 재판권"],
-            [22,"통리기무아문 설치","설치/파견/제거","조선/대한제국","기존 5군영 --> 2군영 체제, 별기군 창설"],
-            [23,"수신사 파견","설치/파견/제거","조선/대한제국","일본의 근대 문물 시찰"],
-            [24,"별기군 창설","설치/파견/제거","조선/대한제국","통리기무아문의 정책"],
-            [25,"조사 시찰단 파견","설치/파견/제거","조선/대한제국, 일본","비밀리 파견, 박정양, 어윤중 등, 보고서 작성"],
-            [26,"영선사/보빙사 파견","설치/파견/제거","조선/대한제국, 청, 미국","김윤식(영선사), 기기창 설치, 민영익(보빙사)"],
-            [27,"임오군란","운동/시위","조선/대한제국, 일본, 청","별기군 일본인 교관 살해, 흥선 대원군 재집권, 통리기무아문 폐지, 별기군 폐지, 청의 흥선대원군 납치"],
-            [28,"제물포 조약","조약","조선/대한제국, 일본","배상금 지급, 일본군의 한성 주둔"],
-            [29,"조청상민수륙무역장정","조약","조선/대한제국, 청","조선을 청의 속국으로 명시, 조선 군대 주둔, 마젠창과 묄렌도르프 고문 파견"],
-            [30,"영독러프오 수교","조약","조선/대한제국","영국, 독일, 러시아, 프랑스, 오스트리아와 차례로 수교"],
-            [31,"척화비 제거","설치/파견/제거","조선/대한제국","임오군란 이후 개화 정책 재개 과정에서 철거"],
-            [32,"박문국 설치","설치/파견/제거","조선/대한제국","한성순보 발행을 위한 신문 인쇄 관청"],
-            [33,"청불 전쟁","전쟁/침략/갈등","청, 프랑스","베트남 지배권을 둘러싼 전쟁"],
-            [34,"갑신정변","전쟁/침략/갈등","조선/대한제국","김옥균 등 급진개화파의 우정총국 개국 축하연 이용 정변, 3일천하"],
-            [35,"한성조약","조약","조선/대한제국, 일본","갑신정변 결과 일본에 배상금 지급 및 공사관 신축 비용 부담 공표"],
-            [36,"톈진조약","조약","청, 일본","청·일 양국군 조선 철수, 향후 파병 시 상호 사전 통지 합의"],
-            [37,"조러 비밀협약 추진","조약","조선/대한제국, 러시아","러시아와 협동 비밀 협정 추진"],
-            [38,"거문도 사건","전쟁/침략/갈등","조선/대한제국, 영국","영국 해군이 거문도를 불법 점령"],
-            [39,"조선 중립국 주장","운동/시위","조선/대한제국","부들러와 유길준 등이 한반도 중립화론 제안"],
-            [40,"육영공원, 연무공원 설치","설치/파견/제거","조선/대한제국","상류층 자제 대상 근대식 공립 학교 및 군사학교 설치"],
-            [41,"주미공사관 설치","설치/파견/제거","조선/대한제국, 미국","초대 주미공사 박정양 파견"],
-            [42,"제 1차 동학농민운동","운동/시위","조선/대한제국","백산 봉기, 황토현·황룡촌 전투 승리, 전주성 점령"],
-            [43,"청일전쟁","전쟁/침략/갈등","일본, 청, 조선/대한제국","일본군의 경복궁 점령으로 발발"],
-            [44,"시모노세키 조약","조약","일본, 청","청일전쟁 결과 청이 일본에 요동반도(랴오둥)와 타이완 할양 합의"],
-            [45,"삼국간섭","전쟁/침략/갈등","일본, 청, 프랑스, 영국, 러시아","러시아가 독일·프랑스를 끌어들여 일본의 요동반도 반환 압박"],
-            [46,"포접제 정리","운동/시위","조선/대한제국, 일본, 청","동학의 조직망인 남접과 북접의 연합 체제 구축"],
-            [47,"제 2차 동학농민운동","운동/시위","조선/대한제국, 일본, 청","일본군의 경복궁 점령 및 내정간섭에 반대하여 항일 구국 운동 전개"],
-            [48,"교조 신원 운동","운동/시위","조선/대한제국","최제우의 억울함을 풀고 동학 포교의 자유를 얻기 위한 운동"],
-            [49,"보은 집회","운동/시위","조선/대한제국","'척왜양창의'의 정치적 구호를 내건 대규모 집회"],
-            [50,"고부 농민 봉기","운동/시위","조선/대한제국","군수 조병갑의 만석보 수세 강탈 등 탐학에 맞서 전봉준 주도 봉기"],
-            [51,"전주 화약","조약","조선/대한제국","정부와 농민군 사이의 타협, 폐정개혁안 제시 및 집강소 설치 계기"],
-            [52,"우금치 전투","운동/시위","조선/대한제국, 일본","제2차 동학농민군이 공주 우금치에서 관군과 일본군 연합군에 패배"],
-            [53,"군국기무처 설치","설치/파견/제거","조선/대한제국","제1차 갑오개혁을 추진하기 위해 설치된 직속 개혁 기구"],
-            [54,"제1차 갑오개혁","개혁","조선/대한제국","김홍집 내각 주도, 신분제 폐지, 과거제 폐지, 은본위제 도입 등"],
-            [55,"홍범 14조","선언문/문서","조선/대한제국","근대적 개혁 방향을 담은 최초의 헌법적 문서"],
-            [56,"제2차 갑오개혁","개혁","조선/대한제국, 일본","군국기무처 폐지, 재판소 설치, 23부 지방제도 개편"],
-            [57,"교육 입국 조서","선언문/문서","조선/대한제국","고종이 근대적 학교 교육을 통해 국가를 구하고자 반포"],
-            [58,"을미개혁","개혁","조선/대한제국, 일본","단발령 시행, 태양력 채택, '건양' 연호 사용"],
-            [59,"을미의병","운동/시위","조선/대한제국, 일본","을미사변과 단발령에 분격하여 일어난 최초의 항일 위정척사의병"],
-            [60,"아관파천","전쟁/침략/갈등","조선/대한제국, 러시아","고종이 친일 내각의 위협을 피해 러시아 공사관으로 거처를 옮긴 사건"],
-            [61,"독립협회 설립","설치/파견/제거","조선/대한제국","서재필 등이 중심이 되어 독립문 건립 및 독립신문 발행"],
-            [62,"대한제국 선포","선언문/문서","조선/대한제국","고종이 환궁 후 원구단에서 황제 즉위식을 거행하고 국호 선포"],
-            [63,"만민 공동회","운동/시위","조선/대한제국","독일·러시아 등의 이권 침탈을 저지하기 위한 대규모 민중 집회"],
-            [64,"자주 국권 운동","운동/시위","조선/대한제국","러시아의 절영도 저탄소 기지 요구 거부 등 이권 침탈 저지"],
-            [65,"자유 민권 운동","운동/시위","조선/대한제국","국민의 신체와 재산권 보호, 언론·출판·집회·결사의 자유 요구"],
-            [66,"의회 설립 운동","운동/시위","조선/대한제국","중추원을 개편하여 근대적 의회를 개설하고자 시도한 운동"],
-            [67,"헌의 6조","선언문/문서","조선/대한제국","관민공동회에서 채택되어 황제의 승인을 받은 조세 개혁 문서"],
-            [68,"독립협회 해산","설치/파견/제거","조선/대한제국, 일본","황국협회 보부상 동원 강제 해산"],
-            [69,"대한국 국제","선언문/문서","조선/대한제국","황제에게 무한한 군권을 집중시키는 전제군주제 명시 문서"],
-            [70,"광무개혁","개혁","조선/대한제국","구본신참 원칙 하의 점진적 자주 개혁"],
-            [71,"양전 사업","설치/파견/제거","조선/대한제국","근대적 토지 소유권 확립을 위한 전국 토지 측량"],
-            [72,"지계 발급 사업","설치/파견/제거","조선/대한제국","근대적 토지 소유 증명서인 '지계' 발급"],
-            [73,"파리 만국 박람회","설치/파견/제거","조선/대한제국","대한제국의 독자성과 주권 국가 위상을 알리기 위해 참가"],
-            [74,"러일 전쟁","전쟁/침략/갈등","조선/대한제국, 일본, 러시아","한반도와 만주의 지배권을 둘러싸고 발발한 제국주의 전쟁"],
-            [75,"한일의정서","조약","조선/대한제국, 일본","일본이 군사 전략상 필요한 조선의 영토를 마음대로 사용하도록 강요"],
-            [76,"제1차 한일 협약","조약","조선/대한제국, 일본","고문 정치 시작 - 재정 고문 메가타, 외교 고문 스티븐스 초빙"],
-            [77,"가쓰라/태프트 밀약","조약","일본, 미국","미국의 필리핀 지배와 일본의 대한제국 지배를 상호 묵인한 비밀 협약"],
-            [78,"제2차 영일 동맹","조약","일본, 영국","영국의 인도 지배와 일본의 대한제국 독점 지배권을 상호 승인"],
-            [79,"포츠머스 조약","조약","일본, 러시아","러시아가 일본의 한국에 대한 독점적 권리를 최종 승인"],
-            [80,"을사늑약(제2차 한일 협약)","조약","조선/대한제국, 일본","외교권 박탈, 통감부 설치 강제 체결"],
-            [81,"헤이그 특사","설치/파견/제거","조선/대한제국, 일본","만국평화회의에 이준·이상설·이위종을 파견하여 을사늑약 무효 폭로 시도"],
-            [82,"고종 강제 퇴위","전쟁/침략/갈등","조선/대한제국, 일본","헤이그 특사 파견을 구실로 일본이 고종 황제를 강제 퇴위시킴"],
-            [83,"한일 신협약","조약","조선/대한제국, 일본","정미7조약 - 차관 정치 시행, 한국 군대 해산 규정"],
-            [84,"한국 병합 조약","조약","조선/대한제국, 일본","경술국치 - 대한제국의 국권을 완전히 상실하고 일제강점기가 시작됨"]
-        ];
-
-        let moruIds = JSON.parse(localStorage.getItem('moruIds_v2')) || [];
-        let isMoruOnlyMode = false;
-        let currentPool = [...coreHistoryData];
-        let shortCursor = 0;
-        let orderCorrectSequence = [];
-
-        window.onload = function() {
-            refreshMoruCounter();
-            rebuildCurrentPool();
-            initShortQuiz();
-            makeOrderQuiz();
-            renderFlowList();
+    function checkTreaty() {
+        const ans = document.getElementById('treaty-ans').value;
+        if(ans === "강화도 조약") alert("정답!");
+        else {
+            alert("오답입니다. 정답: 강화도 조약");
+            wrongAnswers.push("조약: 강화도 조약");
+            updateWrongList();
         }
+    }
 
-        function rebuildCurrentPool() {
-            if (isMoruOnlyMode) {
-                currentPool = coreHistoryData.filter(item => moruIds.includes(item[0]));
-            } else {
-                currentPool = [...coreHistoryData];
-            }
+    function checkPerson() {
+        const ans = document.getElementById('person-ans').value;
+        if(ans === "김홍집") alert("정답!");
+        else {
+            alert("오답입니다. 정답: 김홍집");
+            wrongAnswers.push("인물: 김홍집");
+            updateWrongList();
         }
+    }
 
-        function refreshMoruCounter() {
-            document.getElementById('moru-count-text').innerText = `모르는 것 골라보기 (${moruIds.length})`;
-        }
+    function updateWrongList() {
+        const div = document.getElementById('wrong-list');
+        div.innerHTML = wrongAnswers.map(w => `<p class="border-b p-2 text-red-600">${w}</p>`).join('');
+    }
+</script>
 
-        function toggleMoruMode() {
-            isMoruOnlyMode = !isMoruOnlyMode;
-            const btn = document.getElementById('moru-filter-toggle');
-            if (isMoruOnlyMode) {
-                btn.classList.add('active');
-                btn.querySelector('span').innerText = 'star';
-            } else {
-                btn.classList.remove('active');
-                btn.querySelector('span').innerText = 'star_border';
-            }
-            rebuildCurrentPool();
-            shortCursor = 0;
-            initShortQuiz();
-            renderFlowList();
-        }
-
-        function toggleStarItem(id) {
-            if (moruIds.includes(id)) {
-                moruIds = moruIds.filter(v => v !== id);
-            } else {
-                moruIds.push(id);
-            }
-            localStorage.setItem('moruIds_v2', JSON.stringify(moruIds));
-            refreshMoruCounter();
-
-            // 리스트 뷰 아이콘 업데이트
-            const icon = document.getElementById(`list-star-ico-${id}`);
-            if(icon) {
-                icon.innerText = moruIds.includes(id) ? 'star' : 'star_border';
-                icon.parentElement.classList.toggle('active', moruIds.includes(id));
-            }
-        }
-
-        function changeTab(tabId) {
-            document.querySelectorAll('.tab-item').forEach(b => b.classList.remove('active'));
-            document.querySelectorAll('.view-section').forEach(s => s.classList.remove('active'));
-            
-            event.currentTarget.classList.add('active');
-            document.getElementById(`${tabId}-view`).classList.add('active');
-
-            if (tabId === 'order') makeOrderQuiz();
-        }
-
-        // --- 단답형 키워드 컴포넌트 로직 ---
-        function initShortQuiz() {
-            const res = document.getElementById('sh-result');
-            res.style.display = 'none';
-            document.getElementById('sh-user-input').value = '';
-
-            if (currentPool.length === 0) {
-                document.getElementById('sh-hint-text').innerText = "보관된 '모르는 문제'가 없습니다. 전체 흐름 탭에서 기억이 안 나는 사건들을 별표(★) 등록해 보세요.";
-                document.getElementById('sh-cat').innerText = "-";
-                document.getElementById('sh-nations').innerText = "";
-                document.getElementById('sh-progress-text').innerText = "0 / 0";
-                return;
-            }
-
-            if (shortCursor >= currentPool.length) shortCursor = 0;
-            const cur = currentPool[shortCursor];
-
-            document.getElementById('sh-cat').innerText = cur[2];
-            document.getElementById('sh-hint-text').innerText = cur[4] || "세부 사료 힌트가 없습니다. 사건 자체의 가치를 복습해 보세요.";
-            document.getElementById('sh-nations').innerText = `🌍 관련 국가/세력: ${cur[3]}`;
-            document.getElementById('sh-progress-text').innerText = `${shortCursor + 1} / ${currentPool.length}`;
-
-            const starBtn = document.getElementById('sh-star-btn');
-            if (moruIds.includes(cur[0])) {
-                starBtn.classList.add('active');
-                starBtn.innerHTML = '<span class="material-icons-round">star</span>';
-            } else {
-                starBtn.classList.remove('active');
-                starBtn.innerHTML = '<span class="material-icons-round">star_border</span>';
-            }
-        }
-
-        function verifyShortAnswer() {
-            if (currentPool.length === 0) return;
-            const userAns = document.getElementById('sh-user-input').value.replace(/\s+/g, '').toLowerCase();
-            const originalAns = currentPool[shortCursor][1];
-            const cleanAns = originalAns.replace(/\s+/g, '').toLowerCase();
-            const res = document.getElementById('sh-result');
-
-            if (userAns === cleanAns || (userAns.length >= 2 && cleanAns.includes(userAns))) {
-                res.innerText = `⭕ 정답입니다! [정식 교과서 명칭: ${originalAns}]`;
-                res.className = "result-toast correct";
-            } else {
-                res.innerText = `❌ 틀렸습니다. 정답은 [ ${originalAns} ] 입니다.`;
-                res.className = "result-toast wrong";
-            }
-        }
-
-        function handleShortEnter(e) { if(e.key === 'Enter') verifyShortAnswer(); }
-        function moveNextShort() {
-            if (currentPool.length > 0) shortCursor = (shortCursor + 1) % currentPool.length;
-            initShortQuiz();
-        }
-
-        function toggleStarCurrent() {
-            if (currentPool.length === 0) return;
-            const cur = currentPool[shortCursor];
-            toggleStarItem(cur[0]);
-            initShortQuiz();
-        }
-
-        // --- 순서 맞추기 (드래그형) 로직 ---
-        function makeOrderQuiz() {
-            document.getElementById('order-result').style.display = 'none';
-            const space = document.getElementById('drag-sort-space');
-            space.innerHTML = '';
-
-            let samples = [];
-            let datasetCopy = [...coreHistoryData];
-            for (let i = 0; i < 4; i++) {
-                let rIdx = Math.floor(Math.random() * datasetCopy.length);
-                samples.push(datasetCopy.splice(rIdx, 1)[0]);
-            }
-
-            // 진짜 시간 순 정렬 순서 추출
-            orderCorrectSequence = [...samples].sort((a,b) => a[0] - b[0]).map(v => v[1]);
-
-            // 화면 표시용으로 무작위 셔플
-            samples.sort(() => Math.random() - 0.5);
-
-            samples.forEach(item => {
-                const el = document.createElement('div');
-                el.className = 'drag-card';
-                el.draggable = true;
-                el.dataset.name = item[1];
-                el.innerHTML = `
-                    <div class="drag-icon"><span class="material-icons-round">drag_indicator</span></div>
-                    <div style="font-weight:500; font-size:15px;">${item[1]}</div>
-                `;
-
-                el.addEventListener('dragstart', () => el.classList.add('dragging'));
-                el.addEventListener('dragend', () => el.classList.remove('dragging'));
-
-                space.appendChild(el);
-            });
-
-            bindDragSequenceEvents();
-        }
-
-        function bindDragSequenceEvents() {
-            const container = document.getElementById('drag-sort-space');
-            container.addEventListener('dragover', e => {
-                e.preventDefault();
-                const afterElement = getDragAfterElement(container, e.clientY);
-                const dragging = document.querySelector('.dragging');
-                if (afterElement == null) {
-                    container.appendChild(dragging);
-                } else {
-                    container.insertBefore(dragging, afterElement);
-                }
-            });
-        }
-
-        function getDragAfterElement(container, y) {
-            const elements = [...container.querySelectorAll('.drag-card:not(.dragging)')];
-            return elements.reduce((closest, child) => {
-                const box = child.getBoundingClientRect();
-                const offset = y - box.top - box.height / 2;
-                if (offset < 0 && offset > closest.offset) {
-                    return { offset: offset, element: child };
-                } else {
-                    return closest;
-                }
-            }, { offset: Number.NEGATIVE_INFINITY }).element;
-        }
-
-        function verifyOrderAnswer() {
-            const currentSequence = [...document.querySelectorAll('.drag-card')].map(el => el.dataset.name);
-            const res = document.getElementById('order-result');
-
-            let match = true;
-            for(let i=0; i<4; i++) {
-                if(currentSequence[i] !== orderCorrectSequence[i]) {
-                    match = false;
-                    break;
-                }
-            }
-
-            if (match) {
-                res.innerText = "⭕ 완벽합니다! 사건의 전후 선후 흐름 관계를 완벽하게 파악하고 있습니다.";
-                res.className = "result-toast correct";
-            } else {
-                res.innerHTML = `❌ 순서가 맞지 않습니다.<br>⏱️ <b>교과서 정답 기준 시간 연표 순서:</b><br>${orderCorrectSequence.join(' ➔ ')}`;
-                res.className = "result-toast wrong";
-            }
-        }
-
-        // --- 전체 흐름 리스트 뷰 로직 ---
-        function renderFlowList() {
-            const container = document.getElementById('flow-list-container');
-            container.innerHTML = '';
-
-            let listDataset = isMoruOnlyMode ? coreHistoryData.filter(item => moruIds.includes(item[0])) : coreHistoryData;
-
-            if (listDataset.length === 0) {
-                container.innerHTML = `<p style="text-align:center; padding:40px 0; color:var(--text-sub);">조건에 일치하는 사건 리스트가 비어 있습니다.</p>`;
-                return;
-            }
-
-            listDataset.forEach(item => {
-                const checked = moruIds.includes(item[0]);
-                const card = document.createElement('div');
-                card.className = `app-card ${checked ? 'active' : ''}`;
-                card.style.padding = '16px 20px';
-                card.style.marginBottom = '12px';
-
-                card.innerHTML = `
-                    <div style="display:flex; justify-content:between; align-items:center; gap:12px;">
-                        <div style="flex:1;">
-                            <span class="badge badge-idx" style="margin-right:4px;">${item[0]}</span>
-                            <strong style="font-size:15px;">${item[1]}</strong>
-                            <div style="font-size:13px; color:var(--text-sub); margin-top:4px;">${item[4] || '세부 정보 없음'}</div>
-                        </div>
-                        <button class="btn-star ${checked ? 'active' : ''}" onclick="toggleStarItem(${item[0]})">
-                            <span class="material-icons-round" id="list-star-ico-${item[0]}">${checked ? 'star' : 'star_border'}</span>
-                        </button>
-                    </div>
-                `;
-                container.appendChild(card);
-            });
-        }
-    </script>
 </body>
 </html>
