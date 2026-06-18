@@ -1,0 +1,1705 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Duru Coree - 한국사 기말고사 만점 매니저</title>
+    <!-- PWA 및 테마 설정 -->
+    <meta name="theme-color" content="#2563EB">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Duru Coree">
+    
+    <!-- Tailwind CSS 및 Noto Sans KR 폰트, FontAwesome 아이콘팩 -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+            background-color: #E5E9F0;
+            color: #1E293B;
+            -webkit-tap-highlight-color: transparent;
+            overflow-x: hidden;
+            overscroll-behavior-y: contain;
+        }
+        
+        /* ── Duru 오리지널 택타일 디자인 토큰 ── */
+        .tactile-card {
+            background: linear-gradient(145deg, #EEF2F6, #D8DFE8);
+            border: 1.5px solid rgba(255,255,255,0.9);
+            box-shadow: 6px 8px 18px rgba(163,177,198,0.55), -6px -6px 18px rgba(255,255,255,0.95), inset 1px 1px 2px rgba(255,255,255,0.9);
+            border-radius: 28px;
+        }
+        
+        .tactile-pill-btn {
+            background: linear-gradient(180deg, #F1F5F9 0%, #D8DFE8 100%);
+            border: 3px solid #CBD5E1;
+            outline: 1.5px solid #F1F5F9;
+            box-shadow: inset 0px 2.5px 5px rgba(0,0,0,0.1), inset 0px -2.5px 5px rgba(255,255,255,0.95), 0px 5px 12px rgba(148,163,184,0.45);
+            border-radius: 9999px;
+            transition: all 0.1s cubic-bezier(0.2,0.8,0.2,1);
+            color: #475569; font-weight: 800;
+            display: inline-flex; align-items: center; justify-content: center; cursor: pointer;
+        }
+        .tactile-pill-btn:hover { 
+            background: linear-gradient(180deg,#F8FAFC 0%,#D1D5DB 100%); 
+            transform: translateY(-1px); 
+        }
+        .tactile-pill-btn:active {
+            background: linear-gradient(180deg,#CBD5E1 0%,#94A3B8 100%);
+            border-color: #94A3B8; 
+            box-shadow: inset 0px 4px 8px rgba(0,0,0,0.24); 
+            transform: translateY(1.5px); 
+            color: #1E293B;
+        }
+        
+        .tactile-pill-btn-primary {
+            background: linear-gradient(180deg,#93C5FD 0%,#2563EB 100%);
+            border: 3px solid #1D4ED8; outline: 1.5px solid #93C5FD;
+            box-shadow: inset 0px 2.5px 5px rgba(0,0,0,0.15), inset 0px -2.5px 5px rgba(255,255,255,0.45), 0px 5px 12px rgba(37,99,235,0.35);
+            border-radius: 9999px; transition: all 0.1s cubic-bezier(0.2,0.8,0.2,1);
+            color: white; font-weight: 800; display: inline-flex; align-items: center; justify-content: center; cursor: pointer;
+        }
+        .tactile-pill-btn-primary:hover:not(:disabled) { 
+            background: linear-gradient(180deg,#A1CFFF 0%,#1D4ED8 100%); 
+            transform: translateY(-1px); 
+        }
+        .tactile-pill-btn-primary:active:not(:disabled) { 
+            background: linear-gradient(180deg,#2563EB 0%,#1E3A8A 100%); 
+            transform: translateY(1.5px); 
+        }
+        
+        .tactile-plate {
+            background: linear-gradient(145deg,#EEF2F6,#D8DFE8);
+            border: 1.5px solid rgba(255,255,255,0.85);
+            box-shadow: 8px 10px 24px rgba(163,177,198,0.55), -8px -8px 24px rgba(255,255,255,0.95), inset 1px 1px 2px rgba(255,255,255,0.9);
+            border-radius: 32px;
+        }
+        
+        .debossed-well {
+            background: #E2E8F0; border-radius: 24px;
+            box-shadow: inset 3.5px 3.5px 8px rgba(163,177,198,0.8), inset -3.5px -3.5px 8px rgba(255,255,255,0.95), 1px 1.5px 2px rgba(255,255,255,0.75);
+            border: 1px solid rgba(255,255,255,0.45);
+        }
+
+        /* ── 모바일 하단 네비게이션 ── */
+        .tactile-nav-container {
+            background: linear-gradient(145deg,#EEF2F6,#D8DFE8);
+            border: 2px solid rgba(255,255,255,0.9);
+            box-shadow: 0px 10px 32px rgba(163,177,198,0.45), inset 1px 1.5px 3px rgba(255,255,255,0.9);
+            border-radius: 40px; transition: all 0.3s cubic-bezier(0.2,0.8,0.2,1);
+        }
+        .tactile-nav-btn {
+            border-radius: 32px; transition: all 0.2s cubic-bezier(0.2,0.8,0.2,1);
+            color: #64748B; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; cursor: pointer;
+        }
+        .tactile-nav-btn-active {
+            background: #E2E8F0;
+            box-shadow: inset 3.5px 3.5px 8px rgba(163,177,198,0.85), inset -3.5px -3.5px 8px rgba(255,255,255,0.95);
+            color: #2563EB; transform: translateY(1.5px);
+        }
+
+        /* ── 데스크톱 사이드바 ── */
+        .sidebar {
+            background: linear-gradient(180deg,#EEF2F6,#D8DFE8);
+            border-right: 1.5px solid rgba(255,255,255,0.9);
+            box-shadow: 4px 0 24px rgba(163,177,198,0.3);
+        }
+        .sidebar-btn {
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            padding: 14px 8px; border-radius: 20px; cursor: pointer;
+            transition: all 0.15s cubic-bezier(0.2,0.8,0.2,1); color: #64748B; gap: 6px;
+        }
+        .sidebar-btn:hover { background: rgba(255,255,255,0.6); color: #1E293B; }
+        .sidebar-btn-active {
+            background: #E2E8F0;
+            box-shadow: inset 3px 3px 7px rgba(163,177,198,0.85), inset -3px -3px 7px rgba(255,255,255,0.95);
+            color: #2563EB; transform: translateY(1px);
+        }
+
+        /* ── 입체 플래시카드 회전 애니메이션 ── */
+        .flashcard-box {
+            perspective: 1200px;
+        }
+        .flashcard-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            transform-style: preserve-3d;
+            transition: transform 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
+        }
+        .flashcard-inner.is-flipped {
+            transform: rotateY(180deg);
+        }
+        .flashcard-front, .flashcard-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            border-radius: 28px;
+        }
+        .flashcard-back {
+            transform: rotateY(180deg);
+        }
+
+        /* 애니메이션 피드백 */
+        @keyframes correctBounce {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.03); }
+        }
+        .correct-animate {
+            animation: correctBounce 0.35s ease-out;
+        }
+
+        @keyframes wrongShake {
+            0%, 100% { transform: translateX(0); }
+            20%, 60% { transform: translateX(-6px); }
+            40%, 80% { transform: translateX(6px); }
+        }
+        .wrong-animate {
+            animation: wrongShake 0.35s ease-out;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar {
+            height: 6px;
+            width: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #E2E8F0;
+            border-radius: 8px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #94A3B8;
+            border-radius: 8px;
+        }
+        .hidden-text { max-height:0; opacity:0; margin-top:0; pointer-events:none; }
+    </style>
+</head>
+<body class="selection:bg-blue-100">
+
+<div class="min-h-screen flex bg-[#E5E9F0]">
+
+    <!-- ── 데스크톱 사이드바 ── -->
+    <aside id="desktop-sidebar" class="sidebar fixed left-0 top-0 bottom-0 w-[200px] hidden md:flex flex-col items-center py-8 px-3 z-40 gap-2">
+        <div class="mb-6 text-center">
+            <div class="tactile-pill-btn w-14 h-14 text-[16px] font-black pointer-events-none mb-2 text-blue-600">DURU</div>
+            <p class="text-[10px] font-black text-slate-500">한국사 수능·내신</p>
+        </div>
+
+        <button onclick="switchSection('study', this)" class="sidebar-btn w-full sidebar-btn-active">
+            <i class="fa-solid fa-book-open text-lg"></i>
+            <span class="text-[12px] font-[900]">암기카드</span>
+        </button>
+        <button onclick="switchSection('timeline', this)" class="sidebar-btn w-full">
+            <i class="fa-solid fa-timeline text-lg"></i>
+            <span class="text-[12px] font-[900]">두루연표</span>
+        </button>
+        <button onclick="switchSection('quiz', this)" class="sidebar-btn w-full">
+            <i class="fa-solid fa-vial text-lg"></i>
+            <span class="text-[12px] font-[900]">만점테스트</span>
+        </button>
+        <button onclick="switchSection('memos', this)" class="sidebar-btn w-full">
+            <i class="fa-solid fa-lightbulb text-lg"></i>
+            <span class="text-[12px] font-[900]">암기비법</span>
+        </button>
+        <button onclick="switchSection('incorrect', this)" class="sidebar-btn w-full relative">
+            <i class="fa-solid fa-triangle-exclamation text-lg"></i>
+            <span class="text-[12px] font-[900]">오답노트</span>
+            <span id="sidebar-badge" class="absolute top-2 right-4 bg-red-500 text-white text-[9px] font-black px-1.5 py-0.5 rounded-full hidden">0</span>
+        </button>
+
+        <div class="mt-auto flex flex-col items-center gap-3 w-full">
+            <div class="bg-white/60 px-3 py-1.5 rounded-full text-[10px] font-black text-slate-600 text-center w-full" id="desktop-progress-badge">
+                진도율 파악중...
+            </div>
+        </div>
+    </aside>
+
+    <!-- ── 메인 워크스페이스 ── -->
+    <div id="main-content-area" class="flex-1 flex flex-col min-h-screen md:ml-[200px]">
+        
+        <!-- 탑 고정 헤더 -->
+        <header id="top-sticky-header" class="sticky top-0 z-30 bg-[#E5E9F0]/90 backdrop-blur-xl px-6 pt-10 pb-4 flex items-center justify-between max-w-4xl w-full mx-auto">
+            <div>
+                <h1 id="header-section-title" class="text-[28px] font-[900] tracking-tight text-slate-800">
+                    암기카드 학습
+                </h1>
+                <p class="text-[11px] font-bold text-slate-400">두루코리 (Duru Coree) · 기말고사 만점 매니저</p>
+            </div>
+            <div class="flex items-center gap-2">
+                <div class="bg-white px-3 py-1.5 rounded-full shadow-sm text-xs font-[900] text-emerald-600 flex items-center gap-1.5">
+                    <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                    <span>1등급 공략</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- 메인 콘텐츠 카드 뷰포트 -->
+        <main class="px-5 pb-36 mt-2 flex-1 max-w-4xl w-full mx-auto">
+
+            <!-- ================== SECTION 1: 암기카드 (STUDY) ================== -->
+            <div id="pane-study" class="view-pane space-y-6">
+                <!-- 상단 필터 설정들 -->
+                <div class="tactile-card p-5 space-y-4">
+                    <div>
+                        <span class="text-xs font-black text-slate-500 block mb-2">📅 기말고사 범위 조각내기</span>
+                        <div class="flex gap-2 overflow-x-auto custom-scrollbar pb-1">
+                            <button onclick="setRangeFilter('all', this)" class="tactile-pill-btn px-4 py-2 text-xs shrink-0 bg-blue-100 text-blue-700">전체 학습 (1~93)</button>
+                            <button onclick="setRangeFilter('day1', this)" class="tactile-pill-btn px-4 py-2 text-xs shrink-0">Day 1 (대원군~거문도)</button>
+                            <button onclick="setRangeFilter('day2', this)" class="tactile-pill-btn px-4 py-2 text-xs shrink-0">Day 2 (동학~지계 발급)</button>
+                            <button onclick="setRangeFilter('day3', this)" class="tactile-pill-btn px-4 py-2 text-xs shrink-0">Day 3 (러일전쟁~실력양성)</button>
+                        </div>
+                    </div>
+                    <div>
+                        <span class="text-xs font-black text-slate-500 block mb-2">🏷️ 유형/테마 선택공략</span>
+                        <div class="flex gap-2 overflow-x-auto custom-scrollbar pb-1">
+                            <button onclick="setThemeFilter('All', this)" class="tactile-pill-btn px-3 py-1.5 text-xs shrink-0 bg-blue-100 text-blue-700">모든 주제</button>
+                            <button onclick="setThemeFilter('조약', this)" class="tactile-pill-btn px-3 py-1.5 text-xs shrink-0">📜 불평등 조약</button>
+                            <button onclick="setThemeFilter('전쟁/침략/갈등', this)" class="tactile-pill-btn px-3 py-1.5 text-xs shrink-0">⚔️ 전쟁/침략/갈등</button>
+                            <button onclick="setThemeFilter('설치/파견/제거', this)" class="tactile-pill-btn px-3 py-1.5 text-xs shrink-0">🏛️ 기구/설치/파견</button>
+                            <button onclick="setThemeFilter('운동/시위', this)" class="tactile-pill-btn px-3 py-1.5 text-xs shrink-0">🚩 민중 운동/시위</button>
+                            <button onclick="setThemeFilter('개혁', this)" class="tactile-pill-btn px-3 py-1.5 text-xs shrink-0">🛠️ 근대식 개혁안</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 입체 플래시카드 영역 -->
+                <div class="flashcard-box w-full h-[410px] cursor-pointer" onclick="handleCardFlip(event)">
+                    <div id="m3-flashcard" class="flashcard-inner w-full h-full">
+                        
+                        <!-- 앞면 (Front Face) -->
+                        <div class="flashcard-front bg-white border-2 border-slate-200 p-6 sm:p-8 flex flex-col justify-between shadow-lg">
+                            <div>
+                                <div class="flex justify-between items-start">
+                                    <div class="flex gap-2">
+                                        <span id="card-front-day" class="bg-blue-600 text-white text-[11px] font-[900] px-3 py-1 rounded-full">Day 1</span>
+                                        <span id="card-front-type" class="bg-slate-200 text-slate-700 text-[11px] font-[900] px-3 py-1 rounded-full">조약</span>
+                                    </div>
+                                    <span id="card-front-year" class="text-lg font-black text-blue-600">1876년</span>
+                                </div>
+                                <h2 id="card-front-title" class="text-[26px] font-black text-slate-800 mt-6 leading-tight">강화도 조약</h2>
+                                
+                                <!-- 시험출제 사료구절 -->
+                                <div class="mt-6 p-4 bg-slate-50 rounded-2xl border border-slate-200 text-xs text-slate-600 leading-relaxed">
+                                    <strong class="text-blue-600 font-black block mb-1">📖 시험 출제 핵심 사료 원본 발췌</strong>
+                                    <span id="card-front-source">"제1조 조선국은 자주국이며 일본국과 평등한 권리를 가진다..."</span>
+                                </div>
+                            </div>
+                            <div class="text-center text-xs text-slate-400 border-t border-slate-100 pt-3 flex justify-center items-center gap-2">
+                                <i class="fa-solid fa-rotate"></i> 터치하면 시험에 정답으로 직결되는 인물/선지 보기
+                            </div>
+                        </div>
+
+                        <!-- 뒷면 (Back Face) -->
+                        <div class="flashcard-back bg-gradient-to-br from-slate-800 to-slate-900 text-white p-6 sm:p-8 flex flex-col justify-between shadow-2xl">
+                            <div>
+                                <div class="flex justify-between items-center border-b border-white/10 pb-2">
+                                    <span id="card-back-year" class="text-sm font-black text-blue-400">1876년</span>
+                                    <span id="card-back-type" class="text-xs font-bold text-slate-400">조약</span>
+                                </div>
+                                <h3 id="card-back-title" class="text-xl font-black mt-3 text-white">강화도 조약</h3>
+
+                                <div class="mt-6 space-y-4 text-sm">
+                                    <div class="bg-white/5 p-4 rounded-2xl border border-white/10">
+                                        <strong class="text-xs text-blue-400 block mb-1">👤 인물 및 주체 키워드</strong>
+                                        <p id="card-back-actor" class="text-slate-100 font-bold">신헌, 구로다 기요타카</p>
+                                    </div>
+                                    <div class="bg-white/5 p-4 rounded-2xl border border-white/10">
+                                        <strong class="text-xs text-blue-400 block mb-1">🎯 1등급 정답 오답 결정적 핵심설명</strong>
+                                        <p id="card-back-desc" class="text-slate-200 leading-relaxed font-bold">치외법권(영사재판권), 해안측량권 규정, 부산·원산·인천 개항.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="text-center text-xs text-slate-400 border-t border-white/10 pt-3">
+                                <i class="fa-solid fa-rotate"></i> 터치하면 문제(앞면)로 복귀합니다
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- 조절 컨트롤 -->
+                <div class="flex justify-between items-center gap-4">
+                    <button onclick="stepStudyCard(-1, event)" class="tactile-pill-btn flex-1 py-4 text-sm">
+                        <i class="fa-solid fa-chevron-left mr-2"></i> 이전 사건
+                    </button>
+                    <span id="study-progress-txt" class="text-sm font-black text-slate-600 px-2">1 / 93</span>
+                    <button onclick="stepStudyCard(1, event)" class="tactile-pill-btn-primary flex-1 py-4 text-sm">
+                        다음 사건 <i class="fa-solid fa-chevron-right ml-2"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- ================== SECTION 2: 두루 연표 (TIMELINE) ================== -->
+            <div id="pane-timeline" class="view-pane hidden space-y-5">
+                <div class="tactile-card p-6">
+                    <div class="flex justify-between items-center mb-4 border-b border-slate-200 pb-3">
+                        <h3 class="font-black text-slate-800 text-lg">두루 입체 타임라인 로드맵</h3>
+                        <span class="text-xs font-bold text-slate-400">사건을 터치하면 해설서가 나타납니다</span>
+                    </div>
+                    
+                    <div id="timeline-stack" class="relative pl-6 border-l-[3px] border-blue-400 space-y-6 max-h-[520px] overflow-y-auto pr-2 custom-scrollbar">
+                        <!-- 동적으로 연표 로드맵 주입 -->
+                    </div>
+                </div>
+                <div class="debossed-well p-4 text-xs font-bold text-slate-500 leading-relaxed">
+                    💡 겹침을 방지하는 정밀 레이아웃! 연표 위의 카드를 터치하여 교과서 수록 원문 사료와 출제 타겟 포인트 선지를 확인하세요.
+                </div>
+            </div>
+
+            <!-- ================== SECTION 3: 만점 테스트 (QUIZ) ================== -->
+            <div id="pane-quiz" class="view-pane hidden space-y-5">
+                <!-- 유형 설정 탭 버튼 -->
+                <div class="debossed-well p-1.5 flex gap-1 rounded-full">
+                    <button id="qmode-order" onclick="setQuizMode('order')" class="flex-1 py-2 rounded-full text-xs font-black bg-blue-600 text-white shadow-sm">순서배열</button>
+                    <button id="qmode-source" onclick="setQuizMode('source')" class="flex-1 py-2 rounded-full text-xs font-black text-slate-600">사료해석</button>
+                    <button id="qmode-treaty" onclick="setQuizMode('treaty')" class="flex-1 py-2 rounded-full text-xs font-black text-slate-600">조약특화</button>
+                    <button id="qmode-person" onclick="setQuizMode('person')" class="flex-1 py-2 rounded-full text-xs font-black text-slate-600">인물저격</button>
+                </div>
+
+                <!-- 스트릭 및 점수판 -->
+                <div class="flex justify-between items-center px-1">
+                    <span id="quiz-streak-badge" class="bg-blue-100 text-blue-700 text-xs font-black px-3.5 py-1.5 rounded-full shadow-sm">🔥 연속 정답: 0회</span>
+                    <span id="quiz-score-badge" class="bg-slate-200 text-slate-700 text-xs font-black px-3.5 py-1.5 rounded-full shadow-sm">기록: 0회 진행됨</span>
+                </div>
+
+                <!-- 질문 패널 플레이트 -->
+                <div id="quiz-problem-plate" class="tactile-card p-6 bg-gradient-to-br from-blue-50 to-white">
+                    <span id="quiz-badge-tag" class="text-[10px] bg-blue-600 text-white px-2.5 py-1 rounded-md font-black tracking-wider uppercase">유형 1: 역사 순서 정립</span>
+                    <h3 id="quiz-question-desc" class="font-black text-slate-800 text-[16px] leading-relaxed mt-3 whitespace-pre-wrap">질문 데이터를 호출하고 있습니다...</h3>
+                </div>
+
+                <!-- 인터랙티브 보기/답변 입력창 웰 -->
+                <div id="quiz-answer-viewport" class="space-y-3 min-h-[180px]">
+                    <!-- 동적 폼 탑재 -->
+                </div>
+
+                <!-- 채점 및 다음 컨트롤 -->
+                <div class="flex gap-3">
+                    <button id="quiz-secondary-action" onclick="resetQuizOrder()" class="tactile-pill-btn flex-1 py-4 text-xs font-black hidden">
+                        순서 배열 초기화
+                    </button>
+                    <button id="quiz-primary-action" onclick="evaluateQuizResponse()" class="tactile-pill-btn-primary flex-1 py-4 text-xs font-black">
+                        정답 제출 및 채점하기
+                    </button>
+                </div>
+            </div>
+
+            <!-- ================== SECTION 4: 암기비법 (MEMOS) ================== -->
+            <div id="pane-memos" class="view-pane hidden space-y-6">
+                <!-- 하부 탭 컨트롤 -->
+                <div class="debossed-well p-1.5 flex gap-1 rounded-full">
+                    <button id="tab-memo-learn" onclick="switchMemoPanel('learn')" class="flex-1 py-2.5 rounded-full text-xs font-black bg-blue-600 text-white shadow-sm">💡 앞글자 암기 공식</button>
+                    <button id="tab-memo-blind" onclick="switchMemoPanel('blind')" class="flex-1 py-2.5 rounded-full text-xs font-black text-slate-600">🎮 블라인드 정렬 챌린지</button>
+                </div>
+
+                <!-- 공식 학습 서브패널 -->
+                <div id="memo-learn-subview" class="space-y-4">
+                    <div class="tactile-card p-5">
+                        <h4 class="font-black text-blue-600 border-b border-slate-200 pb-2 mb-2 text-sm flex items-center gap-1.5">
+                            <i class="fa-solid fa-shield-halved"></i> 1. 대원군 기조 & 개항 공식
+                        </h4>
+                        <div class="text-xl font-black text-red-600 tracking-wider mb-2">병 · 제 · 병 · 오 · 신 · 척  →  운 · 강</div>
+                        <p class="text-xs text-slate-500 leading-relaxed">
+                            병인박해(1866.1) → 제너럴셔먼호(1866.8) → 병인양요(1866.9) → 오페르트 도굴 미수(1868) → 신미양요(1871.5) → 척화비 건립(1871.6) <br>
+                            <strong>[개항 국면]</strong> 운요호 사건(1875) → 강화도 조약(1876)
+                        </p>
+                    </div>
+
+                    <div class="tactile-card p-5">
+                        <h4 class="font-black text-blue-600 border-b border-slate-200 pb-2 mb-2 text-sm">
+                            🌾 2. 동학 농민 1차 봉기 공식
+                        </h4>
+                        <div class="text-xl font-black text-red-600 tracking-wider mb-2">고 · 백 · 토 · 룡 · 성</div>
+                        <p class="text-xs text-slate-500 leading-relaxed">
+                            고부 민란(1월) → 백산 봉기(1차 동학) → 황토현 전투 승리 → 황룡촌 전투 승리 → 전주성 함락 점령
+                        </p>
+                    </div>
+
+                    <div class="tactile-card p-5">
+                        <h4 class="font-black text-blue-600 border-b border-slate-200 pb-2 mb-2 text-sm">
+                            🖋️ 3. 전주화약 이후 사태 수습 개혁 공식
+                        </h4>
+                        <div class="text-xl font-black text-red-600 tracking-wider mb-2">화 · 교 · 궁 · 전 · 일</div>
+                        <p class="text-xs text-slate-500 leading-relaxed">
+                            전주화약 체결(5월) → 교정청 설치(정부 자율개혁) → 일본군 경복궁 강제점령(6월) → 청일전쟁 발발 → 제1차 갑오개혁 단행(7월)
+                        </p>
+                    </div>
+
+                    <div class="tactile-card p-5">
+                        <h4 class="font-black text-blue-600 border-b border-slate-200 pb-2 mb-2 text-sm">
+                            📜 4. 국권 침탈 강제 조약 세트 공식
+                        </h4>
+                        <div class="text-xl font-black text-red-600 tracking-wider mb-2">의 · 고 · 밀 · 동 · 포 · 늑</div>
+                        <p class="text-xs text-slate-500 leading-relaxed">
+                            한일의정서(1904.2) → 제1차 한일협약(고문정치, 1904.8) → 가쓰라-태프트 밀약(1905.7) → 제2차 영일동맹(1905.8) → 포츠머스 조약(1905.9) → 을사늑약(제2차 한일협약, 1905.11)
+                        </p>
+                    </div>
+                </div>
+
+                <!-- 블라인드 게임 챌린지 서브패널 -->
+                <div id="memo-blind-subview" class="tactile-card p-5 space-y-4 hidden">
+                    <div class="border-b border-slate-200 pb-3">
+                        <h3 class="font-black text-slate-800 text-sm flex items-center gap-1.5">
+                            <i class="fa-solid fa-gamepad text-lg text-blue-600"></i> 두문자 블라인드 정렬 챌린지
+                        </h3>
+                        <p class="text-[10px] text-slate-400">가이드 힌트가 일절 주어지지 않는 초고난도 연대순 조립 테스트</p>
+                    </div>
+
+                    <!-- 게임 테마 셀렉터 -->
+                    <div class="flex gap-2 overflow-x-auto custom-scrollbar pb-1">
+                        <button onclick="loadMnemonicGame('쇄국개항', this)" class="tactile-pill-btn px-3 py-2 text-[11px] shrink-0 bg-blue-100 text-blue-700">1. 쇄국&개항</button>
+                        <button onclick="loadMnemonicGame('동학1차', this)" class="tactile-pill-btn px-3 py-2 text-[11px] shrink-0">2. 동학 농민</button>
+                        <button onclick="loadMnemonicGame('전주화약', this)" class="tactile-pill-btn px-3 py-2 text-[11px] shrink-0">3. 갑오 수습</button>
+                        <button onclick="loadMnemonicGame('국권피탈', this)" class="tactile-pill-btn px-3 py-2 text-[11px] shrink-0">4. 국권 강탈 조약</button>
+                    </div>
+
+                    <!-- 정렬 게임 판데기 -->
+                    <div class="debossed-well p-5 text-center">
+                        <span id="blind-active-title" class="text-xs font-black text-blue-600 block mb-3">대원군 쇄국 & 개항 공식</span>
+                        
+                        <!-- 구멍 슬롯 (100% 빈칸) -->
+                        <div id="blind-slots-row" class="flex justify-center flex-wrap gap-2 my-4">
+                            <!-- JS 연동 비워진 슬롯 -->
+                        </div>
+
+                        <!-- 선택 옵션 풀 -->
+                        <div id="blind-options-pool" class="grid grid-cols-2 gap-2 mt-4">
+                            <!-- JS 연동 카드 보기 -->
+                        </div>
+                    </div>
+
+                    <div class="flex justify-between items-center text-xs">
+                        <span id="blind-game-feedback" class="font-black text-slate-500">순서대로 요소를 클릭하세요!</span>
+                        <button onclick="resetMnemonicGame()" class="tactile-pill-btn px-3 py-1.5 text-[11px] text-blue-600">
+                            <i class="fa-solid fa-rotate mr-1"></i> 처음부터 다시
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ================== SECTION 5: 오답노트 (INCORRECT) ================== -->
+            <div id="pane-incorrect" class="view-pane hidden space-y-4">
+                <div class="tactile-card p-6">
+                    <div class="flex justify-between items-center border-b border-slate-200 pb-3 mb-4">
+                        <h3 class="font-black text-slate-800 text-lg flex items-center gap-2">
+                            <i class="fa-solid fa-triangle-exclamation text-red-500"></i> 오답 취약 개념 보관함
+                        </h3>
+                        <button onclick="clearAllWrongAnswers()" class="tactile-pill-btn px-3 py-1 text-xs text-red-500">
+                            오답 전체 포맷
+                        </button>
+                    </div>
+
+                    <div id="wrong-answers-container" class="space-y-3 max-h-[360px] overflow-y-auto pr-1 custom-scrollbar">
+                        <!-- 동적 오답 데이터 로딩 -->
+                    </div>
+
+                    <div id="wrong-test-activator-panel" class="pt-4 border-t border-slate-200 hidden">
+                        <button onclick="triggerWrongIntensiveTest()" class="tactile-pill-btn-primary w-full py-4 text-xs">
+                            🎯 오답 집중 무작위 테스트 실행하기 (만점 직공)
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <!-- ── 모바일 하단 플로팅 네비게이션 ── -->
+    <div id="mobile-navigation-wrap" class="fixed left-1/2 -translate-x-1/2 bottom-6 z-50 transition-all duration-300 md:hidden w-[calc(100%-32px)]">
+        <nav id="tactile-nav" class="tactile-nav-container flex items-center justify-between p-2 h-[72px]">
+            <button onclick="switchSection('study', this)" class="tactile-nav-btn flex-1 h-full tactile-nav-btn-active">
+                <i class="fa-solid fa-book-open text-lg"></i>
+                <span class="text-[10px] font-black mt-0.5 nav-subtext">공부</span>
+            </button>
+            <button onclick="switchSection('timeline', this)" class="tactile-nav-btn flex-1 h-full">
+                <i class="fa-solid fa-timeline text-lg"></i>
+                <span class="text-[10px] font-black mt-0.5 nav-subtext">연표</span>
+            </button>
+            <button onclick="switchSection('quiz', this)" class="tactile-nav-btn flex-1 h-full">
+                <i class="fa-solid fa-vial text-lg"></i>
+                <span class="text-[10px] font-black mt-0.5 nav-subtext">테스트</span>
+            </button>
+            <button onclick="switchSection('memos', this)" class="tactile-nav-btn flex-1 h-full">
+                <i class="fa-solid fa-lightbulb text-lg"></i>
+                <span class="text-[10px] font-black mt-0.5 nav-subtext">비법</span>
+            </button>
+            <button onclick="switchSection('incorrect', this)" class="tactile-nav-btn flex-1 h-full relative">
+                <i class="fa-solid fa-triangle-exclamation text-lg"></i>
+                <span class="text-[10px] font-black mt-0.5 nav-subtext">오답</span>
+                <span id="mobile-badge" class="absolute top-1 right-3 bg-red-500 text-white text-[8px] font-black px-1.5 py-0.5 rounded-full hidden">0</span>
+            </button>
+        </nav>
+    </div>
+
+    <!-- ── Duru 프리미엄 디테일 바텀시트 모달 ── -->
+    <div id="m3-backdrop" class="fixed inset-0 bg-black/40 z-40 opacity-0 pointer-events-none transition-opacity duration-300" onclick="closeM3BottomSheet()"></div>
+    <div id="m3-bottom-sheet" class="fixed bottom-0 left-0 right-0 max-w-xl mx-auto bg-white rounded-t-[32px] z-50 transform translate-y-full transition-transform duration-300 ease-[cubic-bezier(0.2,0.8,0.2,1)] p-6 shadow-2xl overflow-y-auto max-h-[75vh]">
+        <div class="w-12 h-1 bg-slate-300 rounded-full mx-auto mb-4"></div>
+        
+        <div class="flex justify-between items-start">
+            <div>
+                <span id="sheet-meta" class="text-xs font-black text-blue-600">Day 1</span>
+                <h2 id="sheet-title" class="text-2xl font-black mt-1 text-slate-800">강화도 조약</h2>
+            </div>
+            <span id="sheet-year" class="text-xl font-black text-blue-600">1876년</span>
+        </div>
+
+        <div class="mt-6 space-y-4">
+            <div class="p-4 bg-slate-50 rounded-2xl border border-slate-200">
+                <strong class="text-xs text-blue-600 block mb-1">👤 관련 핵심 인물 및 주체 세력</strong>
+                <p id="sheet-actor" class="text-sm text-slate-800 font-bold">신헌, 구로다 기요타카</p>
+            </div>
+
+            <div class="p-4 bg-slate-50 rounded-2xl border border-slate-200">
+                <strong class="text-xs text-blue-600 block mb-1">🔑 기말고사 100점 대비 정답 선지 핵심 포인트</strong>
+                <p id="sheet-desc" class="text-sm text-slate-800 leading-relaxed font-bold">내용</p>
+            </div>
+
+            <div class="p-4 bg-blue-50 rounded-2xl border border-blue-200 text-blue-900">
+                <strong class="text-xs text-blue-600 block mb-1"><i class="fa-solid fa-quote-left mr-1"></i> 시험 빈출 사료 원문</strong>
+                <p id="sheet-source" class="text-xs italic leading-relaxed mt-1">"내용"</p>
+            </div>
+        </div>
+
+        <button onclick="closeM3BottomSheet()" class="w-full bg-blue-600 text-white font-black py-4 px-4 rounded-full mt-6 shadow-md hover:bg-blue-700 transition active:scale-95">
+            내용을 확인했습니다
+        </button>
+    </div>
+
+    <!-- ── Duru 오리지널 스타일 커스텀 다이얼로그 모달 ── -->
+    <div id="custom-dialog-backdrop" class="fixed inset-0 z-[110] bg-black/20 backdrop-blur-sm flex items-center justify-center p-4 hidden">
+        <div class="tactile-card w-full max-w-xs p-6 flex flex-col text-center">
+            <div class="w-14 h-14 bg-amber-50 rounded-full mx-auto mb-3 flex items-center justify-center text-amber-500">
+                <i class="fa-solid fa-triangle-exclamation text-2xl"></i>
+            </div>
+            <h3 id="custom-dialog-title" class="text-lg font-black mb-1">Duru 안내</h3>
+            <p id="custom-dialog-message" class="text-xs font-bold text-slate-500 leading-relaxed mb-5 whitespace-pre-wrap">안내 메시지가 수록됩니다.</p>
+            <div id="custom-dialog-actions" class="flex gap-3">
+                <!-- 동적 제어 버튼 -->
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<!-- 역사 데이터베이스 및 제어 시스템 로직 -->
+<script>
+    // 93개 고촌고 수능/기말 분석 핵심 한국사 데이터베이스
+    const database = [
+        { id: 1, day: 1, year: 1840, title: "제1차 아편전쟁", type: "전쟁/침략/갈등", actor: "청나라, 영국", desc: "영국의 아편 수입 금지 반발로 시작. 난징 조약 체결 및 동아시아 문호 개방의 시초.", source: "난징 조약: '홍콩 섬을 영국 여왕에게 영구히 양도하며 개항장을 추가한다...'" },
+        { id: 2, day: 1, year: 1854, title: "미일 화친 조약", type: "조약", actor: "일본 에도 막부, 미국", desc: "페리 제독의 함대 무력 시위에 굴복하여 일본 개항.", source: "화친조약 제1조: '미국 선박에 물, 식량, 석탄을 공급하며 시모다와 하코다테를 개항한다...'" },
+        { id: 3, day: 1, year: 1856, title: "제2차 아편전쟁", type: "전쟁/침략/갈등", actor: "청나라, 영국, 프랑스", desc: "베이징 조약 체결로 러시아가 연해주 영토를 할양받는 계기가 됨.", source: "베이징 조약: '러시아 황제에게 청나라 동쪽 연해주의 소유권을 영구히 양도한다...'" },
+        { id: 4, day: 1, year: 1858, title: "미일 수호 통상 조약", type: "조약", actor: "일본, 미국", desc: "치외법권(영사재판권)과 관세권 협상 배제 등이 포함된 불평등 조약.", source: "수호통상조약: '미국인은 일본 법률의 제약을 받지 않고 미국 영사의 재판만을 받는다...'" },
+        { id: 5, day: 1, year: 1861, title: "양무운동", type: "운동/시위", actor: "청나라 양무파 (이홍장 등)", desc: "중체서용 정신에 입각하여 서양식 군사 기술을 도입한 자강 개혁.", source: "이홍장 상소문: '서양의 무기와 군사 제도는 매우 강력하니, 중체의 질서 위에 서양 기술을 배워 기기국을 열어야 합니다...'" },
+        { id: 6, day: 1, year: 1863, title: "고종 즉위", type: "설치/파견/제거", actor: "고종, 흥선대원군", desc: "흥선대원군의 10년 집권 시작. 비변사 약화, 서원 정리, 경복궁 중건 착수.", source: "대원군 포고문: '서원을 정리하고 경복궁을 다시 세워 왕실의 권위를 온 천하에 다시 바로 세울 것이다...'" },
+        { id: 7, day: 1, year: 1866, title: "병인박해 (1월)", type: "전쟁/침략/갈등", actor: "흥선대원군 정부, 프랑스 선교사", desc: "천주교도를 탄압하여 프랑스 선교사 등 대규모 처형. 병인양요의 구실 제공.", source: "대원군 전언: '사학을 믿는 자는 가차없이 처단하고 서양 오랑캐의 침투를 뿌리뽑을 것이다...'" },
+        { id: 8, day: 1, year: 1866, title: "제너럴 셔먼호 사건 (7월)", type: "전쟁/침략/갈등", actor: "평양 감사 박규수, 평양 관민들, 미국 상선", desc: "평양 대동강에 불법 침입한 무장 상선 제너럴 셔먼호를 박규수 등 관민들이 격퇴.", source: "평양 관민 보고서: '미국 상선이 우리 백성을 강제로 억류하고 약탈하므로, 불화살을 쏘아 배를 소멸시켰습니다...'" },
+        { id: 9, day: 1, year: 1866, title: "병인양요 (9월)", type: "전쟁/침략/갈등", actor: "한성근 부대, 양헌수 부대, 프랑스 함대", desc: "강화도 침공. 한성근(문수산성), 양헌수(정족산성) 활약으로 격퇴. 외규장각 도서 약탈당함.", source: "양헌수 정족산성 일기: '포수들이 정족산성 성벽 뒤에 매복하였다가 성문을 진격하던 불란서 군을 기습 격퇴했다...'" },
+        { id: 10, day: 1, year: 1868, title: "메이지 유신", type: "운동/시위", actor: "일본 혁신 무사 세력", desc: "막부 체제를 타도하고 천황 중심의 근대 국가 체제 설립. 문명개화론 제창.", source: "오개조 서문: '넓게 회의를 일으켜 공론으로 결정하며, 지식을 세계에서 구해 황국 기초를 세운다...'" },
+        { id: 11, day: 1, year: 1868, title: "남연군 묘 도굴 미수 사건", type: "전쟁/침략/갈등", actor: "독일 상인 오페르트", desc: "대원군의 아버지 남연군 묘 도굴 시도로 조선의 서양 통상 수교 거부 의사 극대화.", source: "대원군 격노 서한: '부모의 무덤까지 파헤치는 도둑 무리와 어찌 화친을 논하겠는가!'" },
+        { id: 12, day: 1, year: 1871, title: "신미양요 (5월)", type: "전쟁/침략/갈등", actor: "광성보 어재연 장군, 미군 함대", desc: "셔먼호 사건을 구실로 미국의 강화도 침공. 광성보 어재연 부대 전사하며 결사 항전.", source: "미 해군 보고: '조선군은 항복하지 않고 무기도 없이 돌을 던지며 끝까지 결사 항전하여 전율을 일으켰다...'" },
+        { id: 13, day: 1, year: 1871, title: "척화비 건립 (6월)", type: "설치/파견/제거", actor: "흥선대원군", desc: "전국 각지에 통상 수교 거부를 천명하는 비석 건립. 척화 주전론 명문화.", source: "비문 원문: '洋夷侵犯 非戰則和 主和賣國 (서양 오랑캐가 침범함에 싸우지 않으면 화친함이요, 화친을 주장함은 나라를 파는 것이다.)'" },
+        { id: 14, day: 1, year: 1873, title: "정한론 대두", type: "운동/시위", actor: "일본 무사 세력 (사이고 다카모리)", desc: "조선 서계 거부를 계기로 무력을 동원해 조선을 정벌하자는 주장이 부상.", source: "사이고 서한: '내가 조선에 사절로 가서 살해당한다면, 이를 빌미로 즉각 조선에 출병해 정벌할 명분이 섭니다...'" },
+        { id: 15, day: 1, year: 1873, title: "흥선대원군 하야 (11월)", type: "설치/파견/제거", actor: "고종, 면암 최익현", desc: "최익현의 상소 이후 대원군 퇴진. 고종 친정과 개방 성향의 가문 득세.", source: "최익현 상소문: '대원군께서는 물러나 신하로서 도리를 다하시고, 주상 전하께서 직접 정사를 살피셔야 마땅합니다...'" },
+        { id: 16, day: 1, year: 1874, title: "개화세력의 등장", type: "운동/시위", actor: "박규수, 오경석, 유홍기", desc: "북학 사상과 서구 문물 지식을 수용하여 통상 개화론을 주장하는 선구 세력 형성.", source: "유길준 회고: '박규수 사랑방에 모여 세계 지도인 지구전요를 보며 서양 문물의 개방 필요성을 비로소 깨우쳤다...'" },
+        { id: 17, day: 1, year: 1875, title: "운요호 사건", type: "전쟁/침략/갈등", actor: "일본 군함 운요호, 수비대", desc: "일본이 무력 개항을 목적으로 강화도 초지진과 영종도를 무단 도발 포격한 사건.", source: "조선 조정 장계: '왜국 배가 강화도 초지진에 나타나 대포를 쏘며 위협하고 영종도에 상륙하여 큰 난을 부렸습니다...'" },
+        { id: 18, day: 1, year: 1876, title: "강화도 조약", type: "조약", actor: "조선 판중추부사 신헌, 일본 구로다", desc: "최초의 근대적 불평등 조약. 조선의 자주국 명시, 부산·원산·인천 개항, 해안측량권, 치외법권.", source: "조약문 제1조: '조선국은 자주국이며 일본국과 평등한 권리를 가진다.' (청의 간섭 배제 의도)" },
+        { id: 19, day: 1, year: 1876, title: "왜양일체론 대두", type: "운동/시위", actor: "면암 최익현", desc: "도끼를 메고 강화도 조약에 반대하는 상소(지부복궐소) 제출. 서양과 왜는 하나라는 사상.", source: "지부복궐소: '저들이 비록 왜인이라 하나 실은 서양 오랑캐와 같습니다. 한번 문호를 열면 사학이 퍼지고 국토가 피폐해질 것입니다...'" },
+        { id: 20, day: 1, year: 1876, title: "수신사 파견", type: "설치/파견/제거", actor: "1차 김기수, 2차 김홍집", desc: "일본의 문물 시찰 및 국제 흐름 파악 목적. 2차 김홍집이 황준헌의 '조선책략' 수입.", source: "조선책략: '조선이 러시아의 남하를 막기 위해 취할 방책은 중국과 친하고(친중), 일본과 결합하고(결일), 미국과 연대(연미)하는 길뿐이다...'" },
+        { id: 21, day: 1, year: 1876, title: "조일수호조규부록 (7월)", type: "조약", actor: "조선 조정, 일본", desc: "개항장에서 일본 화폐 유통을 전격 인정하고, 일본인 거류지(간행이정) 범위를 설정함.", source: "부록 규정: '개항장에서 일본 상인은 조선 화폐와 일본 화폐를 자유로이 혼용하여 거래할 수 있다...'" },
+        { id: 22, day: 1, year: 1876, title: "조일무역규칙 (7월)", type: "조약", actor: "조선 조정, 일본", desc: "양곡 무제한 유출 인정, 일본 수입품 무관세 및 일본 선박 무항세의 불평등 규정.", source: "무역규칙 규정: '일본 정부 소속 선박은 항세를 내지 않으며, 조선 항구에서 곡물을 무제한으로 유출해 갈 수 있다...'" },
+        { id: 23, day: 1, year: 1880, title: "통리기무아문 설치", type: "설치/파견/제거", actor: "고종 조정, 개화파", desc: "개화 정책을 체계적으로 전담하는 근대식 중앙 행정 기구. 하부 12사 운영.", source: "조정 윤음: '세계 군국 정세를 총괄하고 근대식 개화 자강 정책을 신속하게 도모하기 위해 통리기무아문을 설치한다...'" },
+        { id: 24, day: 1, year: 1881, title: "영남 만인소 사건", type: "운동/시위", actor: "이만손 등 영남 유생들", desc: "황준헌의 '조선책략' 내용(연미론)에 반발하여 만 명이 서명한 척사 상소 운동.", source: "만인소 상소문: '미국은 우리가 본래 모르던 오랑캐 국가입니다. 어찌 그들을 끌어들여 러시아를 막으려 하십니까...'" },
+        { id: 25, day: 1, year: 1881, title: "조사 시찰단 파견", type: "설치/파견/제거", actor: "박정양, 어윤중, 홍영식 등", desc: "신사유람단. 일본의 근대식 정부 기구와 산업 시설을 비밀리에 시찰.", source: "동행기록: '일본에 도착한 조사들은 각기 소속된 부서를 나누어 정밀하게 장부와 시설을 베껴 기록했습니다...'" },
+        { id: 26, day: 1, year: 1881, title: "별기군 창설 (5월)", type: "설치/파견/제거", actor: "신식 군대, 일본인 교관 호리모토", desc: "신식 군대 창설. 기존 5군영을 2영으로 통폐합하며 발생한 구식 군인 차별의 발단.", source: "조선사 기술: '신식 군인들에게는 좋은 한복과 신발, 높은 급료를 지급하였으나 구식 군인들은 일 년이 넘도록 봉급을 받지 못했다...'" },
+        { id: 27, day: 1, year: 1881, title: "영선사 파견 (9월)", type: "설치/파견/제거", actor: "김윤식 및 유학생들", desc: "청나라 톈진 기기창에 파견되어 근대식 무기 제조 기술과 군사 과학을 전수받음.", source: "청국 일지: '조선 유학생들은 밤낮으로 톈진 무기 기기창에서 철강 주조법과 서양 대포 설계도를 도사하였다...'" },
+        { id: 28, day: 1, year: 1882, title: "조미 수호 통상 조약", type: "조약", actor: "신헌, 미국 슈펠트", desc: "서양 열강과 맺은 최초의 조약. 거중조정과 관세권 부과, 최혜국 대우 신설.", source: "조약문 제1조: '만약 다른 나라가 한쪽에 불평등하게 대하거나 억압할 때, 양국은 조정을 통해 우의를 다진다(거중조정).'" },
+        { id: 29, day: 1, year: 1882, title: "임오군란", type: "전쟁/침략/갈등", actor: "선혜청 민겸호, 대원군, 구식 군인", desc: "구식 군인 봉기. 대원군이 일시 복귀하였으나 청나라 군대의 신속한 진압으로 대원군 납치 연행.", source: "당대 야사: '포수와 훈련원 군인들이 민겸호의 집을 파괴하고 난입하였으며 중전은 상궁 옷을 입고 전라도로 도망쳤다...'" },
+        { id: 30, day: 1, year: 1882, title: "제물포 조약 (7월)", type: "조약", actor: "조선 조정, 일본", desc: "임오군란 사후 대책. 일본 공사관에 자위용 경비병을 주둔시키는 권리를 조선 국토에 최초 승인.", source: "조약 제5조: '일본 공사관에 군사를 약간 두어 경비하게 하며, 조선국은 연무공원을 세워 공사관 경비를 수호한다...'" },
+        { id: 31, day: 1, year: 1882, title: "조청 상민 수륙 무역 장정", type: "조약", actor: "조선, 청나라 대표 이홍장", desc: "조선이 청의 속방임을 최초 규정. 청 상인의 내지 영업권(내지 통상권) 허용으로 청 경제 침탈 강화.", source: "서문 원문: '조선은 오래전부터 번방(제후국)으로서 신하의 도리를 다해 왔으니, 이번 조약은 상호 호혜가 아닌 은혜의 속방 규정이다...'" },
+        { id: 32, day: 1, year: 1882, title: "척화비 제거", type: "설치/파견/제거", actor: "고종 조정, 개화파 정부", desc: "임오군란 후 대원군이 청으로 송환되자 개방 의지를 표방하기 위해 긴급 철거.", source: "사서 기록: '종로 사거리에 굳게 서 있던 척화비를 포도청 포수들이 밧줄로 묶어 당겨 넘어뜨리고 부수어 묻었다...'" },
+        { id: 33, day: 1, year: 1883, title: "영독러프오 수교", type: "조약", actor: "조선 조정, 서구 열강들", desc: "영국, 독일, 러시아, 프랑스 등과 순차적으로 조약을 체결하며 본격적 수교 흐름 진입.", source: "외교록: '영국 전권 대사 파크스와 조선 외부대신 민영목이 한성에서 만나 우호 수호 통상 조약에 사인하였다...'" },
+        { id: 34, day: 1, year: 1883, title: "박문국 설치", type: "설치/파견/제거", actor: "개화파 정부, 한성순보", desc: "출판 인쇄 관청. 조선 최초의 근대 관보 신문 '한성순보'를 제작 발간.", source: "창간사: '천하 정세와 서양 과학 지식을 널리 백성들에게 알려 무지를 깨우치고 나라의 실력을 기르고자 발행한다...'" },
+        { id: 35, day: 1, year: 1884, title: "청불 전쟁", type: "전쟁/침략/갈등", actor: "청나라, 프랑스 제국군", desc: "베트남 종주권을 두고 발발한 대전. 이로 인해 한성에 주둔하던 청나라 군대의 절반 가량이 철수.", source: "청국 장계: '불란서 오랑캐가 안남(베트남)을 침범하여 위급하니 한성에 배치한 주둔군 절반을 톈진으로 집결시킬 것...'" },
+        { id: 36, day: 1, year: 1884, title: "조러 비밀협약 추진", type: "조약", actor: "고종의 지지, 묄렌도르프", desc: "청나라의 지독한 간섭에서 벗어나기 위해 러시아를 끌어들여 외교 동맹을 맺으려 밀서 교환 추진.", source: "밀서 조항: '청의 횡포를 러시아 함대가 동해안에서 방어해 준다면, 영흥만을 러시아 군사 기지로 대여해 줄 용의가 있다...'" },
+        { id: 37, day: 1, year: 1884, title: "갑신정변 (12월)", type: "전쟁/침략/갈등", actor: "김옥균, 박영효, 홍영식 등 급진개화파", desc: "급진 개화파의 3일 천하. 우정총국 개국연을 틈타 고종을 옹위하고 개혁 시도했으나 청의 개입으로 실패.", source: "김옥균 일기: '우정국 밖에서 불길이 솟구치자 이규완 등이 달려나가 민영익을 척살하며 거사의 첫 신호를 보냈다...'" },
+        { id: 38, day: 1, year: 1884, title: "개혁 정강 14조", type: "개혁", actor: "급진개화파 임시 정부", desc: "청 사대 폐지, 신분제 타파(인민평등), 호조로 재정 일원화, 지조법 개혁 등 발표.", source: "정강 제1조 및 3조: '대원군을 조속히 귀국시키고 청에 대한 조공 허례를 폐지할 것. 문벌을 폐지하여 인민 평등권을 세울 것...'" },
+        { id: 39, day: 1, year: 1885, title: "한성 조약", type: "조약", actor: "조선, 일본 정권", desc: "갑신정변 후 일본과 체결. 일본 공사관 신축 비용 부담 및 고액의 정변 피해 배상금 전격 지불.", source: "조약문: '조선국은 정변 중 희생된 일본 상인들에 대한 배상금 및 불에 탄 공사관 신축 비용 2만 원을 지불한다...'" },
+        { id: 40, day: 1, year: 1885, title: "거문도 사건", type: "전쟁/침략/갈등", actor: "영국 동양함대, 러시아", desc: "러시아 남하 견제 목적으로 영국이 남해 거문도를 무단 불법 점령(2년간).", source: "영국 해군 지시: '러시아가 영흥만을 침탈하지 못하도록 해밀턴 항(거문도)을 무단 점거하여 요새를 세울 것...'" },
+        { id: 41, day: 2, year: 1885, title: "톈진 조약 (4월)", type: "조약", actor: "청나라 이홍장, 일본 이토 히로부미", desc: "갑신정변 수습용 청일 양국 조약. 양국 군대 즉각 철수, 향후 조선 파병 시 상호 사전 문서 통지 약속.", source: "조약 핵심 조항: '향후 조선국에 내란이 있어 한쪽 국가가 출병할 때에는 반드시 사전에 문서로 상대국에 알려 조율해야 한다...'" },
+        { id: 42, day: 2, year: 1885, title: "조선 중립국 주장", type: "운동/시위", actor: "유길준, 독일 부영사 부들러", desc: "열강 대립이 정점에 달하자 한반도를 스위스처럼 중립 지대로 고립시켜 자주권을 보존하자고 주장.", source: "유길준의 중립화론: '우리가 살길은 러시아 청 일본 미국이 합심하여 조선을 중립국으로 보장하는 조약을 체결하는 길뿐입니다...'" },
+        { id: 43, day: 2, year: 1886, title: "육영공원", type: "설치/파견/제거", actor: "고종 조정, 미국인 교사 헐버트", desc: "양반 관료 자제를 모아 외국어와 신학문을 교습한 조선 최고의 근대 관립 학교 설립.", source: "학제 일지: '미국에서 초빙된 교사 헐버트가 영어 지리학 수학 과학을 양반 도련님들에게 양식식으로 가르쳤다...'" },
+        { id: 44, day: 2, year: 1887, title: "주미 공사관 설치", type: "설치/파견/제거", actor: "초대 전권공사 박정양", desc: "청나라의 간섭을 이겨내고 미국의 수도 워싱턴에 공사관을 정식 설치하여 독자 외교 달성.", source: "박정양 일기: '청국이 부과한 영약3조를 물리치고 독자적으로 미국 대통령을 알현해 자주국 국서를 전했다...'" },
+        { id: 45, day: 2, year: 1892, title: "교조 신원 운동", type: "운동/시위", actor: "2대 교주 최시형 및 동학도들", desc: "처형된 1대 창시자 최제우의 억울함을 풀고 동학 포교를 국가가 공식 보장해줄 것을 요구.", source: "신원 상소문: '선생 최제우는 백성을 미혹한 자가 아니요, 하늘의 도를 전한 선비이니 억울한 죄명을 씻어주소서...'" },
+        { id: 46, day: 2, year: 1892, title: "삼례 · 보은 집회", type: "운동/시위", actor: "동학 농민 지도부, 수만 명의 농민", desc: "충청 보은집회(1893)에서 '척왜척양(외세 배격)', '보국안민(나라 구함)'을 천명하며 민중 정치 운동으로 진화.", source: "보은 집회 벽보: '양 오랑캐와 왜적들이 서울에 가득 차 나라를 흔드니, 위로 나라를 돕고 아래로 백성을 편안케 하기 위해 모였다(보국안민)...'" },
+        { id: 47, day: 2, year: 1893, title: "포접제 정리", type: "설치/파견/제거", actor: "동학 교단 남접과 북접 지도부", desc: "전국 조직을 포(苞)와 접(접)으로 묶는 네트워크 정비. 훗날 전국 동시 봉기의 물리적 기반.", source: "교적 기록: '전국의 도인들을 면, 군 단위의 접으로 묶어 접주를 임명하고, 이를 총괄하는 대접주를 두어 일사불란한 체계를 세웠다...'" },
+        { id: 48, day: 2, year: 1894, title: "고부 농민 봉기 (1월)", type: "운동/시위", actor: "전봉준, 전라도 고부 농민들", desc: "부패 군수 조병갑의 만석보 수세 착취와 가혹한 세금 수탈에 저항해 고부 관아 기습 점령. 동학운동의 발단.", source: "고부 농민 백산 격문: '조병갑이 백성들의 피땀으로 세운 저수지 세금을 착취하여 치부하니, 전봉준 등과 함께 일어나 고부 관아를 쓸어버렸다...'" },
+        { id: 49, day: 2, year: 1894, title: "제1차 동학농민운동 (3월)", type: "운동/시위", actor: "녹두장군 전봉준, 손화중, 김개남", desc: "백산 창의. 황토현·황룡촌 전투에서 관군 대파 후 기세를 타고 전라도 치소 전주성 전격 점령.", source: "백산 4대 강령: '사람을 죽이지 말고 재물을 다치지 말라. 군대를 몰고 서울로 진격하여 권귀들을 멸하여라...'" },
+        { id: 50, day: 2, year: 1894, title: "전주 화약 (5월)", type: "조약", actor: "동학 농민군, 조정 관군", desc: "정부가 청·일 군대를 동시 호출하자 외세 개입 명분을 없애기 위해 휴전 합의. 민간 자치 기구인 '집강소' 설치.", source: "폐정개혁안 12조 사료: '왜와 사통하는 자는 처단할 것. 노비문서를 불태워 없앨 것. 토지는 균등하게 나누어 경작하게 할 것...'" },
+        { id: 51, day: 2, year: 1894, title: "군국기무처 설치 (6월)", type: "설치/파견/제거", actor: "김홍집, 일본 세력", desc: "일본군의 경복궁 강제 점령 직후 궁내 개혁을 위해 발족된 초법적 행정기구. 제1차 갑오개혁의 중추.", source: "조정 실록: '일본 군사들이 대궐 문을 부수고 침입하여 고종을 위협하였으며, 다음 날 김홍집을 필두로 군국기무처를 열었다...'" },
+        { id: 52, day: 2, year: 1894, title: "청일 전쟁", type: "전쟁/침략/갈등", actor: "일본 제국 군대, 청나라 북양함대", desc: "동학 파병 구실로 들어온 일군이 경복궁 강점 직후 아산풍도 청국 수송선을 기습 타격 선포하며 발발.", source: "사서 기록: '아산 앞바다에서 자욱한 연기가 솟구치니, 일본 해군이 청나라 군인들이 탑승한 고승호를 포격 침몰시켰습니다...'" },
+        { id: 53, day: 2, year: 1894, title: "제1차 갑오개혁 (7월)", type: "개혁", actor: "김홍집, 군국기무처", desc: "은본위제, 신분 귀천 및 노비제 전격 폐지, 연좌제 폐지, 과거제 폐지, 탁지아문 재정 일원화.", source: "개혁 문서 제1조 및 3조: '신분 계급의 노비 제도를 영구히 폐지하여 자유 민중으로 삼는다. 역률의 연좌법을 일체 금한다...'" },
+        { id: 54, day: 2, year: 1894, title: "제2차 동학농민운동 (9월)", type: "운동/시위", actor: "전봉준, 손병희 연합군", desc: "일본의 경복궁 강제 점령과 국권 침탈에 대항해 일으킨 대규모 반외세 구국 봉기.", source: "삼례 격문: '이번 봉기는 구차하게 이익을 탐함이 아니요 오직 왜적을 징벌하고 나라를 보존하려는 보국안민의 결사대이다...'" },
+        { id: 55, day: 2, year: 1894, title: "우금치 전투", type: "전쟁/침략/갈등", actor: "동학 농민 연합군, 조·일 연합군", desc: "공주 우금치 고개에서 대격돌. 연합 농민군이 압도적인 신식 무기(개틀링건, 소총 등)를 가진 정규군에 완패.", source: "우금치 전투 생존 기록: '시체가 온 산하를 하얗게 뒤덮었으며, 동학군 소총의 화력은 일본 군대의 연발식 탄환 무기에 상대가 되지 못했다...'" },
+        { id: 56, day: 2, year: 1894, title: "제2차 갑오개혁 (12월)", type: "개혁", actor: "김홍집 · 박영효 연립내각", desc: "군국기무처 폐지, 지방 사법권 남용 제어를 위해 근대식 '재판소' 최초 개설, 8도를 23부 지방 제도로 개편.", source: "내정 7기: '지방관의 군사권과 사법권을 박탈하고 전국의 사법권을 오직 재판소 단독에 귀속시킨다...'" },
+        { id: 57, day: 2, year: 1895, title: "홍범 14조", type: "개혁", actor: "고종 황제", desc: "고종이 직접 종묘에 나가 자주독립을 맹세하고 근대 개혁의 대강령 14개조 문서를 공표.", source: "홍범 제1조: '청나라에 의존하는 생각을 완전히 끊어버리고 자주독립의 튼튼한 기초를 세운다...'" },
+        { id: 58, day: 2, year: 1895, title: "교육 입국 조서", type: "개혁", actor: "고종 황제", desc: "덕(德)·체(體)·지(智) 삼육을 기반으로 인재를 양성함을 선포. 한성사범학교, 외국어학교 등이 설립됨.", source: "조서 원문: '공부하고 지식을 넓히는 일은 오직 국가의 존망과 결직되어 있으니, 널리 소학교와 사범학교를 세워 재목을 기라...'" },
+        { id: 59, day: 2, year: 1895, title: "시모노세키 조약", type: "조약", actor: "청나라 이홍장, 일본 이토 히로부미", desc: "청일전쟁 전면 전승 조약. 청이 일본에 요동 반도(랴오둥)와 타이완 영토를 양도하도록 규정.", source: "조약문 제1조: '청국은 조선국이 영구히 완벽한 자주독립국임을 인정하며, 요동 반도 소유권을 일제에 양도한다...'" },
+        { id: 60, day: 2, year: 1895, title: "삼국 간섭", type: "전쟁/침략/갈등", actor: "러시아, 프랑스, 독일 동맹파", desc: "일본의 요동 반도 획득에 제동을 건 러시아 주도의 삼국 압박. 조선 조정 내 친러 바람 형성 계기.", source: "삼국 통보: '일본이 요동 반도를 차지하는 것은 동양 평화를 영구히 위협하는 일이니 청국에 영토를 돌려주라...'" },
+        { id: 61, day: 2, year: 1895, title: "을미사변 (10월)", type: "전쟁/침략/갈등", actor: "미우라 고로, 일본 낭인", desc: "조선 조정의 친러 외교를 저지하기 위해 경복궁에 난입하여 국모 명성황후를 잔혹하게 살해한 만행.", source: "일제 외교 기밀기록: '여우 사냥이 성공하여 민비를 시해하고 불에 태워 매장하는 작전을 완벽하게 집행 완료하였다...'" },
+        { id: 62, day: 2, year: 1895, title: "을미개혁", type: "개혁", actor: "김홍집 내각", desc: "단발령 강제 집행, 서양식 태양력 공식 채택, 독자적 '건양' 연호 설정, 종두법 시행.", source: "단발령 고시: '임금께서 머리를 깎으셨으니 온 나라의 신민들은 위엄을 좇아 상투를 자르고 근대로 나아가라...'" },
+        { id: 63, day: 2, year: 1895, title: "을미의병", type: "운동/시위", actor: "유인석, 이소응 등 유생 의병", desc: "명성황후의 시해와 상투를 잘라야 하는 단발령에 분개하여 일어난 최초의 위정척사 의병 활동.", source: "유인석 의병 격문: '국모를 잔인하게 살해하고 백성의 상투를 자르는 저 사악한 무리를 징벌하여 국가의 도를 보존하자...'" },
+        { id: 64, day: 2, year: 1896, title: "아관파천", type: "전쟁/침략/갈등", actor: "고종 황제, 러시아 공사관", desc: "신변 위협을 극심히 느낀 고종이 러시아 공사관으로 처소를 옮긴 사건. 친일 내각 붕괴, 이권 침탈 가속화.", source: "조정 일지: '임금께서 정동 러시아 공사관으로 거처를 옮기시자 친일 김홍집 내각이 백성들에게 난도질당해 참수되었다...'" },
+        { id: 65, day: 2, year: 1896, title: "독립 협회 설립", type: "설치/파견/제거", actor: "서재필, 윤치호 등 개화 지식인", desc: "서재필이 독립신문을 창간한 뒤 설립. 청 사대 종결 상징인 독립문과 독립관 건립 추진.", source: "독립신문 논설: '우리는 사대를 부인하고 우리 스스로 나라를 보존해야 하니 청 사신 맞이 영은문을 헐고 독립문을 세운다...'" },
+        { id: 66, day: 2, year: 1897, title: "대한 제국 선포", type: "설치/파견/제거", actor: "고종 황제, 대한제국", desc: "환궁한 고종이 제국을 선포하고 환구단(원구단)에서 황제 즉위식 거행. 연호 '광무' 제정.", source: "황제 즉위 조서: '황제의 이름으로 국호를 대하하고 연호를 광무로 정하여 자주 제국의 튼튼한 기초를 세운다...'" },
+        { id: 67, day: 2, year: 1897, title: "광무개혁", type: "개혁", actor: "고종 황제, 대한 제국", desc: "구본신참(옛 제도를 근본으로 새 제도를 참고) 원칙. 황제 직속 군부 최고 기구 '원수부' 설립.", source: "광무 조항: '원수부를 설립하여 육해군 전권을 황제가 친히 통수하며, 군부와 참모부를 하부 조직으로 둔다...'" },
+        { id: 68, day: 2, year: 1898, title: "만민 공동회", type: "운동/시위", actor: "독립 협회, 한성 시민들", desc: "종로 광장에서 열린 자주 군중 집회. 신분 귀천 없이 자유롭게 발언하는 근대적 여론 형성의 시초.", source: "현장 사료: '종로 벌판에 모인 백성들 중 백정 박성춘이 연단에 올라 신분 차별을 물리치고 나라를 수호하자 외쳤다...'" },
+        { id: 69, day: 2, year: 1898, title: "자주 국권 운동", type: "운동/시위", actor: "독립 협회, 만민 공동회 시민들", desc: "러시아 제국의 절영도 저탄소 강제 임대 요구를 저지하고 한러 은행 폐쇄 성과 달성.", source: "만민회 결의문: '우리 영토의 이권을 외국에 함부로 넘겨주는 자는 역적이며, 절영도 조차 요구를 전격 거절하라...'" },
+        { id: 70, day: 2, year: 1898, title: "자유 민권 운동", type: "운동/시위", actor: "독립 협회", desc: "국민의 신체와 사유 재산권 보장, 언론·출판·집회·결사 및 참정권을 끊임없이 요구.", source: "민권 상소: '죄 없는 백성이 아무리 죄명을 씌우더라도 법률에 의한 판결 외에는 가차없이 처형하는 법은 불법입니다...'" },
+        { id: 71, day: 2, year: 1898, title: "의회 설립 운동", type: "운동/시위", actor: "독립 협회, 박정양 내각", desc: "입헌 군주제 도약을 위해 황실 자문 기구 '중추원'을 근대적 의회(상원) 형태로 개편하려 추진.", source: "중추원 관정: '의관의 반수는 정부가 추천하고 반수는 인민 협회가 공모하여 국정의 법률 제안권을 주도록 한다...'" },
+        { id: 72, day: 2, year: 1898, title: "헌의 6조", type: "개혁", actor: "관민 공동회 집결 세력, 박정양", desc: "대신들과 시민 대표의 합의안. 탁지부 재정 일원화, 조약 체결 시 중추원 의장 합동 날인 합의.", source: "헌의6조 사료: '국가 재정은 모두 탁지부에서 일원화하여 총괄할 것. 다른 열강과의 조약 시 각부 대신이 서명할 것...'" },
+        { id: 73, day: 2, year: 1898, title: "독립 협회 해산 (12월)", type: "설치/파견/제거", actor: "보수파 관료, 황국 협회, 고종", desc: "독립협회가 공화정을 세우려 한다는 모함에 따라 고종이 황국협회(보부상)와 군대를 동원해 강제 해산.", source: "해산 실록: '황국협회 보부상 패거리가 독립협회 천막을 파괴 난입하고 백성들을 곤봉으로 가격하여 난폭하게 해산시켰다...'" },
+        { id: 74, day: 2, year: 1898, title: "양전 사업", type: "설치/파견/제거", actor: "광무 정부, 양지아문", desc: "광무개혁의 대표 성과. 근대적 토지 조사를 시도하여 조세 징수 토대를 마련하기 위한 측량 착수.", source: "양지 일지: '전국의 지방 토지를 측량하고 그 소유권 정보를 양지아문 장부에 작성하여 등재하기 시작했다...'" },
+        { id: 75, day: 2, year: 1899, title: "대한국 국제 (8월)", type: "개혁", actor: "고종 황제, 대한 제국", desc: "대한제국 최초의 근대적 성문 법전. 전제 군주제임을 규정하여 황제에게 무한한 군권을 집중시킴.", source: "대한국 국제 제1조 및 2조: '대한국은 자주독립 제국이며, 전제 정치는 무한한 황제 전권으로 무한히 행사한다...'" },
+        { id: 76, day: 2, year: 1900, title: "파리 만국 박람회", type: "설치/파견/제거", actor: "대한 제국 전권 대표 민영찬", desc: "경복궁 근정전 형태의 독자 전시관을 개설하여 국제사회에 독립국가 위상 과시.", source: "파리 특파 보고: '박람회장에 세워진 우아한 경복궁 지붕 모형의 한성 전시관에 수십만 관객이 몰려 극찬하였습니다...'" },
+        { id: 77, day: 2, year: 1901, title: "지계 발급 사업", type: "설치/파견/제거", actor: "광무 정부, 지계아문", desc: "전국 토지 소유자에게 법적 소유 권리를 공인 보장하는 최초의 근대식 토지 소유 증명서 '지계' 발급.", source: "지계 규칙: '등기된 땅의 세금을 지불하는 영수증 뒤에 지계를 붙여 법적 소유 권리를 공적으로 증명한다...'" },
+        { id: 78, day: 3, year: 1904, title: "러일 전쟁 (2월)", type: "전쟁/침략/갈등", actor: "일본 제국, 러시아 제국", desc: "한반도와 만주 이권을 두고 격돌한 참사. 일본이 러시아 함대를 선제 기습하며 발발.", source: "러일 선전: '러시아의 한반도 지배는 대일본 제국의 생존을 파멸로 이끄니 함대를 발진시켜 척결해야 합니다...'" },
+        { id: 79, day: 3, year: 1904, title: "한일 의정서 (2월)", type: "조약", actor: "외부대신 이지용, 일본 공사 하야시", desc: "러일전쟁 중 일본 정권이 군사 전략상 필요한 한국의 영토를 임의로 수용·사용하겠다고 강탈한 늑약.", source: "한일의정서 제4조: '대한제국의 황실과 영토 보전을 위해 일본 제국이 전략상 필요한 요지를 수시로 수용한다...'" },
+        { id: 80, day: 3, year: 1904, title: "보안회", type: "설치/파견/제거", actor: "송수만, 심상진 등 애국지사", desc: "일본 정권의 '전국 황무지 개간권 요구' 음모에 반대하여 군중 시위를 유도해 철회시킴.", source: "보안회 상소문: '일제가 우리 강토의 골자인 황무지를 빼앗으려 드니, 한목숨 바쳐 이를 막아야 합니다...'" },
+        { id: 81, day: 3, year: 1904, title: "제1차 한일 협약 (8월)", type: "조약", actor: "재정 고문 메가타, 외교 고문 스티븐스", desc: "고문 정치의 시작. 재정 고문 메가타(화폐정리사업), 외교 고문 스티븐스(친일 미국인) 임용 강요.", source: "제1차한일협약: '대한제국은 일본 정부가 추천하는 메가타와 스티븐스를 각각 재정 및 외교 고문으로 채용한다...'" },
+        { id: 82, day: 3, year: 1905, title: "헌정 연구회", type: "설치/파견/제거", actor: "이준, 윤효정 등", desc: "독립협회 헌정 정신을 계승하여 입헌 군주제 헌법 수립과 국권 수호를 목표로 활약한 애국계몽단체.", source: "헌정연구회 취지문: '전제 군주의 횡포를 제어하고 헌법에 기초하여 민권을 신장시키는 입헌 정치를 도모한다...'" },
+        { id: 83, day: 3, year: 1905, title: "가쓰라-태프트 밀약 (7월)", type: "조약", actor: "미국 태프트, 일본 수상 가쓰라", desc: "미국의 필리핀 지배와 일제의 한국 지배권을 밀실에서 상호 승인하고 묵인한 악명 높은 비밀 야합.", source: "비밀 메모: '미국은 한국 내에서 일본군의 독점적 군사 보호권 체결에 반대하거나 이의를 제기하지 않는다...'" },
+        { id: 84, day: 3, year: 1905, title: "제2차 영일 동맹 (8월)", type: "조약", actor: "영국 제국, 일본 제국", desc: "영국의 인도 지배 보장 대가로 일본의 한국 식민지화 지배권을 전폭 승인 공조함으로써 일제 지배 방조.", source: "동맹 개정문: '일본은 영국의 인도 국경 방위를 돕고, 영국은 일본의 한국에 대한 정치 외교 군사 지배를 수용한다...'" },
+        { id: 85, day: 3, year: 1905, title: "포츠머스 조약 (9월)", type: "조약", actor: "러시아 제국 대표, 일본 제국 대표", desc: "러일전쟁의 전면 패배를 승인한 러시아가 한국 영토 내에서 일본의 독점적 주권을 승인하는 조약.", source: "조약 핵심 조항: '러시아는 일본이 한국에서 취하는 정치, 군사, 경제적 조치를 완전 공인하고 방해하지 않는다...'" },
+        { id: 86, day: 3, year: 1905, title: "을사늑약", type: "조약", actor: "을사오적 (이완용, 박제순 등), 이토 히로부미", desc: "대한제국의 외교권을 전면 약탈해 해외 대사관 폐쇄. 한성에 '통감부'를 강제 설치(초대 통감 이토 히로부미).", source: "을사늑약 제1조 및 2조: '조선국은 향후 외국과 어떠한 조약도 체결치 못하며 일본국 통감이 파견되어 외교를 감독한다...'" },
+        { id: 87, day: 3, year: 1907, title: "헤이그 특사", type: "설치/파견/제거", actor: "이준, 이상설, 이위종, 고종", desc: "네덜란드 만국평화회의에 사절을 극비 파견하여 을사늑약이 고종의 서명 날인 없는 원천 무효임을 전 세계에 폭로 시도.", source: "고종 친서: '외교권을 강탈당한 을사조약은 짐의 서명이 없는 조작이니, 특사를 보내 이를 세계 만국에 바로잡고자 한다...'" },
+        { id: 88, day: 3, year: 1907, title: "고종 강제 퇴위 (7월)", type: "전쟁/침략/갈등", actor: "일제 통감부, 친일 이완용 내각", desc: "헤이그 특사 파견을 구실 삼은 일제가 고종 황제를 고의로 위협 협박하여 정위에서 강제로 물러나게 함.", source: "궁궐 기록: '통감이 임금께 다가와 만국평화회의를 어지럽힌 책임을 물으며 양위를 위협하였고, 대신들은 속히 도장 날인하라 윽박질렀다...'" },
+        { id: 89, day: 3, year: 1907, title: "한일 신협약", type: "조약", actor: "친일 총리대신 이완용, 일제 통감부", desc: "정미7조약. 각 부서에 일본인 '차관'을 정식 부임시켜 권리 농단. 비밀 부속 밀약으로 대한제국 군대 해산 강제.", source: "정미7조약 제5조: '대한제국 정부는 일본 정부가 추천하는 일본인을 각 부서의 차관으로 임용한다(차관 정치)...'" },
+        { id: 90, day: 3, year: 1907, title: "신민회", type: "설치/파견/제거", actor: "안창호, 양기탁, 신채호, 이승훈", desc: "국내 최초 공화정 지향 국권수호 비밀결사. 대성·오산학교(교육), 태극서관(산업), 삼원보 독립운동 기지 개척 주도.", source: "신민회 취지문: '우리가 지향하는 새 독립 대한민국은 왕조 전제가 아닌 만민 평등과 국권을 자랑하는 공화국(민주주의)이다...'" },
+        { id: 91, day: 3, year: 1910, title: "한국 병합 조약", type: "조약", actor: "이완용, 데라우치 마사타케", desc: "경술국치. 대한제국의 전 주권을 일제 통감 데라우치에게 양도. 조선총독부 신설로 헌병 무단 통치 개시.", source: "병합 조약 제1조: '한국 황제 폐하는 한국 전 영토에 대한 일체의 통치권을 완전하고도 영구히 일본 황제 폐하에게 양도한다...'" },
+        { id: 92, day: 3, year: 1911, title: "105인 사건", type: "설치/파견/제거", actor: "데라우치 총독부, 신민회 우국 인사들", desc: "일제가 총독 암살 사건을 거짓으로 꾸며 신민회 중앙 핵심 간부 105인을 전원 기소하여 탄압 해산시킨 보복 조작극.", source: "경무국 취조서: '데라우치 총독 암살을 모의하기 위해 신민회 지부장 안창호 등과 연락하여 무기를 소지하고 매복했다 자백받았다...'" },
+        { id: 93, day: 3, year: 1920, title: "실력 양성 운동", type: "운동/시위", actor: "조만식, 이상재 등 실업계", desc: "일제 통치하 교육과 자강 실업 진흥 추구. 평양에서 '물산 장려 운동' 발족, '민립 대학 설립 운동' 전개.", source: "물산장려회 구호: '조선 사람 조선 사람 조선의 것! 우리가 만든 면직물과 잡화만을 사용하여 토종 산업을 보존하자...'" }
+    ];
+
+    // 기말 정조준 빈출 인물 15인 데이터 세트
+    const personQuizDatabase = [
+        { question: "조사 시찰단을 이끌고 최초의 주미 전권공사로 워싱턴에 파견되어 자주외교를 도모했으며, 훗날 2차 갑오개혁 당시 박영효 연립내각에 참여한 인물은?", answer: "박정양", consonants: "ㅂㅈㅇ" },
+        { question: "강화도 조약 당시 조선 측 전권대신으로 참여하여 서명 날인하였으며 온건 성향으로 개방을 지지했던 인물은?", answer: "신헌", consonants: "ㅅㅎ" },
+        { question: "1880년대 온건개화파의 영수로 조선책략을 국내에 유포하였으며, 을미개혁 당시 단발령을 단행하다가 아관파천 후 백성들에게 처형당한 온건개화파 총리대신은?", answer: "김홍집", consonants: "ㄱㅎㅈ" },
+        { question: "평양 감사 시절 제너럴 셔먼호를 격퇴하였으며, 오경석, 유홍기와 함께 초기 통상개화 사상을 유포해 개화파의 정신적 지주 역할을 한 인물은?", answer: "박규수", consonants: "ㅂㄱㅅ" },
+        { question: "대원군의 쇄국 정책과 서원 정리에 반발해 도끼를 들고 대궐 문 앞에서 하야 상소를 올렸으며, 훗날 왜양일체론을 주장하며 강화도 조약을 격렬히 반대한 위정척사파 사대부는?", answer: "최익현", consonants: "ㅊㅇㅎ" },
+        { question: "미국 유학 후 돌아와 독립 신문을 창간하고 독립 협회를 조직하여 만민 공동회 개최의 초석을 마련한 인물은?", answer: "서재필", consonants: "ㅅㅈㅍ" },
+        { question: "비밀결사 신민회를 조직하고 평양 대성학교를 설립했으며 일제 강점기 실력 양성 운동의 토대를 구축한 안창호와 짝을 이루는 독립운동가는?", answer: "안창호", consonants: "ㅇㅊㅎ" },
+        { question: "안창호와 함께 신민회를 결성하고 대한매일신보를 이끌며 일제의 침탈을 고발한 언론인이자 독립운동가는?", answer: "양기탁", consonants: "ㅇㄱㅌ" },
+        { question: "네덜란드 헤이그에서 열린 제2회 만국평화회의에 고종의 밀사로 파견된 대표적인 특사 3인방 중 이준, 이위종과 함께 한 정사 대표는?", answer: "이상설", consonants: "ㅇㅅㅅ" },
+        { question: "제1차 한일 협약 당시 일제에 의해 강제로 임명된 메가타와 스티븐스 중, 화폐정리사업을 단행하여 조선의 자본가들을 파산에 이르게 한 재정 고문은?", answer: "메가타", consonants: "ㅁㄱㅌ" },
+        { question: "제1차 한일 협약 당시 외교 고문으로 파견된 미국인이며, 훗날 샌프란시스코에서 장인환, 전명운 의사에 의해 처단당한 인물은?", answer: "스티븐스", consonants: "ㅅㅌㅂㅅ" },
+        { question: "을사늑약 체결 당시 명성황후를 시해한 을미사변의 배후 인물이자 초대 한국 통감으로 부임하여 국권을 침탈한 일본 정치가의 이름은?", answer: "이토 히로부미", consonants: "ㅇㅌ ㅎㄹㅂㅁ" },
+        { question: "동학 농민 운동의 영수로 고부 군수 조병갑의 횡포에 분노해 사발통문을 돌리고 백산에서 의병을 일으킨 녹두 장군의 이름은?", answer: "전봉준", consonants: "ㅈㅂㅈ" },
+        { question: "1920년대 물산 장려 운동을 평양에서 주도하여 '조선 사람 조선의 것'이라는 토산품 애용 슬로건을 이끈 실력 양성 운동가는?", answer: "조만식", consonants: "ㅈㅁㅅ" },
+        { question: "1905년 을사늑약, 1907년 정미7조약에 이어 1910년 경술국치 병합 조약까지 모두 주도하여 나라를 팔아넘긴 대표적인 매국노 대신의 이름은?", answer: "이완용", consonants: "ㅇㅇㅇ" }
+    ];
+
+    // 블라인드 정렬 공식 데이터 구성
+    const mnemonicFormulas = {
+        '쇄국개항': {
+            title: "대원군 쇄국 & 개항 공식 (병·제·병·오·신·척 → 운·강)",
+            abbreviation: ["병", "제", "병", "오", "신", "척", "운", "강"],
+            eventIds: [7, 8, 9, 11, 12, 13, 17, 18],
+            colors: ["#EF4444", "#F59E0B", "#DC2626", "#84CC16", "#10B981", "#64748B", "#8B5CF6", "#2563EB"]
+        },
+        '동학1차': {
+            title: "동학 농민 1차 봉기 공식 (고·백·토·룡·성)",
+            abbreviation: ["고", "백", "토", "룡", "성"],
+            eventIds: [48, 49, 94, 95, 96],
+            customEvents: [
+                { id: 48, title: "고부 농민 봉기" },
+                { id: 49, title: "백산 창의 (1차 동학)" },
+                { id: 94, title: "황토현 전투 승리" },
+                { id: 95, title: "황룡촌 전투 승리" },
+                { id: 96, title: "전주성 함락 점령" }
+            ],
+            colors: ["#F59E0B", "#8B5CF6", "#10B981", "#64748B", "#2563EB"]
+        },
+        '전주화약': {
+            title: "전주화약 이후 사태 수습 개혁 공식 (화·교·궁·전·일)",
+            abbreviation: ["화", "교", "궁", "전", "일"],
+            eventIds: [50, 97, 98, 52, 53],
+            customEvents: [
+                { id: 50, title: "전주 화약 체결" },
+                { id: 97, title: "교정청 설치" },
+                { id: 98, title: "일본군 경복궁 점령" },
+                { id: 52, title: "청일 전쟁 발발" },
+                { id: 53, title: "제1차 갑오개혁" }
+            ],
+            colors: ["#2563EB", "#10B981", "#EF4444", "#8B5CF6", "#64748B"]
+        },
+        '국권피탈': {
+            title: "국권 침탈 강제 조약 공식 (의·고·밀·동·포·늑)",
+            abbreviation: ["의", "고", "밀", "동", "포", "늑"],
+            eventIds: [79, 81, 83, 84, 85, 86],
+            colors: ["#DC2626", "#F59E0B", "#06B6D4", "#8B5CF6", "#64748B", "#2563EB"]
+        }
+    };
+
+    // ── 전역 상태 매니저 ──
+    const APP_ID = "duru_coree_exam_master";
+    let filteredData = [...database];
+    let studyIndex = 0;
+    let selectedRange = "all";
+    let selectedTheme = "All";
+    let currentTab = "study";
+
+    // 퀴즈 엔진 상태
+    let quizMode = "order"; // 'order', 'source', 'treaty', 'person'
+    let currentQuizItem = null;
+    let currentQuizOptions = [];
+    let selectedQuizOptionId = null;
+    let quizTappedOrder = []; // 순서배열 탭 순서 기록
+    let correctQuizOrder = [];
+    let quizStreak = 0;
+    let totalQuizCount = 0;
+    let isQuizGraded = false; // 현재 문제 채점 완료 여부 (Enter 연속이벤트에 핵심)
+    let isIntensiveWrongMode = false; // 오답 집중 테스트 모드 활성화 여부
+
+    // 블라인드 정렬 게임 상태
+    let activeGameKey = "쇄국개항";
+    let gameUserProgress = [];
+
+    // 오답노트 보관 리스트
+    let wrongAnswersList = [];
+
+    // 햅틱 진동 패턴
+    function triggerHaptic(type) {
+        if (!navigator.vibrate) return;
+        if (type === 'click')   navigator.vibrate(20);
+        if (type === 'success') navigator.vibrate([30, 40, 30]);
+        if (type === 'error')   navigator.vibrate([80, 50, 80]);
+        if (type === 'delete')  navigator.vibrate([100]);
+    }
+
+    // 초기 시동기
+    window.onload = function() {
+        loadPersistedState();
+        applyFilters();
+        renderVerticalTimeline();
+        updateWrongAnswersCount();
+        
+        // 스크롤 시 하단 네비게이션 미세 웰-수축 인터랙션
+        window.addEventListener('scroll', function() {
+            const wrap = document.getElementById('mobile-navigation-wrap');
+            const nav = document.getElementById('tactile-nav');
+            const subtexts = document.querySelectorAll('.nav-subtext');
+            if (window.scrollY > 40) {
+                wrap.style.width = "270px";
+                nav.style.height = "56px";
+                subtexts.forEach(t => t.classList.add('hidden-text'));
+            } else {
+                wrap.style.width = "calc(100% - 32px)";
+                nav.style.height = "72px";
+                subtexts.forEach(t => t.classList.remove('hidden-text'));
+            }
+        });
+
+        // 🎯 글로벌 Enter 키 다운 인터랙션 구현 (스피드 풀이 최적화)
+        window.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') {
+                // 현재 만점테스트 탭이 열려있고 다이얼로그나 바텀시트가 열려있지 않은 상태일 때만 개입
+                const isDialogVisible = !document.getElementById('custom-dialog-backdrop').classList.contains('hidden');
+                const isSheetVisible = !document.getElementById('m3-backdrop').classList.contains('pointer-events-none');
+                
+                if (currentTab === 'quiz' && !isDialogVisible && !isSheetVisible) {
+                    evaluateQuizResponse();
+                }
+            }
+        });
+    };
+
+    // 로컬 스토리지 불러오기
+    function loadPersistedState() {
+        const idx = localStorage.getItem(`${APP_ID}_studyIndex`);
+        const rng = localStorage.getItem(`${APP_ID}_range`);
+        const thm = localStorage.getItem(`${APP_ID}_theme`);
+        const streak = localStorage.getItem(`${APP_ID}_streak`);
+        const total = localStorage.getItem(`${APP_ID}_total`);
+        const wrongs = localStorage.getItem(`${APP_ID}_wrong_answers`);
+
+        if (idx) studyIndex = parseInt(idx);
+        if (rng) selectedRange = rng;
+        if (thm) selectedTheme = thm;
+        if (streak) quizStreak = parseInt(streak);
+        if (total) totalQuizCount = parseInt(total);
+        if (wrongs) wrongAnswersList = JSON.parse(wrongs);
+
+        // UI 칩 동기화
+        syncActiveFilterChips();
+        updateQuizScoreBoard();
+    }
+
+    function savePersistedState() {
+        localStorage.setItem(`${APP_ID}_studyIndex`, studyIndex);
+        localStorage.setItem(`${APP_ID}_range`, selectedRange);
+        localStorage.setItem(`${APP_ID}_theme`, selectedTheme);
+        localStorage.setItem(`${APP_ID}_streak`, quizStreak);
+        localStorage.setItem(`${APP_ID}_total`, totalQuizCount);
+        localStorage.setItem(`${APP_ID}_wrong_answers`, JSON.stringify(wrongAnswersList));
+        updateWrongAnswersCount();
+    }
+
+    // ── 오답 개수 동기화 ──
+    function updateWrongAnswersCount() {
+        const count = wrongAnswersList.length;
+        const sBadge = document.getElementById('sidebar-badge');
+        const mBadge = document.getElementById('mobile-badge');
+        
+        if (count > 0) {
+            sBadge.innerText = count;
+            sBadge.classList.remove('hidden');
+            mBadge.innerText = count;
+            mBadge.classList.remove('hidden');
+        } else {
+            sBadge.classList.add('hidden');
+            mBadge.classList.add('hidden');
+        }
+    }
+
+    // 필터 연동 상태 동기화
+    function syncActiveFilterChips() {
+        // 일수 필터 동기화
+        const rangeBtns = document.querySelectorAll(`button[onclick*="setRangeFilter"]`);
+        rangeBtns.forEach(btn => {
+            if (btn.getAttribute('onclick').includes(`'${selectedRange}'`)) {
+                btn.classList.add('bg-blue-100', 'text-blue-700');
+            } else {
+                btn.classList.remove('bg-blue-100', 'text-blue-700');
+            }
+        });
+
+        // 테마 필터 동기화
+        const themeBtns = document.querySelectorAll(`button[onclick*="setThemeFilter"]`);
+        themeBtns.forEach(btn => {
+            if (btn.getAttribute('onclick').includes(`'${selectedTheme}'`)) {
+                btn.classList.add('bg-blue-100', 'text-blue-700');
+            } else {
+                btn.classList.remove('bg-blue-100', 'text-blue-700');
+            }
+        });
+    }
+
+    // 데이터 필터 적용
+    function applyFilters() {
+        filteredData = database.filter(item => {
+            let rngCheck = true;
+            if (selectedRange === 'day1') rngCheck = (item.id >= 1 && item.id <= 40);
+            else if (selectedRange === 'day2') rngCheck = (item.id >= 41 && item.id <= 77);
+            else if (selectedRange === 'day3') rngCheck = (item.id >= 78 && item.id <= 93);
+
+            let thmCheck = true;
+            if (selectedTheme !== 'All') {
+                thmCheck = (item.type === selectedTheme);
+            }
+            return rngCheck && thmCheck;
+        });
+
+        if (studyIndex >= filteredData.length) {
+            studyIndex = 0;
+        }
+        renderStudyCard();
+    }
+
+    function setRangeFilter(range, btn) {
+        triggerHaptic('click');
+        selectedRange = range;
+        syncActiveFilterChips();
+        applyFilters();
+        savePersistedState();
+    }
+
+    function setThemeFilter(theme, btn) {
+        triggerHaptic('click');
+        selectedTheme = theme;
+        syncActiveFilterChips();
+        applyFilters();
+        savePersistedState();
+    }
+
+    // ── 탭 전환 시스템 (사이드바 / 플로팅 네비게이션 일치화) ──
+    function switchSection(target, element) {
+        triggerHaptic('click');
+        currentTab = target;
+
+        // 뷰 숨기기/보이기
+        document.querySelectorAll('.view-pane').forEach(p => p.classList.add('hidden'));
+        document.getElementById(`pane-${target}`).classList.remove('hidden');
+
+        // 타이틀 텍스트 변환
+        const titleMap = {
+            study: "암기카드 학습",
+            timeline: "두루 연표 로드맵",
+            quiz: "만점 공략 테스트",
+            memos: "특급 암기 비법",
+            incorrect: "취약 개념 오답노트"
+        };
+        document.getElementById('header-section-title').innerText = titleMap[target] || "Duru Coree";
+
+        // 활성화 스타일링 초기화 및 적용 (데스크톱)
+        document.querySelectorAll('.sidebar-btn').forEach(b => b.classList.remove('sidebar-btn-active'));
+        // 활성화 스타일링 초기화 및 적용 (모바일)
+        document.querySelectorAll('.tactile-nav-btn').forEach(b => b.classList.remove('tactile-nav-btn-active'));
+
+        // 선택된 엘리먼트에 활성화 주입
+        // 전달받은 element가 사이드바인지 모바일 네비버튼인지 파악하여 둘 다 대응
+        const isSidebar = element.classList.contains('sidebar-btn');
+        if (isSidebar) {
+            element.classList.add('sidebar-btn-active');
+            // 연동 모바일 싱크
+            const idx = Array.from(element.parentNode.querySelectorAll('.sidebar-btn')).indexOf(element);
+            document.querySelectorAll('.tactile-nav-btn')[idx]?.classList.add('tactile-nav-btn-active');
+        } else {
+            element.classList.add('tactile-nav-btn-active');
+            // 연동 사이드바 싱크
+            const idx = Array.from(element.parentNode.querySelectorAll('.tactile-nav-btn')).indexOf(element);
+            document.querySelectorAll('.sidebar-btn')[idx]?.classList.add('sidebar-btn-active');
+        }
+
+        // 스크롤 상단부 부드러운 안착
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+
+        // 탭별 추가 기능 트리거
+        if (target === 'timeline') {
+            renderVerticalTimeline();
+        } else if (target === 'quiz') {
+            generateQuizProblem();
+        } else if (target === 'memos') {
+            loadMnemonicGame('쇄국개항');
+        } else if (target === 'incorrect') {
+            renderWrongAnswersList();
+        }
+    }
+
+    // ── 암기카드 데이터 주입 ──
+    function renderStudyCard() {
+        const inner = document.getElementById('m3-flashcard');
+        inner.classList.remove('is-flipped');
+
+        if (filteredData.length === 0) {
+            document.getElementById('card-front-title').innerText = "해당 범위 내 조건에 부합하는 사건이 존재하지 않습니다.";
+            document.getElementById('card-front-source').innerText = "필터를 조절하세요.";
+            document.getElementById('study-progress-txt').innerText = "0 / 0";
+            document.getElementById('desktop-progress-badge').innerText = "범위 변경 필요";
+            return;
+        }
+
+        const curr = filteredData[studyIndex];
+
+        // 앞면 렌더링
+        document.getElementById('card-front-day').innerText = `Day ${curr.day}`;
+        document.getElementById('card-front-type').innerText = curr.type;
+        document.getElementById('card-front-year').innerText = `${curr.year}년`;
+        document.getElementById('card-front-title').innerText = curr.title;
+        document.getElementById('card-front-source').innerText = curr.source || "해당 사건은 사료 미수록 혹은 관련 텍스트 기반 단답 선지 위주로 출제됩니다.";
+
+        // 뒷면 렌더링
+        document.getElementById('card-back-year').innerText = `${curr.year}년`;
+        document.getElementById('card-back-type').innerText = curr.type;
+        document.getElementById('card-back-title').innerText = curr.title;
+        document.getElementById('card-back-actor').innerText = curr.actor;
+        document.getElementById('card-back-desc').innerText = curr.desc;
+
+        document.getElementById('study-progress-txt').innerText = `${studyIndex + 1} / ${filteredData.length}`;
+        document.getElementById('desktop-progress-badge').innerText = `진도: ${studyIndex + 1} / ${filteredData.length}`;
+    }
+
+    function handleCardFlip(e) {
+        if (e.target.closest('button')) return; // 하부 버튼 액션 시 카드 뒤집힘 씹기
+        triggerHaptic('click');
+        const cardInner = document.getElementById('m3-flashcard');
+        cardInner.classList.toggle('is-flipped');
+    }
+
+    function stepStudyCard(dir, e) {
+        e.stopPropagation();
+        triggerHaptic('click');
+        studyIndex += dir;
+        if (studyIndex < 0) studyIndex = filteredData.length - 1;
+        if (studyIndex >= filteredData.length) studyIndex = 0;
+        renderStudyCard();
+        savePersistedState();
+    }
+
+    // ── 두루 연표 로드맵 제어 ──
+    function renderVerticalTimeline() {
+        const container = document.getElementById('timeline-stack');
+        container.innerHTML = '';
+
+        database.forEach((item) => {
+            const row = document.createElement('div');
+            row.className = "relative bg-white border border-slate-200 p-4 rounded-2xl shadow-sm hover:shadow-md hover:border-blue-300 transition-all cursor-pointer active:scale-[0.98]";
+            
+            const pinColor = item.type === '조약' ? 'bg-red-500' : 'bg-blue-600';
+            row.innerHTML = `
+                <div class="absolute -left-[31px] top-6 w-4 h-4 rounded-full ${pinColor} border-4 border-[#E5E9F0] shadow-sm"></div>
+                <div class="flex justify-between items-start">
+                    <div>
+                        <span class="text-[10px] font-black text-slate-400">Day ${item.day} · ${item.type}</span>
+                        <h4 class="font-black text-slate-800 mt-0.5 text-base">${item.title}</h4>
+                    </div>
+                    <span class="text-sm font-black text-blue-600">${item.year}년</span>
+                </div>
+                <p class="text-xs text-slate-500 mt-2 line-clamp-2 leading-relaxed font-bold">${item.desc}</p>
+                <div class="mt-3 pt-3 border-t border-dashed border-slate-100 flex justify-between items-center text-[11px] text-blue-600 font-black">
+                    <span>👤 ${item.actor.split(',')[0]} 외 세력</span>
+                    <span>상세 자료집 조회 <i class="fa-solid fa-chevron-right text-[9px] ml-1"></i></span>
+                </div>
+            `;
+            
+            row.onclick = () => openM3BottomSheet(item);
+            container.appendChild(row);
+        });
+    }
+
+    // 프리미엄 바텀시트 제어
+    function openM3BottomSheet(item) {
+        triggerHaptic('click');
+        document.getElementById('sheet-meta').innerText = `Day ${item.day} · ${item.type}`;
+        document.getElementById('sheet-title').innerText = item.title;
+        document.getElementById('sheet-year').innerText = `${item.year}년`;
+        document.getElementById('sheet-actor').innerText = item.actor;
+        document.getElementById('sheet-desc').innerText = item.desc;
+        document.getElementById('sheet-source').innerText = item.source || "지정 사료가 없습니다.";
+
+        document.getElementById('m3-backdrop').classList.remove('pointer-events-none', 'opacity-0');
+        document.getElementById('m3-backdrop').classList.add('opacity-100');
+        document.getElementById('m3-bottom-sheet').classList.remove('translate-y-full');
+        document.getElementById('m3-bottom-sheet').classList.add('translate-y-0');
+    }
+
+    function closeM3BottomSheet() {
+        document.getElementById('m3-backdrop').classList.add('pointer-events-none', 'opacity-0');
+        document.getElementById('m3-backdrop').classList.remove('opacity-100');
+        document.getElementById('m3-bottom-sheet').classList.add('translate-y-full');
+        document.getElementById('m3-bottom-sheet').classList.remove('translate-y-0');
+    }
+
+    // ── 퀴즈 시뮬레이터 시스템 ──
+    function setQuizMode(mode) {
+        triggerHaptic('click');
+        quizMode = mode;
+        isIntensiveWrongMode = false; // 집중모드 해제
+
+        // 헤더 칩 전환 효과
+        const modes = ['order', 'source', 'treaty', 'person'];
+        modes.forEach(m => {
+            const btn = document.getElementById(`qmode-${m}`);
+            if (m === mode) {
+                btn.className = "flex-1 py-2 rounded-full text-xs font-black bg-blue-600 text-white shadow-sm";
+            } else {
+                btn.className = "flex-1 py-2 rounded-full text-xs font-black text-slate-600";
+            }
+        });
+
+        generateQuizProblem();
+    }
+
+    function updateQuizScoreBoard() {
+        document.getElementById('quiz-streak-badge').innerText = `🔥 연속 정답: ${quizStreak}회`;
+        document.getElementById('quiz-score-badge').innerText = `기록: ${totalQuizCount}회 완료`;
+    }
+
+    // 퀴즈 문제 연출 제어
+    function generateQuizProblem() {
+        const primary = document.getElementById('quiz-primary-action');
+        const secondary = document.getElementById('quiz-secondary-action');
+        const pPlate = document.getElementById('quiz-problem-plate');
+
+        primary.innerText = "제출 및 채점하기";
+        secondary.classList.add('hidden');
+        pPlate.classList.remove('correct-animate', 'wrong-animate');
+
+        isQuizGraded = false; // 신규 문제 준비 상태
+        quizTappedOrder = [];
+        selectedQuizOptionId = null;
+
+        // 오답 집중 모드 체크
+        let testSourceBase = [...database];
+        if (isIntensiveWrongMode && wrongAnswersList.length > 0) {
+            testSourceBase = database.filter(item => wrongAnswersList.includes(item.id));
+        }
+
+        if (quizMode === 'order') {
+            document.getElementById('quiz-badge-tag').innerText = "유형 1: 고난도 연대순 순서배열";
+            document.getElementById('quiz-badge-tag').className = "text-[10px] bg-blue-600 text-white px-2.5 py-1 rounded-md font-black tracking-wider uppercase";
+            document.getElementById('quiz-question-desc').innerText = "아래 나열된 4가지 주요 사건을 일어난 연도 순서에 맞춰 알맞게 탭하여 순번을 배정한 뒤 채점을 진행하세요.";
+            secondary.classList.remove('hidden');
+
+            // 랜덤 4사건 추출 및 정답 순번 정립
+            const shuffled = testSourceBase.sort(() => 0.5 - Math.random());
+            currentQuizOptions = shuffled.slice(0, 4);
+            correctQuizOrder = [...currentQuizOptions].sort((a,b) => a.id - b.id);
+
+            renderOrderQuizView();
+        } 
+        else if (quizMode === 'source') {
+            document.getElementById('quiz-badge-tag').innerText = "유형 2: 수능형 핵심 사료 분석";
+            document.getElementById('quiz-badge-tag').className = "text-[10px] bg-purple-600 text-white px-2.5 py-1 rounded-md font-black tracking-wider uppercase";
+            
+            const candidates = testSourceBase.filter(item => item.source && item.source.length > 5);
+            if (candidates.length === 0) {
+                document.getElementById('quiz-question-desc').innerText = "대상에 적절한 사료 데이터가 없습니다.";
+                return;
+            }
+            currentQuizItem = candidates[Math.floor(Math.random() * candidates.length)];
+            document.getElementById('quiz-question-desc').innerText = `다음 서술된 시험 빈출 사료 구절이 가리키는 올바른 역사적 명칭은?\n\n"${currentQuizItem.source}"`;
+
+            // 오답보기 구성
+            const wrongs = database.filter(i => i.id !== currentQuizItem.id).sort(() => 0.5 - Math.random()).slice(0, 3);
+            currentQuizOptions = [currentQuizItem, ...wrongs].sort(() => 0.5 - Math.random());
+
+            renderMultipleChoiceView();
+        } 
+        else if (quizMode === 'treaty') {
+            document.getElementById('quiz-badge-tag').innerText = "유형 3: 📜 조약 및 장정/규칙 명칭 저격 단답";
+            document.getElementById('quiz-badge-tag').className = "text-[10px] bg-rose-600 text-white px-2.5 py-1 rounded-md font-black tracking-wider uppercase";
+            
+            const treaties = testSourceBase.filter(item => item.type === '조약' && (item.title.includes('조약') || item.title.includes('장정') || item.title.includes('규칙') || item.title.includes('밀약')));
+            if (treaties.length === 0) {
+                document.getElementById('quiz-question-desc').innerText = "해당 범위 내 수록된 조약 정보가 부족합니다.";
+                return;
+            }
+            currentQuizItem = treaties[Math.floor(Math.random() * treaties.length)];
+            document.getElementById('quiz-question-desc').innerText = `다음 수록된 사료 내용 및 특징을 고려하여 정확한 조약/문서의 공식 명칭을 주관식으로 입력하세요.\n\n📖 상세 내용: ${currentQuizItem.source || currentQuizItem.desc}`;
+
+            renderSubjectiveTypingView("조약");
+        } 
+        else if (quizMode === 'person') {
+            document.getElementById('quiz-badge-tag').innerText = "유형 4: 👤 출제 저격 역사적 핵심인물 주관식";
+            document.getElementById('quiz-badge-tag').className = "text-[10px] bg-emerald-600 text-white px-2.5 py-1 rounded-md font-black tracking-wider uppercase";
+
+            currentQuizItem = personQuizDatabase[Math.floor(Math.random() * personQuizDatabase.length)];
+            document.getElementById('quiz-question-desc').innerText = currentQuizItem.question;
+
+            renderSubjectiveTypingView("인물");
+        }
+    }
+
+    // 순서 정렬 보기 구현
+    function renderOrderQuizView() {
+        const vp = document.getElementById('quiz-answer-viewport');
+        vp.innerHTML = '';
+
+        currentQuizOptions.forEach(item => {
+            const isTapped = quizTappedOrder.includes(item.id);
+            const rank = quizTappedOrder.indexOf(item.id) + 1;
+
+            const box = document.createElement('button');
+            box.onclick = () => handleOrderOptionTap(item.id);
+            box.className = `w-full text-left px-5 py-4 border-2 rounded-[22px] flex justify-between items-center transition-all ${isTapped ? 'border-blue-600 bg-blue-50 font-black text-blue-900' : 'border-slate-200 bg-white hover:border-slate-300'}`;
+            box.innerHTML = `
+                <span class="text-xs sm:text-sm font-[900]">${item.title}</span>
+                <div class="w-8 h-8 rounded-full ${isTapped ? 'bg-blue-600 text-white' : 'bg-slate-200 text-slate-500'} flex items-center justify-center font-black text-xs">
+                    ${isTapped ? rank : ''}
+                </div>
+            `;
+            vp.appendChild(box);
+        });
+    }
+
+    function handleOrderOptionTap(id) {
+        if (isQuizGraded) return;
+        triggerHaptic('click');
+        const tappedIdx = quizTappedOrder.indexOf(id);
+        if (tappedIdx > -1) {
+            quizTappedOrder.splice(tappedIdx, 1);
+        } else {
+            if (quizTappedOrder.length < 4) {
+                quizTappedOrder.push(id);
+            }
+        }
+        renderOrderQuizView();
+    }
+
+    function resetQuizOrder() {
+        if (isQuizGraded) return;
+        triggerHaptic('click');
+        quizTappedOrder = [];
+        renderOrderQuizView();
+    }
+
+    // 객관식 사료해석 보기 구현
+    function renderMultipleChoiceView() {
+        const vp = document.getElementById('quiz-answer-viewport');
+        vp.innerHTML = '';
+
+        currentQuizOptions.forEach(item => {
+            const isSelected = selectedQuizOptionId === item.id;
+            
+            const box = document.createElement('button');
+            box.onclick = () => {
+                if (isQuizGraded) return;
+                triggerHaptic('click');
+                selectedQuizOptionId = item.id;
+                renderMultipleChoiceView();
+            };
+            box.className = `w-full text-left px-5 py-4 border-2 rounded-[22px] flex justify-between items-center transition-all ${isSelected ? 'border-blue-600 bg-blue-50 font-black text-blue-900' : 'border-slate-200 bg-white hover:border-slate-300'}`;
+            box.innerHTML = `
+                <span class="text-xs sm:text-sm font-[900]"><i class="fa-solid fa-circle-chevron-right text-slate-400 mr-2"></i> ${item.title}</span>
+                <div class="w-6 h-6 rounded-full border-2 flex items-center justify-center ${isSelected ? 'border-blue-600 bg-blue-600 text-white' : 'border-slate-300'}">
+                    ${isSelected ? '<i class="fa-solid fa-check text-[10px]"></i>' : ''}
+                </div>
+            `;
+            vp.appendChild(box);
+        });
+    }
+
+    // 주관식 타이핑 뷰 구현
+    function renderSubjectiveTypingView(category) {
+        const vp = document.getElementById('quiz-answer-viewport');
+        vp.innerHTML = `
+            <div class="bg-white border-2 border-slate-200 p-5 rounded-[24px] space-y-4">
+                <div>
+                    <label class="block text-xs font-black text-blue-600 mb-2">⌨️ 정답 입력</label>
+                    <input type="text" id="typing-answer-input" class="w-full h-12 px-4 border-2 border-slate-300 rounded-xl focus:border-blue-500 focus:outline-none text-sm font-black text-slate-800" placeholder="이곳에 정답을 입력 후 Enter키 또는 채점하기 버튼을 탭하십시오." autocomplete="off">
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="revealTypingHint('consonant', '${category}')" class="tactile-pill-btn px-4 py-2 text-[11px]">초성 개방</button>
+                    <button onclick="revealTypingHint('length', '${category}')" class="tactile-pill-btn px-4 py-2 text-[11px]">글자 수 확인</button>
+                </div>
+                <div id="typing-hint-box" class="p-3 bg-slate-100 rounded-xl text-xs font-black text-slate-600 hidden">
+                    💡 힌트 파티클: <span id="typing-hint-txt"></span>
+                </div>
+            </div>
+        `;
+        // 오토포커싱 처리
+        setTimeout(() => {
+            document.getElementById('typing-answer-input')?.focus();
+        }, 100);
+    }
+
+    function revealTypingHint(type, category) {
+        triggerHaptic('click');
+        const box = document.getElementById('typing-hint-box');
+        const txt = document.getElementById('typing-hint-txt');
+        
+        const ans = category === '조약' ? currentQuizItem.title : currentQuizItem.answer;
+        const normalized = ans.split('(')[0].trim();
+
+        if (type === 'consonant') {
+            txt.innerText = getConsonantsOnly(normalized);
+        } else {
+            txt.innerText = `총 ${normalized.length}글자 입니다.`;
+        }
+        box.classList.remove('hidden');
+    }
+
+    // ── 핵심 채점 및 스피드 흐름 (Enter 키 듀얼 컨트롤 구현부) ──
+    function evaluateQuizResponse() {
+        const primary = document.getElementById('quiz-primary-action');
+        const pPlate = document.getElementById('quiz-problem-plate');
+
+        // 상태 분기: 이미 채점이 끝난 경우 -> Enter 입력 시 곧바로 '다음 문제' 전환
+        if (isQuizGraded) {
+            generateQuizProblem();
+            return;
+        }
+
+        if (quizMode === 'order') {
+            if (quizTappedOrder.length < 4) {
+                showCustomDialog("알림", "4가지 사건에 대해 순서를 모두 올바르게 지정하신 후 제출하십시오.", "info");
+                return;
+            }
+
+            totalQuizCount++;
+            let allCorrect = true;
+            const vp = document.getElementById('quiz-answer-viewport');
+            const btns = vp.querySelectorAll('button');
+
+            currentQuizOptions.forEach((item, index) => {
+                const userPos = quizTappedOrder.indexOf(item.id);
+                const correctPos = correctQuizOrder.indexOf(item);
+                const btn = btns[index];
+
+                if (userPos === correctPos) {
+                    btn.className = "w-full text-left px-5 py-4 border-2 border-emerald-500 bg-emerald-50 font-black text-emerald-900 rounded-[22px] flex justify-between items-center";
+                    btn.innerHTML = `<span>${item.title} ⭕ (${item.year}년)</span> <div class="w-8 h-8 rounded-full bg-emerald-600 text-white flex items-center justify-center font-black text-xs">${correctPos + 1}</div>`;
+                } else {
+                    allCorrect = false;
+                    btn.className = "w-full text-left px-5 py-4 border-2 border-red-500 bg-red-50 font-black text-red-900 rounded-[22px] flex justify-between items-center";
+                    btn.innerHTML = `<span>${item.title} ❌ (정답: ${correctPos + 1}순위, ${item.year}년)</span> <div class="w-8 h-8 rounded-full bg-red-600 text-white flex items-center justify-center font-black text-xs">${userPos + 1}</div>`;
+                    
+                    // 오답 연계 자동화
+                    recordWrongAnswer(item.id);
+                }
+            });
+
+            if (allCorrect) {
+                triggerHaptic('success');
+                quizStreak++;
+                pPlate.classList.add('correct-animate');
+            } else {
+                triggerHaptic('error');
+                quizStreak = 0;
+                pPlate.classList.add('wrong-animate');
+            }
+        } 
+        else if (quizMode === 'source') {
+            if (!selectedQuizOptionId) {
+                showCustomDialog("알림", "원하는 지문을 하나 터치하여 선택 후 제출하십시오.", "info");
+                return;
+            }
+
+            totalQuizCount++;
+            const vp = document.getElementById('quiz-answer-viewport');
+            const btns = vp.querySelectorAll('button');
+
+            const isCorrect = selectedQuizOptionId === currentQuizItem.id;
+
+            currentQuizOptions.forEach((item, index) => {
+                const btn = btns[index];
+                const isSelected = item.id === selectedQuizOptionId;
+                const isAnswer = item.id === currentQuizItem.id;
+
+                if (isAnswer) {
+                    btn.className = "w-full text-left px-5 py-4 border-2 border-emerald-500 bg-emerald-50 font-black text-emerald-900 rounded-[22px] flex justify-between items-center";
+                    btn.innerHTML = `<span><i class="fa-solid fa-circle-check text-emerald-600 mr-2"></i> ${item.title} (${item.year}년) - 정답</span> <div class="w-6 h-6 rounded-full bg-emerald-600 text-white flex items-center justify-center text-[10px]"><i class="fa-solid fa-check"></i></div>`;
+                } else if (isSelected) {
+                    btn.className = "w-full text-left px-5 py-4 border-2 border-red-500 bg-red-50 font-black text-red-900 rounded-[22px] flex justify-between items-center";
+                    btn.innerHTML = `<span><i class="fa-solid fa-circle-xmark mr-2"></i> ${item.title} - 내 선택 오답</span> <div class="w-6 h-6 rounded-full bg-red-600 text-white flex items-center justify-center text-[10px]"><i class="fa-solid fa-xmark"></i></div>`;
+                    recordWrongAnswer(currentQuizItem.id);
+                } else {
+                    btn.className = "w-full text-left px-5 py-4 border border-slate-200 bg-white opacity-40 rounded-[22px] flex justify-between items-center";
+                }
+            });
+
+            if (isCorrect) {
+                triggerHaptic('success');
+                quizStreak++;
+                pPlate.classList.add('correct-animate');
+            } else {
+                triggerHaptic('error');
+                quizStreak = 0;
+                pPlate.classList.add('wrong-animate');
+            }
+        } 
+        else if (quizMode === 'treaty' || quizMode === 'person') {
+            const inputEl = document.getElementById('typing-answer-input');
+            const userVal = inputEl.value.trim();
+
+            if (!userVal) {
+                showCustomDialog("알림", "정답 칸에 직접 명칭을 타이핑하여 입력 후 시도하십시오.", "info");
+                return;
+            }
+
+            totalQuizCount++;
+            inputEl.disabled = true;
+
+            const isTreaty = quizMode === 'treaty';
+            const realAnswer = isTreaty ? currentQuizItem.title : currentQuizItem.answer;
+            
+            const cleanUser = cleanString(userVal);
+            const cleanTarget = cleanString(realAnswer.split('(')[0]);
+            const cleanTargetFull = cleanString(realAnswer);
+
+            const isCorrect = (cleanUser === cleanTarget || cleanUser === cleanTargetFull);
+
+            const vp = document.getElementById('quiz-answer-viewport');
+            const feedback = document.createElement('div');
+            feedback.className = `p-4 rounded-2xl text-sm font-black mt-3 border-2 ${isCorrect ? 'bg-emerald-50 border-emerald-500 text-emerald-900' : 'bg-red-50 border-red-500 text-red-900'}`;
+            
+            if (isCorrect) {
+                triggerHaptic('success');
+                quizStreak++;
+                pPlate.classList.add('correct-animate');
+                feedback.innerHTML = `🎉 정답입니다! 정확한 출제 포인트 명칭: <span class="underline">${realAnswer}</span>`;
+            } else {
+                triggerHaptic('error');
+                quizStreak = 0;
+                pPlate.classList.add('wrong-animate');
+                feedback.innerHTML = `😢 아쉽게 틀렸습니다. 공식 정답: <span class="underline text-red-600">${realAnswer}</span> (입력한 내용: "${userVal}")`;
+                
+                // 오답 연계 자동화 (인물형 퀴즈는 데이터베이스 연결 매칭 검색 후 저장)
+                if (isTreaty) {
+                    recordWrongAnswer(currentQuizItem.id);
+                } else {
+                    const matched = database.find(item => item.actor.includes(realAnswer));
+                    if (matched) recordWrongAnswer(matched.id);
+                }
+            }
+
+            vp.appendChild(feedback);
+        }
+
+        // 채점 완료 상태 등록 및 버튼 텍스트 교체
+        isQuizGraded = true;
+        primary.innerText = "다음 문제 🔀 (Enter키 입력 가능)";
+        document.getElementById('quiz-secondary-action').classList.add('hidden');
+        updateQuizScoreBoard();
+        savePersistedState();
+    }
+
+    // 문자 표준 정제화 함수
+    function cleanString(str) {
+        return str.replace(/\s+/g, '').replace(/\([^)]*\)/g, '').replace(/[.,\/#!$%\^&\*;:{}=\-_`~()\[\]]/g, '').toLowerCase();
+    }
+
+    // 초성 추출기
+    function getConsonantsOnly(str) {
+        const cho = ["ㄱ","ㄲ","ㄴ","ㄷ","ㄸ","ㄹ","ㅁ","ㅂ","ㅃ","ㅅ","ㅆ","ㅇ","ㅈ","ㅉ","ㅊ","ㅋ","ㅌ","ㅍ","ㅎ"];
+        let result = "";
+        for (let i = 0; i < str.length; i++) {
+            const code = str.charCodeAt(i) - 44032;
+            if (code > -1 && code < 11172) {
+                result += cho[Math.floor(code / 588)];
+            } else {
+                result += str.charAt(i);
+            }
+        }
+        return result;
+    }
+
+    // ── 암기비법 챌린지 ──
+    let memoActiveTab = "learn";
+    function switchMemoPanel(tab) {
+        triggerHaptic('click');
+        memoActiveTab = tab;
+        const btnLearn = document.getElementById('tab-memo-learn');
+        const btnBlind = document.getElementById('tab-memo-blind');
+        
+        if (tab === 'learn') {
+            btnLearn.className = "flex-1 py-2.5 rounded-full text-xs font-black bg-blue-600 text-white shadow-sm";
+            btnBlind.className = "flex-1 py-2.5 rounded-full text-xs font-black text-slate-600";
+            document.getElementById('memo-learn-subview').classList.remove('hidden');
+            document.getElementById('memo-blind-subview').classList.add('hidden');
+        } else {
+            btnLearn.className = "flex-1 py-2.5 rounded-full text-xs font-black text-slate-600";
+            btnBlind.className = "flex-1 py-2.5 rounded-full text-xs font-black bg-blue-600 text-white shadow-sm";
+            document.getElementById('memo-learn-subview').classList.add('hidden');
+            document.getElementById('memo-blind-subview').classList.remove('hidden');
+            loadMnemonicGame('쇄국개항');
+        }
+    }
+
+    // 블라인드 미니 게임 정렬부
+    function loadMnemonicGame(key, btn) {
+        triggerHaptic('click');
+        activeGameKey = key;
+        gameUserProgress = [];
+
+        if (btn) {
+            // 버튼 칩 디자인 온오프 대응
+            btn.parentNode.querySelectorAll('button').forEach(b => {
+                b.classList.remove('bg-blue-100', 'text-blue-700');
+            });
+            btn.classList.add('bg-blue-100', 'text-blue-700');
+        }
+
+        const formula = mnemonicFormulas[key];
+        document.getElementById('blind-active-title').innerText = formula.title;
+        document.getElementById('blind-game-feedback').innerText = "순번에 부합하는 보기를 아래 풀에서 탭하여 완수하십시오.";
+        document.getElementById('blind-game-feedback').className = "font-black text-slate-500";
+
+        // 슬롯 생성 (초기 상태 숨김 처리 "?")
+        const sRow = document.getElementById('blind-slots-row');
+        sRow.innerHTML = '';
+        formula.abbreviation.forEach((char, idx) => {
+            sRow.innerHTML += `
+                <div id="blind-slot-${idx}" class="w-11 h-11 rounded-2xl border-2 border-dashed border-slate-300 flex flex-col items-center justify-center bg-white relative shadow-sm">
+                    <span class="text-base font-black text-slate-200">?</span>
+                    <div class="absolute bottom-0.5 text-[7px] font-black text-slate-300">${idx+1}</div>
+                </div>
+            `;
+        });
+
+        // 보기 풀 데이터 가져오기 및 셔플링
+        let poolItems = [];
+        if (formula.customEvents) {
+            poolItems = [...formula.customEvents];
+        } else {
+            poolItems = formula.eventIds.map(id => database.find(item => item.id === id));
+        }
+
+        const shuffled = [...poolItems].sort(() => 0.5 - Math.random());
+        const pPool = document.getElementById('blind-options-pool');
+        pPool.innerHTML = '';
+
+        shuffled.forEach(event => {
+            pPool.innerHTML += `
+                <button id="blind-choice-${event.id}" onclick="handleMnemonicGameTap(${event.id}, '${event.title.replace(/'/g, "\\'")}')" class="px-3 py-3 bg-white border border-slate-200 hover:border-blue-400 rounded-2xl text-left text-[11px] font-[900] shadow-sm active:scale-95 transition-all flex justify-between items-center gap-1">
+                    <span class="truncate">${event.title}</span>
+                    <i class="fa-solid fa-plus text-[10px] text-slate-300"></i>
+                </button>
+            `;
+        });
+    }
+
+    function handleMnemonicGameTap(id, title) {
+        const formula = mnemonicFormulas[activeGameKey];
+        const nextIdx = gameUserProgress.length;
+        if (nextIdx >= formula.eventIds.length) return;
+
+        const targetId = formula.eventIds[nextIdx];
+        const choiceBtn = document.getElementById(`blind-choice-${id}`);
+
+        if (id === targetId) {
+            triggerHaptic('success');
+            gameUserProgress.push(id);
+
+            // 옵션 잠금 연출
+            choiceBtn.disabled = true;
+            choiceBtn.className = "px-3 py-3 bg-emerald-50 text-emerald-700 border border-emerald-300 rounded-2xl text-left text-[11px] font-black opacity-50 flex justify-between items-center gap-1 cursor-not-allowed";
+            choiceBtn.innerHTML = `<span class="truncate">${title}</span> <i class="fa-solid fa-check text-[10px]"></i>`;
+
+            // 슬롯 복구 및 입체 채색 컬러
+            const slot = document.getElementById(`blind-slot-${nextIdx}`);
+            const color = formula.colors[nextIdx] || '#2563EB';
+            slot.className = "w-11 h-11 rounded-2xl flex items-center justify-center text-white font-black text-sm correct-animate";
+            slot.style.backgroundColor = color;
+            slot.style.borderColor = color;
+            slot.innerHTML = formula.abbreviation[nextIdx];
+
+            if (gameUserProgress.length === formula.eventIds.length) {
+                document.getElementById('blind-game-feedback').innerText = "🎉 대만족! 연대순 블라인드 배열을 퍼펙트하게 정복했습니다.";
+                document.getElementById('blind-game-feedback').className = "font-black text-emerald-600 animate-bounce";
+            } else {
+                document.getElementById('blind-game-feedback').innerText = `정답! 다음 단계로 가보세요 (${gameUserProgress.length}단계 클리어)`;
+                document.getElementById('blind-game-feedback').className = "font-black text-blue-600";
+            }
+        } else {
+            triggerHaptic('error');
+            choiceBtn.classList.add('wrong-animate', 'border-red-400');
+            document.getElementById('blind-game-feedback').innerText = `❌ 순서에 맞지 않습니다! 차분히 올바른 역사의 다음 단계를 터치하세요.`;
+            document.getElementById('blind-game-feedback').className = "font-black text-red-500";
+            setTimeout(() => {
+                choiceBtn.classList.remove('wrong-animate', 'border-red-400');
+            }, 400);
+        }
+    }
+
+    function resetMnemonicGame() {
+        loadMnemonicGame(activeGameKey);
+    }
+
+    // ── 오답 노정기 (INCORRECT) 제어 ──
+    function recordWrongAnswer(id) {
+        if (!wrongAnswersList.includes(id)) {
+            wrongAnswersList.push(id);
+            savePersistedState();
+        }
+    }
+
+    function removeWrongAnswer(id) {
+        triggerHaptic('delete');
+        wrongAnswersList = wrongAnswersList.filter(item => item !== id);
+        savePersistedState();
+        renderWrongAnswersList();
+    }
+
+    function clearAllWrongAnswers() {
+        showCustomDialog("오답 포맷", "보관 중인 모든 오답 이력을 완전 삭제하시겠습니까?", "confirm", () => {
+            triggerHaptic('delete');
+            wrongAnswersList = [];
+            savePersistedState();
+            renderWrongAnswersList();
+        });
+    }
+
+    function renderWrongAnswersList() {
+        const container = document.getElementById('wrong-answers-container');
+        const actPanel = document.getElementById('wrong-test-activator-panel');
+
+        if (wrongAnswersList.length === 0) {
+            container.innerHTML = `
+                <div class="text-center py-12 text-slate-400">
+                    <i class="fa-solid fa-circle-check text-5xl text-emerald-300 mb-3 block"></i>
+                    현재 수집된 약점이 없습니다. 훌륭한 역사 정복 흐름입니다!
+                </div>
+            `;
+            actPanel.classList.add('hidden');
+            return;
+        }
+
+        actPanel.classList.remove('hidden');
+        container.innerHTML = '';
+
+        wrongAnswersList.forEach(id => {
+            const item = database.find(evt => evt.id === id);
+            if (item) {
+                const block = document.createElement('div');
+                block.className = "p-4 bg-white border border-slate-200 rounded-2xl flex justify-between items-start gap-3 shadow-sm";
+                block.innerHTML = `
+                    <div class="flex-1">
+                        <div class="flex items-center gap-1.5 flex-wrap">
+                            <span class="text-[9px] font-black bg-blue-600 text-white px-2 py-0.5 rounded-full">${item.year}년</span>
+                            <span class="text-[9px] font-black bg-slate-200 text-slate-700 px-2 py-0.5 rounded-full">${item.type}</span>
+                        </div>
+                        <h4 class="font-black text-sm text-slate-800 mt-2">${item.title}</h4>
+                        <p class="text-xs text-slate-500 mt-1 leading-relaxed font-bold">${item.desc}</p>
+                    </div>
+                    <button onclick="removeWrongAnswer(${item.id})" class="text-slate-300 hover:text-red-500 p-2 text-xs transition-colors shrink-0">
+                        <i class="fa-solid fa-trash-can text-sm"></i>
+                    </button>
+                `;
+                container.appendChild(block);
+            }
+        });
+    }
+
+    // 약점 개념 오답 집중 격파 테스트
+    function triggerWrongIntensiveTest() {
+        if (wrongAnswersList.length === 0) return;
+        triggerHaptic('click');
+        isIntensiveWrongMode = true;
+
+        // 테스트 탭으로 가도록 연계
+        const targetBtn = document.querySelectorAll('.sidebar-btn')[2] || document.querySelectorAll('.tactile-nav-btn')[2];
+        switchSection('quiz', targetBtn);
+        generateQuizProblem();
+        
+        showCustomDialog("오답 타격", "취약 오답 집중 테스트 모드가 켜졌습니다. 보관된 개념들만 타격하여 오답을 청소합니다!", "info");
+    }
+
+    // ── Duru 오리지널 스타일 커스텀 다이얼로그 모달 구현부 ──
+    function showCustomDialog(title, message, type = "info", onConfirmCallback = null) {
+        document.getElementById('custom-dialog-title').innerText = title;
+        document.getElementById('custom-dialog-message').innerText = message;
+        
+        const actions = document.getElementById('custom-dialog-actions');
+        actions.innerHTML = '';
+
+        if (type === 'confirm') {
+            const cancelBtn = document.createElement('button');
+            cancelBtn.className = "tactile-pill-btn flex-1 py-3 text-xs";
+            cancelBtn.innerText = "취소";
+            cancelBtn.onclick = closeCustomDialog;
+
+            const confirmBtn = document.createElement('button');
+            confirmBtn.className = "tactile-pill-btn-primary flex-1 py-3 text-xs";
+            confirmBtn.innerText = "확인";
+            confirmBtn.onclick = function() {
+                if (onConfirmCallback) onConfirmCallback();
+                closeCustomDialog();
+            };
+
+            actions.appendChild(cancelBtn);
+            actions.appendChild(confirmBtn);
+        } else {
+            const singleBtn = document.createElement('button');
+            singleBtn.className = "tactile-pill-btn-primary w-full py-3 text-xs";
+            singleBtn.innerText = "이해했습니다";
+            singleBtn.onclick = closeCustomDialog;
+            actions.appendChild(singleBtn);
+        }
+
+        document.getElementById('custom-dialog-backdrop').classList.remove('hidden');
+    }
+
+    function closeCustomDialog() {
+        triggerHaptic('click');
+        document.getElementById('custom-dialog-backdrop').classList.add('hidden');
+    }
+</script>
+</body>
+</html>
