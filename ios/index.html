@@ -1,1 +1,363 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Duru History +</title>
+    <style>
+        /* Material You 기반 디자인 콘셉트 (iOS 9 호환용 Flex박스 및 구형 CSS 적용) */
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Malgun Gothic", sans-serif;
+            background-color: #fef7ff;
+            color: #1d1b20;
+            margin: 0;
+            padding: 0;
+            -webkit-tap-highlight-color: transparent;
+        }
 
+        header {
+            background-color: #eaddff;
+            color: #21005d;
+            padding: 16px;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 24px;
+            font-weight: 600;
+        }
+
+        header p {
+            margin: 4px 0 0 0;
+            font-size: 13px;
+            color: #49454f;
+        }
+
+        .game-container {
+            padding: 16px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* 상단 카드 풀 (고정 영역 가능) */
+        .card-pool-section {
+            background-color: #f3edf7;
+            border-radius: 16px;
+            padding: 16px;
+            margin-bottom: 24px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+
+        .section-title {
+            font-size: 16px;
+            font-weight: bold;
+            margin-top: 0;
+            margin-bottom: 12px;
+            color: #6750a4;
+        }
+
+        .card-wrapper {
+            display: -webkit-flex;
+            display: flex;
+            -webkit-flex-wrap: wrap;
+            flex-wrap: wrap;
+        }
+
+        /* 역사 키워드 카드 스타일 */
+        .history-card {
+            background-color: #ffffff;
+            border: 1px solid #79747e;
+            border-radius: 8px;
+            padding: 8px 14px;
+            margin: 6px;
+            font-size: 14px;
+            cursor: pointer;
+            -webkit-transition: all 0.2s ease;
+            transition: all 0.2s ease;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+        }
+
+        /* 카드가 선택되었을 때의 상태 */
+        .history-card.selected {
+            background-color: #6750a4;
+            color: #ffffff;
+            border-color: #6750a4;
+            -webkit-transform: scale(1.05);
+            transform: scale(1.05);
+        }
+
+        /* 조약 목적지 리스트 */
+        .treaty-list {
+            display: -webkit-flex;
+            display: flex;
+            -webkit-flex-direction: column;
+            flex-direction: column;
+        }
+
+        .treaty-slot {
+            background-color: #ffffff;
+            border: 1px solid #e7e0ec;
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 12px;
+            -webkit-transition: background-color 0.2s;
+            transition: background-color 0.2s;
+            cursor: pointer;
+        }
+
+        .treaty-slot:hover {
+            background-color: #f3edf7;
+        }
+
+        .treaty-name {
+            font-size: 16px;
+            font-weight: bold;
+            color: #1d1b20;
+            margin-bottom: 8px;
+        }
+
+        /* 조약 내부에 안착한 카드 공간 */
+        .placed-cards {
+            display: -webkit-flex;
+            display: flex;
+            -webkit-flex-wrap: wrap;
+            flex-wrap: wrap;
+            min-height: 40px;
+            background-color: #faf6fe;
+            border: 1px dashed #cac4d0;
+            border-radius: 8px;
+            padding: 4px;
+            margin-top: 4px;
+        }
+
+        .placed-cards .history-card {
+            background-color: #e8def8;
+            color: #1d1b20;
+            border: none;
+            cursor: default;
+        }
+
+        /* 시스템 메시지 및 스코어 */
+        .status-bar {
+            text-align: center;
+            font-size: 16px;
+            font-weight: bold;
+            margin: 16px 0;
+            color: #6750a4;
+            min-height: 24px;
+        }
+
+        .success-flash {
+            color: #b3261e;
+            animation: shake 0.3s ease;
+        }
+
+        /* 구형 브라우저 애니메이션 대응 */
+        @-webkit-keyframes shake {
+            0% { -webkit-transform: translateX(0); }
+            25% { -webkit-transform: translateX(-5px); }
+            50% { -webkit-transform: translateX(5px); }
+            75% { -webkit-transform: translateX(-5px); }
+            100% { -webkit-transform: translateX(0); }
+        }
+        @keyframes shake {
+            0% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            50% { transform: translateX(5px); }
+            75% { transform: translateX(-5px); }
+            100% { transform: translateX(0); }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Duru History +</h1>
+        <p>카드를 터치한 후, 알맞은 조약 칸을 터치하여 분류하세요!</p>
+    </header>
+
+    <div class="game-container">
+        <div class="status-bar" id="status-message">남은 카드 개수: <span id="cards-left">0</span>개</div>
+
+        <div class="card-pool-section">
+            <div class="section-title">역사 키워드 카드 덱</div>
+            <div class="card-wrapper" id="card-pool">
+                </div>
+        </div>
+
+        <div class="section-title">근대 조약 분류함</div>
+        <div class="treaty-list" id="treaty-zones">
+            </div>
+    </div>
+
+    <script>
+        // iOS 9(ES5 필수) 및 구형 엔진 호환을 위해 var 사용 및 화살표 함수 배제
+        var treatyData = [
+            { id: 1, name: "1876 강화도 조약 (조일수호조규)", keywords: ["자주국", "부상 개항", "원산 개항", "인천 개항", "해안측량권", "영사재판권"] },
+            { id: 2, name: "1876 조일수호조규 부록", keywords: ["일본 화폐 유통 인정", "일본인 거류지"] },
+            { id: 3, name: "1876 조일무역규칙", keywords: ["양곡 무제한 유출", "무관세"] },
+            { id: 4, name: "1882 제물포 조약", keywords: ["배상금 지급", "일본군의 한성 주둔"] },
+            { id: 5, name: "1882 조미수호통상조약", keywords: ["거중 조정", "최혜국 대우", "영사재판권(조미)"] },
+            { id: 6, name: "1882 조청상민수륙무역장정", keywords: ["조선을 청의 속국으로 명시", "조선 군대 주둔", "마젠창과 묄렌도르프 고문 파견"] },
+            { id: 7, name: "1883 영독러프오 수교", keywords: ["영국, 독일, 러시아, 프랑스, 오스트리아 순으로 함"] },
+            { id: 8, name: "1884 조러 비밀협약 추진", keywords: ["청 견제", "조인 실패"] },
+            { id: 9, name: "1885 한성조약", keywords: ["배상금", "공사관 신축 비용"] },
+            { id: 10, name: "1894 전주 화약", keywords: ["폐정 개혁 합의", "집강소 설치", "교정청 설치"] },
+            { id: 11, name: "1904 한일의정서", keywords: ["이지용, 하야시 서명", "일본이 군사 전략상 필요한 한국 영토를 수시로 사용할 수 있도록 강제 규정"] },
+            { id: 12, name: "1904 제1차 한일 협약", keywords: ["고문 정치", "재정 고문 메가타(화폐정리사업 주도)", "외교 고문 스티븐스 파견 강요"] },
+            { id: 13, name: "1905 을사늑약 (제2차 한일 협약)", keywords: ["을사오적(이완용, 박제순 등)", "이토 히로부미", "외교권 박탈", "통감부 설치(초대 통감 이토 히로부미)"] },
+            { id: 14, name: "1907 한일 신협약", keywords: ["정미7조약", "이완용", "각 부서에 일본인 '차관'을 임용하는 차관 정치 실시", "부속 밀약으로 군대 해산 규정"] },
+            { id: 15, name: "1910 한국 병합 조약", keywords: ["경술국치", "이완용, 데라우치", "대한제국 주권 완전히 피탈", "조선총독부 설치", "일제강점기 무단통치 시작"] }
+        ];
+
+        var cards = [];
+        var selectedCardIdx = null;
+        var totalCardCount = 0;
+
+        // 데이터 파싱 및 분리
+        for (var i = 0; i < treatyData.length; i++) {
+            var treaty = treatyData[i];
+            for (var j = 0; j < treaty.keywords.length; j++) {
+                cards.push({
+                    text: treaty.keywords[j],
+                    treatyId: treaty.id
+                });
+            }
+        }
+        totalCardCount = cards.length;
+
+        // 배열 셔플 함수 (ES5 방식)
+        function shuffle(array) {
+            var currentIndex = array.length, temporaryValue, randomIndex;
+            while (0 !== currentIndex) {
+                randomIndex = Math.floor(Math.random() * currentIndex);
+                currentIndex -= 1;
+                temporaryValue = array[currentIndex];
+                array[currentIndex] = array[randomIndex];
+                array[randomIndex] = temporaryValue;
+            }
+            return array;
+        }
+
+        cards = shuffle(cards);
+
+        // 초기 렌더링 영역 정의
+        var cardPoolEl = document.getElementById("card-pool");
+        var treatyZonesEl = document.getElementById("treaty-zones");
+        var statusMsgEl = document.getElementById("status-message");
+        var cardsLeftEl = document.getElementById("cards-left");
+
+        cardsLeftEl.innerHTML = cards.length;
+
+        // 카드 풀 빌드
+        function renderCardPool() {
+            cardPoolEl.innerHTML = "";
+            for (var i = 0; i < cards.length; i++) {
+                var cardDiv = document.createElement("div");
+                cardDiv.className = "history-card";
+                cardDiv.innerHTML = cards[i].text;
+                cardDiv.setAttribute("data-index", i);
+                
+                // 클릭 이벤트를 익명함수로 매핑하여 구형 브라우저 대응
+                cardDiv.onclick = function(e) {
+                    var idx = parseInt(this.getAttribute("data-index"));
+                    selectCard(idx);
+                };
+                cardPoolEl.appendChild(cardDiv);
+            }
+        }
+
+        // 조약 틀 빌드
+        function renderTreatySlots() {
+            for (var i = 0; i < treatyData.length; i++) {
+                var t = treatyData[i];
+                
+                var slotDiv = document.createElement("div");
+                slotDiv.className = "treaty-slot";
+                slotDiv.setAttribute("data-treaty-id", t.id);
+                
+                var nameDiv = document.createElement("div");
+                nameDiv.className = "treaty-name";
+                nameDiv.innerHTML = t.name;
+                
+                var placedDiv = document.createElement("div");
+                placedDiv.className = "placed-cards";
+                placedDiv.id = "placed-" + t.id;
+                
+                slotDiv.appendChild(nameDiv);
+                slotDiv.appendChild(placedDiv);
+                
+                slotDiv.onclick = function() {
+                    var treatyId = parseInt(this.getAttribute("data-treaty-id"));
+                    matchCardToTreaty(treatyId);
+                };
+                
+                treatyZonesEl.appendChild(slotDiv);
+            }
+        }
+
+        // 카드 선택 핸들러
+        function selectCard(idx) {
+            selectedCardIdx = idx;
+            var allCards = cardPoolEl.getElementsByClassName("history-card");
+            for (var i = 0; i < allCards.length; i++) {
+                allCards[i].className = "history-card";
+            }
+            // 선택된 요소에 클래스 부여
+            for (var j = 0; j < allCards.length; j++) {
+                if (parseInt(allCards[j].getAttribute("data-index")) === idx) {
+                    allCards[j].className = "history-card selected";
+                    break;
+                }
+            }
+            statusMsgEl.innerHTML = "선택된 카드: '" + cards[idx].text + "'에 맞는 조약 칸을 터치하세요.";
+            statusMsgEl.className = "status-bar";
+        }
+
+        // 조약 매칭 검증 핸들러
+        function matchCardToTreaty(treatyId) {
+            if (selectedCardIdx === null) {
+                statusMsgEl.innerHTML = "먼저 위에서 키워드 카드를 터치하여 선택해주세요!";
+                return;
+            }
+            
+            var targetCard = cards[selectedCardIdx];
+            
+            if (targetCard.treatyId === treatyId) {
+                // 정답인 경우
+                var targetContainer = document.getElementById("placed-" + treatyId);
+                var correctCard = document.createElement("div");
+                correctCard.className = "history-card";
+                correctCard.innerHTML = targetCard.text;
+                targetContainer.appendChild(correctCard);
+                
+                // 데이터 배열에서 삭제
+                cards.splice(selectedCardIdx, 1);
+                selectedCardIdx = null;
+                
+                // 다시 카드 인덱스 재정렬 후 렌더링
+                renderCardPool();
+                cardsLeftEl.innerHTML = cards.length;
+                
+                if (cards.length === 0) {
+                    statusMsgEl.innerHTML = "🎉 축하합니다! 모든 구한말 조약을 완벽하게 마스터하셨습니다!";
+                    statusMsgEl.style.color = "#4ba24c";
+                } else {
+                    statusMsgEl.innerHTML = "정답입니다! 올바르게 분류되었습니다.";
+                    statusMsgEl.style.color = "#6750a4";
+                }
+            } else {
+                // 오답인 경우
+                statusMsgEl.innerHTML = "❌ 틀렸습니다! 조약의 내용을 다시 한번 생각해보세요.";
+                statusMsgEl.className = "status-bar success-flash";
+            }
+        }
+
+        // 실행
+        renderCardPool();
+        renderTreatySlots();
+    </script>
+</body>
+</html>
