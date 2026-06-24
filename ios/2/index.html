@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>근현대사 15제 폭풍 순서배열기</title>
+    <style>
+        /* iPad Mini 1세대(768x1024) 전체 화면 규격 강제 고정 */
+        body {
+            margin: 0;
+            padding: 0;
+            width: 768px;
+            height: 1024px;
+            background-color: #FDF1E1; /* Material You 웜샌드 톤 */
+            font-family: 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif;
+            color: #1F1B16;
+            overflow: hidden;
+            -webkit-user-select: none;
+            user-select: none;
+        }
+
+        /* 내비게이션 및 상단 탭 */
+        .header {
+            height: 50px;
+            background-color: #8B4A00;
+            color: #FFFFFF;
+            font-size: 20px;
+            font-weight: bold;
+            display: -webkit-box;
+            display: -webkit-flex;
+            display: flex;
+            -webkit-box-align: center;
+            -webkit-align-items: center;
+            align-items: center;
+            -webkit-box-pack: center;
+            -webkit-justify-content: center;
+            justify-content: center;
+        }
+
+        .tabs {
+            display: -webkit-box;
+            display: -webkit-flex;
+            display: flex;
+            height: 45px;
+            background-color: #F4DDBE;
+        }
+
+        .tab {
+            -webkit-box-flex: 1;
+            -webkit-flex: 1;
+            flex: 1;
+            text-align: center;
+            line-height: 45px;
+            font-size: 15px;
+            font-weight: bold;
+            color: #514434;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+        }
+
+        .tab.active {
+            color: #8B4A00;
+            border-bottom: 3px solid #8B4A00;
+            background-color: #FDF1E1;
+        }
+
+        /* 메인 컨텐츠 영역 컴팩트 배치 */
+        .content {
+            height: 929px;
+            box-sizing: border-box;
+            padding: 12px;
+            display: none;
+        }
+
+        .content.active {
+            display: block;
+        }
+
+        /* 드래그 리스트 스타일 */
+        .drag-container {
+            height: 730px;
+            background: #FFFFFF;
+            border-radius: 16px;
+            padding: 6px;
+            box-sizing: border-box;
+            border: 1px solid #EAD7C1;
+            overflow-y: auto;
+        }
+
+        /* 15개 표기를 위해 높이를 42px로 정밀 축소 */
+        .drag-item {
+            height: 42px;
+            background-color: #FAE6CC;
+            margin-bottom: 4px;
+            border-radius: 8px;
+            display: -webkit-box;
+            display: -webkit-flex;
+            display: flex;
+            -webkit-box-align: center;
+            -webkit-align-items: center;
+            align-items: center;
+            padding: 0 12px;
+            box-sizing: border-box;
+            font-size: 14px;
+            font-weight: bold;
+            border: 1px solid #E0C7A8;
+            position: relative;
+            touch-action: none;
+        }
+
+        .drag-item .handle {
+            font-size: 18px;
+            color: #8B4A00;
+            margin-right: 10px;
+            cursor: move;
+        }
+
+        .drag-item .tip-btn {
+            position: absolute;
+            right: 8px;
+            background-color: #8B4A00;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 11px;
+            padding: 4px 8px;
+        }
+
+        /* 유틸리티 버튼 구역 */
+        .control-bar {
+            height: 150px;
+            display: -webkit-box;
+            display: -webkit-flex;
+            display: flex;
+            -webkit-box-orient: vertical;
+            -webkit-box-direction: normal;
+            -webkit-flex-direction: column;
+            flex-direction: column;
+            -webkit-box-pack: space-around;
+            -webkit-justify-content: space-around;
+            justify-content: space-around;
+            padding-top: 5px;
+        }
+
+        .btn-row {
+            display: -webkit-box;
+            display: -webkit-flex;
+            display: flex;
+            -webkit-box-pack: justify;
+            -webkit-justify-content: space-between;
+            justify-content: space-between;
+        }
+
+        .btn {
+            background-color: #8B4A00;
+            color: white;
+            border: none;
+            padding: 12px;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 20px;
+            cursor: pointer;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.15);
+        }
+
+        .btn:active {
+            background-color: #B25E00;
+        }
+
+        /* 오답노트 & 팁 레이아웃 */
+        .list-view {
+            height: 880px;
+            overflow-y: auto;
+            background: #FFFFFF;
+            border-radius: 16px;
+            padding: 15px;
+            box-sizing: border-box;
+            border: 1px solid #EAD7C1;
+        }
+
+        .note-card {
+            background-color: #FFF5EA;
+            border-left: 5px solid #FF8A00;
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 0 8px 8px 0;
+            font-size: 14px;
+        }
+
+        .tip-header {
+            font-size: 16px;
+            font-weight: bold;
+            color: #8B4A00;
+            margin-top: 15px;
+            border-bottom: 2px solid #8B4A00;
+            padding-bottom: 4px;
+        }
+
+        .tip-box {
+            background: #FDF8F2;
+            padding: 10px;
+            border-radius: 8px;
+            margin-top: 5px;
+            font-size: 13px;
+            line-height: 1.5;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header">근현대사 초고속 순서배열 마스터 (15제)</div>
+
+    <div class="tabs">
+        <div class="tab active" id="tab-game" onclick="changeTab('game')">순서배열 훈련</div>
+        <div class="tab" id="tab-note" onclick="changeTab('note')">오답노트 (<span id="note-count">0</span>)</div>
+        <div class="tab" id="tab-tip" onclick="changeTab('tip')">통합 암기 공식</div>
+    </div>
+
+    <div id="view-game" class="content active">
+        <div class="drag-container" id="main-drag-list">
+            </div>
+        <div class="control-bar">
+            <div style="text-align:center; font-size:15px; font-weight:bold; color:#683400;">
+                💡 항목 왼쪽의 ☰ 영역을 누른 상태로 위아래로 끌어다 움직이세요!
+            </div>
+            <div class="btn-row">
+                <button class="btn" style="width: 48%; background-color:#5E5243;" onclick="initNewGame()">🔄 새 문제 조합 (15개)</button>
+                <button class="btn" style="width: 48%; background-color:#8B4A00;" onclick="verifySequence()">✔️ 정답 확인 및 오답 기록</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="view-note" class="content">
+        <div class="list-view">
+            <h3>⚠️ 내가 순서를 틀렸던 사건 목록</h3>
+            <p style="font-size: 13px; color:#706050;">이곳에 등록된 사건들의 연도와 내용을 완벽하게 연상 훈련 하세요.</p>
+            <div id="note-list-container"></div>
+            <button class="btn" style="width:100%; background-color:#A83232; margin-top:15px;" onclick="clearNotes()">오답노트 전체 초기화</button>
+        </div>
+    </div>
+
+    <div id="view-tip" class="content">
+        <div class="list-view">
+            <h3>⚡ 1시간 벼락치기 연대별 치트키</h3>
+            
+            <div class="tip-header">■ 1866년 병·제·병·오 삼총사 테크트리</div>
+            <div class="tip-box"><b>병</b>인박해 → <b>제</b>너럴셔먼호 → <b>병</b>인양요 → <b>오</b>페르트 도굴(68년) 순서<br>프랑스 신부 죽여서 미국 배가 평양 왔다가 강화도 전쟁터짐!</div>
+
+            <div class="tip-header">■ 1876년 개항기 강화도 트리오</div>
+            <div class="tip-box">조일수호조규(강화도본조약) → 부록(간행이정) → 무역규칙(양곡 무제한, 무관세)</div>
+
+            <div class="tip-header">■ 1882년 격동의 대폭발 라인업</div>
+            <div class="tip-box">조미수호통상조약 → 임오군란 발생 → 제물포조약(일본군 주둔) → 조청상민수륙무역장정(속국명시) → 척화비 제거</div>
+
+            <div class="tip-header">■ 1894년 동학 & 갑오 대혼란 초정밀 서사</div>
+            <div class="tip-box">고부봉기 → 1차동학 → 전주화약(집강소) → 군국기무처/청일전쟁 → 1차갑오개혁 → 2차동학(남북접) → 우금치 패배 → 2차갑오개혁</div>
+
+            <div class="tip-header">■ 1895~1898년 을미에서 독립협회까지</div>
+            <div class="tip-box">홍범14조 → 시모노세키 → 삼국간섭 → 을미사변 → 을미개혁(단발령) → 아관파천(96) → 독립협회(96) → 대한제국(97) → 만민공동회(98)</div>
+
+            <div class="tip-header">■ 1904~1905년 국권침탈 비밀공작</div>
+            <div class="tip-box">러일전쟁 → 한일의정서 → 보안회 → 1차협약(메가타 고문) → 가쓰라/태프트 → 2차영일동맹 → 포츠머스 → 을사늑약(외교권)</div>
+        </div>
+    </div>
+
+    <script>
+        // 전역 안전 데이터셋 (iOS 9 전용 ES5 배열 인덱싱 구현)
+        var database = [
+            [1840,"제1차 아편전쟁","전쟁/침략/갈등","청, 영국","영국 개항"],
+            [1854,"미일화친조약","조약","일본, 미국","에도막부, 개항"],
+            [1856,"제2차 아편전쟁","전쟁/침략/갈등","청, 프랑스, 영국, 러시아","연해주 할양"],
+            [1858,"미일수호통상조약","조약","일본, 미국","영사재판권, 최혜국 대우"],
+            [1861,"양무운동","운동/시위","청","중체서용, 기기국 설치"],
+            [1863,"고종 즉위","설치/파견/제거","조선","흥선대원군 집권 개시"],
+            [1866,"병인박해","전쟁/침략/갈등","조선, 프랑스","흥선대원군의 천주교도 탄압"],
+            [1866,"제너럴 셔먼호 사건","전쟁/침략/갈등","조선, 미국","평양 관민들이 미국 무역선 소각"],
+            [1866,"병인양요","전쟁/침략/갈등","조선, 프랑스","강화도 침공, 양헌수 정족산성 승리"],
+            [1868,"메이지유신","운동/시위","일본","일본 천황 중심의 근대화 대개혁"],
+            [1868,"남연군 묘 도굴 미수 사건","전쟁/침략/갈등","조선, 독일","오페르트의 무덤 도굴 시도"],
+            [1871,"신미양요","전쟁/침략/갈등","조선, 미국","광성보 어재연 장군 전사, 사재판권 항전"],
+            [1871,"척화비 건립","설치/파견/제거","조선","통상 수교 거부 의사 천명"],
+            [1873,"정한론 대두","운동/시위","일본","조선 정벌론 논의 본격화"],
+            [1873,"흥선대원군 하야","설치/파견/제거","조선","고종의 친정 선포, 민씨 정권 수립"],
+            [1874,"개화세력의 등장","운동/시위","조선","박규수, 오경석 등 통상개화파 형성"],
+            [1875,"운요호 사건","전쟁/침략/갈등","조선, 일본","일본 군함의 강화도 불법 포격 초지"],
+            [1876,"강화도조약","조약","조선, 일본","최초의 불평등 조약, 3개 항구 개항"],
+            [1876,"왜양일체론 대두","운동/시위","조선","최익현의 도끼 상소, 개항 반대"],
+            [1876,"수신사 파견","설치/파견/제거","조선","김기수 등 일본 시찰단 파견"],
+            [1876,"조일수호조규부록","조약","조선, 일본","일본 화폐 통용, 거류지 설정"],
+            [1876,"조일무역규칙","조약","조선, 일본","무관세, 양곡 무제한 유출 허용"],
+            [1880,"통리기무아문 설치","설치/파견/제거","조선","개화 정책 추진 총괄 기구 신설"],
+            [1881,"영남 만인소","운동/시위","조선","이만손 중심의 위정척사 영남 유생 시위"],
+            [1881,"조사 시찰단 파견","설치/파견/제거","조선, 일본","비밀리에 명칭 숨기고 일본 문물 시찰"],
+            [1881,"별기군 창설","설치/파견/제거","조선","신식 군대 조직, 일본인 교관 초빙"],
+            [1881,"영선사 파견","설치/파견/제거","조선, 청","김윤식 지휘 아래 근대 무기 제조 기술 습득"],
+            [1882,"조미수호통상조약","조약","조선, 미국","서양 국가와 맺은 최초 조약, 거중조정 포함"],
+            [1882,"임오군란","운동/시위","조선, 청, 일본","구식 군인 차별 반발 폭동, 대원군 일시 재집권"],
+            [1882,"제물포 조약","조약","조선, 일본","공사관 경비 명목 일군 한성 주둔 승인"],
+            [1882,"조청상민수륙무역장정","조약","조선, 청","조선이 청의 속국임을 명문화함"],
+            [1882,"척화비 제거","설치/파견/제거","조선","대원군 납치 이후 고종 명령으로 전격 제거"],
+            [1883,"당오전 발행","설치/파견/제거","조선","재정 부족 보충 목적의 악화 발행"],
+            [1883,"박문국 설치","설치/파견/제거","조선","최초의 신문 한성순보 발간 목적 관청"],
+            [1884,"청불 전쟁","전쟁/침략/갈등","청, 프랑스","베트남 지배권 다툼, 조선 주둔 청군 철수"],
+            [1884,"조러 비밀협약 추진","조약","조선, 러시아","독자적 청 견제용 밀약 추진, 조인 실패"],
+            [1884,"갑신정변","전쟁/침략/갈등","조선, 일본","김옥균 등 급진개화파의 우정총국 쿠데타"],
+            [1884,"개혁 정강 14조","선언문/문서","조선","청 사대 관계 청산, 문벌 폐지, 재정 호조 일원화"],
+            [1885,"한성조약","조약","조선, 일본","갑신정변 관련 일본 공사관 신축비 부담"],
+            [1885,"거문도 사건","전쟁/침략/갈등","조선, 영국","러시아 남하 저지 목적 영군의 거문도 무단점령"],
+            [1885,"톈진조약","조약","청, 일본","양국 군대 동시 철수, 파병 시 상호 사전 통보"],
+            [1885,"조선 중립국 주장","운동/시위","조선","부들러 및 유길준의 조선 한반도 중립화론"],
+            [1886,"육영공원 설치","설치/파견/제거","조선","헐버트 등 외국인 교사 초빙 근대 국립학교"],
+            [1887,"주미공사관 설치","설치/파견/제거","조선, 미국","워싱턴에 박정양 초대 공사 상주 시작"],
+            [1892,"교조 신원 운동","운동/시위","조선","동학도들이 최제우 누명 해명 및 포교 자유 요구"],
+            [1892,"삼례 집회","운동/시위","조선","동학 최대 규모 종교 집회 개최"],
+            [1893,"보은 집회","운동/시위","조선","척왜척양 외치며 정치 운동으로 발전"],
+            [1894,"고부 농민 봉기","운동/시위","조선","군수 조병갑의 만석보 수세 착취 반발"],
+            [1894,"제1차 동학농민운동","운동/시위","조선","백산 봉기, 황토현 전투 승리, 전주성 점령"],
+            [1894,"전주 화약","조약","조선","정부와 타협, 전라도 일대에 집강소 설치"],
+            [1894,"군국기무처 설치","설치/파견/제거","조선","일본군 경복궁 점령 후 초정부적 개혁 기구 가동"],
+            [1894,"청일전쟁","전쟁/침략/갈등","청, 일본","한반도 주도권 쟁탈 전면전, 일본 기습 발발"],
+            [1894,"제1차 갑오개혁","개혁","조선","과거제 폐지, 은본위제, 신분제 및 연좌제 전격 폐지"],
+            [1894,"제2차 동학농민운동","운동/시위","조선, 일본","일본군 타도 목적 남접과 북접 연합군 대봉기"],
+            [1894,"우금치 전투","운동/시위","조선, 일본","관군 일군 연합군 화력 앞 농민군 주력 참패"],
+            [1894,"제2차 갑오개혁","개혁","조선, 일본","박영효 귀국 연립내각, 재판소 설치, 23부 개편"],
+            [1895,"홍범 14조","선언문/문서","조선","고종이 종묘에서 선포한 최초의 근대적 기본 강령"],
+            [1895,"교육 입국 조서","선언문/문서","조선","교육은 국권 보존 근본 선포, 한성사범학교 설립"],
+            [1895,"시모노세키 조약","조약","청, 일본","청일전쟁 종결 조약, 랴오둥 반도 일제 할양"],
+            [1895,"삼국간섭","전쟁/침략/갈등","러시아, 프랑스, 독일","러시아 주도로 일제의 랴오둥 반도 반환 압박"],
+            [1895,"을미사변","전쟁/침략/갈등","조선, 일본","미우라 주도 낭인 무리 명성황후 무참히 시해"],
+            [1895,"을미개혁","개혁","조선, 일본","단발령 강행, 태양력 채택, 건양 연호 사용"],
+            [1895,"을미의병","운동/시위","조선, 일본","단발령과 명성황후 시해 반발 위정척사파 거병"],
+            [1896,"아관파천","전쟁/침략/갈등","조선, 러시아","고종 황제 친일정권 피해 러시아 공사관 탈출 피신"],
+            [1896,"독립협회 설립","설치/파견/제거","조선","서재필 등 독립신문 발간 후 독립문 건립 주도"],
+            [1897,"대한제국 선포","선언문/문서","조선","환구단에서 고종 황제 즉위식, 광무 연호 제정"],
+            [1897,"광무개혁","개혁","조선","구본신참 원칙 하 황제 직속 원수부 설치 원칙"],
+            [1898,"만민 공동회","운동/시위","대한제국","종로 광장 민중 자발적 참여 최초 현대식 집회"],
+            [1898,"자주 국권 운동","운동/시위","대한제국","러시아 절영도 저탄고 요구 단호히 저지 성공"],
+            [1898,"자유 민권 운동","운동/시위","대한제국","국민 신체의 자유 및 재산권 보호 운동 전개"],
+            [1898,"의회 설립 운동","운동/시위","대한제국","중추원 관제 개편 통한 근대식 의회 추진"],
+            [1898,"헌의 6조","선언문/문서","대한제국","관민공동회 결의, 탁지부 재정 일원화 합의"],
+            [1898,"독립협회 해산","설치/파견/제거","대한제국","보수파의 공화정 모함, 황국협회 보부상 동원 파괴"],
+            [1898,"양전 사업","설치/파견/제거","대한제국","양지아문 설치 전국 근대적 토지 측량 개시"],
+            [1899,"대한국 국제","선언문/문서","대한제국","전제 군주 무한 군권 명시 최초 성문 기본법"],
+            [1900,"파리 만국 박람회","설치/파견/제거","대한제국","대한제국 독립 주권국 전시관 운영 대외 홍보"],
+            [1901,"지계 발급 사업","설치/파견/제거","대한제국","지계아문 설치 토지 소유 증명서 지계 발행"],
+            [1904,"러일 전쟁","전쟁/침략/갈등","일본, 러시아","한반도 만주 통제권 폭발 기습 개전"],
+            [1904,"한일의정서","조약","대한제국, 일본","일본군 군사 전략 요지 임의 수시 사용 강제 강점"],
+            [1904,"보안회","설치/파견/제거","대한제국","일제의 황무지 개간권 요구 저지 대중 집회 성공"],
+            [1904,"제1차 한일 협약","조약","대한제국, 일본","메가타 고문, 스티븐스 외교 고문 강제 부임 고문 정치"],
+            [1905,"헌정 연구회","설치/파견/제거","대한제국","독립협회 계승 입헌군주제 목표 을사늑약 반대"],
+            [1905,"가쓰라/태프트 밀약","조약","일본, 미국","미국 필리핀 - 일본 대한제국 상호 지배 묵인 음모"],
+            [1905,"제2차 영일 동맹","조약","일본, 영국","영국 인도 - 일본 한국 지배 상호 공식 승인"],
+            [1905,"포츠머스 조약","조약","일본, 러시아","러일전쟁 종결, 러시아의 한국 지배권 완전 양보"],
+            [1905,"을사늑약","조약","대한제국, 일본","외교권 완전 박탈, 한성에 통감부 설치 (이토 히로부미)"],
+            [1907,"헤이그 특사","설치/파견/제거","대한제국, 일본","이준, 이상설 만국평화회의 파견 을사늑약 불법 폭로 시도"],
+            [1907,"고종 강제 퇴위","전쟁/침략/갈등","대한제국, 일본","헤이그 특사 트집 일제 황제 전격 강제 강탈 축출"],
+            [1907,"한일 신협약","조약","대한제국, 일본","정미7조약 일본인 차관 임명 차관정치 부속 군대해산"],
+            [1907,"신민회","설치/파견/제거","대한제국","안창호 비밀결사 공화정 목표 신흥무관학교 건설 기지"],
+            [1910,"한국 병합 조약","조약","대한제국, 일본","경술국치 국권 피탈 조선총독부 설치 무단정치"],
+            [1911,"105인 사건","설치/파견/제거","일본","총독 암살 모의 조작 신민회 간부 전격 체포 해산"],
+            [1920,"실력 양성 운동","운동/시위","조선","조만식 물산장려운동 평양 개시 및 민립대학 설립운동"]
+        ];
+
+        var currentQuizItems = [];
+        var incorrectNotes = [];
+
+        // iOS 9 호환 안전 Touch 드래그 상태 머신 변수
+        var activeDragItem = null;
+        var startY = 0;
+        var initialOffsetTop = 0;
+
+        // 초기 구동 실행기
+        window.onload = function() {
+            initNewGame();
+            loadNotesFromLocalStorage();
+        };
+
+        // 탭 변경
+        function changeTab(tabId) {
+            var tabs = ['game', 'note', 'tip'];
+            for(var i=0; i<tabs.length; i++){
+                document.getElementById('tab-' + tabs[i]).classList.remove('active');
+                document.getElementById('view-' + tabs[i]).classList.remove('active');
+            }
+            document.getElementById('tab-' + tabId).classList.add('active');
+            document.getElementById('view-' + tabId).classList.add('active');
+            
+            if(tabId === 'note') {
+                renderNotes();
+            }
+        }
+
+        // 15개 샘플 무작위 추출 및 셔플링
+        function initNewGame() {
+            var pool = database.slice(0);
+            // 무작위 셔플 후 15개 픽
+            pool.sort(function() { return 0.5 - Math.random(); });
+            var selected = pool.slice(0, 15);
+
+            // 정답 순서 계산을 위한 기록 (연도순 정렬)
+            var correctSorted = selected.slice(0);
+            correctSorted.sort(function(a, b) { return a[0] - b[0]; });
+            currentQuizItems = correctSorted; // 내부 정답 배열 확보
+
+            // 다시 UI 배치를 위해 완전 셔플
+            var uiDisplay = selected.slice(0).sort(function() { return 0.5 - Math.random(); });
+            
+            var container = document.getElementById('main-drag-list');
+            container.innerHTML = '';
+
+            for(var i=0; i<uiDisplay.length; i++) {
+                var itemData = uiDisplay[i];
+                
+                var itemDiv = document.createElement('div');
+                itemDiv.className = 'drag-item';
+                // 데이터 속성에 원본 식별용 연도 및 이름 보관
+                itemDiv.setAttribute('data-year', itemData[0]);
+                itemDiv.setAttribute('data-title', itemData[1]);
+                itemDiv.setAttribute('data-desc', itemData[4]);
+
+                // iOS 9 전용 하이브리드 이벤트 리스너 바인딩
+                var handle = document.createElement('span');
+                handle.className = 'handle';
+                handle.innerHTML = '☰';
+                
+                // 터치 이벤트 연동
+                handle.addEventListener('touchstart', touchStartHandler, false);
+                handle.addEventListener('touchmove', touchMoveHandler, false);
+                handle.addEventListener('touchend', touchEndHandler, false);
+
+                var titleSpan = document.createElement('span');
+                titleSpan.innerHTML = itemData[1];
+
+                var tipBtn = document.createElement('button');
+                tipBtn.className = 'tip-btn';
+                tipBtn.innerHTML = '힌트';
+                tipBtn.onclick = (function(desc) {
+                    return function() { alert('💡 사건 단서:\n' + desc); };
+                })(itemData[4]);
+
+                itemDiv.appendChild(handle);
+                itemDiv.appendChild(titleSpan);
+                itemDiv.appendChild(tipBtn);
+                container.appendChild(itemDiv);
+            }
+        }
+
+        // iOS 9 특화 터치 드래그 엔진 구현 
+        function touchStartHandler(e) {
+            var touch = e.touches[0];
+            activeDragItem = this.parentNode; // .drag-item
+            startY = touch.clientY;
+            activeDragItem.style.backgroundColor = '#FFDDAA';
+        }
+
+        function touchMoveHandler(e) {
+            if (!activeDragItem) return;
+            e.preventDefault(); // 아이패드 브라우저 스크롤 바운스 억제
+
+            var touch = e.touches[0];
+            var container = document.getElementById('main-drag-list');
+            
+            // 현재 터치 좌표에 걸쳐있는 엘리먼트 추적
+            var elementUnder = document.elementFromPoint(touch.clientX, touch.clientY);
+            if (!elementUnder) return;
+
+            // 드래그 아이템 단위 검증 찾기
+            var targetItem = elementUnder;
+            while (targetItem && targetItem.className !== 'drag-item') {
+                targetItem = targetItem.parentNode;
+                if(targetItem === container || !targetItem) break;
+            }
+
+            // 부드러운 노드 스와핑을 통한 실시간 순서 가시화
+            if (targetItem && targetItem !== activeDragItem && targetItem.className === 'drag-item') {
+                var rect = targetItem.getBoundingClientRect();
+                var next = (touch.clientY - rect.top) / (rect.bottom - rect.top) > 0.5;
+                container.insertBefore(activeDragItem, next ? targetItem.nextSibling : targetItem);
+            }
+        }
+
+        function touchEndHandler(e) {
+            if (activeDragItem) {
+                activeDragItem.style.backgroundColor = '#FAE6CC';
+                activeDragItem = null;
+            }
+        }
+
+        // 순서 정밀 검증 알고리즘 및 오답 자동 수집
+        function verifySequence() {
+            var container = document.getElementById('main-drag-list');
+            var domItems = container.getElementsByClassName('drag-item');
+            
+            var userOrder = [];
+            for (var i = 0; i < domItems.length; i++) {
+                userOrder.push({
+                    year: parseInt(domItems[i].getAttribute('data-year'), 10),
+                    title: domItems[i].getAttribute('data-title'),
+                    desc: domItems[i].getAttribute('data-desc')
+                });
+            }
+
+            var wrongMatches = [];
+            var isPerfect = true;
+
+            // 정렬 오류 지점 완벽 대조
+            for (var i = 0; i < userOrder.length - 1; i++) {
+                if (userOrder[i].year > userOrder[i+1].year) {
+                    isPerfect = false;
+                    // 오답노트에 넣기 위해 위반된 두 주체 기록 저장
+                    pushToIncorrectNotes(userOrder[i]);
+                    pushToIncorrectNotes(userOrder[i+1]);
+                }
+            }
+
+            if (isPerfect) {
+                alert('🎉 대단합니다! 15개 대형 사건의 순서를 완벽하게 나열하셨습니다! 1시간 돌파에 매우 가까워졌습니다.');
+                initNewGame();
+            } else {
+                alert('❌ 순서배열 도중 역전된 구간이 존재합니다!\n틀린 사건 기록들은 자동으로 오답노트 탭에 보관되었습니다. 확인 후 재도전해보세요!');
+                saveNotesToLocalStorage();
+                document.getElementById('note-count').innerHTML = incorrectNotes.length;
+            }
+        }
+
+        // 중복 방지 오답 스택 추가
+        function pushToIncorrectNotes(item) {
+            var exists = false;
+            for(var i=0; i<incorrectNotes.length; i++){
+                if(incorrectNotes[i].title === item.title) {
+                    exists = true;
+                    break;
+                }
+            }
+            if(!exists) {
+                incorrectNotes.push(item);
+            }
+        }
+
+        // 오답노트 렌더링 시스템
+        function renderNotes() {
+            var container = document.getElementById('note-list-container');
+            if(incorrectNotes.length === 0) {
+                container.innerHTML = '<p style="text-align:center; padding:40px 0; color:#888;">아직 틀린 문제가 없습니다. 클린 스코어!</p>';
+                return;
+            }
+
+            var html = '';
+            // 역순으로 정렬하여 최근 틀린 사건이 위로 올라오도록 세팅
+            for(var i = incorrectNotes.length - 1; i >= 0; i--) {
+                var item = incorrectNotes[i];
+                html += '<div class="note-card">' +
+                            '<strong>[' + item.year + '년] ' + item.title + '</strong><br>' +
+                            '<span style="color:#4A3B2C; font-size:13px;">내용 단서: ' + item.desc + '</span>' +
+                        '</div>';
+            }
+            container.innerHTML = html;
+            document.getElementById('note-count').innerHTML = incorrectNotes.length;
+        }
+
+        function clearNotes() {
+            if(confirm('오답노트를 비우시겠습니까?')) {
+                incorrectNotes = [];
+                localStorage.removeItem('history_notes');
+                renderNotes();
+            }
+        }
+
+        function saveNotesToLocalStorage() {
+            try {
+                localStorage.setItem('history_notes', JSON.stringify(incorrectNotes));
+            } catch(e) {}
+        }
+
+        function loadNotesFromLocalStorage() {
+            try {
+                var stored = localStorage.getItem('history_notes');
+                if(stored) {
+                    incorrectNotes = JSON.parse(stored);
+                    document.getElementById('note-count').innerHTML = incorrectNotes.length;
+                }
+            } catch(e) {}
+        }
+    </script>
+</body>
+</html>
