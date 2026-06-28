@@ -3,1260 +3,990 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>gDuru Alpha</title>
-    <link rel="manifest" href="./duru-manifest.json">
-    <meta name="theme-color" content="#6366F1">
-    <meta name="mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="gDuru">
-    <link rel="apple-touch-icon" href="./duru-icon-192.png">
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
-    <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
-    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
-    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@700&family=Noto+Sans+KR:wght@400;700;900&display=swap" rel="stylesheet">
+    <title>GDURU Core Office Workstation v2.6</title>
     <style>
-        body {
-            font-family: 'Noto Sans KR', sans-serif;
-            background-color: #E5E9F0;
-            color: #1E293B;
-            -webkit-tap-highlight-color: transparent;
-            overflow-x: hidden;
-        }
-        .font-g {
-            font-family: 'Caveat', cursive;
-        }
-        .tactile-card {
-            background: linear-gradient(145deg, #EEF2F6, #D8DFE8);
-            border: 1.5px solid rgba(255,255,255,0.9);
-            box-shadow: 6px 8px 18px rgba(163,177,198,0.55), -6px -6px 18px rgba(255,255,255,0.95), inset 1px 1px 2px rgba(255,255,255,0.9);
-            border-radius: 28px;
-        }
-        .tactile-pill-btn {
-            background: linear-gradient(180deg, #F1F5F9 0%, #D8DFE8 100%);
-            border: 3px solid #CBD5E1;
-            outline: 1.5px solid #F1F5F9;
-            box-shadow: inset 0px 2.5px 5px rgba(0,0,0,0.1), inset 0px -2.5px 5px rgba(255,255,255,0.95), 0px 5px 12px rgba(148,163,184,0.45);
-            border-radius: 9999px;
-            transition: all 0.1s cubic-bezier(0.2,0.8,0.2,1);
-            color: #475569; font-weight: 800;
-            display: inline-flex; align-items: center; justify-content: center; cursor: pointer;
-        }
-        .tactile-pill-btn:hover { background: linear-gradient(180deg,#F8FAFC 0%,#D1D5DB 100%); transform: translateY(-1px); }
-        .tactile-pill-btn:active {
-            background: linear-gradient(180deg,#CBD5E1 0%,#94A3B8 100%);
-            border-color: #94A3B8; box-shadow: inset 0px 4px 8px rgba(0,0,0,0.24); transform: translateY(1.5px); color: #1E293B;
-        }
-        .tactile-pill-btn-primary {
-            background: linear-gradient(180deg,#93C5FD 0%,#2563EB 100%);
-            border: 3px solid #1D4ED8; outline: 1.5px solid #93C5FD;
-            box-shadow: inset 0px 2.5px 5px rgba(0,0,0,0.15), inset 0px -2.5px 5px rgba(255,255,255,0.45), 0px 5px 12px rgba(37,99,235,0.35);
-            border-radius: 9999px; transition: all 0.1s cubic-bezier(0.2,0.8,0.2,1);
-            color: white; font-weight: 800; display: inline-flex; align-items: center; justify-content: center; cursor: pointer;
-        }
-        .tactile-pill-btn-primary:hover:not(:disabled) { background: linear-gradient(180deg,#A1CFFF 0%,#1D4ED8 100%); transform: translateY(-1px); }
-        .tactile-pill-btn-primary:active:not(:disabled) { background: linear-gradient(180deg,#2563EB 0%,#1E3A8A 100%); transform: translateY(1.5px); }
-        .tactile-plate {
-            background: linear-gradient(145deg,#EEF2F6,#D8DFE8);
-            border: 1.5px solid rgba(255,255,255,0.85);
-            box-shadow: 8px 10px 24px rgba(163,177,198,0.55), -8px -8px 24px rgba(255,255,255,0.95), inset 1px 1px 2px rgba(255,255,255,0.9);
-            border-radius: 32px;
-        }
-        .debossed-well {
-            background: #E2E8F0; border-radius: 24px;
-            box-shadow: inset 3.5px 3.5px 8px rgba(163,177,198,0.8), inset -3.5px -3.5px 8px rgba(255,255,255,0.95), 1px 1.5px 2px rgba(255,255,255,0.75);
-            border: 1px solid rgba(255,255,255,0.45);
+        /* YKompyuta 픽셀 서체 원격 로드 */
+        @font-face {
+            font-family: 'YKompyuta';
+            src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_11-01@1.0/Ycomputer-Regular.woff2') format('woff2');
+            font-weight: normal;
+            font-style: normal;
+            font-display: swap;
         }
 
-        /* ── 모바일 하단 네비게이션 ── */
-        .tactile-nav-container {
-            background: linear-gradient(145deg,#EEF2F6,#D8DFE8);
-            border: 2px solid rgba(255,255,255,0.9);
-            box-shadow: 0px 10px 32px rgba(163,177,198,0.45), inset 1px 1.5px 3px rgba(255,255,255,0.9);
-            border-radius: 40px; transition: all 0.3s cubic-bezier(0.2,0.8,0.2,1);
-        }
-        .tactile-nav-btn {
-            border-radius: 32px; transition: all 0.2s cubic-bezier(0.2,0.8,0.2,1);
-            color: #64748B; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; cursor: pointer;
-        }
-        .tactile-nav-btn-active {
-            background: #E2E8F0;
-            box-shadow: inset 3.5px 3.5px 8px rgba(163,177,198,0.85), inset -3.5px -3.5px 8px rgba(255,255,255,0.95);
-            color: #2563EB; transform: translateY(1.5px);
+        /* 1990년대 픽셀 스타일 정밀 보정 및 안티에일리어싱 차단 */
+        * {
+            box-sizing: border-box;
+            image-rendering: pixelated;
+            image-rendering: crisp-edges;
+            -webkit-font-smoothing: none;
+            -moz-osx-font-smoothing: none;
+            font-smooth: never;
+            margin: 0;
+            padding: 0;
+            border-radius: 0px !important; /* 칼각 */
+            font-family: 'YKompyuta', monospace;
         }
 
-        /* ── 데스크톱 사이드바 ── */
-        .sidebar {
-            background: linear-gradient(180deg,#EEF2F6,#D8DFE8);
-            border-right: 1.5px solid rgba(255,255,255,0.9);
-            box-shadow: 4px 0 24px rgba(163,177,198,0.3);
-        }
-        .sidebar-btn {
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            padding: 14px 8px; border-radius: 20px; cursor: pointer;
-            transition: all 0.15s cubic-bezier(0.2,0.8,0.2,1); color: #64748B; gap: 6px;
-        }
-        .sidebar-btn:hover { background: rgba(255,255,255,0.6); color: #1E293B; }
-        .sidebar-btn-active {
-            background: #E2E8F0;
-            box-shadow: inset 3px 3px 7px rgba(163,177,198,0.85), inset -3px -3px 7px rgba(255,255,255,0.95);
-            color: #2563EB; transform: translateY(1px);
+        html, body {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background-color: #000000;
+            user-select: none;
+            -webkit-user-select: none;
         }
 
-        /* ── 캘린더 셀 ── */
-        .cal-cell {
-            aspect-ratio: 1 / 1;
-            border-radius: 14px;
-            display: flex; flex-direction: column; align-items: center; justify-content: flex-start;
-            padding: 6px 2px 4px; cursor: pointer;
-            transition: all 0.12s cubic-bezier(0.2,0.8,0.2,1);
-            background: rgba(255,255,255,0.5);
-            border: 1.5px solid transparent;
+        /* ─── [오프닝 부팅 시퀀스] ─── */
+        #boot-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #000000;
+            color: #ffffff;
+            padding: 24px;
+            font-size: 14px;
+            line-height: 1.7;
+            z-index: 9999;
+            overflow-y: auto;
+        }
+        .boot-header { color: #ffff00; font-weight: bold; margin-bottom: 12px; }
+        .boot-green { color: #00ff00; }
+        .boot-cyan { color: #00ffff; }
+
+        /* ─── [그두루 오피스 바탕화면] ─── */
+        #desktop {
             position: relative;
-            min-height: 56px;
+            width: 100%;
+            height: 100%;
+            background-color: #008080; /* 90s 정통 오피스 틸 그린 */
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
         }
-        .cal-cell:hover { background: #FFFFFF; border-color: #CBD5E1; transform: translateY(-1px); }
-        .cal-cell:active { transform: translateY(1px) scale(0.97); }
-        .cal-cell-other { background: transparent; opacity: 0.35; }
-        .cal-cell-today {
-            background: linear-gradient(180deg,#93C5FD 0%,#2563EB 100%);
-            color: #FFF;
-            border: 1.5px solid #1D4ED8;
-            box-shadow: 0 4px 10px rgba(37,99,235,0.35), inset 0 1px 2px rgba(255,255,255,0.4);
-        }
-        .cal-cell-today:hover { background: linear-gradient(180deg,#A1CFFF 0%,#1D4ED8 100%); }
-        .cal-cell-selected {
-            background: #FFFFFF;
-            border: 2px solid #2563EB;
-            box-shadow: 0 4px 12px rgba(37,99,235,0.3);
-        }
-        .cal-dot { width: 6px; height: 6px; border-radius: 50%; }
 
-        .live-badge { display: flex; align-items: center; gap: 6px; background: white; padding: 6px 12px; border-radius: 100px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
-        .pulse-dot { width: 6px; height: 6px; border-radius: 50%; animation: pulse 1.5s infinite; }
-        @keyframes pulse { 0%,100% { opacity:1; } 50% { opacity:0.3; } }
-        @keyframes spin { to { transform: rotate(360deg); } }
-        .hidden-text { max-height:0; opacity:0; margin-top:0; pointer-events:none; }
+        /* 90년대 픽셀 프로그램 아이콘 스타일 구현 */
+        .desktop-icons-area {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            align-items: flex-start;
+        }
+        .desktop-icon {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 95px;
+            cursor: pointer;
+            gap: 6px;
+            padding: 6px;
+            border: 1px dashed transparent;
+        }
+        .desktop-icon:active, .desktop-icon.selected {
+            background-color: rgba(0, 0, 0, 0.2);
+            border: 1px dashed #ffffff;
+        }
+        
+        /* 90년대 스프레드시트(사무용 프로그램) 모양의 픽셀아트 아이콘 */
+        .pixel-office-icon {
+            width: 44px;
+            height: 40px;
+            background-color: #ffffff;
+            border: 2px solid #000000;
+            position: relative;
+            box-shadow: 3px 3px 0px #404040;
+        }
+        .pixel-office-icon .icon-bar {
+            position: absolute;
+            top: 0; left: 0; right: 0; height: 8px;
+            background-color: #000080; /* 프로그램 상단바 표시 */
+        }
+        .pixel-office-icon .icon-grid {
+            position: absolute;
+            top: 12px; left: 4px; right: 4px; bottom: 4px;
+            border-top: 2px solid #008000;
+            border-left: 2px solid #008000;
+            background-image: linear-gradient(#008000 1px, transparent 1px), linear-gradient(90deg, #008000 1px, transparent 1px);
+            background-size: 6px 6px; /* 격자무늬 장부 표현 */
+        }
+        
+        .icon-text {
+            color: #ffffff;
+            font-size: 12px;
+            text-align: center;
+            text-shadow: 1px 1px 1px #000000;
+            font-weight: bold;
+        }
+
+        /* ─── [정통 오피스 캐비닛형 윈도우 스타일] ─── */
+        .core-window {
+            position: absolute;
+            top: 3%;
+            left: 4%;
+            width: 92%;
+            height: 86%;
+            background-color: #d4d0c8; /* 회색 가전 하우징 */
+            border-top: 2px solid #ffffff;
+            border-left: 2px solid #ffffff;
+            border-right: 3px solid #404040;
+            border-bottom: 3px solid #404040;
+            box-shadow: 2px 2px 0px #000000;
+            display: flex;
+            flex-direction: column;
+            z-index: 100;
+            display: none;
+        }
+
+        /* 타이틀바 */
+        .window-banner {
+            background-color: #000080; /* 정통 군청색 단색 */
+            color: #ffffff;
+            padding: 6px 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border: 1px solid #d4d0c8;
+        }
+        .window-title {
+            font-size: 13px;
+            font-weight: bold;
+            letter-spacing: 1px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .window-title::before {
+            content: '▤';
+            color: #ffff00;
+        }
+        .window-close {
+            background-color: #d4d0c8;
+            color: #000000;
+            border-top: 1px solid #ffffff;
+            border-left: 1px solid #ffffff;
+            border-right: 2px solid #404040;
+            border-bottom: 2px solid #404040;
+            font-size: 11px;
+            padding: 1px 5px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .window-close:active {
+            border-top: 2px solid #404040;
+            border-left: 2px solid #404040;
+            border-right: 1px solid #ffffff;
+            border-bottom: 1px solid #ffffff;
+            padding: 2px 4px 0px 6px;
+        }
+
+        /* 텍스트 메뉴바 */
+        .office-menu-bar {
+            background-color: #d4d0c8;
+            border-bottom: 2px solid #808080;
+            padding: 4px 10px;
+            font-size: 12px;
+            color: #000000;
+            display: flex;
+            gap: 15px;
+        }
+        .office-menu-item { cursor: pointer; }
+        .office-menu-item span { text-decoration: underline; }
+
+        /* 작업창 내부 디바이스 대응 레이아웃 */
+        .window-viewport {
+            flex: 1;
+            padding: 15px;
+            overflow-y: auto;
+            display: grid;
+            grid-template-columns: 1.1fr 0.9fr;
+            gap: 15px;
+            background-color: #d4d0c8;
+        }
+
+        /* 모바일 및 태블릿 대응 세로 스택 전환 */
+        @media (max-width: 992px) {
+            .window-viewport { grid-template-columns: 1fr; }
+            .core-window { top: 1%; left: 1%; width: 98%; height: 93%; }
+        }
+
+        /* 사무용 서류 테두리(Fieldset 모방) */
+        .tech-panel {
+            background-color: #d4d0c8;
+            border-top: 2px solid #808080;
+            border-left: 2px solid #808080;
+            border-right: 2px solid #ffffff;
+            border-bottom: 2px solid #ffffff;
+            padding: 15px;
+            margin-bottom: 15px;
+            position: relative;
+        }
+        .tech-panel-header {
+            font-size: 13px;
+            font-weight: bold;
+            color: #000000;
+            background-color: #d4d0c8;
+            position: absolute;
+            top: -10px;
+            left: 10px;
+            padding: 0 4px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .tech-panel-badge {
+            background-color: #000080;
+            color: #ffffff;
+            padding: 1px 4px;
+            font-size: 10px;
+            font-weight: normal;
+        }
+
+        .tech-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(105px, 1fr));
+            gap: 10px;
+            margin-top: 5px;
+        }
+        .tech-group { display: flex; flex-direction: column; gap: 4px; }
+        .tech-group label { font-size: 11px; color: #000000; font-weight: bold; }
+
+        /* 문서용 백색 인풋 */
+        .tech-input, .tech-select {
+            width: 100%;
+            height: 32px;
+            background-color: #ffffff;
+            border-top: 2px solid #808080;
+            border-left: 2px solid #808080;
+            border-right: 1px solid #ffffff;
+            border-bottom: 1px solid #ffffff;
+            padding: 0 6px;
+            font-size: 12px;
+            color: #000000;
+            outline: none;
+        }
+        .tech-input:focus, .tech-select:focus {
+            background-color: #ffffe0; /* 포커스 시 연황색 서류 색상 */
+            border-color: #000080;
+        }
+        .tech-input:disabled { background-color: #808080; color: #d4d0c8; }
+
+        /* 대형 청색 터미널 스크린 */
+        .telemetry-board {
+            background-color: #000080; /* 정통 도스 워드 컬러 */
+            color: #ffffff;
+            border-top: 2px solid #404040;
+            border-left: 2px solid #404040;
+            border-right: 2px solid #ffffff;
+            border-bottom: 2px solid #ffffff;
+            min-height: 180px;
+            height: 220px;
+            padding: 12px;
+            overflow-y: auto;
+            font-size: 12px;
+            line-height: 1.6;
+            white-space: pre-wrap;
+        }
+
+        /* 오피스 단추 */
+        .tech-btn-pack { display: flex; gap: 8px; margin-top: 12px; }
+        .tech-action-btn {
+            flex: 1; height: 36px; background-color: #d4d0c8; color: #000000;
+            border-top: 2px solid #ffffff; border-left: 2px solid #ffffff;
+            border-right: 2px solid #404040; border-bottom: 2px solid #404040;
+            font-size: 12px; font-weight: bold; cursor: pointer;
+            display: flex; align-items: center; justify-content: center; gap: 4px;
+        }
+        .tech-action-btn:active {
+            border-top: 2px solid #404040; border-left: 2px solid #404040;
+            border-right: 2px solid #ffffff; border-bottom: 2px solid #ffffff;
+            padding-top: 2px; padding-left: 2px;
+        }
+        .btn-green-alert { background-color: #c0c0c0; color: #000080; }
+        .btn-coral-alert { background-color: #ff8080; }
+
+        .sync-hub {
+            background-color: #d4d0c8; border: 2px solid #808080; padding: 8px; margin-bottom: 12px;
+            display: flex; justify-content: space-between; align-items: center;
+            font-size: 11px; color: #000000; font-weight: bold;
+        }
+        .sync-indicator { display: flex; align-items: center; gap: 4px; }
+        .status-dot { width: 8px; height: 8px; background-color: #ff0000; display: inline-block; }
+        .status-dot.active { background-color: #00ff00; }
+
+        /* 서류 장부 형태의 줄무늬 테이블 */
+        .data-slab-container { width: 100%; overflow-x: auto; margin-top: 5px; }
+        .data-slab-table { width: 100%; border-collapse: collapse; font-size: 11px; min-width: 450px; }
+        .data-slab-table th { background-color: #000080; color: #ffffff; padding: 6px; border: 1px solid #ffffff; font-weight: bold; }
+        .data-slab-table td { padding: 6px; border: 1px solid #808080; background-color: #ffffff; color: #000000; text-align: center; }
+        .data-slab-table tr:nth-child(even) td { background-color: #f0f0f0; }
+        
+        .btn-kill-record {
+            background-color: #d4d0c8; color: #000000; font-size: 10px; font-weight: bold; cursor: pointer;
+            border-top: 1px solid #ffffff; border-left: 1px solid #ffffff; border-right: 2px solid #404040; border-bottom: 2px solid #404040;
+            padding: 1px 4px;
+        }
+        .btn-kill-record:active { border-top: 2px solid #404040; border-left: 2px solid #404040; border-right: 1px solid #ffffff; border-bottom: 1px solid #ffffff; }
+
+        /* ─── [하단 시스템 작업줄] ─── */
+        #taskbar {
+            width: 100%; height: 36px; background-color: #d4d0c8; border-top: 3px solid #ffffff;
+            display: flex; justify-content: space-between; align-items: center; padding: 0 10px;
+            z-index: 1000; box-shadow: 0px -2px 0px #808080;
+        }
+        .taskbar-brand { color: #000000; font-weight: bold; font-size: 12px; display: flex; align-items: center; gap: 6px; }
+        .taskbar-brand-lamp { width: 6px; height: 6px; background-color: #00ff00; }
+        .taskbar-right { display: flex; align-items: center; gap: 12px; color: #000000; font-size: 11px; font-weight: bold; }
+        .taskbar-clock {
+            background-color: #ffffff; padding: 2px 6px; color: #000080;
+            border-top: 1px solid #808080; border-left: 1px solid #808080; border-right: 1px solid #ffffff; border-bottom: 1px solid #ffffff;
+        }
+
+        /* 알림 팝업 */
+        #custom-dialog {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5);
+            z-index: 10000; display: flex; align-items: center; justify-content: center; display: none;
+        }
+        .dialog-frame { width: 310px; background-color: #d4d0c8; border-top: 2px solid #ffffff; border-left: 2px solid #ffffff; border-right: 3px solid #000000; border-bottom: 3px solid #000000; padding: 12px; }
+        .dialog-header { font-size: 13px; font-weight: bold; color: #ff0000; border-bottom: 1px solid #808080; padding-bottom: 4px; margin-bottom: 10px; }
+        .dialog-msg { font-size: 12px; color: #000000; line-height: 1.5; margin-bottom: 12px; }
     </style>
 </head>
-<body class="selection:bg-blue-100">
-<div id="root"></div>
+<body>
 
-<script type="text/babel">
-const { useState, useEffect, useRef, useCallback, useMemo } = React;
+    <div id="boot-screen">
+        <div class="boot-header">GDURU-CORE OFFICE SYSTEM BOOT LOADER v5.0 (5-GRADE ED.)</div>
+        <div>CPU: GDURU COMPUTER PROCESSING UNIT AT 0x00A120</div>
+        <div>LOADING 5-GRADE SYSTEM COHORT INTERFACES...</div>
+        <div class="boot-green">CONNECTING TO COHORT PUBLIC TELEMETRY NET ... OK</div>
+        <div id="boot-dynamic-log"></div>
+    </div>
 
-const Icons = {
-    Home: ({size=22}) => <svg width={size} height={size} fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24"><path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>,
-    Clock: ({size=22}) => <svg width={size} height={size} fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24"><path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>,
-    Meal: ({size=22}) => <svg width={size} height={size} fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24"><path d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>,
-    Class: ({size=22}) => <svg width={size} height={size} fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24"><path d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 002-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>,
-    Calendar: ({size=22}) => <svg width={size} height={size} fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>,
-    Trash: () => <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>,
-    Plus: () => <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>,
-    Alert: () => <svg className="w-12 h-12 text-amber-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>,
-    Refresh: () => <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>,
-    ChevL: () => <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3"><polyline points="15 18 9 12 15 6"/></svg>,
-    ChevR: () => <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3"><polyline points="9 18 15 12 9 6"/></svg>,
-    X: () => <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>,
-};
-
-// ── NEIS 설정 ──
-const NEIS_URL   = 'https://open.neis.go.kr/hub';
-const ATPT_CODE  = 'J10';
-const SCHUL_CODE = '7531375';
-const NEIS_KEY   = '4b9aa5aa974e4963ab8714cfb9850e41';
-
-async function fetchNEIS(endpoint, params) {
-    const qs = Object.entries({ KEY: NEIS_KEY, Type: 'json', pIndex: '1', pSize: '100', ...params })
-        .map(([k, v]) => `${k}=${encodeURIComponent(v)}`).join('&');
-    const url = `${NEIS_URL}/${endpoint}?${qs}`;
-    const attempts = [
-        url,
-        `https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`,
-    ];
-    for (const u of attempts) {
-        try {
-            const res = await fetch(u, { signal: AbortSignal.timeout(10000) });
-            if (!res.ok) continue;
-            const data = await res.json();
-            if (data) return data;
-        } catch (e) {
-            console.warn('NEIS fetch 실패, 다음 시도:', e.message);
-        }
-    }
-    throw new Error('NEIS 연결 실패');
-}
-
-function parseMealMenu(raw) {
-    return raw.replace(/\([^)]*\)/g, '').replace(/<br\/>/gi, ',')
-        .split(',').map(s => s.trim()).filter(Boolean).join(', ');
-}
-
-function getKSTDateStr(offset = 0) {
-    const d = new Date(Date.now() + 9 * 3600000 + offset * 86400000);
-    return `${d.getUTCFullYear()}-${String(d.getUTCMonth()+1).padStart(2,'0')}-${String(d.getUTCDate()).padStart(2,'0')}`;
-}
-
-function fmtDate(d) {
-    return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
-}
-
-// Firebase 설정
-const fbConfig = {
-    apiKey: "AIzaSyAP8WRXAjmPdmATfWKnCrCRQNH0ftbBV9w",
-    authDomain: "duru108.firebaseapp.com",
-    projectId: "duru108",
-    storageBucket: "duru108.firebasestorage.app",
-    messagingSenderId: "669255987956",
-    appId: "1:669255987956:web:7479e73d084a2faafb24a1"
-};
-if (!firebase.apps.length) {
-    firebase.initializeApp(fbConfig);
-}
-const db   = firebase.firestore();
-const auth = firebase.auth();
-const APP_ID = 'duru-stable-v1';
-
-function vibrate(type) {
-    if (!navigator.vibrate) return;
-    if (type === 'click')   navigator.vibrate(20);
-    if (type === 'success') navigator.vibrate([30,40,30]);
-    if (type === 'delete')  navigator.vibrate([80,50,80]);
-}
-
-const PERIODS = [
-    { label:'1교시', start:'08:30', end:'09:20' },
-    { label:'2교시', start:'09:30', end:'10:20' },
-    { label:'3교시', start:'10:30', end:'11:20' },
-    { label:'4교시', start:'11:30', end:'12:20' },
-    { label:'5교시', start:'13:10', end:'14:00' }, /* ✨ 오타 수정 완료: py -> end */
-    { label:'6교시', start:'14:10', end:'15:00' },
-    { label:'7교시', start:'15:10', end:'16:00' },
-];
-
-function getCurrentPeriod() {
-    const now = new Date();
-    const hhmm = now.getHours() * 60 + now.getMinutes();
-    for (let i = 0; i < PERIODS.length; i++) {
-        const [sh, sm] = PERIODS[i].start.split(':').map(Number);
-        const [eh, em] = PERIODS[i].end.split(':').map(Number);
-        if (hhmm >= sh * 60 + sm && hhmm <= eh * 60 + em) return i;
-    }
-    return -1;
-}
-
-function App() {
-    // ── 테넌트(반 정보) 인식 시스템 ──
-    const [grade, setGrade] = useState(() => {
-        const urlParams = new URLSearchParams(window.location.search);
-        return urlParams.get('g') || localStorage.getItem('gduru_grade') || '';
-    });
-    const [classNm, setClassNm] = useState(() => {
-        const urlParams = new URLSearchParams(window.location.search);
-        return urlParams.get('c') || localStorage.getItem('gduru_class') || '';
-    });
-    const [isConfigured, setIsConfigured] = useState(!!(grade && classNm));
-
-    // ── 학급별 동적 데이터베이스 경로 배정 ──
-    const pubCol = useCallback(col => {
-        return db.collection('artifacts').doc(APP_ID).collection('classes').doc(`${grade}_${classNm}`).collection(col);
-    }, [grade, classNm]);
-
-    const privCol = useCallback((uid, col) => {
-        return db.collection('artifacts').doc(APP_ID).collection('classes').doc(`${grade}_${classNm}`).collection('users').doc(uid).collection(col);
-    }, [grade, classNm]);
-
-    const [activeTab, setActiveTab]       = useState('home');
-    const [isLoading, setIsLoading]       = useState(true);
-    const [statusText, setStatusText]     = useState('CONNECTING');
-    const [notiPerm, setNotiPerm]         = useState('default');
-    const [isScrolled, setIsScrolled]     = useState(false);
-    const [isDesktop, setIsDesktop]       = useState(window.innerWidth >= 768);
-
-    const [announcements, setAnnouncements] = useState([]);
-    const [schedules, setSchedules]         = useState([]);
-    const [materials, setMaterials]         = useState([]);
-    const [messages, setMessages]           = useState([]);
-    const [links, setLinks]                 = useState([]);
-    const [planner, setPlanner]             = useState([]);
-    const [memos, setMemos]                 = useState({});
-    const [meals, setMeals]                 = useState({});
-    const [timetables, setTimetables]       = useState({});
-
-    const [showModal, setShowModal]     = useState(false);
-    const [modalType, setModalType]     = useState('');
-    const [modalTarget, setModalTarget] = useState('');
-    const [val1, setVal1] = useState('');
-    const [val2, setVal2] = useState('');
-    const [file, setFile] = useState('');
-    const [customDialog, setCustomDialog] = useState(null);
-
-    const today    = getKSTDateStr();
-    const [ttDate, setTtDate]     = useState(today);
-    const [mealDate, setMealDate] = useState(today);
-
-    const initToday = new Date();
-    const [calYear, setCalYear]       = useState(initToday.getFullYear());
-    const [calMonth, setCalMonth]     = useState(initToday.getMonth());
-    const [selectedDate, setSelectedDate] = useState(null);
-
-    const synced = useRef(new Set());
-    const [syncState, setSyncState] = useState({});
-    const [installPrompt, setInstallPrompt] = useState(null);
-
-    const schedulesRef   = useRef([]);
-    const mealsRef       = useRef({});
-    const memosRef       = useRef({});
-    const timetablesRef  = useRef({});
-    const firedRef       = useRef({});
-
-    useEffect(() => { schedulesRef.current  = schedules;  }, [schedules]);
-    useEffect(() => { mealsRef.current      = meals;      }, [meals]);
-    useEffect(() => { memosRef.current      = memos;      }, [memos]);
-    useEffect(() => { timetablesRef.current = timetables; }, [timetables]);
-
-    useEffect(() => {
-        const handler = () => setIsDesktop(window.innerWidth >= 768);
-        window.addEventListener('resize', handler);
-        return () => window.removeEventListener('resize', handler);
-    }, []);
-
-    useEffect(() => {
-        const handler = () => setIsScrolled(window.scrollY > 40);
-        window.addEventListener('scroll', handler);
-        return () => window.removeEventListener('scroll', handler);
-    }, []);
-
-    const setTab = (tab) => {
-        setActiveTab(tab);
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-    };
-
-    useEffect(() => {
-        if ('Notification' in window) setNotiPerm(Notification.permission);
-        if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('./duru-sw.js').catch(() => {});
-        }
-        const handler = (e) => { e.preventDefault(); setInstallPrompt(e); };
-        window.addEventListener('beforeinstallprompt', handler);
-        return () => window.removeEventListener('beforeinstallprompt', handler);
-    }, []);
-
-    const fireNotif = (title, body) => {
-        if (!('Notification' in window) || Notification.permission !== 'granted') return;
-        const opts = { body, icon: './duru-icon-192.png', badge: './duru-icon-192.png' };
-        if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.getRegistration().then(reg => {
-                if (reg) reg.showNotification(title, opts).catch(() => { try { new Notification(title, opts); } catch(e){} });
-                else { try { new Notification(title, opts); } catch(e){} }
-            }).catch(() => { try { new Notification(title, opts); } catch(e){} });
-        } else {
-            try { new Notification(title, opts); } catch(e) {}
-        }
-    };
-
-    const NOTIF_SCHEDULE = [
-        { hhmm: '08:40', type: 'schedule' },
-        { hhmm: '09:25', type: 'memo', periodIdx: 1 },
-        { hhmm: '10:25', type: 'memo', periodIdx: 2 },
-        { hhmm: '11:25', type: 'memo', periodIdx: 3 },
-        { hhmm: '13:15', type: 'meal' },
-        { hhmm: '14:05', type: 'memo', periodIdx: 5 },
-        { hhmm: '15:05', type: 'memo', periodIdx: 6 },
-    ];
-    useEffect(() => {
-        const tick = () => {
-            if (!('Notification' in window) || Notification.permission !== 'granted') return;
-            const todayKey = getKSTDateStr();
-            const now = new Date();
-            const hhmm = `${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
-            for (const n of NOTIF_SCHEDULE) {
-                const key = `${todayKey}_${n.hhmm}`;
-                if (hhmm !== n.hhmm || firedRef.current[key]) continue;
-                firedRef.current[key] = true;
-                if (n.type === 'schedule') {
-                    const list = schedulesRef.current.filter(s => s.date === todayKey);
-                    if (list.length) fireNotif('📅 오늘 학급 일정', list.map(s => s.title).join(', '));
-                } else if (n.type === 'meal') {
-                    const menu = mealsRef.current[todayKey];
-                    if (menu) fireNotif('🍱 오늘 점심 급식', menu);
-                } else if (n.type === 'memo') {
-                    const memo = memosRef.current[`${todayKey}_${n.periodIdx + 1}`];
-                    if (memo) fireNotif(`📝 ${n.periodIdx + 1}교시 메모`, memo);
-                }
-            }
-        };
-        const id = setInterval(tick, 30000);
-        tick();
-        return () => clearInterval(id);
-    }, []);
-
-    useEffect(() => {
-        if(!isConfigured) {
-            setIsLoading(false);
-            return;
-        }
-        setIsLoading(true);
-        auth.signInAnonymously()
-            .then(() => setStatusText('LIVE'))
-            .catch(() => setStatusText('ERROR'))
-            .finally(() => setIsLoading(false));
-
-        return auth.onAuthStateChanged(user => {
-            if (!user || !isConfigured) return;
-            pubCol('announcements').onSnapshot(s => setAnnouncements(s.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>b.at-a.at)));
-            pubCol('schedules').onSnapshot(s => setSchedules(s.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>new Date(a.date)-new Date(b.date))));
-            pubCol('materials').onSnapshot(s => setMaterials(s.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>b.at-a.at)));
-            pubCol('messages').onSnapshot(s => setMessages(s.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>b.at-a.at)));
-            pubCol('links').onSnapshot(s => setLinks(s.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>a.at-b.at)));
-            pubCol('memos').onSnapshot(s => { const t={}; s.docs.forEach(d=>t[d.id]=d.data().content); setMemos(t); });
-            pubCol('meals').onSnapshot(s => { const t={}; s.docs.forEach(d=>t[d.id]=d.data().menu); setMeals(t); });
-            pubCol('timetables').onSnapshot(s => { const t={}; s.docs.forEach(d=>t[d.id]=d.data().periods); setTimetables(t); });
-            privCol(user.uid,'planner').onSnapshot(s => setPlanner(s.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>b.at-a.at)));
-        });
-    }, [isConfigured, pubCol, privCol]);
-
-    const syncMeal = useCallback(async (dateStr) => {
-        if (!isConfigured || synced.current.has('meal_'+dateStr)) return;
-        synced.current.add('meal_'+dateStr);
-        try {
-            const data = await fetchNEIS('mealServiceDietInfo', {
-                ATPT_OFCDC_SC_CODE: ATPT_CODE, SD_SCHUL_CODE: SCHUL_CODE,
-                MMEAL_SC_CODE: '2', MLSV_YMD: dateStr.replace(/-/g,'')
-            });
-            const rows = data?.mealServiceDietInfo?.[1]?.row;
-            if (rows?.length) {
-                await pubCol('meals').doc(dateStr).set({ menu: parseMealMenu(rows[0].DDISH_NM), at: Date.now() });
-            }
-        } catch(e) { console.error('급식 조회 실패:', e.message); }
-    }, [isConfigured, pubCol]);
-
-    const syncTimetable = useCallback(async (dateStr) => {
-        if (!isConfigured || synced.current.has('tt_'+dateStr)) return;
-        synced.current.add('tt_'+dateStr);
-
-        setSyncState(p => ({...p, [dateStr]: 'loading'}));
-        try {
-            const d = new Date(dateStr + 'T00:00:00');
-            const dow = d.getDay() || 7;
-            const mon = new Date(d); mon.setDate(d.getDate() - dow + 1);
-            const fri = new Date(d); fri.setDate(d.getDate() - dow + 5);
-            const fmt = x => `${x.getFullYear()}${String(x.getMonth()+1).padStart(2,'0')}${String(x.getDate()).padStart(2,'0')}`;
-
-            const data = await fetchNEIS('hisTimetable', {
-                ATPT_OFCDC_SC_CODE: ATPT_CODE, SD_SCHUL_CODE: SCHUL_CODE,
-                GRADE: grade, CLASS_NM: classNm,
-                TI_FROM_YMD: fmt(mon), TI_TO_YMD: fmt(fri)
-            });
-
-            const rows = data?.hisTimetable?.[1]?.row;
-            if (rows?.length) {
-                const map = {};
-                rows.forEach(item => {
-                    const ymd = item.ALL_TI_YMD;
-                    const ds  = `${ymd.slice(0,4)}-${ymd.slice(4,6)}-${ymd.slice(6,8)}`;
-                    const idx = parseInt(item.PERIO) - 1;
-                    const sub = item.ITRT_CNTNT.replace(/\d+$/, '').trim();
-                    if (!map[ds]) map[ds] = Array(7).fill('-');
-                    if (idx >= 0 && idx < 7) map[ds][idx] = sub;
-                });
-                await Promise.all(Object.entries(map).map(([ds, periods]) =>
-                    pubCol('timetables').doc(ds).set({ periods, at: Date.now() })
-                ));
-                setSyncState(p => ({...p, [dateStr]: 'done'}));
-            } else {
-                setSyncState(p => ({...p, [dateStr]: 'done'}));
-            }
-        } catch(e) {
-            console.error('시간표 조회 실패:', e.message);
-            setSyncState(p => ({...p, [dateStr]: 'error'}));
-        }
-    }, [isConfigured, grade, classNm, pubCol]);
-
-    useEffect(() => {
-        if (!auth.currentUser || !isConfigured) return;
-        syncMeal(mealDate);
-    }, [mealDate, syncMeal, isConfigured]);
-
-    useEffect(() => {
-        if (!auth.currentUser || !isConfigured) return;
-        syncTimetable(ttDate);
-    }, [ttDate, syncTimetable, isConfigured]);
-
-    useEffect(() => {
-        if (statusText !== 'LIVE' || !isConfigured) return;
-        syncMeal(today);
-        syncTimetable(today);
-    }, [statusText, isConfigured, syncMeal, syncTimetable, today]);
-
-    useEffect(() => {
-        if (!selectedDate || !auth.currentUser || !isConfigured) return;
-        syncMeal(selectedDate);
-        syncTimetable(selectedDate);
-    }, [selectedDate, syncMeal, syncTimetable, isConfigured]);
-
-    useEffect(() => {
-        if (activeTab !== 'cal' || statusText !== 'LIVE' || !isConfigured) return;
-        const last = new Date(calYear, calMonth + 1, 0).getDate();
-        for (let day = 1; day <= last; day++) {
-            const d = new Date(calYear, calMonth, day);
-            const dow = d.getDay();
-            if (dow === 0 || dow === 6) continue;
-            const ds = fmtDate(d);
-            syncMeal(ds);
-            syncTimetable(ds);
-        }
-    }, [activeTab, calYear, calMonth, statusText, syncMeal, syncTimetable, isConfigured]);
-
-    const forceResync = (dateStr) => {
-        synced.current.delete('tt_'+dateStr);
-        setSyncState(p => ({...p, [dateStr]: undefined}));
-        syncTimetable(dateStr);
-        vibrate('success');
-    };
-
-    const deleteDoc = (col, id, isPrivate=false) => {
-        vibrate('delete');
-        setCustomDialog({
-            type: 'confirm',
-            message: '이 데이터를 영구히 삭제할까요?',
-            onConfirm: async () => {
-                const ref = isPrivate ? privCol(auth.currentUser.uid, col) : pubCol(col);
-                await ref.doc(id).delete();
-                setCustomDialog(null);
-            }
-        });
-    };
-
-    const openModal = (type, target='', presetVal2='') => {
-        vibrate('click');
-        setModalType(type); setModalTarget(target);
-        if (type==='MEMO') setVal1(memos[target]||'');
-        else if (type==='MEAL') setVal1(meals[target]||'');
-        else if (type==='TIME') setVal1((timetables[target]||[]).join(', '));
-        else { setVal1(''); }
-        setVal2(presetVal2); setFile('');
-        setShowModal(true);
-    };
-
-    const submitModal = async () => {
-        const user = auth.currentUser; if (!user) return;
-        vibrate('success');
-        try {
-            if (modalType==='NOTICE') await pubCol('announcements').add({title:val1,content:val2,image:file,at:Date.now()});
-            else if (modalType==='PLAN') await privCol(user.uid,'planner').add({text:val1,done:false,date:today,at:Date.now()});
-            else if (modalType==='SCHED') await pubCol('schedules').add({title:val1,date:val2,at:Date.now()});
-            else if (modalType==='FILE') await pubCol('materials').add({title:val1,subject:val2,file,at:Date.now()});
-            else if (modalType==='MEMO') await pubCol('memos').doc(modalTarget).set({content:val1,at:Date.now()});
-            else if (modalType==='MEAL') await pubCol('meals').doc(modalTarget).set({menu:val1,at:Date.now()});
-            else if (modalType==='TIME') await pubCol('timetables').doc(modalTarget).set({periods:val1.split(',').map(s=>s.trim()),at:Date.now()});
-            else if (modalType==='MSG') {
-                if(!val2.trim()) return;
-                await pubCol('messages').add({author:val1.trim()||'익명', content:val2.trim(), at:Date.now()});
-            }
-            else if (modalType==='LINK') {
-                if(!val1.trim() || !val2.trim()) return;
-                await pubCol('links').add({title:val1.trim(), url:val2.trim(), at:Date.now()});
-            }
-        } catch(e) { console.error(e); }
-        setShowModal(false);
-    };
-
-    const dday = (ds) => {
-        const [y1, m1, d1] = ds.split('-').map(Number);
-        const [y2, m2, d2] = today.split('-').map(Number);
-        const targetDate = new Date(y1, m1 - 1, d1);
-        const currentDate = new Date(y2, m2 - 1, d2);
-        const diffDays = Math.round((targetDate - currentDate) / 86400000);
-        return diffDays === 0 ? 'D-Day' : diffDays > 0 ? `D-${diffDays}` : `D+${Math.abs(diffDays)}`;
-    };
-
-    const nextSchedule = schedules.find(s => s.date >= today);
-    const todayTt = timetables[today] || [];
-    const curPeriod = getCurrentPeriod();
-
-    const calCells = useMemo(() => {
-        const first = new Date(calYear, calMonth, 1);
-        const startDow = first.getDay();
-        const last = new Date(calYear, calMonth + 1, 0).getDate();
-        const cells = [];
-        for (let i = startDow - 1; i >= 0; i--) {
-            const d = new Date(calYear, calMonth, -i);
-            cells.push({ date: d, current: false });
-        }
-        for (let i = 1; i <= last; i++) {
-            cells.push({ date: new Date(calYear, calMonth, i), current: true });
-        }
-        while (cells.length < 42) {
-            const idx = cells.length - startDow - last + 1;
-            cells.push({ date: new Date(calYear, calMonth + 1, idx), current: false });
-        }
-        return cells;
-    }, [calYear, calMonth]);
-
-    const goPrevMonth = () => {
-        vibrate('click');
-        if (calMonth === 0) { setCalYear(y => y - 1); setCalMonth(11); }
-        else setCalMonth(m => m - 1);
-    };
-    const goNextMonth = () => {
-        vibrate('click');
-        if (calMonth === 11) { setCalYear(y => y + 1); setCalMonth(0); }
-        else setCalMonth(m => m + 1);
-    };
-    const goToday = () => {
-        vibrate('click');
-        const d = new Date();
-        setCalYear(d.getFullYear()); setCalMonth(d.getMonth());
-    };
-
-    // ── 🎨 로고 컴포넌트 ──
-    const BrandLogo = ({ size = "text-xl", showBadge = true }) => (
-        <div className={`font-black flex items-center justify-center tracking-tight select-none text-slate-800 ${size}`}>
-            <span className="font-g text-indigo-600 italic translate-y-[-2px] tracking-normal mr-[1px]" style={{fontSize: '1.35em'}}>g</span>
-            <span>Duru</span>
-            {showBadge && (
-                <span className="text-[9px] bg-indigo-600 text-white font-black px-1.5 py-0.5 rounded-md ml-1.5 tracking-wide uppercase scale-90">Alpha</span>
-            )}
+    <div id="desktop">
+        <div class="desktop-icons-area">
+            <div class="desktop-icon" id="app-icon">
+                <div class="pixel-office-icon">
+                    <div class="icon-bar"></div>
+                    <div class="icon-grid"></div>
+                </div>
+                <div class="icon-text">전국성적<br>5등급장부.EXE</div>
+            </div>
         </div>
-    );
 
-    // ── Onboarding Screen (초기 학년/반 미지정 시 설정 화면) ──
-    if (!isConfigured) {
-        return (
-            <div className="flex items-center justify-center min-h-screen bg-[#E5E9F0] p-4">
-                <div className="tactile-plate p-8 max-w-sm w-full flex flex-col items-center gap-6">
-                    <div className="text-center">
-                        <BrandLogo size="text-3xl" />
-                        <p className="text-xs font-bold text-slate-400 mt-2">우리 반 맞춤형 스마트 보드</p>
+        <div class="core-window" id="main-workstation">
+            <div class="window-banner">
+                <span class="window-title">그두루 통합 학력 평가 예측 원장 [실시간 5등급 공유제 v2.6]</span>
+                <button class="window-close" id="btn-window-close">종료(X)</button>
+            </div>
+            <div class="office-menu-bar">
+                <div class="office-menu-item" id="menu-reboot">시스템(<u>S</u>)</div>
+                <div class="office-menu-item" id="menu-reset-all">데이터(<u>D</u>)</div>
+                <div class="office-menu-item" id="menu-info">정보(<u>A</u>)</div>
+            </div>
+            
+            <div class="window-viewport">
+                <div>
+                    <div class="tech-panel">
+                        <div class="tech-panel-header">
+                            <span>인적 학적 대장</span>
+                            <span class="tech-panel-badge">MEMBER</span>
+                        </div>
+                        <div class="tech-grid">
+                            <div class="tech-group">
+                                <label>학년</label>
+                                <input type="number" id="p-grade" class="tech-input" value="1" min="1" max="3">
+                            </div>
+                            <div class="tech-group">
+                                <label>학반</label>
+                                <input type="number" id="p-class" class="tech-input" value="1" min="1" max="15">
+                            </div>
+                            <div class="tech-group">
+                                <label>번호</label>
+                                <input type="number" id="p-number" class="tech-input" value="7" min="1" max="40">
+                            </div>
+                            <div class="tech-group">
+                                <label>성명</label>
+                                <input type="text" id="p-name" class="tech-input" value="학생A" maxlength="8">
+                            </div>
+                        </div>
                     </div>
-                    <div className="w-full space-y-4">
-                        <div>
-                            <label className="text-xs font-black text-slate-500 block mb-1 ml-1">학년</label>
-                            <select id="onboard-grade" className="w-full bg-white border-2 border-slate-300 rounded-xl p-3 text-sm font-bold outline-none">
-                                <option value="1">1학년</option>
-                                <option value="2">2학년</option>
-                                <option value="3">3학년</option>
+
+                    <div class="sync-hub">
+                        <span>중앙 동기화 회선 정보:</span>
+                        <div class="sync-indicator">
+                            <span class="status-dot" id="sync-lamp"></span>
+                            <span id="sync-status-txt">서버 연결 중...</span>
+                        </div>
+                    </div>
+
+                    <div class="tech-panel">
+                        <div class="tech-panel-header">
+                            <span>취득 점수 원장 기록부</span>
+                            <span class="tech-panel-badge">INPUT</span>
+                        </div>
+                        <div class="tech-group" style="margin-bottom: 10px;">
+                            <label>대상 교과목 선별</label>
+                            <select id="p-subject" class="tech-select">
+                                <option value="공통국어">공통국어 (지필 50% / 수행 50% )</option>
+                                <option value="공통수학">공통수학 (지필 50% / 수행 50% )</option>
+                                <option value="공통영어">공통영어 (지필 70% / 수행 30% )</option>
+                                <option value="한국사">한국사 (지필 60% / 수행 40% )</option>
+                                <option value="통합사회">통합사회 (지필 70% / 수행 30% )</option>
+                                <option value="통합과학">통합과학 (지필 60% / 수행 40% )</option>
+                                <option value="과학탐구실험">과학탐구실험 (지필 0% / 수행 100% )</option>
                             </select>
                         </div>
-                        <div>
-                            <label className="text-xs font-black text-slate-500 block mb-1 ml-1">반</label>
-                            <input id="onboard-class" type="number" min="1" max="20" defaultValue="1" className="w-full bg-white border-2 border-slate-300 rounded-xl p-3 text-sm font-bold outline-none"/>
-                        </div>
-                        <button onClick={() => {
-                            const g = document.getElementById('onboard-grade').value;
-                            const c = document.getElementById('onboard-class').value;
-                            if(!c || c < 1) return;
-                            localStorage.setItem('gduru_grade', g);
-                            localStorage.setItem('gduru_class', c);
-                            setGrade(g); setClassNm(c);
-                            setIsConfigured(true); vibrate('success');
-                        }} className="w-full tactile-pill-btn-primary py-4 font-[900] mt-2">
-                            시작하기
-                        </button>
-                    </div>
-                </div>
-            </div>
-        );
-    }
-
-    if (isLoading) return (
-        <div className="flex items-center justify-center h-screen bg-[#E5E9F0]">
-            <div className="tactile-plate p-10 flex flex-col items-center gap-6">
-                <div className="relative w-24 h-24 flex items-center justify-center">
-                    <div className="absolute inset-0 rounded-full border-4 border-[#E2E8F0] border-t-[#2563EB] animate-spin"></div>
-                    <BrandLogo showBadge={false} size="text-md" />
-                </div>
-                <p className="text-xs font-bold text-slate-500">기판 부팅 중...</p>
-            </div>
-        </div>
-    );
-
-    const TAB_HOME = (
-        <div className="space-y-6">
-            <div className={`grid gap-4 ${isDesktop ? 'grid-cols-2' : 'grid-cols-1'}`}>
-                <div className="tactile-card p-6">
-                    <div className="flex items-center justify-between mb-4">
-                        <h3 className="font-[900] text-[18px]">오늘 시간표</h3>
-                        <button onClick={() => setTab('time')} className="tactile-pill-btn px-3 py-1.5 text-xs">상세</button>
-                    </div>
-                    <div className="space-y-2">
-                        {todayTt.filter(t => t !== '-').length ? todayTt.map((t, i) => t !== '-' && (
-                            <div key={i} className={`flex items-center gap-3 px-4 py-2.5 rounded-2xl transition-all ${curPeriod === i ? 'bg-blue-100 border border-blue-200' : 'bg-white/60'}`}>
-                                <span className={`text-xs font-black w-8 ${curPeriod===i ? 'text-blue-600' : 'text-slate-400'}`}>{i+1}교시</span>
-                                <span className={`font-[900] text-[15px] ${curPeriod===i ? 'text-blue-700' : 'text-slate-700'}`}>{t}</span>
-                                {curPeriod===i && <span className="ml-auto text-[10px] font-black text-blue-500 bg-blue-50 px-2 py-0.5 rounded-full">진행중</span>}
+                        <div class="tech-grid">
+                            <div class="tech-group">
+                                <label id="lbl-score1">1차 지필평가</label>
+                                <input type="number" id="p-score1" class="tech-input" value="95" min="0" max="100">
                             </div>
-                        )) : <p className="text-center text-gray-400 py-4 font-bold text-sm">시간표 불러오는 중...</p>}
-                    </div>
-                </div>
-
-                <div className="tactile-card p-6">
-                    <div className="flex items-center justify-between mb-4">
-                        <h3 className="font-[900] text-[18px]">오늘 급식 🍱</h3>
-                        <button onClick={() => setTab('meal')} className="tactile-pill-btn px-3 py-1.5 text-xs">상세</button>
-                    </div>
-                    <div className="debossed-well p-4 flex flex-wrap gap-2 justify-center">
-                        {meals[today] ? meals[today].split(',').map((m,i) => (
-                            <span key={i} className="bg-white px-3 py-1.5 rounded-full text-[13px] font-[900] shadow-sm">{m.trim()}</span>
-                        )) : <p className="text-gray-400 font-bold text-sm py-2">급식 조회 중...</p>}
-                    </div>
-                </div>
-            </div>
-
-            <div className="tactile-card p-6">
-                <div className="flex justify-between items-center mb-4">
-                    <h2 className="font-[900] text-[20px]">바로가기 🔗</h2>
-                    <button onClick={() => openModal('LINK')} className="tactile-pill-btn px-3 py-1.5 text-xs">추가</button>
-                </div>
-                <div className="flex flex-wrap gap-2.5">
-                    {links.length ? links.map(l => (
-                        <div key={l.id} className="flex items-center bg-white rounded-[20px] border-2 border-slate-200 shadow-sm pr-1 transition-all hover:border-blue-300">
-                            <a href={l.url} target={l.url.startsWith('/') ? '_self' : '_blank'} rel="noopener noreferrer" className="px-4 py-2.5 text-[14px] font-[900] text-slate-700 hover:text-blue-600 transition-colors">
-                                {l.title}
-                            </a>
-                            <button onClick={() => deleteDoc('links', l.id)} className="w-8 h-8 flex items-center justify-center text-slate-300 hover:text-red-500 font-black text-lg rounded-full transition-colors pb-0.5">
-                                ×
-                            </button>
+                            <div class="tech-group">
+                                <label id="lbl-score2">2차 지필평가</label>
+                                <input type="number" id="p-score2" class="tech-input" value="88" min="0" max="100">
+                            </div>
+                            <div class="tech-group">
+                                <label>수행평가</label>
+                                <input type="number" id="p-score3" class="tech-input" value="95" min="0" max="100">
+                            </div>
                         </div>
-                    )) : <p className="text-[13px] text-slate-400 font-bold w-full py-2">등록된 바로가기가 없습니다.</p>}
-                </div>
-            </div>
-
-            <div className="tactile-card p-6 bg-gradient-to-br from-blue-50 to-white text-center">
-                <p className="text-[11px] font-[900] text-blue-600 tracking-widest uppercase mb-1">다가오는 학급 일정</p>
-                <div className="font-[900] text-[22px] text-slate-800">{nextSchedule?.title ?? '예정된 일정 없음'}</div>
-                {nextSchedule && (
-                    <span className="inline-block mt-2 text-[13px] font-[800] text-blue-600 bg-blue-100 px-3 py-1 rounded-full">
-                        {dday(nextSchedule.date)} ({nextSchedule.date})
-                    </span>
-                )}
-                <div className="mt-4">
-                    <button onClick={() => setTab('cal')} className="tactile-pill-btn-primary px-5 py-2 text-xs">📅 전체 캘린더 보기</button>
-                </div>
-            </div>
-
-            <div className="tactile-card p-6">
-                <div className="flex justify-between items-center mb-4">
-                    <h2 className="font-[900] text-[22px]">학급 알림</h2>
-                    <button onClick={() => openModal('NOTICE')} className="tactile-pill-btn px-4 py-2 text-xs">알림 쓰기</button>
-                </div>
-                <div className="space-y-3">
-                    {announcements.length ? announcements.map(a => (
-                        <div key={a.id} className="debossed-well p-5 relative">
-                            <h3 className="font-[900] text-[16px] pr-8">{a.title}</h3>
-                            <p className="text-[13px] text-slate-600 mt-1 font-[600] leading-relaxed whitespace-pre-wrap">{a.content}</p>
-                            {a.image && <img src={a.image} className="mt-3 rounded-xl max-h-48 object-cover w-full"/>}
-                            <button onClick={() => deleteDoc('announcements', a.id)} className="absolute top-4 right-4 tactile-pill-btn p-1.5 text-red-500" style={{minWidth:28,minHeight:28}}><Icons.Trash/></button>
+                        <div class="tech-btn-pack">
+                            <button class="tech-action-btn btn-green-alert" id="btn-submit">중앙 데이터 서버 전송 (S)</button>
+                            <button class="tech-action-btn" id="btn-reset">인풋 리셋</button>
                         </div>
-                    )) : <p className="text-center text-gray-400 py-4 font-[600]">등록된 공지사항이 없습니다.</p>}
+                    </div>
+                </div>
+
+                <div>
+                    <div class="tech-panel">
+                        <div class="tech-panel-header">
+                            <span>실시간 5등급 예측 보고서</span>
+                            <span class="tech-panel-badge" id="terminal-badge">REPORT</span>
+                        </div>
+                        <div class="telemetry-board" id="telemetry-screen">장부 대기 중...</div>
+                    </div>
+
+                    <div class="tech-panel">
+                        <div class="tech-panel-header">
+                            <span>나의 대장 최종 확정 원장</span>
+                            <span class="tech-panel-badge">LEDGER</span>
+                        </div>
+                        <div class="data-slab-container">
+                            <table class="data-slab-table">
+                                <thead>
+                                    <tr>
+                                        <th>교과목</th>
+                                        <th>1차</th>
+                                        <th>2차</th>
+                                        <th>수행</th>
+                                        <th>총점</th>
+                                        <th>예측등급</th>
+                                        <th>작업</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="ledger-body"></tbody>
+                            </table>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
-    );
 
-    const DOW_LABEL = ['일','월','화','수','목','금','토'];
-    const TAB_CAL = (
-        <div className="space-y-4">
-            <div className="tactile-card p-4 flex items-center justify-between">
-                <button onClick={goPrevMonth} className="tactile-pill-btn w-11 h-11"><Icons.ChevL/></button>
-                <div className="text-center">
-                    <div className="font-[900] text-[22px] text-slate-800 leading-tight">{calYear}년 {calMonth+1}월</div>
-                    <button onClick={goToday} className="text-[11px] font-black text-blue-600 mt-0.5">오늘로 이동</button>
-                </div>
-                <button onClick={goNextMonth} className="tactile-pill-btn w-11 h-11"><Icons.ChevR/></button>
+        <div id="taskbar">
+            <div class="taskbar-brand">
+                <div class="taskbar-brand-lamp"></div>
+                <span>GDURU OFFICE NET V2.6 (5-GRADE)</span>
             </div>
-
-            <div className="tactile-card p-3">
-                <div className="grid grid-cols-7 mb-2 px-1">
-                    {DOW_LABEL.map((d,i) => (
-                        <div key={i} className={`text-center text-[11px] font-[900] py-2 ${i===0?'text-red-500':i===6?'text-blue-500':'text-slate-600'}`}>{d}</div>
-                    ))}
-                </div>
-                <div className="grid grid-cols-7 gap-1">
-                    {calCells.map((cell, i) => {
-                        const ds = fmtDate(cell.date);
-                        const events = schedules.filter(s => s.date === ds);
-                        const hasMeal = !!meals[ds];
-                        const hasTt = (timetables[ds] || []).some(t => t && t !== '-');
-                        const isToday = ds === today;
-                        const isSelected = selectedDate === ds;
-                        const dow = cell.date.getDay();
-                        const dayNumColor = !cell.current ? 'text-slate-400' : (isToday ? 'text-white' : dow===0 ? 'text-red-500' : dow===6 ? 'text-blue-500' : 'text-slate-700');
-                        return (
-                            <button key={i}
-                                onClick={() => { vibrate('click'); setSelectedDate(ds); }}
-                                className={`cal-cell ${!cell.current ? 'cal-cell-other' : ''} ${isToday ? 'cal-cell-today' : ''} ${isSelected && !isToday ? 'cal-cell-selected' : ''}`}>
-                                <span className={`text-[13px] font-[900] ${dayNumColor}`}>{cell.date.getDate()}</span>
-                                {cell.current && (
-                                    <>
-                                        {events[0] && (
-                                            <span className={`mt-0.5 text-[9px] font-[900] truncate max-w-full px-1 rounded ${isToday ? 'bg-white/30 text-white' : 'bg-red-100 text-red-600'}`}>
-                                                {events[0].title.length > 4 ? events[0].title.slice(0,4)+'…' : events[0].title}
-                                            </span>
-                                        )}
-                                        <div className="flex gap-1 mt-auto pb-0.5">
-                                            {events.length > 0 && <div className="cal-dot" style={{background: isToday ? '#FFF' : '#EF4444'}}></div>}
-                                            {hasTt && <div className="cal-dot" style={{background: isToday ? '#FFF' : '#3B82F6'}}></div>}
-                                            {hasMeal && <div className="cal-dot" style={{background: isToday ? '#FFF' : '#10B981'}}></div>}
-                                        </div>
-                                    </>
-                                )}
-                            </button>
-                        );
-                    })}
-                </div>
-                <div className="mt-3 flex gap-4 justify-center text-[10px] font-bold text-slate-500 flex-wrap">
-                    <span className="flex items-center gap-1"><div className="cal-dot" style={{background:'#EF4444'}}></div>학급일정</span>
-                    <span className="flex items-center gap-1"><div className="cal-dot" style={{background:'#3B82F6'}}></div>시간표</span>
-                    <span className="flex items-center gap-1"><div className="cal-dot" style={{background:'#10B981'}}></div>급식</span>
-                </div>
-            </div>
-
-            <div className="tactile-card p-5">
-                <div className="flex items-center justify-between mb-3">
-                    <h3 className="font-[900] text-[16px]">{calMonth+1}월 일정 한눈에</h3>
-                    <button onClick={() => openModal('SCHED')} className="tactile-pill-btn px-3 py-1.5 text-xs">등록</button>
-                </div>
-                <div className="space-y-2">
-                    {schedules.filter(s => {
-                        const d = new Date(s.date + 'T00:00:00');
-                        return d.getFullYear() === calYear && d.getMonth() === calMonth;
-                    }).length ? schedules.filter(s => {
-                        const d = new Date(s.date + 'T00:00:00');
-                        return d.getFullYear() === calYear && d.getMonth() === calMonth;
-                    }).map(s => (
-                        <button key={s.id} onClick={() => { vibrate('click'); setSelectedDate(s.date); }}
-                            className="w-full debossed-well p-3 flex items-center justify-between text-left hover:bg-white transition-all">
-                            <div className="flex items-center gap-3">
-                                <div className="w-10 h-10 bg-white rounded-xl flex flex-col items-center justify-center shadow-sm">
-                                    <span className="text-[9px] font-black text-slate-400 leading-none">{s.date.slice(5,7)}월</span>
-                                    <span className="text-[15px] font-[900] text-slate-800 leading-tight">{s.date.slice(8,10)}</span>
-                                </div>
-                                <div>
-                                    <h4 className="font-[900] text-[14px] text-slate-800">{s.title}</h4>
-                                    <p className="text-[11px] text-blue-600 font-bold">{dday(s.date)}</p>
-                                </div>
-                            </div>
-                        </button>
-                    )) : <p className="text-center text-gray-400 py-3 font-bold text-sm">이 달에 등록된 일정이 없습니다.</p>}
-                </div>
+            <div class="taskbar-right">
+                <span id="active-peers-count">동기화 대기...</span>
+                <span class="taskbar-clock" id="live-system-clock">00:00:00</span>
             </div>
         </div>
-    );
+    </div>
 
-    const TAB_TIME = (
-        <div className="space-y-4">
-            <div className="debossed-well p-4 flex flex-col gap-3">
-                <div className="flex justify-between items-center">
-                    <span className="text-xs font-black text-slate-500">시간표 조회 날짜</span>
-                    <div className="flex gap-2 items-center">
-                        <span className={`text-xs font-black px-2 py-1 rounded-md border bg-white ${syncState[ttDate]==='loading' ? 'text-amber-500' : syncState[ttDate]==='error' ? 'text-red-500' : 'text-blue-600'}`}>
-                            {syncState[ttDate]==='loading' ? 'NEIS 조회중...' : syncState[ttDate]==='error' ? '조회 실패' : ttDate}
-                        </span>
-                        <button onClick={() => forceResync(ttDate)} className="tactile-pill-btn p-2" title="강제 재조회"><Icons.Refresh/></button>
-                    </div>
-                </div>
-                <input type="date" value={ttDate} onChange={e => { vibrate('click'); setTtDate(e.target.value); }}
-                    className="w-full bg-white border-2 border-slate-300 rounded-xl p-3 text-sm font-bold text-center outline-none"/>
-                <div className="flex gap-2">
-                    <button onClick={() => { vibrate('click'); setTtDate(today); }} className="tactile-pill-btn flex-1 py-2 text-xs">오늘</button>
-                    <button onClick={() => openModal('TIME', ttDate)} className="tactile-pill-btn flex-1 py-2 text-xs flex items-center justify-center gap-1"><Icons.Plus/>수동 편집</button>
-                </div>
-            </div>
-
-            {(timetables[ttDate] || Array(7).fill('-')).map((subj, idx) => (
-                <div key={idx} className={`tactile-card p-5 flex items-center justify-between transition-all ${curPeriod===idx && ttDate===today ? 'ring-2 ring-blue-400 ring-offset-2' : ''}`}>
-                    <div className="flex items-center gap-4">
-                        <div className={`w-12 h-12 debossed-well flex items-center justify-center font-[900] text-[20px] ${curPeriod===idx && ttDate===today ? 'text-blue-600' : 'text-slate-500'}`} style={{borderRadius:16}}>
-                            {idx+1}
-                        </div>
-                        <div>
-                            <div className="flex items-center gap-2">
-                                <h4 className="font-[900] text-[18px] text-slate-800">{subj === '-' ? '—' : subj}</h4>
-                                {curPeriod===idx && ttDate===today && <span className="text-[10px] font-black text-blue-500 bg-blue-100 px-2 py-0.5 rounded-full">진행중</span>}
-                            </div>
-                            <p className="text-[11px] text-slate-400 font-bold">{PERIODS[idx].start} ~ {PERIODS[idx].end}</p>
-                            {memos[ttDate+'_'+(idx+1)] && <p className="text-[12px] text-blue-600 font-[900] mt-0.5">💡 {memos[ttDate+'_'+(idx+1)]}</p>}
-                        </div>
-                    </div>
-                    <button onClick={() => openModal('MEMO', ttDate+'_'+(idx+1))} className="tactile-pill-btn p-2"><Icons.Plus/></button>
-                </div>
-            ))}
+    <div id="custom-dialog">
+        <div class="dialog-frame">
+            <div class="dialog-header">■ 알림 지시사항</div>
+            <div class="dialog-msg" id="dialog-msg-txt">올바른 데이터를 기입하십시오.</div>
+            <button class="tech-action-btn btn-coral-alert" id="btn-dialog-ok" style="height:30px; width:100%;">확인</button>
         </div>
-    );
+    </div>
 
-    const TAB_MEAL = (
-        <div className="space-y-5">
-            <div className="debossed-well p-4 flex flex-col gap-3">
-                <div className="flex justify-between items-center">
-                    <span className="text-xs font-black text-slate-500">급식 조회 날짜</span>
-                    <span className="text-xs font-black text-emerald-600 bg-white px-2 py-1 rounded-md border">{mealDate}</span>
-                </div>
-                <input type="date" value={mealDate} onChange={e => { vibrate('click'); setMealDate(e.target.value); }}
-                    className="w-full bg-white border-2 border-slate-300 rounded-xl p-3 text-sm font-bold text-center outline-none"/>
-                <div className="flex gap-2">
-                    <button onClick={() => { vibrate('click'); setMealDate(today); }} className="tactile-pill-btn flex-1 py-2 text-xs">오늘</button>
-                    <button onClick={() => openModal('MEAL', mealDate)} className="tactile-pill-btn flex-1 py-2 text-xs">수동 입력</button>
-                </div>
-            </div>
-            <div className="tactile-card p-7">
-                <h2 className="text-[19px] font-black mb-5 text-slate-800">점심 메뉴 🍱</h2>
-                <div className="debossed-well p-6 flex flex-wrap justify-center gap-2">
-                    {meals[mealDate] ? meals[mealDate].split(',').map((it,i) => (
-                        <span key={i} className="bg-white px-5 py-2 rounded-full text-[15px] font-[900] shadow-sm">{it.trim()}</span>
-                    )) : <p className="text-gray-400 font-bold py-4">급식 정보가 없습니다.</p>}
-                </div>
-            </div>
-        </div>
-    );
+    <script type="module">
+        // Firebase 기능 가져오기
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-app.js";
+        import { getFirestore, collection, addDoc, deleteDoc, doc, onSnapshot } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-firestore.js";
 
-    const TAB_CLASS = (
-        <div className="space-y-6 pb-8">
-            <div className="tactile-card p-6">
-                <div className="flex justify-between items-center mb-4">
-                    <h2 className="text-[20px] font-[900]">내 플래너</h2>
-                    <button onClick={() => openModal('PLAN')} className="tactile-pill-btn w-9 h-9 text-xl font-bold">+</button>
-                </div>
-                <div className="space-y-3">
-                    {planner.length ? planner.map(t => (
-                        <div key={t.id} className="bg-white border border-slate-200 rounded-[22px] p-4 flex items-center justify-between shadow-sm">
-                            <button onClick={async () => { vibrate('click'); await privCol(auth.currentUser.uid,'planner').doc(t.id).update({done:!t.done}); }} className="flex items-center gap-3 flex-1 text-left">
-                                <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center text-xs ${t.done ? 'bg-blue-600 border-blue-600 text-white' : 'border-slate-300'}`}>
-                                    {t.done ? '✓' : ''}
-                                </div>
-                                <span className={`font-[900] text-[15px] ${t.done ? 'line-through text-gray-400' : ''}`}>{t.text}</span>
-                            </button>
-                            <button onClick={() => deleteDoc('planner', t.id, true)} className="text-red-400 p-1 font-bold text-lg">×</button>
-                        </div>
-                    )) : <p className="text-center text-gray-400 py-4 font-bold text-sm">오늘 할 일을 추가하세요.</p>}
-                </div>
-            </div>
+        // 사용자가 제공한 실제 FIREBASE CONFIG 전역 연동
+        const firebaseConfig = {
+            apiKey: "AIzaSyAP5aTDrHZ_MtpF6eMZXTZPGn34jatGsHQ",
+            authDomain: "homerlex0217.firebaseapp.com",
+            projectId: "homerlex0217",
+            storageBucket: "homerlex0217.firebasestorage.app",
+            messagingSenderId: "450777185017",
+            appId: "1:450777185017:web:f60d2003390ad4a2054028",
+            measurementId: "G-BW0RY5FZBL"
+        };
 
-            <div className={`grid gap-6 ${isDesktop ? 'grid-cols-2' : 'grid-cols-1'}`}>
-                <div className="tactile-card p-6">
-                    <div className="flex justify-between items-center mb-4">
-                        <h2 className="text-[20px] font-[900]">학급 일정</h2>
-                        <button onClick={() => openModal('SCHED')} className="tactile-pill-btn px-3 py-1.5 text-xs">등록</button>
-                    </div>
-                    <div className="space-y-3">
-                        {schedules.length ? schedules.map(s => (
-                            <div key={s.id} className="debossed-well p-4 flex justify-between items-center">
-                                <div>
-                                    <h3 className="font-[900] text-slate-800 text-[15px]">{s.title}</h3>
-                                    <p className="text-[12px] text-slate-500 font-bold mt-0.5">{s.date} · <span className="text-blue-600">{dday(s.date)}</span></p>
-                                </div>
-                                <button onClick={() => deleteDoc('schedules', s.id)} className="text-red-500 p-1 font-black text-lg">×</button>
-                            </div>
-                        )) : <p className="text-center text-gray-400 py-4 font-bold text-sm">일정이 없습니다.</p>}
-                    </div>
-                </div>
+        // 전역 상태 관리 변수
+        let db;
+        let syncGradesList = [];
+        let previousReportToken = "";
+        let tTypeTimer = null;
+        let audioCtx = null;
 
-                <div className="tactile-card p-6">
-                    <div className="flex justify-between items-center mb-4">
-                        <h2 className="text-[20px] font-[900]">자료 보관함</h2>
-                        <button onClick={() => openModal('FILE')} className="tactile-pill-btn px-3 py-1.5 text-xs">보관</button>
-                    </div>
-                    <div className="space-y-3">
-                        {materials.length ? materials.map(m => (
-                            <div key={m.id} className="debossed-well p-4 flex items-center justify-between">
-                                <div className="flex-1 min-w-0">
-                                    <h3 className="font-[900] text-slate-800 truncate text-[15px]">{m.title}</h3>
-                                    <p className="text-[12px] text-slate-500 font-bold">{m.subject}</p>
-                                    {m.file && <a href={m.file} download={`${m.title}.jpg`} className="inline-block mt-2 bg-white border px-3 py-1 rounded-full text-[11px] font-black text-blue-600">📥 받기</a>}
-                                </div>
-                                <button onClick={() => deleteDoc('materials', m.id)} className="text-red-500 p-1 font-black text-lg shrink-0">×</button>
-                            </div>
-                        )) : <p className="text-center text-gray-400 py-4 font-bold text-sm">공유 자료가 없습니다.</p>}
-                    </div>
-                </div>
-            </div>
+        // 1. 8비트 사각파 비프음 오디오 시스템 완결
+        function playChiptune(freq, duration, type = 'square', volume = 0.02) {
+            try {
+                if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                if (audioCtx.state === 'suspended') audioCtx.resume();
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                
+                osc.type = type;
+                osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+                gain.gain.setValueAtTime(volume, audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.00001, audioCtx.currentTime + duration);
+                
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                osc.start();
+                osc.stop(audioCtx.currentTime + duration);
+            } catch (e) {
+                console.log("오디오 장치 활성화 대기 중");
+            }
+        }
 
-            <div className="tactile-card p-6 mt-6">
-                <div className="flex justify-between items-center mb-4">
-                    <h2 className="text-[20px] font-[900]">학급 톡톡 💬</h2>
-                    <button onClick={() => openModal('MSG')} className="tactile-pill-btn px-4 py-2 text-xs">글쓰기</button>
-                </div>
-                <div className="space-y-4">
-                    {messages.length ? messages.map(m => (
-                        <div key={m.id} className="bg-white border border-slate-200 rounded-[22px] p-5 shadow-sm relative">
-                            <div className="flex items-center gap-2 mb-2">
-                                <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center text-blue-600 font-black text-xs">
-                                    {m.author ? m.author[0] : '익'}
-                                </div>
-                                <div>
-                                    <span className="font-[900] text-[13px] text-slate-700">{m.author || '익명'}</span>
-                                    <span className="text-[10px] text-slate-400 font-bold ml-2">
-                                        {new Date(m.at).toLocaleString('ko-KR', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })}
-                                    </span>
-                                </div>
-                            </div>
-                            <p className="text-[14px] font-[600] text-slate-800 leading-relaxed whitespace-pre-wrap">{m.content}</p>
-                            <button onClick={() => deleteDoc('messages', m.id)} className="absolute top-4 right-4 tactile-pill-btn p-1.5 text-red-400" style={{minWidth:28,minHeight:28}}><Icons.Trash/></button>
-                        </div>
-                    )) : <p className="text-center text-gray-400 py-6 font-bold text-sm">자유롭게 의견이나 건의사항을 남겨보세요!</p>}
-                </div>
-            </div>
-        </div>
-    );
+        // 2. 사무용 독자 규격 커스텀 대화 상자 제어
+        const cDialog = document.getElementById('custom-dialog');
+        const cDialogMsg = document.getElementById('dialog-msg-txt');
+        const cDialogOk = document.getElementById('btn-dialog-ok');
 
-    const TABS = [
-        { id:'home',  label:'홈',     Icon:Icons.Home     },
-        { id:'cal',   label:'캘린더', Icon:Icons.Calendar },
-        { id:'time',  label:'시간표', Icon:Icons.Clock    },
-        { id:'meal',  label:'급식',   Icon:Icons.Meal     },
-        { id:'class', label:'학급',   Icon:Icons.Class    },
-    ];
+        function triggerSystemDialog(msg) {
+            cDialogMsg.textContent = msg;
+            cDialog.style.display = 'flex';
+            playChiptune(220, 0.2, 'sawtooth', 0.06);
+        }
+        cDialogOk.addEventListener('click', () => {
+            cDialog.style.display = 'none';
+            playChiptune(500, 0.04, 'square', 0.03);
+        });
 
-    const CONTENT = { home: TAB_HOME, cal: TAB_CAL, time: TAB_TIME, meal: TAB_MEAL, class: TAB_CLASS };
+        // 3. 1990년대 오피스 스타일 부팅 로그 시퀀스 에뮬레이션
+        const systemBootLines = [
+            "Initializing GDURU Core Framework v2.6...",
+            "Loading YKompyuta True Pixel Font Core ... OK",
+            "Establishing Secure Direct Route to Firestore Instance ... Connected",
+            "Allocating Data Buffer space for 5-Grade Relative Cohorts...",
+            "System online. Desk accessories initialized."
+        ];
+        const bootContainer = document.getElementById('boot-dynamic-log');
+        let bootIdx = 0;
 
-    const selDate = selectedDate;
-    const selSchedules = selDate ? schedules.filter(s => s.date === selDate) : [];
-    const selTt = selDate ? (timetables[selDate] || []) : [];
-    const selMeal = selDate ? meals[selDate] : null;
-    const selDayName = (() => {
-        if (!selDate) return '';
-        const d = new Date(selDate + 'T00:00:00');
-        return DOW_LABEL[d.getDay()] + '요일';
-    })();
+        function runTechnicalBoot() {
+            if (bootIdx < systemBootLines.length) {
+                const line = document.createElement('div');
+                if (bootIdx % 2 === 0) line.className = "boot-cyan";
+                line.textContent = ">> " + systemBootLines[bootIdx];
+                bootContainer.appendChild(line);
+                playChiptune(1000 + (bootIdx * 80), 0.02, 'square', 0.02);
+                bootIdx++;
+                setTimeout(runTechnicalBoot, 180);
+            } else {
+                setTimeout(() => {
+                    document.getElementById('boot-screen').style.display = 'none';
+                    document.getElementById('main-workstation').style.display = 'flex';
+                    playChiptune(440, 0.06, 'sine', 0.04);
+                    setTimeout(() => playChiptune(554, 0.06, 'sine', 0.04), 60);
+                    setTimeout(() => playChiptune(659, 0.12, 'sine', 0.04), 120);
+                    startFirestoreSync(); // 부팅 완료 후 원격 데이터 스냅샷 연결
+                }, 400);
+            }
+        }
 
-    return (
-        <div className="min-h-screen flex bg-[#E5E9F0]">
+        // 4. Firestore 실시간 양방향 데이터 동기화 파이프라인
+        function startFirestoreSync() {
+            try {
+                const app = initializeApp(firebaseConfig);
+                db = getFirestore(app);
 
-            {/* 데스크톱 사이드바 */}
-            {isDesktop && (
-                <aside className="sidebar fixed left-0 top-0 bottom-0 w-[210px] flex flex-col items-center py-8 px-3 z-40 gap-2">
-                    <div className="mb-6 text-center flex flex-col items-center">
-                        <BrandLogo size="text-2xl" />
-                        <button onClick={() => {
-                            localStorage.clear(); window.location.reload();
-                        }} className="text-[9px] text-slate-400 font-bold hover:text-indigo-600 mt-1">⚙️ 학급 재설정</button>
-                    </div>
+                const syncLamp = document.getElementById('sync-lamp');
+                const syncStatusTxt = document.getElementById('sync-status-txt');
 
-                    {TABS.map(({id, label, Icon}) => (
-                        <button key={id} onClick={() => setTab(id)}
-                            className={`sidebar-btn w-full ${activeTab===id ? 'sidebar-btn-active' : ''}`}>
-                            <Icon size={20}/>
-                            <span className="text-[12px] font-[900]">{label}</span>
-                        </button>
-                    ))}
+                // gduru_grades 컬렉션을 실시간 경청
+                onSnapshot(collection(db, "gduru_grades"), (snapshot) => {
+                    const updatedList = [];
+                    snapshot.forEach(doc => {
+                        updatedList.push({ fid: doc.id, ...doc.data() });
+                    });
+                    syncGradesList = updatedList;
 
-                    <div className="mt-auto flex flex-col items-center gap-3 w-full">
-                        <div className="live-badge w-full justify-center">
-                            <div className="pulse-dot" style={{backgroundColor: statusText==='LIVE' ? '#10B981' : '#F59E0B'}}></div>
-                            <span className="text-[10px] font-[900]" style={{color: statusText==='LIVE' ? '#10B981' : '#F59E0B'}}>{statusText}</span>
-                        </div>
-                        {notiPerm !== 'granted' && (
-                            <button onClick={() => Notification.requestPermission().then(p => setNotiPerm(p))}
-                                className="tactile-pill-btn-primary px-3 py-2 text-[10px] font-black w-full">알림 허용</button>
-                        )}
-                        {installPrompt && (
-                            <button onClick={() => { installPrompt.prompt(); installPrompt.userChoice.then(() => setInstallPrompt(null)); }}
-                                className="tactile-pill-btn px-3 py-2 text-[10px] font-black w-full text-indigo-600">앱으로 설치</button>
-                        )}
-                    </div>
-                </aside>
-            )}
+                    // 동기화 램프 상태 전환
+                    syncLamp.classList.add('active');
+                    syncStatusTxt.textContent = "원격 중앙 장부 연동 중";
+                    syncStatusTxt.style.color = "#000080";
 
-            {/* 메인 영역 */}
-            <div className={`flex-1 flex flex-col min-h-screen ${isDesktop ? 'ml-[210px]' : ''}`}>
-                <header className={`sticky top-0 z-30 bg-[#E5E9F0]/90 backdrop-blur-xl px-6 pt-10 pb-4 flex items-center justify-between ${isDesktop ? 'max-w-4xl w-full mx-auto' : ''}`}>
-                    <div>
-                        <h1 className="text-[28px] font-[900] tracking-tight text-slate-800">
-                            {TABS.find(t=>t.id===activeTab)?.label}
-                        </h1>
-                        <p className="text-[11px] font-bold text-slate-400">고촌고등학교 {grade}학년 {classNm}반</p>
-                    </div>
-                    <div className="flex items-center gap-2">
-                        {!isDesktop && (
-                            <div className="flex flex-col items-end gap-1">
-                                <BrandLogo size="text-xl" />
-                                <button onClick={() => { localStorage.clear(); window.location.reload(); }} className="text-[9px] text-slate-400 font-bold">⚙️ 반 변경</button>
-                            </div>
-                        )}
-                    </div>
-                </header>
+                    // 참여 중인 순수 디바이스 유저 카운팅
+                    const uniquePeers = new Set(syncGradesList.map(item => item.studentKey));
+                    document.getElementById('active-peers-count').textContent = `네트워크 동기 장부: ${uniquePeers.size}대`;
 
-                {!isDesktop && (notiPerm !== 'granted' || installPrompt) && (
-                    <div className="mx-5 mb-4 p-3 bg-white rounded-2xl shadow flex items-center justify-between gap-2 border border-white/50">
-                        <span className="text-xs font-[800] text-slate-600 truncate">
-                            {notiPerm !== 'granted' ? '🔔 스마트 알림 활성화' : '📲 앱으로 설치하기'}
-                        </span>
-                        <div className="flex gap-2 shrink-0">
-                            {notiPerm !== 'granted' && (
-                                <button onClick={() => Notification.requestPermission().then(p => setNotiPerm(p))}
-                                    className="tactile-pill-btn-primary px-4 py-1.5 text-[11px] font-black">알림 허용</button>
-                            )}
-                            {installPrompt && (
-                                <button onClick={() => { installPrompt.prompt(); installPrompt.userChoice.then(() => setInstallPrompt(null)); }}
-                                    className="tactile-pill-btn px-4 py-1.5 text-[11px] font-black text-indigo-600">앱 설치</button>
-                            )}
-                        </div>
-                    </div>
-                )}
+                    recalculatePredictor();
+                }, (error) => {
+                    fallbackLocalMode("보안 및 회선 장애 발생");
+                });
+            } catch (e) {
+                fallbackLocalMode("오프라인 독립 장부 보존 모드");
+            }
+        }
 
-                <main className={`px-5 pb-36 mt-2 flex-1 ${isDesktop ? 'max-w-4xl w-full mx-auto' : ''}`}>
-                    {CONTENT[activeTab]}
-                </main>
-            </div>
+        function fallbackLocalMode(reason) {
+            document.getElementById('sync-lamp').classList.remove('active');
+            document.getElementById('sync-status-txt').textContent = reason;
+            document.getElementById('sync-status-txt').style.color = "#ff0000";
+            
+            const raw = localStorage.getItem('gduru_local_backup') || '[]';
+            syncGradesList = JSON.parse(raw);
+            recalculatePredictor();
+        }
 
-            {/* 모바일 하단 네비게이션 */}
-            {!isDesktop && (
-                <div className="fixed left-1/2 -translate-x-1/2 bottom-6 z-50 transition-all duration-300"
-                     style={{width: isScrolled ? '260px' : 'calc(100% - 32px)'}}>
-                    <nav className="tactile-nav-container flex items-center justify-between p-2"
-                         style={{height: isScrolled ? '56px' : '72px'}}>
-                        {TABS.map(({id, label, Icon}) => (
-                            <button key={id} onClick={() => setTab(id)}
-                                className={`tactile-nav-btn flex-1 h-full ${activeTab===id ? 'tactile-nav-btn-active' : ''}`}>
-                                <Icon/>
-                                <span className={`text-[10px] font-[900] mt-0.5 transition-all ${isScrolled ? 'hidden-text' : ''}`}>{label}</span>
-                            </button>
-                        ))}
-                    </nav>
-                </div>
-            )}
+        // 5. 실시간 오피스 상대평가 예측 모델 엔진 (5등급제 공식 완전 연계)
+        const elGrade = document.getElementById('p-grade');
+        const elClass = document.getElementById('p-class');
+        const elNumber = document.getElementById('p-number');
+        const elName = document.getElementById('p-name');
+        const elSubject = document.getElementById('p-subject');
+        const elScore1 = document.getElementById('p-score1');
+        const elScore2 = document.getElementById('p-score2');
+        const elScore3 = document.getElementById('p-score3');
+        const telemetryScreen = document.getElementById('telemetry-screen');
 
-            {/* ── 입력 모달 ── */}
-            {showModal && (
-                <div className="fixed inset-0 z-[100] bg-black/20 backdrop-blur-sm flex items-end md:items-center justify-center p-0 md:p-6">
-                    <div className="tactile-card w-full max-w-md p-7 m-4">
-                        <h3 className="text-[20px] font-[900] mb-6 text-center">
-                            {{NOTICE:'새 공지',SCHED:'일정 등록',FILE:'자료 공유',PLAN:'할 일 추가',MEMO:'수업 메모',MEAL:'식단 입력',TIME:'시간표 편집', MSG:'학급 톡톡 쓰기', LINK:'바로가기 추가'}[modalType]}
-                        </h3>
-                        <div className="space-y-3">
-                            {['PLAN','MEMO','MEAL','TIME'].includes(modalType) && (
-                                <input value={val1} onChange={e=>setVal1(e.target.value)}
-                                    placeholder={modalType==='MEAL'?'메뉴를 쉼표로 구분':modalType==='TIME'?'과목을 쉼표로 구분':'내용'}
-                                    className="w-full debossed-well p-4 text-sm font-bold text-slate-800 outline-none"/>
-                            )}
-                            {modalType==='NOTICE' && <>
-                                <input value={val1} onChange={e=>setVal1(e.target.value)} placeholder="제목" className="w-full debossed-well p-4 text-sm font-bold outline-none"/>
-                                <textarea value={val2} onChange={e=>setVal2(e.target.value)} placeholder="내용" className="w-full debossed-well p-4 min-h-[80px] text-sm font-bold resize-none outline-none"/>
-                                <label className="block p-4 border-2 border-dashed border-slate-300 rounded-2xl text-center cursor-pointer text-sm text-gray-500 font-bold relative">
-                                    🖼️ 이미지 첨부
-                                    <input type="file" accept="image/*" className="absolute inset-0 opacity-0 cursor-pointer"
-                                        onChange={e => { const f=e.target.files[0]; if(!f) return; const r=new FileReader(); r.onload=ev=>setFile(ev.target.result); r.readAsDataURL(f); }}/>
-                                </label>
-                            </>}
-                            {modalType==='SCHED' && <>
-                                <input value={val1} onChange={e=>setVal1(e.target.value)} placeholder="일정 이름" className="w-full debossed-well p-4 text-sm font-bold outline-none"/>
-                                <input type="date" value={val2} onChange={e=>setVal2(e.target.value)} className="w-full debossed-well p-4 text-sm font-bold outline-none"/>
-                            </>}
-                            {modalType==='FILE' && <>
-                                <input value={val1} onChange={e=>setVal1(e.target.value)} placeholder="자료 이름" className="w-full debossed-well p-4 text-sm font-bold outline-none"/>
-                                <input value={val2} onChange={e=>setVal2(e.target.value)} placeholder="과목" className="w-full debossed-well p-4 text-sm font-bold outline-none"/>
-                                <label className="block p-4 border-2 border-dashed border-slate-300 rounded-2xl text-center cursor-pointer text-sm text-gray-500 font-bold relative">
-                                    📄 파일 선택
-                                    <input type="file" accept="image/*" className="absolute inset-0 opacity-0 cursor-pointer"
-                                        onChange={e => { const f=e.target.files[0]; if(!f) return; const r=new FileReader(); r.onload=ev=>setFile(ev.target.result); r.readAsDataURL(f); }}/>
-                                </label>
-                            </>}
-                            {modalType==='MSG' && <>
-                                <input value={val1} onChange={e=>setVal1(e.target.value)} placeholder="닉네임 (비워두면 익명)" className="w-full debossed-well p-4 text-sm font-bold outline-none"/>
-                                <textarea value={val2} onChange={e=>setVal2(e.target.value)} placeholder="친구들에게 전할 말이나 건의사항을 남겨주세요." className="w-full debossed-well p-4 min-h-[100px] text-sm font-bold resize-none outline-none"/>
-                            </>}
-                            {modalType==='LINK' && <>
-                                <input value={val1} onChange={e=>setVal1(e.target.value)} placeholder="버튼 이름 (예: 성적확인)" className="w-full debossed-well p-4 text-sm font-bold outline-none"/>
-                                <input value={val2} onChange={e=>setVal2(e.target.value)} placeholder="연결할 주소 (예: https://...)" className="w-full debossed-well p-4 text-sm font-bold outline-none"/>
-                            </>}
-                        </div>
-                        <div className="flex gap-3 mt-6">
-                            <button onClick={() => setShowModal(false)} className="flex-1 tactile-pill-btn py-4 font-[900]">취소</button>
-                            <button onClick={submitModal} className="flex-1 tactile-pill-btn-primary py-4 font-[900]">확인</button>
-                        </div>
-                    </div>
-                </div>
-            )}
+        // 과학탐구실험 선택 시 인풋 제한 예외처리 바인딩
+        elSubject.addEventListener('change', () => {
+            const isSciExp = (elSubject.value === '과학탐구실험');
+            elScore1.disabled = isSciExp;
+            elScore2.disabled = isSciExp;
+            playChiptune(800, 0.02, 'square', 0.02);
+            recalculatePredictor();
+        });
 
-            {/* ── 캘린더 날짜 상세 모달 ── */}
-            {selectedDate && (
-                <div className="fixed inset-0 z-[105] bg-black/30 backdrop-blur-sm flex items-end md:items-center justify-center p-0 md:p-6"
-                    onClick={() => setSelectedDate(null)}>
-                    <div className="tactile-card w-full max-w-lg p-6 m-4 max-h-[85vh] overflow-y-auto"
-                        onClick={e => e.stopPropagation()}>
-                        <div className="flex justify-between items-start mb-5">
-                            <div>
-                                <p className="text-[11px] font-[900] text-blue-600 tracking-widest uppercase mb-1">DATE</p>
-                                <h3 className="text-[22px] font-[900] text-slate-800 leading-tight">{selDate}</h3>
-                                <p className="text-[12px] font-bold text-slate-500 mt-0.5">{selDayName} · {selDate === today ? '오늘' : dday(selDate)}</p>
-                            </div>
-                            <button onClick={() => setSelectedDate(null)} className="tactile-pill-btn w-9 h-9"><Icons.X/></button>
-                        </div>
+        // 모든 조작 요소에 실시간 장부 갱신 감지기 탑재
+        [elGrade, elClass, elNumber, elName, elScore1, elScore2, elScore3].forEach(el => {
+            el.addEventListener('input', () => recalculatePredictor());
+        });
 
-                        <div className="mb-4">
-                            <div className="flex items-center justify-between mb-2">
-                                <h4 className="font-[900] text-[14px] text-red-500 flex items-center gap-1">📅 학급 일정</h4>
-                                <button onClick={() => openModal('SCHED', '', selDate)} className="tactile-pill-btn px-3 py-1 text-[10px]">+ 추가</button>
-                            </div>
-                            <div className="debossed-well p-3 space-y-1.5">
-                                {selSchedules.length ? selSchedules.map(s => (
-                                    <div key={s.id} className="bg-white px-3 py-2 rounded-xl flex items-center justify-between shadow-sm">
-                                        <span className="font-[900] text-[14px] text-slate-800">{s.title}</span>
-                                        <button onClick={() => deleteDoc('schedules', s.id)} className="text-red-400 text-sm font-black px-1">×</button>
-                                    </div>
-                                )) : <p className="text-[12px] text-slate-400 font-bold text-center py-2">등록된 일정이 없습니다.</p>}
-                            </div>
-                        </div>
+        // 실시간 텔레타이프 주사 메커니즘
+        function printTeletypeTelemetry(text) {
+            if (tTypeTimer) clearInterval(tTypeTimer);
+            telemetryScreen.innerHTML = '';
+            let idx = 0;
 
-                        <div className="mb-4">
-                            <div className="flex items-center justify-between mb-2">
-                                <h4 className="font-[900] text-[14px] text-blue-500 flex items-center gap-1">📚 시간표</h4>
-                                <button onClick={() => openModal('TIME', selDate)} className="tactile-pill-btn px-3 py-1 text-[10px]">편집</button>
-                            </div>
-                            <div className="debossed-well p-3 space-y-1">
-                                {(selTt.length ? selTt : Array(7).fill('-')).map((subj, i) => (
-                                    <div key={i} className="flex items-center gap-2 bg-white px-3 py-1.5 rounded-xl">
-                                        <span className="text-[10px] font-black text-slate-400 w-10 shrink-0">{i+1}교시</span>
-                                        <span className="font-[900] text-[13px] text-slate-800 flex-1 truncate">{subj === '-' ? '—' : subj}</span>
-                                        <span className="text-[9px] font-bold text-slate-400 shrink-0">{PERIODS[i].start}</span>
-                                    </div>
-                                ))}
-                            </div>
-                        </div>
+            tTypeTimer = setInterval(() => {
+                if (idx < text.length) {
+                    telemetryScreen.innerHTML += text[idx];
+                    if (text[idx] !== ' ' && text[idx] !== '\n') {
+                        playChiptune(1200 + (Math.random() * 80), 0.003, 'square', 0.005);
+                    }
+                    idx++;
+                    telemetryScreen.scrollTop = telemetryScreen.scrollHeight;
+                } else {
+                    clearInterval(tTypeTimer);
+                }
+            }, 5);
+        }
 
-                        <div className="mb-2">
-                            <div className="flex items-center justify-between mb-2">
-                                <h4 className="font-[900] text-[14px] text-emerald-500 flex items-center gap-1">🍱 점심 급식</h4>
-                                <button onClick={() => openModal('MEAL', selDate)} className="tactile-pill-btn px-3 py-1 text-[10px]">편집</button>
-                            </div>
-                            <div className="debossed-well p-3 flex flex-wrap gap-1.5">
-                                {selMeal ? selMeal.split(',').map((m,i) => (
-                                    <span key={i} className="bg-white px-3 py-1.5 rounded-full text-[12px] font-[900] shadow-sm">{m.trim()}</span>
-                                )) : <p className="text-[12px] text-slate-400 font-bold text-center py-2 w-full">급식 정보가 없습니다.</p>}
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            )}
+        // 과목 비율 적용 및 내신 등급 분별 산출기 (5등급제 수정부)
+        function recalculatePredictor() {
+            const currentStudentKey = `${elGrade.value}-${elClass.value}-${elNumber.value}-${elName.value}`;
+            const sub = elSubject.value;
+            const s1 = parseFloat(elScore1.value) || 0;
+            const s2 = parseFloat(elScore2.value) || 0;
+            const s3 = parseFloat(elScore3.value) || 0;
 
-            {/* ── 커스텀 다이얼로그 ── */}
-            {customDialog && (
-                <div className="fixed inset-0 z-[110] bg-black/20 backdrop-blur-sm flex items-center justify-center p-4">
-                    <div className="tactile-card w-full max-w-xs p-6 flex flex-col text-center">
-                        <div className="w-14 h-14 bg-amber-50 rounded-full mx-auto mb-3 flex items-center justify-center"><Icons.Alert/></div>
-                        <h3 className="text-lg font-black mb-1">gDuru 안내</h3>
-                        <p className="text-xs font-bold text-slate-500 leading-relaxed mb-5 whitespace-pre-wrap">{customDialog.message}</p>
-                        <div className="flex gap-3">
-                            {customDialog.type==='confirm' ? <>
-                                <button onClick={() => setCustomDialog(null)} className="tactile-pill-btn flex-1 py-3 text-xs">취소</button>
-                                <button onClick={customDialog.onConfirm} className="tactile-pill-btn-primary flex-1 py-3 text-xs">확인</button>
-                            </> : (
-                                <button onClick={() => setCustomDialog(null)} className="tactile-pill-btn-primary w-full py-3 text-xs">확인</button>
-                            )}
-                        </div>
-                    </div>
-                </div>
-            )}
-        </div>
-    );
-}
+            let weightReg = 0.5, weightPerf = 0.5, isSciExp = (sub === '과학탐구실험');
+            switch(sub) {
+                case '공통국어': case '공통수학': weightReg = 0.5; weightPerf = 0.5; break;
+                case '공통영어': case '통합사회': weightReg = 0.7; weightPerf = 0.3; break;
+                case '한국사': case '통합과학': weightReg = 0.6; weightPerf = 0.4; break;
+                case '과학탐구실험': weightReg = 0.0; weightPerf = 1.0; break;
+            }
 
-ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
-</script>
+            let myTotal = isSciExp ? s3 : (((s1 + s2) / 2) * weightReg) + (s3 * weightPerf);
+            myTotal = Math.min(100, Math.max(0, parseFloat(myTotal.toFixed(2))));
+
+            // 다른 기기에서 수집된 동기화 풀에서 동일 과목 정보만 선별
+            let cohort = syncGradesList
+                .filter(item => item.subject === sub)
+                .map(item => ({ studentKey: item.studentKey, totalScore: item.totalScore }));
+
+            // 중복 데이터 정제 및 고유성 갱신
+            const uniqueCohortMap = new Map();
+            cohort.forEach(item => uniqueCohortMap.set(item.studentKey, item.totalScore));
+            uniqueCohortMap.set(currentStudentKey, myTotal); // 나의 실시간 연산값 대입
+
+            let poolScores = Array.from(uniqueCohortMap.values()).sort((a, b) => b - a);
+
+            // 신뢰도 보정 장치: 동기화 표본이 15명 미만일 때 가상 통계 표본 30명 합성
+            let simulated = false;
+            if (poolScores.length < 15) {
+                simulated = true;
+                for (let i = 0; i < 30; i++) {
+                    let u1 = Math.random(), u2 = Math.random();
+                    let z = Math.sqrt(-2.0 * Math.log(u1)) * Math.sin(2.0 * Math.PI * u2);
+                    let fakeScore = Math.min(100, Math.max(20, Math.round(74 + z * 12))); // 정규분포 시뮬레이션
+                    poolScores.push(fakeScore);
+                }
+                poolScores.sort((a, b) => b - a);
+            }
+
+            const myRank = poolScores.indexOf(myTotal) + 1;
+            const totalCohortSize = poolScores.length;
+            const percentile = (myRank / totalCohortSize) * 100;
+
+            // ★ [5등급제 전용 상대평가 백분율 변환 커트라인]
+            function assignRelativeGrade(pct) {
+                if (pct <= 10) return 1; // 상위 10%
+                if (pct <= 30) return 2; // 상위 30%
+                if (pct <= 70) return 3; // 상위 70%
+                if (pct <= 90) return 4; // 상위 90%
+                return 5;                // 나머지
+            }
+            const predictedGrade = assignRelativeGrade(percentile);
+
+            function getCutScore(pctTarget) {
+                const targetIdx = Math.min(totalCohortSize - 1, Math.max(0, Math.floor((pctTarget / 100) * totalCohortSize) - 1));
+                return poolScores[targetIdx] || 60;
+            }
+
+            // 기획 서식 기반 리포트 구문 구성
+            let report = `[ 성 적 대 장 시 뮬 레 이 터 분 석 보 고 서 ]\n`;
+            report += `───────────────────────────────────\n`;
+            report += `■ 대상 교과목: ${sub}\n`;
+            report += `■ 나의 환산 점수: ${myTotal.toFixed(2)} / 100.00점\n`;
+            report += `■ 장부 비교 대상 수: ${totalCohortSize}명 연동 중\n`;
+            report += `■ 추정 석차 점유: 상위 ${percentile.toFixed(1)}% (추정 등수: ${myRank}위)\n`;
+            report += `▶ 최종 예측 등급: [ ${predictedGrade} 등급 (5등급제) ]\n`;
+            report += `───────────────────────────────────\n`;
+            report += `[목표 등급 확보 안내 사항]\n`;
+
+            if (predictedGrade > 1) {
+                const upperGrade = predictedGrade - 1;
+                // 5등급제 맞춤 타겟 컷 정의
+                const cuts = { 1: 10, 2: 30, 3: 70, 4: 90 };
+                const targetCutScore = getCutScore(cuts[upperGrade]);
+                const diff = targetCutScore - myTotal;
+
+                report += `※ 상위 등급인 [${upperGrade}등급] 커트라인 점수는 약 ${targetCutScore.toFixed(1)}점입니다.\n`;
+                if (diff > 0) {
+                    report += `  - 등급 상승을 위해 최소 [${diff.toFixed(2)}점] 이상 추가 획득이 요구됩니다.\n`;
+                    if (!isSciExp) {
+                        const neededScore2 = s2 + (diff / (weightReg / 2));
+                        if (neededScore2 <= 100) {
+                            report += `  - 차기 2차 지필평가에서 기존 대비 최소 [${neededScore2.toFixed(1)}점]을\n    확보해 주셔야 등급 상향 조절이 가능합니다.\n`;
+                        } else {
+                            report += `  - 현재 누적 점수 구조 상 기말고사 만점을 받아도\n    이번 학기 단기 등급 돌파는 불가합니다. 수행평가 관리에 집중하십시오.\n`;
+                        }
+                    }
+                } else {
+                    report += `  - 현재 커트라인 경계선에 수렴하여 경쟁 중입니다.\n`;
+                }
+            } else {
+                report += `🎉 최우수 성적 원장 검증 완료. 상위 10% 이내 1등급 위치를 유지 중입니다.\n`;
+            }
+
+            if (simulated) {
+                report += `───────────────────────────────────\n`;
+                report += `* 알림: 실시간 데이터 표본 부족으로 30인 가상 통계 모형을\n  합성 산출한 결과입니다. 다른 기기 입력 시 실시간 보정됩니다.\n`;
+            }
+
+            // 업데이트 토큰 검사로 불필요한 연타 재주사 방지
+            const reportToken = `${sub}-${s1}-${s2}-${s3}-${currentStudentKey}-${totalCohortSize}-${myTotal}`;
+            if (reportToken !== previousReportToken) {
+                previousReportToken = reportToken;
+                printTeletypeTelemetry(report);
+            }
+
+            renderPersonalLedger(currentStudentKey);
+        }
+
+        // 6. 개인정보 격리 보안 원장 테이블 렌더링
+        function renderPersonalLedger(studentKey) {
+            const tbody = document.getElementById('ledger-body');
+            tbody.innerHTML = '';
+
+            // 동기화 풀 전체 중 오직 내 식별자와 완벽 결합하는 원장 기록만 노출
+            const myRecords = syncGradesList.filter(item => item.studentKey === studentKey);
+
+            myRecords.forEach((row) => {
+                const tr = document.createElement('tr');
+                const recordId = row.fid || row.deviceTime || '';
+                
+                tr.innerHTML = `
+                    <td><strong>${row.subject}</strong></td>
+                    <td>${row.score1}</td>
+                    <td>${row.score2}</td>
+                    <td>${row.score3}</td>
+                    <td>${row.totalScore.toFixed(2)}</td>
+                    <td><strong>${row.grade}등급</strong></td>
+                    <td><button class="btn-kill-record" data-id="${recordId}" data-subject="${row.subject}">제거</button></td>
+                `;
+                tbody.appendChild(tr);
+            });
+
+            // 이벤트 위임 처리 삭제 바인딩
+            tbody.querySelectorAll('.btn-kill-record').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const fid = e.target.getAttribute('data-id');
+                    const subject = e.target.getAttribute('data-subject');
+                    requestKillRecord(fid, subject);
+                });
+            });
+        }
+
+        // 7. 대장 기록 전송 및 삭제 트랜잭션 핸들러
+        document.getElementById('btn-submit').addEventListener('click', async () => {
+            const gradeVal = elGrade.value;
+            const classVal = elClass.value;
+            const numVal = elNumber.value;
+            const nameVal = elName.value.trim();
+            const subVal = elSubject.value;
+
+            if (!nameVal) {
+                triggerSystemDialog("장부 기록 실패: 대장의 명의자(성명) 항목을 작성하십시오.");
+                return;
+            }
+
+            const s1 = isNaN(parseFloat(elScore1.value)) ? 0 : parseFloat(elScore1.value);
+            const s2 = isNaN(parseFloat(elScore2.value)) ? 0 : parseFloat(elScore2.value);
+            const s3 = isNaN(parseFloat(elScore3.value)) ? 0 : parseFloat(elScore3.value);
+
+            let weightReg = 0.5, weightPerf = 0.5, isSciExp = (subVal === '과학탐구실험');
+            switch(subVal) {
+                case '공통국어': case '공통수학': weightReg = 0.5; weightPerf = 0.5; break;
+                case '공통영어': case '통합사회': weightReg = 0.7; weightPerf = 0.3; break;
+                case '한국사': case '통합과학': weightReg = 0.6; weightPerf = 0.4; break;
+                case '과학탐구실험': weightReg = 0.0; weightPerf = 1.0; break;
+            }
+
+            let myTotal = isSciExp ? s3 : (((s1 + s2) / 2) * weightReg) + (s3 * weightPerf);
+            myTotal = Math.min(100, Math.max(0, parseFloat(myTotal.toFixed(2))));
+
+            // ★ [5등급제용 절대평가 백업용 기준 분별기]
+            function getGradeLevel(score) {
+                if (score >= 90) return 1;
+                if (score >= 80) return 2;
+                if (score >= 70) return 3;
+                if (score >= 60) return 4;
+                return 5;
+            }
+            const calculatedGrade = getGradeLevel(myTotal);
+            const studentKey = `${gradeVal}-${classVal}-${numVal}-${nameVal}`;
+
+            const recordPayload = {
+                studentKey: studentKey,
+                subject: subVal,
+                score1: isSciExp ? '-' : s1,
+                score2: isSciExp ? '-' : s2,
+                score3: s3,
+                totalScore: myTotal,
+                grade: calculatedGrade,
+                deviceTime: Date.now()
+            };
+
+            if (db) {
+                try {
+                    const duplicates = syncGradesList.filter(item => item.studentKey === studentKey && item.subject === subVal);
+                    for (let dup of duplicates) {
+                        if (dup.fid) await deleteDoc(doc(db, "gduru_grades", dup.fid));
+                    }
+                    await addDoc(collection(db, "gduru_grades"), recordPayload);
+                    playSuccessArpeggio();
+                } catch (err) {
+                    triggerSystemDialog("원격 장부 전송 누수 발생. 임시 저장 처리됩니다.");
+                }
+            } else {
+                let localDb = JSON.parse(localStorage.getItem('gduru_local_backup') || '[]');
+                localDb = localDb.filter(item => !(item.studentKey === studentKey && item.subject === subVal));
+                localDb.push(recordPayload);
+                localStorage.setItem('gduru_local_backup', JSON.stringify(localDb));
+                syncGradesList = localDb;
+                playSuccessArpeggio();
+                recalculatePredictor();
+            }
+        });
+
+        // 장부 기록 영구 제거 처리부
+        async function requestKillRecord(fid, subject) {
+            if (db && fid) {
+                try {
+                    await deleteDoc(doc(db, "gduru_grades", fid));
+                    playChiptune(150, 0.15, 'triangle', 0.04);
+                } catch (e) {
+                    triggerSystemDialog("서버 레코드 소거권한 거부.");
+                }
+            } else {
+                const studentKey = `${elGrade.value}-${elClass.value}-${elNumber.value}-${elName.value}`;
+                let localDb = JSON.parse(localStorage.getItem('gduru_local_backup') || '[]');
+                localDb = localDb.filter(item => !(item.studentKey === studentKey && item.subject === subject));
+                localStorage.setItem('gduru_local_backup', JSON.stringify(localDb));
+                syncGradesList = localDb;
+                playChiptune(150, 0.15, 'triangle', 0.04);
+                recalculatePredictor();
+            }
+        }
+
+        function playSuccessArpeggio() {
+            playChiptune(440, 0.04, 'square', 0.03);
+            setTimeout(() => playChiptune(554, 0.04, 'square', 0.03), 40);
+            setTimeout(() => playChiptune(659, 0.04, 'square', 0.03), 80);
+            setTimeout(() => playChiptune(880, 0.1, 'square', 0.03), 120);
+        }
+
+        // 인풋 필드 클리어 장치
+        document.getElementById('btn-reset').addEventListener('click', () => {
+            elScore1.value = ''; elScore2.value = ''; elScore3.value = '';
+            playChiptune(300, 0.05, 'triangle', 0.03);
+            recalculatePredictor();
+        });
+
+        // 8. 데스크톱 윈도우 인터랙션 트리거 구성
+        const win = document.getElementById('main-workstation');
+        document.getElementById('app-icon').addEventListener('click', () => {
+            win.style.display = 'flex';
+            playChiptune(600, 0.05, 'square', 0.03);
+            recalculatePredictor();
+        });
+        document.getElementById('btn-window-close').addEventListener('click', () => {
+            win.style.display = 'none';
+            playChiptune(250, 0.06, 'square', 0.02);
+        });
+
+        // 업무용 메뉴 바 단축키 기능 바인딩
+        document.getElementById('menu-reboot').addEventListener('click', () => location.reload());
+        document.getElementById('menu-reset-all').addEventListener('click', () => {
+            elScore1.value = ''; elScore2.value = ''; elScore3.value = '';
+            recalculatePredictor();
+        });
+        document.getElementById('menu-info').addEventListener('click', () => {
+            triggerSystemDialog("GDURU OFFICE STATION v2.6\n실시간 전국 단위 5등급제 내신 표본 수집 및 등급 판정 유틸리티.");
+        });
+
+        // 9. 하단 시스템 작업 표시줄 실제 째깍이는 픽셀 시계 루프
+        function runSystemClock() {
+            const clockEl = document.getElementById('live-system-clock');
+            const now = new Date();
+            const h = String(now.getHours()).padStart(2, '0');
+            const m = String(now.getMinutes()).padStart(2, '0');
+            const s = String(now.getSeconds()).padStart(2, '0');
+            clockEl.textContent = `${h}:${m}:${s}`;
+            setTimeout(runSystemClock, 1000);
+        }
+        
+        // 초기화 진입점 가동
+        runSystemClock();
+        runTechnicalBoot();
+    </script>
 </body>
-</html>
+    </html>
