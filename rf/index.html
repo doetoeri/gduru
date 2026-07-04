@@ -1,296 +1,1688 @@
 <!DOCTYPE html>
 <html lang="ko">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>국어 담론 격률 판별 AI</title>
-    
-    <!-- 1. Google Material You (M3) 라이브러리 및 폰트 임포트 -->
-    <link href="https://googleapis.com" rel="stylesheet">
-    <link href="https://googleapis.com" rel="stylesheet">
-    <script src="https://jsdelivr.net" type="module"></script>
-
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>RouteFinder | Integrated Dashboard</title>
     <style>
-        :root {
-            /* Material You 파스텔 톤 컬러 팔레트 구성 */
-            --md-sys-color-primary: #0061A4;
-            --md-sys-color-on-primary: #FFFFFF;
-            --md-sys-color-primary-container: #D1E4FF;
-            --md-sys-color-on-primary-container: #001D36;
-            --md-sys-color-surface: #F8F9FF;
-            --md-sys-color-on-surface: #191C20;
-            --md-sys-color-surface-variant: #DFE2EB;
-            --md-sys-color-on-surface-variant: #43474E;
-            --md-sys-color-outline: #73777F;
+      @import url("https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&family=Oswald:wght@300;400;500;600;700&display=swap");
+
+      @font-face {
+        font-family: "Cafe24ProSlim";
+        src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2105@1.1/Cafe24ProSlim-Light.woff2") format("woff2"),
+          url("https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2105@1.1/Cafe24ProSlim-Light.woff") format("woff");
+        font-weight: 300;
+        font-style: normal;
+        font-display: swap;
+      }
+
+      @font-face {
+        font-family: "Cafe24ProSlim";
+        src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2105@1.1/Cafe24ProSlim-Regular.woff2") format("woff2"),
+          url("https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2105@1.1/Cafe24ProSlim-Regular.woff") format("woff");
+        font-weight: 400;
+        font-style: normal;
+        font-display: swap;
+      }
+
+      @font-face {
+        font-family: "Cafe24ProSlim";
+        src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2105@1.1/Cafe24ProSlim-Bold.woff2") format("woff2"),
+          url("https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2105@1.1/Cafe24ProSlim-Bold.woff") format("woff");
+        font-weight: 700;
+        font-style: normal;
+        font-display: swap;
+      }
+
+      :root {
+        --black: #050505;
+        --ink: #141414;
+        --paper: #f5f2eb;
+        --map: #f7f7f4;
+        --store: #d9d9d7;
+        --store-line: #ffffff;
+        --muted: #a9a39b;
+        --line: rgba(245, 242, 235, 0.14);
+        --line-dark: rgba(20, 20, 20, 0.13);
+        --glass: rgba(255, 255, 255, 0.075);
+        --gold: #d4b16a;
+        --signal: #65d6ae;
+        --rf: #1fc78f;
+        --organic: #252525;
+        --danger: #f26457;
+        --shadow: 0 28px 80px rgba(0, 0, 0, 0.42);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        color: var(--paper);
+        font-family: "Noto Sans KR", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        background:
+          radial-gradient(circle at 78% 18%, rgba(212, 177, 106, 0.16), transparent 28%),
+          linear-gradient(135deg, #f6f2ea 0 15%, #202020 15% 16%, #050505 16% 100%);
+      }
+
+      button,
+      a,
+      input {
+        font: inherit;
+      }
+
+      button {
+        cursor: pointer;
+      }
+
+      a {
+        color: inherit;
+        text-decoration: none;
+      }
+
+      .app-shell {
+        display: grid;
+        grid-template-columns: 274px minmax(0, 1fr);
+        min-height: 100vh;
+      }
+
+      .sidebar {
+        display: flex;
+        flex-direction: column;
+        gap: 38px;
+        padding: 32px 24px;
+        color: var(--ink);
+        background: rgba(245, 242, 235, 0.94);
+        border-right: 1px solid var(--line-dark);
+      }
+
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        text-align: left;
+      }
+
+      .brand-mark {
+        display: grid;
+        place-items: center;
+        width: 54px;
+        height: 54px;
+        color: var(--paper);
+        background: var(--black);
+        border-radius: 8px;
+        font-family: "Oswald", sans-serif;
+        font-size: 24px;
+        letter-spacing: 0;
+      }
+
+      .brand strong {
+        display: block;
+        font-family: "Oswald", sans-serif;
+        font-size: 25px;
+        font-weight: 500;
+        letter-spacing: 0;
+      }
+
+      .brand small {
+        display: block;
+        color: #6d685f;
+        font-family: "Oswald", sans-serif;
+        font-size: 11px;
+        letter-spacing: 0;
+        text-transform: uppercase;
+      }
+
+      .nav-list {
+        display: grid;
+        gap: 10px;
+      }
+
+      .nav-item {
+        width: 100%;
+        padding: 13px 15px;
+        color: #5a554d;
+        text-align: left;
+        background: transparent;
+        border: 0;
+        border-radius: 8px;
+        transition: color 180ms ease, background 180ms ease;
+      }
+
+      .nav-item:hover,
+      .nav-item.active {
+        color: var(--black);
+        background: rgba(5, 5, 5, 0.08);
+      }
+
+      .sidebar-status {
+        display: grid;
+        grid-template-columns: auto 1fr auto;
+        align-items: center;
+        gap: 10px;
+        margin-top: auto;
+        padding: 15px;
+        color: var(--paper);
+        background: var(--black);
+        border-radius: 8px;
+      }
+
+      .status-dot {
+        width: 9px;
+        height: 9px;
+        background: var(--signal);
+        border-radius: 50%;
+        box-shadow: 0 0 18px var(--signal);
+      }
+
+      .sidebar-status strong,
+      .eyebrow,
+      .metric-label,
+      .metric-value,
+      .mode-pill,
+      .floor-tab,
+      .store-count,
+      .admin-number,
+      .queue-formula strong,
+      .floor-monitor strong {
+        font-family: "Oswald", sans-serif;
+        letter-spacing: 0;
+      }
+
+      .sidebar-status strong {
+        color: var(--signal);
+      }
+
+      .dashboard {
+        padding: 32px;
+      }
+
+      .topbar {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 28px;
+        margin-bottom: 24px;
+      }
+
+      .eyebrow {
+        margin: 0 0 8px;
+        color: var(--gold);
+        font-size: 12px;
+        text-transform: uppercase;
+      }
+
+      h1,
+      h2,
+      p {
+        margin-top: 0;
+      }
+
+      h1 {
+        max-width: 790px;
+        margin-bottom: 0;
+        font-family: "Cafe24ProSlim", "Noto Sans KR", sans-serif;
+        font-size: clamp(38px, 5.4vw, 78px);
+        font-weight: 300;
+        line-height: 1.05;
+      }
+
+      h2 {
+        margin-bottom: 0;
+        font-size: 21px;
+        font-weight: 700;
+      }
+
+      .topbar-actions,
+      .button-row,
+      .floor-tabs {
+        display: flex;
+        gap: 10px;
+      }
+
+      .ghost-button,
+      .primary-button,
+      .floor-tab {
+        min-height: 42px;
+        padding: 0 16px;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+      }
+
+      .ghost-button,
+      .floor-tab {
+        color: var(--paper);
+        background: transparent;
+      }
+
+      .primary-button,
+      .floor-tab.active {
+        color: var(--black);
+        background: var(--paper);
+      }
+
+      .metric-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 14px;
+        margin-bottom: 14px;
+      }
+
+      .metric-card,
+      .flow-panel,
+      .control-panel,
+      .control-block {
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        box-shadow: var(--shadow);
+      }
+
+      .metric-card {
+        min-height: 142px;
+        padding: 20px;
+        background: rgba(255, 255, 255, 0.07);
+      }
+
+      .metric-card.light {
+        color: var(--black);
+        background: var(--paper);
+      }
+
+      .metric-label {
+        color: var(--muted);
+        font-size: 12px;
+        text-transform: uppercase;
+      }
+
+      .metric-card.light .metric-label {
+        color: #726c63;
+      }
+
+      .metric-value {
+        display: block;
+        margin: 13px 0 7px;
+        font-size: 52px;
+        line-height: 1;
+      }
+
+      .metric-card p {
+        margin-bottom: 0;
+        color: var(--muted);
+        font-size: 14px;
+      }
+
+      .metric-card.light p {
+        color: #6b665f;
+      }
+
+      .workspace {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) minmax(340px, 380px);
+        gap: 18px;
+        align-items: start;
+        width: 100%;
+        overflow: hidden;
+      }
+
+      .flow-panel,
+      .control-panel {
+        padding: 22px;
+        background: rgba(5, 5, 5, 0.76);
+      }
+
+      .flow-panel,
+      .control-panel {
+        min-width: 0;
+      }
+
+      .section-heading {
+        display: flex;
+        align-items: end;
+        justify-content: space-between;
+        gap: 18px;
+        margin-bottom: 18px;
+      }
+
+      .section-heading.compact {
+        align-items: center;
+      }
+
+      .mode-pill {
+        padding: 7px 10px;
+        color: var(--signal);
+        font-size: 12px;
+        border: 1px solid rgba(101, 214, 174, 0.35);
+        border-radius: 999px;
+      }
+
+      .map-stage {
+        position: relative;
+        aspect-ratio: 100 / 64;
+        width: 100%;
+        min-height: clamp(430px, 40vw, 620px);
+        overflow: hidden;
+        color: var(--ink);
+        border: 1px solid rgba(245, 242, 235, 0.22);
+        border-radius: 8px;
+        background: var(--map);
+      }
+
+      .map-stage::before {
+        position: absolute;
+        inset: 0;
+        z-index: 0;
+        content: "";
+        background:
+          linear-gradient(90deg, rgba(20, 20, 20, 0.035) 1px, transparent 1px),
+          linear-gradient(rgba(20, 20, 20, 0.035) 1px, transparent 1px);
+        background-size: 4% 6.25%;
+        pointer-events: none;
+      }
+
+      .floor-shell,
+      .people-layer,
+      .route-overlay {
+        position: absolute;
+        inset: 0;
+      }
+
+      .floor-shell {
+        z-index: 1;
+      }
+
+      .route-overlay {
+        z-index: 2;
+        pointer-events: none;
+      }
+
+      .route-overlay polyline {
+        fill: none;
+        stroke: rgba(31, 199, 143, 0.72);
+        stroke-linecap: round;
+        stroke-linejoin: round;
+        stroke-width: 0.65;
+      }
+
+      .people-layer {
+        z-index: 3;
+        pointer-events: none;
+      }
+
+      .store {
+        position: absolute;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        min-width: 36px;
+        min-height: 28px;
+        padding: 7px;
+        overflow: hidden;
+        color: #565656;
+        background: var(--store);
+        border: 1px solid var(--store-line);
+        transition: background 180ms ease, color 180ms ease, box-shadow 180ms ease;
+      }
+
+      .store.hot {
+        color: #22110f;
+        background: #f4b1a9;
+        box-shadow: inset 0 0 0 2px rgba(242, 100, 87, 0.26);
+      }
+
+      .store.warm {
+        color: #2a2112;
+        background: #ead5a2;
+      }
+
+      .store.cool {
+        color: #103328;
+        background: #bde7d7;
+      }
+
+      .store-name {
+        font-size: clamp(8px, 0.72vw, 12px);
+        line-height: 1.2;
+        word-break: keep-all;
+      }
+
+      .store-count {
+        align-self: flex-end;
+        color: rgba(20, 20, 20, 0.56);
+        font-size: 12px;
+      }
+
+      .corridor-label {
+        position: absolute;
+        z-index: 1;
+        color: rgba(20, 20, 20, 0.3);
+        font-family: "Oswald", sans-serif;
+        font-size: 12px;
+        text-transform: uppercase;
+      }
+
+      .gate {
+        position: absolute;
+        z-index: 2;
+        display: grid;
+        place-items: center;
+        width: 22px;
+        height: 22px;
+        color: #ffffff;
+        background: rgba(31, 199, 143, 0.72);
+        border-radius: 3px;
+        font-family: "Oswald", sans-serif;
+        font-size: 11px;
+      }
+
+      .person {
+        position: absolute;
+        width: 7px;
+        height: 7px;
+        margin: -3.5px 0 0 -3.5px;
+        border-radius: 50%;
+        background: var(--organic);
+        box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.48);
+        transform: translate3d(0, 0, 0);
+      }
+
+      .person.rf {
+        width: 8px;
+        height: 8px;
+        margin: -4px 0 0 -4px;
+        background: var(--rf);
+        box-shadow: 0 0 12px rgba(31, 199, 143, 0.8);
+      }
+
+      .control-panel {
+        display: grid;
+        gap: 12px;
+        position: relative;
+        z-index: 5;
+        align-self: start;
+      }
+
+      .control-block {
+        padding: 16px;
+        background: rgba(255, 255, 255, 0.055);
+        box-shadow: none;
+      }
+
+      .admin-control {
+        background:
+          linear-gradient(135deg, rgba(101, 214, 174, 0.18), transparent 42%),
+          rgba(255, 255, 255, 0.075);
+      }
+
+      .admin-header {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 16px;
+        margin-bottom: 14px;
+      }
+
+      .admin-header h2 {
+        font-size: 19px;
+      }
+
+      .switch-control {
+        display: grid;
+        grid-template-columns: 1fr auto;
+        align-items: center;
+        gap: 10px;
+        min-width: 142px;
+        color: var(--muted);
+        font-size: 12px;
+      }
+
+      .switch-control input {
+        position: absolute;
+        opacity: 0;
+        pointer-events: none;
+      }
+
+      .switch-control i {
+        position: relative;
+        display: block;
+        width: 46px;
+        height: 24px;
+        background: rgba(255, 255, 255, 0.14);
+        border: 1px solid var(--line);
+        border-radius: 999px;
+        transition: background 180ms ease, border-color 180ms ease;
+      }
+
+      .switch-control i::after {
+        position: absolute;
+        top: 3px;
+        left: 3px;
+        width: 16px;
+        height: 16px;
+        content: "";
+        background: var(--paper);
+        border-radius: 50%;
+        transition: transform 180ms ease, background 180ms ease;
+      }
+
+      .switch-control input:checked + i {
+        background: rgba(101, 214, 174, 0.32);
+        border-color: rgba(101, 214, 174, 0.62);
+      }
+
+      .switch-control input:checked + i::after {
+        background: var(--signal);
+        transform: translateX(21px);
+      }
+
+      .queue-formula {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        padding: 10px 12px;
+        margin-bottom: 12px;
+        color: var(--muted);
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: rgba(5, 5, 5, 0.24);
+      }
+
+      .queue-formula strong {
+        color: var(--signal);
+        font-size: 22px;
+        font-weight: 500;
+      }
+
+      .queue-kpis {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 8px;
+        margin-bottom: 12px;
+      }
+
+      .queue-kpis article {
+        min-width: 0;
+        padding: 10px;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: rgba(5, 5, 5, 0.22);
+      }
+
+      .queue-kpis span,
+      .floor-monitor span {
+        color: var(--muted);
+        font-size: 11px;
+      }
+
+      .admin-number {
+        display: block;
+        margin-top: 6px;
+        color: var(--paper);
+        font-size: 30px;
+        font-weight: 500;
+        line-height: 1;
+        transition: color 180ms ease, transform 180ms ease;
+      }
+
+      .admin-control.bypass-active .admin-number {
+        color: var(--signal);
+      }
+
+      .floor-monitor {
+        display: grid;
+        gap: 8px;
+      }
+
+      .floor-monitor-row {
+        display: grid;
+        grid-template-columns: 34px 1fr auto;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .floor-monitor-row strong {
+        color: var(--paper);
+        font-size: 15px;
+        font-weight: 500;
+      }
+
+      .floor-monitor-bar {
+        height: 7px;
+        overflow: hidden;
+        background: rgba(255, 255, 255, 0.11);
+        border-radius: 999px;
+      }
+
+      .floor-monitor-bar i {
+        display: block;
+        height: 100%;
+        background: var(--signal);
+        border-radius: inherit;
+        transition: width 180ms ease, background 180ms ease;
+      }
+
+      .floor-monitor-row.hot .floor-monitor-bar i {
+        background: var(--danger);
+      }
+
+      .floor-monitor-row.warm .floor-monitor-bar i {
+        background: var(--gold);
+      }
+
+      .floor-monitor-row.active strong {
+        color: var(--signal);
+      }
+
+      .range-control {
+        display: grid;
+        gap: 10px;
+        margin-top: 16px;
+        color: var(--muted);
+        font-size: 14px;
+      }
+
+      .range-control span {
+        display: flex;
+        justify-content: space-between;
+        gap: 10px;
+      }
+
+      .range-control strong {
+        color: var(--paper);
+        font-family: "Oswald", sans-serif;
+        font-size: 18px;
+      }
+
+      input[type="range"] {
+        width: 100%;
+        accent-color: var(--signal);
+      }
+
+      .button-row {
+        margin-top: 16px;
+      }
+
+      .button-row .ghost-button {
+        flex: 1;
+      }
+
+      .need-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 8px;
+      }
+
+      .need-card,
+      .zone-row,
+      .insight-card {
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: var(--glass);
+      }
+
+      .need-card {
+        padding: 12px;
+      }
+
+      .need-card strong {
+        display: block;
+        font-size: 13px;
+      }
+
+      .need-card span {
+        color: var(--muted);
+        font-family: "Oswald", sans-serif;
+        font-size: 20px;
+      }
+
+      .zone-list,
+      .insight-list {
+        display: grid;
+        gap: 9px;
+      }
+
+      .zone-row {
+        padding: 10px;
+      }
+
+      .zone-row header {
+        display: flex;
+        justify-content: space-between;
+        gap: 12px;
+        margin-bottom: 8px;
+        font-size: 13px;
+      }
+
+      .zone-bar {
+        height: 6px;
+        overflow: hidden;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 999px;
+      }
+
+      .zone-bar span {
+        display: block;
+        height: 100%;
+        background: var(--signal);
+        border-radius: inherit;
+      }
+
+      .zone-row.hot .zone-bar span {
+        background: var(--danger);
+      }
+
+      .zone-row.warm .zone-bar span {
+        background: var(--gold);
+      }
+
+      .insight-card {
+        padding: 13px;
+      }
+
+      .insight-card strong {
+        display: block;
+        margin-bottom: 6px;
+        font-size: 14px;
+      }
+
+      .insight-card p {
+        margin-bottom: 0;
+        color: var(--muted);
+        font-size: 13px;
+        line-height: 1.55;
+      }
+
+      @media (min-width: 1181px) {
+        .dashboard {
+          max-width: 1720px;
+          margin: 0 auto;
+        }
+      }
+
+      @media (max-width: 1320px) {
+        .app-shell,
+        .workspace,
+        .metric-grid {
+          grid-template-columns: 1fr;
         }
 
+        .sidebar {
+          gap: 22px;
+        }
+
+        .nav-list {
+          grid-template-columns: repeat(5, minmax(0, 1fr));
+        }
+
+        .map-stage {
+          min-height: 430px;
+        }
+
+        .control-panel {
+          order: 2;
+        }
+      }
+
+      @media (max-width: 760px) {
         body {
-            margin: 0;
-            padding: 0;
-            font-family: 'Roboto', 'Malgun Gothic', sans-serif;
-            background-color: #F1F4F9;
-            color: var(--md-sys-color-on-surface);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
+          background: #050505;
         }
 
-        /* 메인 컨테이너 카드 */
-        .app-container {
-            width: 100%;
-            max-width: 540px;
-            height: 90vh;
-            background: var(--md-sys-color-surface);
-            border-radius: 28px; /* Material 3 특유의 둥근 모서리 */
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;
-            margin: 20px;
+        .dashboard,
+        .sidebar {
+          padding: 20px;
         }
 
-        /* 앱바 상단 */
-        .app-bar {
-            background-color: var(--md-sys-color-primary-container);
-            color: var(--md-sys-color-on-primary-container);
-            padding: 16px 20px;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        .app-shell {
+          display: block;
         }
 
-        .app-bar .icon {
-            font-size: 28px;
-            color: var(--md-sys-color-primary);
+        .sidebar {
+          border-right: 0;
+          border-bottom: 1px solid var(--line-dark);
         }
 
-        .app-bar .title-box h1 {
-            margin: 0;
-            font-size: 1.15rem;
-            font-weight: 700;
+        .topbar,
+        .section-heading {
+          flex-direction: column;
+          align-items: stretch;
         }
 
-        .app-bar .title-box p {
-            margin: 2px 0 0 0;
-            font-size: 0.75rem;
-            opacity: 0.8;
+        .topbar-actions,
+        .floor-tabs {
+          flex-wrap: wrap;
         }
 
-        /* 채팅 영역 */
-        .chat-content {
-            flex: 1;
-            padding: 20px;
-            overflow-y: auto;
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
-            background: #FFFFFF;
+        .nav-list,
+        .need-grid {
+          grid-template-columns: 1fr;
         }
 
-        /* 말풍선 공통 디자인 */
-        .bubble-wrapper {
-            display: flex;
-            flex-direction: column;
-            max-width: 85%;
+        .map-stage {
+          aspect-ratio: 1 / 1;
+          min-height: 0;
+          height: min(92vw, 560px);
         }
 
-        .bubble-wrapper.user { align-self: flex-end; }
-        .bubble-wrapper.ai { align-self: flex-start; }
-
-        .bubble-info {
-            font-size: 0.75rem;
-            margin-bottom: 4px;
-            color: var(--md-sys-color-on-surface-variant);
-            display: flex;
-            align-items: center;
-            gap: 4px;
+        .metric-value {
+          font-size: 42px;
         }
 
-        .bubble {
-            padding: 14px 18px;
-            font-size: 0.95rem;
-            line-height: 1.5;
-            letter-spacing: -0.2px;
+        .queue-kpis {
+          grid-template-columns: 1fr;
         }
 
-        /* 유저 말풍선: Material You Primary 스타일 */
-        .user .bubble {
-            background-color: var(--md-sys-color-primary);
-            color: var(--md-sys-color-on-primary);
-            border-radius: 20px 20px 4px 20px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        .flow-panel,
+        .control-panel {
+          padding: 16px;
         }
-
-        /* AI 말풍선: Material You Surface Variant 스타일 */
-        .ai .bubble {
-            background-color: var(--md-sys-color-surface-variant);
-            color: var(--md-sys-color-on-surface-variant);
-            border-radius: 20px 20px 20px 4px;
-            white-space: pre-wrap;
-        }
-
-        /* 입력 공간 하단바 */
-        .input-bar {
-            padding: 16px 20px;
-            background-color: var(--md-sys-color-surface);
-            border-top: 1px solid #E0E2EC;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        /* Material UI 입력창 확장 스타일 */
-        .text-field-box {
-            flex: 1;
-            position: relative;
-        }
-
-        textarea {
-            width: 100%;
-            height: 48px;
-            background-color: #FFFFFF;
-            border: 1px solid var(--md-sys-color-outline);
-            border-radius: 12px;
-            padding: 12px 16px;
-            box-sizing: border-box;
-            font-family: inherit;
-            font-size: 0.95rem;
-            resize: none;
-            outline: none;
-            transition: border 0.2s;
-        }
-
-        textarea:focus {
-            border: 2px solid var(--md-sys-color-primary);
-            padding: 11px 15px; /* 테두리 굵어짐에 따른 보정 */
-        }
-
-        /* Material 원형 전송 버튼 */
-        .send-btn {
-            width: 48px;
-            height: 48px;
-            border-radius: 50%;
-            background-color: var(--md-sys-color-primary-container);
-            color: var(--md-sys-color-on-primary-container);
-            border: none;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            cursor: pointer;
-            transition: background-color 0.2s, transform 0.1s;
-        }
-
-        .send-btn:hover { background-color: #B9D3FF; }
-        .send-btn:active { transform: scale(0.95); }
-        .send-btn span { font-size: 22px; }
+      }
     </style>
-</head>
-<body>
+  </head>
+  <body>
+    <div class="app-shell">
+      <aside class="sidebar" aria-label="RouteFinder navigation">
+        <a class="brand" href="#" aria-label="RouteFinder home" data-action="overview">
+          <span class="brand-mark">RF</span>
+          <span>
+            <strong>RouteFinder</strong>
+            <small>Spatial Flow Platform</small>
+          </span>
+        </a>
 
-<div class="app-container">
-    <!-- 상단 헤더 (Material AppBar) -->
-    <div class="app-bar">
-        <span class="material-icons-outlined icon">psychology</span>
-        <div class="title-box">
-            <h1>국어 담론 격률 판별 AI</h1>
-            <p>Qwen2.5-3B Fine-Tuned Model</p>
+        <nav class="nav-list" aria-label="Primary">
+          <button class="nav-item active" type="button" data-view="overview">Overview</button>
+          <button class="nav-item" type="button" data-view="live">Live Flow</button>
+          <button class="nav-item" type="button" data-view="b2b">B2B Zones</button>
+          <button class="nav-item" type="button" data-view="b2c">B2C Routes</button>
+          <button class="nav-item" type="button" data-view="insights">Insights</button>
+        </nav>
+
+        <div class="sidebar-status">
+          <span class="status-dot"></span>
+          <span>Seoul Core Sync</span>
+          <strong>LIVE</strong>
         </div>
+      </aside>
+
+      <main class="dashboard">
+        <header class="topbar">
+          <div>
+            <p class="eyebrow">B2B / B2C Unified Prototype</p>
+            <h1>공간 정체를 예측하고 목적에 맞는 흐름으로 분산합니다.</h1>
+          </div>
+          <div class="topbar-actions">
+            <button class="ghost-button" type="button" id="exportBtn">Export</button>
+            <button class="primary-button" type="button" id="optimizeBtn">Optimize Route</button>
+          </div>
+        </header>
+
+        <section class="metric-grid" aria-label="Key metrics">
+          <article class="metric-card light">
+            <span class="metric-label">Congestion Index</span>
+            <strong class="metric-value" id="congestionMetric">0</strong>
+            <p id="congestionCopy">실시간 이동 밀도를 계산 중입니다.</p>
+          </article>
+          <article class="metric-card">
+            <span class="metric-label">Active Visitors</span>
+            <strong class="metric-value" id="visitorMetric">0</strong>
+            <p>슬라이더로 시뮬레이션 인원을 조절합니다.</p>
+          </article>
+          <article class="metric-card">
+            <span class="metric-label">RouteFinder Use</span>
+            <strong class="metric-value" id="routeFinderMetric">0%</strong>
+            <p>사용 비율이 높을수록 혼잡 구역을 회피합니다.</p>
+          </article>
+        </section>
+
+        <section class="workspace">
+          <article class="flow-panel">
+            <div class="section-heading">
+              <div>
+                <p class="eyebrow">Live Department Store Map</p>
+                <h2 id="floorTitle">층별 평면도</h2>
+              </div>
+              <div class="floor-tabs" id="floorTabs" aria-label="Floor selector"></div>
+            </div>
+
+            <div class="map-stage" id="mapStage" aria-label="RouteFinder floor simulation">
+              <svg class="route-overlay" id="routeOverlay" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"></svg>
+              <div class="floor-shell" id="floorShell"></div>
+              <div class="people-layer" id="peopleLayer"></div>
+            </div>
+          </article>
+
+          <aside class="control-panel" aria-label="Simulation controls">
+            <section class="control-block admin-control" aria-label="B2B manager control board">
+              <div class="admin-header">
+                <div>
+                  <p class="eyebrow">B2B Admin</p>
+                  <h2>B2B 관리자 관제 판</h2>
+                </div>
+                <label class="switch-control" for="bypassToggle">
+                  <span>동적 바이패스</span>
+                  <input id="bypassToggle" type="checkbox" />
+                  <i aria-hidden="true"></i>
+                </label>
+              </div>
+
+              <div class="queue-formula">
+                <span>Little's Law</span>
+                <strong>L = λ W</strong>
+              </div>
+
+              <div class="queue-kpis" aria-label="Little's Law live counters">
+                <article>
+                  <span>λ / min</span>
+                  <strong class="admin-number" id="lambdaMetric">0.0</strong>
+                </article>
+                <article>
+                  <span>L queue</span>
+                  <strong class="admin-number" id="littleLMetric">0</strong>
+                </article>
+                <article>
+                  <span>W min</span>
+                  <strong class="admin-number" id="waitMetric">0.0</strong>
+                </article>
+              </div>
+
+              <div class="floor-monitor" id="floorMonitor" aria-label="Floor congestion monitor"></div>
+            </section>
+
+            <section class="control-block">
+              <div class="section-heading compact">
+                <div>
+                  <p class="eyebrow">Simulation</p>
+                  <h2>방문객 흐름 제어</h2>
+                </div>
+                <span class="mode-pill" id="simState">RUNNING</span>
+              </div>
+
+              <label class="range-control">
+                <span>사람 수 <strong id="peopleCountLabel">90</strong></span>
+                <input id="peopleCount" type="range" min="20" max="220" value="90" step="10" />
+              </label>
+
+              <label class="range-control">
+                <span>RouteFinder 사용 비율 <strong id="rfRatioLabel">55%</strong></span>
+                <input id="rfRatio" type="range" min="0" max="100" value="55" step="5" />
+              </label>
+
+              <label class="range-control">
+                <span>시뮬레이션 속도 <strong id="speedLabel">1.0x</strong></span>
+                <input id="speedRange" type="range" min="0.5" max="2" value="1" step="0.1" />
+              </label>
+
+              <div class="button-row">
+                <button class="ghost-button" type="button" id="pauseBtn">Pause</button>
+                <button class="ghost-button" type="button" id="resetBtn">Reset</button>
+              </div>
+            </section>
+
+            <section class="control-block">
+              <p class="eyebrow">Need Mix</p>
+              <div class="need-grid" id="needGrid"></div>
+            </section>
+
+            <section class="control-block">
+              <p class="eyebrow">Congestion By Zone</p>
+              <div class="zone-list" id="zoneList"></div>
+            </section>
+
+            <section class="control-block">
+              <p class="eyebrow">Decision Feed</p>
+              <div class="insight-list" id="insightList"></div>
+            </section>
+          </aside>
+        </section>
+      </main>
     </div>
 
-    <!-- 대화창 본문 -->
-    <div class="chat-content" id="chatContent">
-        <div class="bubble-wrapper ai">
-            <div class="bubble-info">
-                <span class="material-icons-outlined" style="font-size:12px;">smart_toy</span> 판별기 엔진
-            </div>
-            <div class="bubble">안녕하세요! 분석할 대화문을 양식에 맞춰 하단에 입력해 주세요. 원리 및 격률 위반을 과학적으로 판별합니다.</div>
-        </div>
-    </div>
+    <script>
+      const departmentStores = [
+        { id: "f1-01", name: "루미에르 갤러리아", floor: 1, category: "Luxury", x: 8, y: 10, maxCapacity: 46, currentQueue: 95, arrivalRate: 8.8, avgServiceTime: 9.5 },
+        { id: "f1-02", name: "벨루아 하우스", floor: 1, category: "Luxury", x: 24, y: 10, maxCapacity: 40, currentQueue: 72, arrivalRate: 7.1, avgServiceTime: 8.8 },
+        { id: "f1-03", name: "아르젠트 살롱", floor: 1, category: "Luxury", x: 40, y: 10, maxCapacity: 38, currentQueue: 64, arrivalRate: 6.4, avgServiceTime: 8.2 },
+        { id: "f1-04", name: "메종 오브제", floor: 1, category: "Luxury", x: 56, y: 10, maxCapacity: 36, currentQueue: 58, arrivalRate: 5.9, avgServiceTime: 7.8 },
+        { id: "f1-05", name: "오닉스 워치", floor: 1, category: "Luxury", x: 72, y: 10, maxCapacity: 34, currentQueue: 66, arrivalRate: 6.8, avgServiceTime: 9.1 },
+        { id: "f1-06", name: "누아르 레더", floor: 1, category: "Luxury", x: 8, y: 24, maxCapacity: 32, currentQueue: 41, arrivalRate: 4.7, avgServiceTime: 7.3 },
+        { id: "f1-07", name: "세인트 루체", floor: 1, category: "Luxury", x: 24, y: 24, maxCapacity: 30, currentQueue: 34, arrivalRate: 4.1, avgServiceTime: 6.9 },
+        { id: "f1-08", name: "에클라 주얼", floor: 1, category: "Luxury", x: 40, y: 24, maxCapacity: 28, currentQueue: 44, arrivalRate: 5.3, avgServiceTime: 8.4 },
+        { id: "f1-09", name: "코스메 드 파리", floor: 1, category: "Cosmetic", x: 56, y: 24, maxCapacity: 52, currentQueue: 50, arrivalRate: 6.2, avgServiceTime: 5.4 },
+        { id: "f1-10", name: "글로우 랩", floor: 1, category: "Cosmetic", x: 72, y: 24, maxCapacity: 48, currentQueue: 36, arrivalRate: 4.8, avgServiceTime: 4.9 },
+        { id: "f1-11", name: "아틀리에 스킨", floor: 1, category: "Cosmetic", x: 8, y: 40, maxCapacity: 44, currentQueue: 31, arrivalRate: 4.2, avgServiceTime: 4.7 },
+        { id: "f1-12", name: "비바 향수관", floor: 1, category: "Cosmetic", x: 24, y: 40, maxCapacity: 42, currentQueue: 47, arrivalRate: 5.6, avgServiceTime: 5.9 },
+        { id: "f1-13", name: "리추얼 뷰티", floor: 1, category: "Cosmetic", x: 40, y: 40, maxCapacity: 40, currentQueue: 22, arrivalRate: 3.6, avgServiceTime: 4.5 },
+        { id: "f1-14", name: "더 브로우 바", floor: 1, category: "Cosmetic", x: 56, y: 40, maxCapacity: 28, currentQueue: 24, arrivalRate: 3.8, avgServiceTime: 6.3 },
+        { id: "f1-15", name: "메이크업 스튜디오", floor: 1, category: "Cosmetic", x: 72, y: 40, maxCapacity: 36, currentQueue: 38, arrivalRate: 5.1, avgServiceTime: 6.8 },
+        { id: "f1-16", name: "크리스탈 팝업", floor: 1, category: "Luxury", x: 8, y: 56, maxCapacity: 60, currentQueue: 70, arrivalRate: 7.7, avgServiceTime: 6.2 },
+        { id: "f1-17", name: "라운지 101", floor: 1, category: "Service", x: 24, y: 56, maxCapacity: 62, currentQueue: 18, arrivalRate: 2.8, avgServiceTime: 3.5 },
+        { id: "f1-18", name: "컨시어지 데스크", floor: 1, category: "Service", x: 40, y: 56, maxCapacity: 50, currentQueue: 20, arrivalRate: 3.1, avgServiceTime: 4.1 },
+        { id: "f1-19", name: "프레스티지 클럽", floor: 1, category: "Luxury", x: 56, y: 56, maxCapacity: 44, currentQueue: 52, arrivalRate: 5.8, avgServiceTime: 8.6 },
+        { id: "f1-20", name: "센트럴 게이트", floor: 1, category: "Transit", x: 72, y: 56, maxCapacity: 120, currentQueue: 40, arrivalRate: 9.2, avgServiceTime: 2.1 },
 
-    <!-- 하단 입력 공간 (Material Input Field & Fab) -->
-    <div class="input-bar">
-        <div class="text-field-box">
-            <textarea id="userInput" placeholder="A: 오늘 학교 가?&#10;B: 나 어제 치킨 먹었어."></textarea>
-        </div>
-        <button class="send-btn" onclick="analyzeConversation()">
-            <span class="material-icons-outlined">send</span>
-        </button>
-    </div>
-</div>
+        { id: "f2-01", name: "아크 컨템포러리", floor: 2, category: "Contemporary Fashion", x: 8, y: 10, maxCapacity: 44, currentQueue: 38, arrivalRate: 5.2, avgServiceTime: 5.8 },
+        { id: "f2-02", name: "모노크롬 스튜디오", floor: 2, category: "Contemporary Fashion", x: 24, y: 10, maxCapacity: 40, currentQueue: 32, arrivalRate: 4.7, avgServiceTime: 5.4 },
+        { id: "f2-03", name: "시티 레이어", floor: 2, category: "Contemporary Fashion", x: 40, y: 10, maxCapacity: 42, currentQueue: 30, arrivalRate: 4.4, avgServiceTime: 5.2 },
+        { id: "f2-04", name: "뉴 웨이브 셀렉트", floor: 2, category: "Contemporary Fashion", x: 56, y: 10, maxCapacity: 46, currentQueue: 48, arrivalRate: 5.9, avgServiceTime: 6.1 },
+        { id: "f2-05", name: "오프 그리드", floor: 2, category: "Contemporary Fashion", x: 72, y: 10, maxCapacity: 38, currentQueue: 29, arrivalRate: 4.2, avgServiceTime: 5.5 },
+        { id: "f2-06", name: "에센셜 맨즈", floor: 2, category: "Contemporary Fashion", x: 8, y: 24, maxCapacity: 42, currentQueue: 27, arrivalRate: 4.0, avgServiceTime: 5.1 },
+        { id: "f2-07", name: "우먼스 아틀리에", floor: 2, category: "Contemporary Fashion", x: 24, y: 24, maxCapacity: 46, currentQueue: 43, arrivalRate: 5.4, avgServiceTime: 5.9 },
+        { id: "f2-08", name: "스니커 허브", floor: 2, category: "Contemporary Fashion", x: 40, y: 24, maxCapacity: 52, currentQueue: 68, arrivalRate: 7.8, avgServiceTime: 6.6 },
+        { id: "f2-09", name: "데님 랩", floor: 2, category: "Contemporary Fashion", x: 56, y: 24, maxCapacity: 36, currentQueue: 22, arrivalRate: 3.5, avgServiceTime: 5.0 },
+        { id: "f2-10", name: "어반 테일러", floor: 2, category: "Contemporary Fashion", x: 72, y: 24, maxCapacity: 34, currentQueue: 25, arrivalRate: 3.8, avgServiceTime: 6.4 },
+        { id: "f2-11", name: "블랙 라벨", floor: 2, category: "Contemporary Fashion", x: 8, y: 40, maxCapacity: 40, currentQueue: 35, arrivalRate: 4.8, avgServiceTime: 5.7 },
+        { id: "f2-12", name: "오브젝트 룩", floor: 2, category: "Contemporary Fashion", x: 24, y: 40, maxCapacity: 38, currentQueue: 19, arrivalRate: 3.0, avgServiceTime: 4.8 },
+        { id: "f2-13", name: "크리에이터스 숍", floor: 2, category: "Contemporary Fashion", x: 40, y: 40, maxCapacity: 44, currentQueue: 41, arrivalRate: 5.1, avgServiceTime: 5.6 },
+        { id: "f2-14", name: "로컬 디자이너스", floor: 2, category: "Contemporary Fashion", x: 56, y: 40, maxCapacity: 35, currentQueue: 24, arrivalRate: 3.9, avgServiceTime: 5.2 },
+        { id: "f2-15", name: "런웨이 포스트", floor: 2, category: "Contemporary Fashion", x: 72, y: 40, maxCapacity: 48, currentQueue: 46, arrivalRate: 5.7, avgServiceTime: 6.0 },
+        { id: "f2-16", name: "키즈 컨셉", floor: 2, category: "Contemporary Fashion", x: 8, y: 56, maxCapacity: 36, currentQueue: 18, arrivalRate: 3.4, avgServiceTime: 4.9 },
+        { id: "f2-17", name: "액세서리 마켓", floor: 2, category: "Contemporary Fashion", x: 24, y: 56, maxCapacity: 50, currentQueue: 33, arrivalRate: 4.6, avgServiceTime: 4.2 },
+        { id: "f2-18", name: "피팅 라운지", floor: 2, category: "Service", x: 40, y: 56, maxCapacity: 54, currentQueue: 28, arrivalRate: 3.7, avgServiceTime: 3.8 },
+        { id: "f2-19", name: "스타일 컨시어지", floor: 2, category: "Service", x: 56, y: 56, maxCapacity: 32, currentQueue: 21, arrivalRate: 2.9, avgServiceTime: 5.0 },
+        { id: "f2-20", name: "패션 브릿지", floor: 2, category: "Transit", x: 72, y: 56, maxCapacity: 110, currentQueue: 34, arrivalRate: 8.4, avgServiceTime: 2.0 },
 
-<script>
-    async function analyzeConversation() {
-        const inputField = document.getElementById('userInput');
-        const chatContent = document.getElementById('chatContent');
-        const rawText = inputField.value.trim();
-        
-        if (!rawText) return;
+        { id: "f3-01", name: "라이프 큐브", floor: 3, category: "Lifestyle", x: 8, y: 10, maxCapacity: 48, currentQueue: 33, arrivalRate: 4.5, avgServiceTime: 5.0 },
+        { id: "f3-02", name: "홈 리빙 아카이브", floor: 3, category: "Lifestyle", x: 24, y: 10, maxCapacity: 44, currentQueue: 29, arrivalRate: 4.0, avgServiceTime: 5.4 },
+        { id: "f3-03", name: "키친 오브제", floor: 3, category: "Lifestyle", x: 40, y: 10, maxCapacity: 38, currentQueue: 24, arrivalRate: 3.5, avgServiceTime: 5.2 },
+        { id: "f3-04", name: "슬립 스튜디오", floor: 3, category: "Lifestyle", x: 56, y: 10, maxCapacity: 32, currentQueue: 16, arrivalRate: 2.8, avgServiceTime: 5.8 },
+        { id: "f3-05", name: "그린 오브젝트", floor: 3, category: "Lifestyle", x: 72, y: 10, maxCapacity: 42, currentQueue: 37, arrivalRate: 4.9, avgServiceTime: 5.5 },
+        { id: "f3-06", name: "북 라운지 시그널", floor: 3, category: "Books", x: 8, y: 24, maxCapacity: 58, currentQueue: 54, arrivalRate: 6.1, avgServiceTime: 7.0 },
+        { id: "f3-07", name: "페이지 원", floor: 3, category: "Books", x: 24, y: 24, maxCapacity: 40, currentQueue: 23, arrivalRate: 3.6, avgServiceTime: 5.7 },
+        { id: "f3-08", name: "아트북 셀렉트", floor: 3, category: "Books", x: 40, y: 24, maxCapacity: 34, currentQueue: 31, arrivalRate: 4.1, avgServiceTime: 6.2 },
+        { id: "f3-09", name: "매거진 클럽", floor: 3, category: "Books", x: 56, y: 24, maxCapacity: 36, currentQueue: 19, arrivalRate: 3.2, avgServiceTime: 4.6 },
+        { id: "f3-10", name: "키즈 라이브러리", floor: 3, category: "Books", x: 72, y: 24, maxCapacity: 46, currentQueue: 35, arrivalRate: 4.8, avgServiceTime: 6.0 },
+        { id: "f3-11", name: "테크 데스크", floor: 3, category: "Lifestyle", x: 8, y: 40, maxCapacity: 44, currentQueue: 47, arrivalRate: 5.4, avgServiceTime: 6.4 },
+        { id: "f3-12", name: "오디오 살롱", floor: 3, category: "Lifestyle", x: 24, y: 40, maxCapacity: 30, currentQueue: 26, arrivalRate: 3.9, avgServiceTime: 7.2 },
+        { id: "f3-13", name: "문구 실험실", floor: 3, category: "Books", x: 40, y: 40, maxCapacity: 38, currentQueue: 28, arrivalRate: 3.8, avgServiceTime: 5.3 },
+        { id: "f3-14", name: "리추얼 홈", floor: 3, category: "Lifestyle", x: 56, y: 40, maxCapacity: 36, currentQueue: 20, arrivalRate: 3.2, avgServiceTime: 5.1 },
+        { id: "f3-15", name: "컬처 클래스룸", floor: 3, category: "Books", x: 72, y: 40, maxCapacity: 52, currentQueue: 49, arrivalRate: 5.8, avgServiceTime: 7.5 },
+        { id: "f3-16", name: "플랜트 바", floor: 3, category: "Lifestyle", x: 8, y: 56, maxCapacity: 34, currentQueue: 28, arrivalRate: 4.2, avgServiceTime: 5.9 },
+        { id: "f3-17", name: "테이블웨어 갤러리", floor: 3, category: "Lifestyle", x: 24, y: 56, maxCapacity: 40, currentQueue: 22, arrivalRate: 3.4, avgServiceTime: 5.0 },
+        { id: "f3-18", name: "디자인 전문 서적", floor: 3, category: "Books", x: 40, y: 56, maxCapacity: 42, currentQueue: 34, arrivalRate: 4.5, avgServiceTime: 5.8 },
+        { id: "f3-19", name: "멤버스 리딩룸", floor: 3, category: "Books", x: 56, y: 56, maxCapacity: 28, currentQueue: 15, arrivalRate: 2.4, avgServiceTime: 6.5 },
+        { id: "f3-20", name: "라이프 브릿지", floor: 3, category: "Transit", x: 72, y: 56, maxCapacity: 100, currentQueue: 26, arrivalRate: 7.2, avgServiceTime: 2.0 },
 
-        // 1. 유저 입력 말풍선 추가
-        chatContent.innerHTML += `
-            <div class="bubble-wrapper user">
-                <div class="bubble-info" style="justify-content: flex-end;">분석 요청</div>
-                <div class="bubble">${rawText.replace(/\n/g, '<br>')}</div>
-            </div>
-        `;
-        inputField.value = '';
-        chatContent.scrollTop = chatContent.scrollHeight;
+        { id: "f4-01", name: "에픽 가든(Epic Garden)", floor: 4, category: "Landmark Garden", x: 28, y: 16, maxCapacity: 180, currentQueue: 210, arrivalRate: 16.5, avgServiceTime: 14.0 },
+        { id: "f4-02", name: "가든 테라스 바", floor: 4, category: "Signature F&B", x: 8, y: 10, maxCapacity: 64, currentQueue: 82, arrivalRate: 8.2, avgServiceTime: 8.8 },
+        { id: "f4-03", name: "루프 브런치", floor: 4, category: "Signature F&B", x: 72, y: 10, maxCapacity: 58, currentQueue: 64, arrivalRate: 7.4, avgServiceTime: 8.4 },
+        { id: "f4-04", name: "오로라 디저트", floor: 4, category: "Signature F&B", x: 8, y: 24, maxCapacity: 46, currentQueue: 55, arrivalRate: 6.7, avgServiceTime: 7.2 },
+        { id: "f4-05", name: "포레스트 티룸", floor: 4, category: "Signature F&B", x: 72, y: 24, maxCapacity: 52, currentQueue: 48, arrivalRate: 5.9, avgServiceTime: 7.0 },
+        { id: "f4-06", name: "스카이 누들", floor: 4, category: "Signature F&B", x: 8, y: 40, maxCapacity: 54, currentQueue: 42, arrivalRate: 5.6, avgServiceTime: 6.5 },
+        { id: "f4-07", name: "그릴 온 더 루프", floor: 4, category: "Signature F&B", x: 72, y: 40, maxCapacity: 62, currentQueue: 58, arrivalRate: 6.9, avgServiceTime: 8.0 },
+        { id: "f4-08", name: "시그니처 베이커리", floor: 4, category: "Signature F&B", x: 8, y: 56, maxCapacity: 48, currentQueue: 46, arrivalRate: 5.8, avgServiceTime: 5.4 },
+        { id: "f4-09", name: "클라우드 커피", floor: 4, category: "Signature F&B", x: 24, y: 56, maxCapacity: 50, currentQueue: 44, arrivalRate: 5.6, avgServiceTime: 4.8 },
+        { id: "f4-10", name: "가든 포토 스팟", floor: 4, category: "Garden Experience", x: 40, y: 56, maxCapacity: 70, currentQueue: 76, arrivalRate: 7.9, avgServiceTime: 6.6 },
+        { id: "f4-11", name: "미스트 파빌리온", floor: 4, category: "Garden Experience", x: 56, y: 56, maxCapacity: 66, currentQueue: 63, arrivalRate: 6.8, avgServiceTime: 6.1 },
+        { id: "f4-12", name: "센트 가든 숍", floor: 4, category: "Garden Experience", x: 72, y: 56, maxCapacity: 36, currentQueue: 29, arrivalRate: 3.9, avgServiceTime: 5.6 },
+        { id: "f4-13", name: "플로럴 아틀리에", floor: 4, category: "Garden Experience", x: 8, y: 70, maxCapacity: 34, currentQueue: 27, arrivalRate: 3.6, avgServiceTime: 5.8 },
+        { id: "f4-14", name: "루프 팝업 키친", floor: 4, category: "Signature F&B", x: 24, y: 70, maxCapacity: 44, currentQueue: 39, arrivalRate: 5.1, avgServiceTime: 6.3 },
+        { id: "f4-15", name: "글라스 하우스", floor: 4, category: "Garden Experience", x: 40, y: 70, maxCapacity: 58, currentQueue: 51, arrivalRate: 5.7, avgServiceTime: 7.4 },
+        { id: "f4-16", name: "선셋 라운지", floor: 4, category: "Signature F&B", x: 56, y: 70, maxCapacity: 60, currentQueue: 69, arrivalRate: 7.5, avgServiceTime: 8.6 },
+        { id: "f4-17", name: "가든 인포 데스크", floor: 4, category: "Service", x: 72, y: 70, maxCapacity: 48, currentQueue: 24, arrivalRate: 3.1, avgServiceTime: 3.8 },
+        { id: "f4-18", name: "웨이팅 라운지", floor: 4, category: "Service", x: 8, y: 82, maxCapacity: 90, currentQueue: 88, arrivalRate: 8.9, avgServiceTime: 4.2 },
+        { id: "f4-19", name: "루프 브릿지", floor: 4, category: "Transit", x: 40, y: 82, maxCapacity: 120, currentQueue: 45, arrivalRate: 9.8, avgServiceTime: 2.0 },
+        { id: "f4-20", name: "스카이 엘리베이터", floor: 4, category: "Transit", x: 72, y: 82, maxCapacity: 120, currentQueue: 52, arrivalRate: 10.4, avgServiceTime: 2.0 },
+      ];
 
-        // 2. AI 대기 상태 말풍선 추가
-        const aiMessageId = 'ai-' + Date.now();
-        chatContent.innerHTML += `
-            <div class="bubble-wrapper ai" id="${aiMessageId}">
-                <div class="bubble-info">
-                    <span class="material-icons-outlined" style="font-size:12px;">hourglass_empty</span> 연산 중
-                </div>
-                <div class="bubble">🤖 코랩 GPU에서 담론을 분석하고 있습니다. 잠시만 기다려 주세요...</div>
-            </div>
-        `;
-        chatContent.scrollTop = chatContent.scrollHeight;
+      const floorMeta = [
+        { id: "f1", label: "1F", title: "1F Luxury / Cosmetic", gates: [{ x: 4, y: 48, label: "IN" }, { x: 94, y: 48, label: "IN" }, { x: 50, y: 4, label: "E" }, { x: 50, y: 94, label: "E" }] },
+        { id: "f2", label: "2F", title: "2F Contemporary Fashion", gates: [{ x: 4, y: 48, label: "E" }, { x: 94, y: 48, label: "E" }, { x: 50, y: 4, label: "UP" }, { x: 50, y: 94, label: "DN" }] },
+        { id: "f3", label: "3F", title: "3F Lifestyle / Books", gates: [{ x: 4, y: 48, label: "E" }, { x: 94, y: 48, label: "E" }, { x: 50, y: 4, label: "UP" }, { x: 50, y: 94, label: "DN" }] },
+        { id: "f4", label: "4F", title: "4F Rooftop Epic Garden / Signature F&B", gates: [{ x: 6, y: 82, label: "IN" }, { x: 94, y: 82, label: "OUT" }, { x: 50, y: 6, label: "E" }, { x: 50, y: 94, label: "G" }] },
+      ];
 
-        try {
-            // ⚠️ [중요] 이전 단계 3번에서 출력된 본인의 Ngrok 주소 주입 영역
-            const NGROK_SERVER_URL = "https://pectin-angled-parsnip.ngrok-free.dev"; 
-            
-            const response = await fetch(`${NGROK_SERVER_URL}/generate`, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ conversation: rawText })
-            });
-            const data = await response.json();
-            
-            // 3. 정상 응답 시 변환 및 덮어쓰기
-            const targetWrapper = document.getElementById(aiMessageId);
-            targetWrapper.innerHTML = `
-                <div class="bubble-info">
-                    <span class="material-icons-outlined" style="font-size:12px;">check_circle</span> 분석 완료
-                </div>
-                <div class="bubble">${data.result}</div>
-            );
-        } catch (error) {
-            // 4. 에러 발생 시 처리
-            const targetWrapper = document.getElementById(aiMessageId);
-            targetWrapper.innerHTML = `
-                <div class="bubble-info" style="color: #BA1A1A;">
-                    <span class="material-icons-outlined" style="font-size:12px;">error</span> 통신 오류
-                </div>
-                <div class="bubble" style="background-color: #FFDAD7; color: #410002;">
-                    ❌ 코랩 서버와의 연결에 실패했습니다.<br>Google Colab의 FastAPI 서버 스크립트가 실행 상태인지 재확인하세요.
-                </div>
-            `;
+      const floors = floorMeta.map((floor) => ({
+        ...floor,
+        stores: departmentStores.filter((storeItem) => storeItem.floor === Number(floor.label.replace("F", ""))),
+      }));
+
+      const needs = [
+        { id: "Luxury", label: "명품", share: 16 },
+        { id: "Cosmetic", label: "코스메틱", share: 13 },
+        { id: "Contemporary Fashion", label: "패션", share: 22 },
+        { id: "Lifestyle", label: "라이프", share: 12 },
+        { id: "Books", label: "북스", share: 10 },
+        { id: "Signature F&B", label: "F&B", share: 15 },
+        { id: "Garden Experience", label: "가든", share: 8 },
+        { id: "Service", label: "서비스", share: 4 },
+      ];
+
+      const state = {
+        floorIndex: 0,
+        peopleCount: 90,
+        rfRatio: 55,
+        speed: 1,
+        running: true,
+        people: [],
+        congestion: new Map(),
+        bypassEnabled: false,
+        selectedView: "overview",
+        lastTime: performance.now(),
+      };
+
+      const floorTabs = document.querySelector("#floorTabs");
+      const floorTitle = document.querySelector("#floorTitle");
+      const floorShell = document.querySelector("#floorShell");
+      const peopleLayer = document.querySelector("#peopleLayer");
+      const routeOverlay = document.querySelector("#routeOverlay");
+      const peopleCount = document.querySelector("#peopleCount");
+      const rfRatio = document.querySelector("#rfRatio");
+      const speedRange = document.querySelector("#speedRange");
+      const peopleCountLabel = document.querySelector("#peopleCountLabel");
+      const rfRatioLabel = document.querySelector("#rfRatioLabel");
+      const speedLabel = document.querySelector("#speedLabel");
+      const congestionMetric = document.querySelector("#congestionMetric");
+      const visitorMetric = document.querySelector("#visitorMetric");
+      const routeFinderMetric = document.querySelector("#routeFinderMetric");
+      const congestionCopy = document.querySelector("#congestionCopy");
+      const zoneList = document.querySelector("#zoneList");
+      const needGrid = document.querySelector("#needGrid");
+      const insightList = document.querySelector("#insightList");
+      const pauseBtn = document.querySelector("#pauseBtn");
+      const resetBtn = document.querySelector("#resetBtn");
+      const optimizeBtn = document.querySelector("#optimizeBtn");
+      const exportBtn = document.querySelector("#exportBtn");
+      const simState = document.querySelector("#simState");
+      const bypassToggle = document.querySelector("#bypassToggle");
+      const lambdaMetric = document.querySelector("#lambdaMetric");
+      const littleLMetric = document.querySelector("#littleLMetric");
+      const waitMetric = document.querySelector("#waitMetric");
+      const floorMonitor = document.querySelector("#floorMonitor");
+      const adminControl = document.querySelector(".admin-control");
+
+      function point(x, y) {
+        return { x, y };
+      }
+
+      function currentFloor() {
+        return floors[state.floorIndex];
+      }
+
+      function sizeOf(storeItem) {
+        if (storeItem.category === "Landmark Garden") return { w: 36, h: 26 };
+        if (storeItem.category === "Transit") return { w: 12, h: 9 };
+        if (storeItem.category === "Service") return { w: 11, h: 9 };
+        return { w: 12, h: 10 };
+      }
+
+      function centerOf(storeItem) {
+        const size = sizeOf(storeItem);
+        return point(storeItem.x + size.w / 2, storeItem.y + size.h / 2);
+      }
+
+      const queueEngine = {
+        bypassArrivalDrop: 0.4,
+        bypassWaitDrop: 0.28,
+        congestionThreshold: 1,
+      };
+
+      function isCongestedStore(storeItem) {
+        const queuePressure = storeItem.currentQueue / Math.max(storeItem.maxCapacity, 1);
+        const arrivalPressure = (storeItem.arrivalRate * storeItem.avgServiceTime) / Math.max(storeItem.maxCapacity, 1);
+        return queuePressure >= queueEngine.congestionThreshold || arrivalPressure >= 0.8;
+      }
+
+      function calculateLittleLaw(storeItem) {
+        const baseLambda = storeItem.arrivalRate;
+        const baseWait = storeItem.currentQueue / Math.max(baseLambda, 0.1);
+        const bypassActive = state.bypassEnabled && isCongestedStore(storeItem);
+        const lambda = bypassActive ? baseLambda * (1 - queueEngine.bypassArrivalDrop) : baseLambda;
+        const waitTime = bypassActive ? baseWait * (1 - queueEngine.bypassWaitDrop) : baseWait;
+        const queueLength = lambda * waitTime;
+
+        return {
+          baseLambda,
+          lambda,
+          queueLength,
+          waitTime,
+          bypassActive,
+        };
+      }
+
+      function aggregateLittleLaw(stores) {
+        const metrics = stores.map(calculateLittleLaw);
+        const lambda = metrics.reduce((sum, item) => sum + item.lambda, 0);
+        const queueLength = metrics.reduce((sum, item) => sum + item.queueLength, 0);
+        const waitTime = lambda ? queueLength / lambda : 0;
+        const bypassedStores = metrics.filter((item) => item.bypassActive).length;
+
+        return { lambda, queueLength, waitTime, bypassedStores };
+      }
+
+      function calculateFloorPressure(floor) {
+        const metrics = floor.stores.map((storeItem) => {
+          const queue = calculateLittleLaw(storeItem);
+          return Math.min(100, Math.round((queue.queueLength / Math.max(storeItem.maxCapacity, 1)) * 100));
+        });
+
+        return metrics.length ? Math.round(metrics.reduce((sum, level) => sum + level, 0) / metrics.length) : 0;
+      }
+
+      function pickNeed() {
+        const visibleCategories = new Set(currentFloor().stores.map((item) => item.category));
+        const availableNeeds = needs.filter((need) => visibleCategories.has(need.id));
+        const pool = availableNeeds.length ? availableNeeds : needs;
+        const total = pool.reduce((sum, need) => sum + need.share, 0);
+        let roll = Math.random() * total;
+
+        for (const need of pool) {
+          roll -= need.share;
+          if (roll <= 0) return need.id;
         }
-        chatContent.scrollTop = chatContent.scrollHeight;
-    }
 
-    // 엔터키 누르면 전송 기능 (Shift+Enter는 줄바꿈)
-    document.getElementById('userInput').addEventListener('keydown', function(e) {
-        if (e.key === 'Enter' && !e.shiftKey) {
-            e.preventDefault();
-            analyzeConversation();
+        return pool[0].id;
+      }
+
+      function pickDestination(needId) {
+        const floorStores = currentFloor().stores;
+        const candidates = floorStores.filter((item) => item.category === needId);
+        const fallback = floorStores.filter((item) => item.category !== "Transit");
+        const pool = candidates.length ? candidates : fallback;
+        return pool[Math.floor(Math.random() * pool.length)];
+      }
+
+      function gatePoint() {
+        const gates = currentFloor().gates;
+        const gate = gates[Math.floor(Math.random() * gates.length)];
+        return point(gate.x, gate.y);
+      }
+
+      function occupancyNear(pointValue, radius = 12) {
+        return state.people.reduce((sum, person) => {
+          const dx = person.x - pointValue.x;
+          const dy = person.y - pointValue.y;
+          return sum + (Math.hypot(dx, dy) < radius ? 1 : 0);
+        }, 0);
+      }
+
+      function buildRoute(start, destination, usesRouteFinder) {
+        const target = centerOf(destination);
+        const candidates = [
+          [start, point(16, start.y), point(16, 48), point(target.x, 48), target],
+          [start, point(50, start.y), point(50, 22), point(target.x, 22), target],
+          [start, point(84, start.y), point(84, 50), point(target.x, 50), target],
+          [start, point(start.x, target.y), target],
+        ];
+
+        if (!usesRouteFinder) return candidates[3];
+
+        return candidates
+          .map((route) => {
+            const distance = route.reduce((sum, routePoint, index) => {
+              if (index === 0) return 0;
+              const previous = route[index - 1];
+              return sum + Math.hypot(routePoint.x - previous.x, routePoint.y - previous.y);
+            }, 0);
+            const crowdPenalty = route.reduce((sum, routePoint) => sum + occupancyNear(routePoint), 0);
+            const queuePenalty = destination.currentQueue / Math.max(destination.maxCapacity, 1);
+            const servicePenalty = destination.avgServiceTime / 4;
+            return { route, score: distance + crowdPenalty * 4 + queuePenalty * 12 + servicePenalty };
+          })
+          .sort((a, b) => a.score - b.score)[0].route;
+      }
+
+      function createPerson(index) {
+        const need = pickNeed();
+        const destination = pickDestination(need);
+        const start = gatePoint();
+        const usesRouteFinder = Math.random() * 100 < state.rfRatio;
+        const route = buildRoute(start, destination, usesRouteFinder);
+        const element = document.createElement("span");
+
+        element.className = usesRouteFinder ? "person rf" : "person";
+        element.title = `${usesRouteFinder ? "RouteFinder" : "Direct"} · ${destination.name}`;
+        element.style.left = `${start.x}%`;
+        element.style.top = `${start.y}%`;
+        peopleLayer.appendChild(element);
+
+        return { id: index, need, destination, usesRouteFinder, route, segment: 0, progress: Math.random() * 0.75, speed: 0.045 + Math.random() * 0.055, x: start.x, y: start.y, element };
+      }
+
+      function rebuildPeople() {
+        peopleLayer.innerHTML = "";
+        state.people = Array.from({ length: state.peopleCount }, (_, index) => createPerson(index));
+        renderRouteOverlay();
+        updateStats();
+      }
+
+      function reroutePerson(person) {
+        const start = point(person.x, person.y);
+        person.need = pickNeed();
+        person.destination = pickDestination(person.need);
+        person.usesRouteFinder = Math.random() * 100 < state.rfRatio;
+        person.route = buildRoute(start, person.destination, person.usesRouteFinder);
+        person.segment = 0;
+        person.progress = 0;
+        person.speed = 0.045 + Math.random() * 0.055;
+        person.element.className = person.usesRouteFinder ? "person rf" : "person";
+        person.element.title = `${person.usesRouteFinder ? "RouteFinder" : "Direct"} · ${person.destination.name}`;
+      }
+
+      function movePeople(deltaSeconds) {
+        for (const person of state.people) {
+          const to = person.route[person.segment + 1];
+          if (!to) {
+            reroutePerson(person);
+            continue;
+          }
+
+          person.progress += person.speed * state.speed * deltaSeconds;
+          if (person.progress >= 1) {
+            person.segment += 1;
+            person.progress = 0;
+            if (person.segment >= person.route.length - 1) {
+              reroutePerson(person);
+              continue;
+            }
+          }
+
+          const nextFrom = person.route[person.segment];
+          const nextTo = person.route[person.segment + 1];
+          person.x = nextFrom.x + (nextTo.x - nextFrom.x) * person.progress;
+          person.y = nextFrom.y + (nextTo.y - nextFrom.y) * person.progress;
+          person.element.style.left = `${person.x}%`;
+          person.element.style.top = `${person.y}%`;
         }
-    });
-</script>
-</body>
+      }
+
+      function calculateCongestion() {
+        const result = new Map();
+
+        for (const item of currentFloor().stores) {
+          const c = centerOf(item);
+          const movingCount = state.people.reduce((sum, person) => {
+            const dx = person.x - c.x;
+            const dy = person.y - c.y;
+            return sum + (Math.hypot(dx, dy) < 10 ? 1 : 0);
+          }, 0);
+          const queueMetrics = calculateLittleLaw(item);
+          const queuePressure = queueMetrics.queueLength / Math.max(item.maxCapacity, 1);
+          const arrivalPressure = (queueMetrics.lambda * item.avgServiceTime) / Math.max(item.maxCapacity, 1);
+          const level = Math.min(100, Math.round(queuePressure * 58 + arrivalPressure * 24 + (movingCount / item.maxCapacity) * 180));
+          result.set(item.id, { count: movingCount, level, queueMetrics });
+        }
+
+        state.congestion = result;
+      }
+
+      function classify(level) {
+        if (level >= 68) return "hot";
+        if (level >= 38) return "warm";
+        return "cool";
+      }
+
+      function renderFloor() {
+        const floor = currentFloor();
+        floorTitle.textContent = floor.title;
+        floorShell.innerHTML = "";
+
+        for (const item of floor.stores) {
+          const size = sizeOf(item);
+          const node = document.createElement("button");
+          node.type = "button";
+          node.className = `store store-${item.category.toLowerCase().replace(/[^a-z0-9]+/g, "-")}`;
+          node.dataset.storeId = item.id;
+          node.style.left = `${item.x}%`;
+          node.style.top = `${item.y}%`;
+          node.style.width = `${size.w}%`;
+          node.style.height = `${size.h}%`;
+          node.innerHTML = `<span class="store-name">${item.name}</span><span class="store-count">0</span>`;
+          node.addEventListener("click", () => focusStore(item));
+          floorShell.appendChild(node);
+        }
+
+        for (const gate of floor.gates) {
+          const node = document.createElement("span");
+          node.className = "gate";
+          node.style.left = `${gate.x}%`;
+          node.style.top = `${gate.y}%`;
+          node.textContent = gate.label;
+          floorShell.appendChild(node);
+        }
+
+        const axis = document.createElement("span");
+        axis.className = "corridor-label";
+        axis.style.left = "42%";
+        axis.style.top = "47%";
+        axis.textContent = "Main Corridor";
+        floorShell.appendChild(axis);
+      }
+
+      function renderFloorTabs() {
+        floorTabs.innerHTML = floors
+          .map((floor, index) => `<button class="floor-tab${index === state.floorIndex ? " active" : ""}" type="button" data-floor="${index}">${floor.label}</button>`)
+          .join("");
+
+        floorTabs.querySelectorAll("[data-floor]").forEach((button) => {
+          button.addEventListener("click", () => {
+            state.floorIndex = Number(button.dataset.floor);
+            renderFloorTabs();
+            renderFloor();
+            rebuildPeople();
+          });
+        });
+      }
+
+      function renderNeedMix() {
+        needGrid.innerHTML = needs.map((need) => `<article class="need-card"><strong>${need.label}</strong><span>${need.share}%</span></article>`).join("");
+      }
+
+      function renderRouteOverlay() {
+        const routes = state.people.filter((person) => person.usesRouteFinder).slice(0, 18);
+        routeOverlay.innerHTML = routes
+          .map((person) => `<polyline points="${person.route.map((routePoint) => `${routePoint.x},${routePoint.y}`).join(" ")}"></polyline>`)
+          .join("");
+      }
+
+      function updateStoreHeat() {
+        floorShell.querySelectorAll(".store").forEach((node) => {
+          const info = state.congestion.get(node.dataset.storeId);
+          const level = info?.level ?? 0;
+          node.classList.remove("hot", "warm", "cool");
+          node.classList.add(classify(level));
+          node.querySelector(".store-count").textContent = `${level}%`;
+        });
+      }
+
+      function updateZoneList() {
+        const rows = currentFloor().stores
+          .map((item) => ({ ...item, ...(state.congestion.get(item.id) ?? { count: 0, level: 0 }) }))
+          .sort((a, b) => b.level - a.level)
+          .slice(0, 6);
+
+        zoneList.innerHTML = rows
+          .map((item) => `<article class="zone-row ${classify(item.level)}"><header><span>${item.name}</span><strong>${item.level}%</strong></header><div class="zone-bar"><span style="width:${item.level}%"></span></div></article>`)
+          .join("");
+      }
+
+      function renderAdminPanel() {
+        const floorMetrics = floors.map((floor) => ({
+          ...floor,
+          pressure: calculateFloorPressure(floor),
+          queue: aggregateLittleLaw(floor.stores),
+        }));
+        const currentQueue = aggregateLittleLaw(currentFloor().stores);
+
+        adminControl.classList.toggle("bypass-active", state.bypassEnabled);
+        lambdaMetric.textContent = currentQueue.lambda.toFixed(1);
+        littleLMetric.textContent = Math.round(currentQueue.queueLength);
+        waitMetric.textContent = currentQueue.waitTime.toFixed(1);
+
+        floorMonitor.innerHTML = floorMetrics
+          .map((floor) => {
+            const active = floor.id === currentFloor().id ? " active" : "";
+            const bypassCopy = floor.queue.bypassedStores ? ` · ${floor.queue.bypassedStores} bypass` : "";
+            return `<article class="floor-monitor-row ${classify(floor.pressure)}${active}">
+              <strong>${floor.label}</strong>
+              <div class="floor-monitor-bar"><i style="width:${floor.pressure}%"></i></div>
+              <span>${floor.pressure}%${bypassCopy}</span>
+            </article>`;
+          })
+          .join("");
+      }
+
+      function updateStats() {
+        calculateCongestion();
+        updateStoreHeat();
+        updateZoneList();
+        renderAdminPanel();
+
+        const levels = [...state.congestion.values()].map((item) => item.level);
+        const average = levels.length ? Math.round(levels.reduce((sum, level) => sum + level, 0) / levels.length) : 0;
+        const hotCount = levels.filter((level) => level >= 68).length;
+
+        congestionMetric.textContent = average;
+        visitorMetric.textContent = state.peopleCount;
+        routeFinderMetric.textContent = `${state.rfRatio}%`;
+        peopleCountLabel.textContent = state.peopleCount;
+        rfRatioLabel.textContent = `${state.rfRatio}%`;
+        speedLabel.textContent = `${state.speed.toFixed(1)}x`;
+        congestionCopy.textContent = hotCount ? `${hotCount}개 구역이 혼잡합니다. 대기열과 실시간 이동량을 함께 반영합니다.` : "현재 층은 안정적인 분산 흐름입니다.";
+      }
+
+      function renderInsights() {
+        const viewLead = {
+          overview: { title: "Overview 모드", body: "80개 매장의 대기열, 유입률, 평균 체류 시간을 기반으로 혼잡도를 계산합니다." },
+          live: { title: "Live Flow 모드", body: "초록 점은 RouteFinder 추천 동선입니다. 혼잡 매장을 피하되 방문 목적 카테고리는 유지합니다." },
+          b2b: { title: "B2B Zones 모드", body: "입점 브랜드 관점에서 대기열 압력과 공간 운영 리스크를 확인합니다." },
+          b2c: { title: "B2C Routes 모드", body: "방문객의 니즈를 유지하면서 상대적으로 덜 막히는 후보 경로를 선택합니다." },
+          insights: { title: "Insights 모드", body: "혼잡 상위 매장과 RouteFinder 재라우팅 판단을 요약합니다." },
+        }[state.selectedView];
+
+        const hot = [...state.congestion.entries()]
+          .map(([id, info]) => ({ store: currentFloor().stores.find((item) => item.id === id), ...info }))
+          .filter((item) => item.store)
+          .sort((a, b) => b.level - a.level)
+          .slice(0, 3);
+
+        const items = hot.map((item) => ({
+          title: `${item.store.name} 혼잡도 ${item.level}%`,
+          body: `대기 ${item.store.currentQueue}명, 분당 유입 ${item.store.arrivalRate}명, 평균 처리 ${item.store.avgServiceTime}분입니다.`,
+        }));
+
+        insightList.innerHTML = [viewLead, ...items]
+          .map((item) => `<article class="insight-card"><strong>${item.title}</strong><p>${item.body}</p></article>`)
+          .join("");
+      }
+
+      function focusStore(storeItem) {
+        insightList.innerHTML = `<article class="insight-card"><strong>${storeItem.name}</strong><p>${storeItem.floor}층 · ${storeItem.category} · 최대 수용 ${storeItem.maxCapacity}명 · 현재 대기 ${storeItem.currentQueue}명. RouteFinder는 같은 목적군 안에서 덜 혼잡한 동선을 우선 계산합니다.</p></article>`;
+      }
+
+      function optimizeRoutes() {
+        state.rfRatio = Math.min(100, state.rfRatio + 15);
+        rfRatio.value = state.rfRatio;
+
+        for (const person of state.people) {
+          if (Math.random() * 100 < state.rfRatio) {
+            person.usesRouteFinder = true;
+            person.route = buildRoute(point(person.x, person.y), person.destination, true);
+            person.segment = 0;
+            person.progress = 0;
+            person.element.className = "person rf";
+          }
+        }
+
+        renderRouteOverlay();
+        updateStats();
+        renderInsights();
+      }
+
+      function exportSnapshot() {
+        const payload = {
+          floor: currentFloor().title,
+          stores: currentFloor().stores,
+          people: state.peopleCount,
+          routeFinderUse: state.rfRatio,
+          dynamicBypass: state.bypassEnabled,
+          littleLaw: aggregateLittleLaw(currentFloor().stores),
+          congestion: [...state.congestion.entries()],
+          exportedAt: new Date().toISOString(),
+        };
+        const blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" });
+        const url = URL.createObjectURL(blob);
+        const anchor = document.createElement("a");
+        anchor.href = url;
+        anchor.download = "routefinder-snapshot.json";
+        anchor.click();
+        URL.revokeObjectURL(url);
+      }
+
+      function bindControls() {
+        peopleCount.addEventListener("input", () => {
+          state.peopleCount = Number(peopleCount.value);
+          rebuildPeople();
+        });
+
+        rfRatio.addEventListener("input", () => {
+          state.rfRatio = Number(rfRatio.value);
+          rebuildPeople();
+        });
+
+        speedRange.addEventListener("input", () => {
+          state.speed = Number(speedRange.value);
+          updateStats();
+        });
+
+        bypassToggle.addEventListener("change", () => {
+          state.bypassEnabled = bypassToggle.checked;
+          updateStats();
+          renderInsights();
+        });
+
+        pauseBtn.addEventListener("click", () => {
+          state.running = !state.running;
+          pauseBtn.textContent = state.running ? "Pause" : "Resume";
+          simState.textContent = state.running ? "RUNNING" : "PAUSED";
+        });
+
+        resetBtn.addEventListener("click", rebuildPeople);
+        optimizeBtn.addEventListener("click", optimizeRoutes);
+        exportBtn.addEventListener("click", exportSnapshot);
+
+        document.querySelectorAll("[data-view]").forEach((button) => {
+          button.addEventListener("click", () => {
+            document.querySelectorAll("[data-view]").forEach((item) => item.classList.remove("active"));
+            button.classList.add("active");
+            state.selectedView = button.dataset.view;
+            renderInsights();
+          });
+        });
+
+        document.querySelector("[data-action='overview']").addEventListener("click", (event) => {
+          event.preventDefault();
+          state.selectedView = "overview";
+          document.querySelectorAll("[data-view]").forEach((item) => item.classList.toggle("active", item.dataset.view === "overview"));
+          renderInsights();
+        });
+      }
+
+      function tick(time) {
+        const deltaSeconds = Math.min(0.08, (time - state.lastTime) / 1000) * 60;
+        state.lastTime = time;
+
+        if (state.running) {
+          movePeople(deltaSeconds);
+          updateStats();
+          if (Math.floor(time / 1000) % 3 === 0) {
+            renderRouteOverlay();
+            renderInsights();
+          }
+        }
+
+        requestAnimationFrame(tick);
+      }
+
+      renderFloorTabs();
+      renderNeedMix();
+      renderFloor();
+      bindControls();
+      rebuildPeople();
+      renderInsights();
+      requestAnimationFrame(tick);
+    </script>
+  </body>
 </html>
