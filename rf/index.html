@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>RouteFinder | Integrated Dashboard</title>
+    <link rel="stylesheet" href="./style.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <aside class="sidebar" aria-label="RouteFinder navigation">
+        <a class="brand" href="#" aria-label="RouteFinder home" data-action="overview">
+          <span class="brand-mark">RF</span>
+          <span>
+            <strong>RouteFinder</strong>
+            <small>Spatial Flow Platform</small>
+          </span>
+        </a>
+
+        <nav class="nav-list" aria-label="Primary">
+          <button class="nav-item active" type="button" data-view="overview">Overview</button>
+          <button class="nav-item" type="button" data-view="live">Live Flow</button>
+          <button class="nav-item" type="button" data-view="b2b">B2B Zones</button>
+          <button class="nav-item" type="button" data-view="b2c">B2C Routes</button>
+          <button class="nav-item" type="button" data-view="insights">Insights</button>
+        </nav>
+
+        <div class="sidebar-status">
+          <span class="status-dot"></span>
+          <span>Seoul Core Sync</span>
+          <strong>LIVE</strong>
+        </div>
+      </aside>
+
+      <main class="dashboard">
+        <header class="topbar">
+          <div>
+            <p class="eyebrow">B2B / B2C Unified Prototype</p>
+            <h1>공간 정체를 예측하고 목적에 맞는 흐름으로 분산합니다.</h1>
+          </div>
+          <div class="topbar-actions">
+            <button class="ghost-button" type="button" id="exportBtn">Export</button>
+            <button class="primary-button" type="button" id="optimizeBtn">Optimize Route</button>
+          </div>
+        </header>
+
+        <section class="metric-grid" aria-label="Key metrics">
+          <article class="metric-card light">
+            <span class="metric-label">Congestion Index</span>
+            <strong class="metric-value" id="congestionMetric">0</strong>
+            <p id="congestionCopy">실시간 이동 밀도를 계산 중입니다.</p>
+          </article>
+          <article class="metric-card">
+            <span class="metric-label">Active Visitors</span>
+            <strong class="metric-value" id="visitorMetric">0</strong>
+            <p>슬라이더로 시뮬레이션 인원을 조절합니다.</p>
+          </article>
+          <article class="metric-card">
+            <span class="metric-label">RouteFinder Use</span>
+            <strong class="metric-value" id="routeFinderMetric">0%</strong>
+            <p>사용 비율이 높을수록 혼잡 구역을 회피합니다.</p>
+          </article>
+        </section>
+
+        <section class="workspace">
+          <article class="flow-panel">
+            <div class="section-heading">
+              <div>
+                <p class="eyebrow">Live Department Store Map</p>
+                <h2 id="floorTitle">층별 평면도</h2>
+              </div>
+              <div class="floor-tabs" id="floorTabs" aria-label="Floor selector"></div>
+            </div>
+
+            <div class="map-stage" id="mapStage" aria-label="RouteFinder floor simulation">
+              <svg class="route-overlay" id="routeOverlay" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"></svg>
+              <div class="floor-shell" id="floorShell"></div>
+              <div class="people-layer" id="peopleLayer"></div>
+            </div>
+          </article>
+
+          <aside class="control-panel" aria-label="Simulation controls">
+            <section class="control-block admin-control" aria-label="B2B manager control board">
+              <div class="admin-header">
+                <div>
+                  <p class="eyebrow">B2B Admin</p>
+                  <h2>B2B 관리자 관제 판</h2>
+                </div>
+                <label class="switch-control" for="bypassToggle">
+                  <span>동적 바이패스</span>
+                  <input id="bypassToggle" type="checkbox" />
+                  <i aria-hidden="true"></i>
+                </label>
+              </div>
+
+              <div class="queue-formula">
+                <span>Little's Law</span>
+                <strong>L = λ W</strong>
+              </div>
+
+              <div class="queue-kpis" aria-label="Little's Law live counters">
+                <article>
+                  <span>λ / min</span>
+                  <strong class="admin-number" id="lambdaMetric">0.0</strong>
+                </article>
+                <article>
+                  <span>L queue</span>
+                  <strong class="admin-number" id="littleLMetric">0</strong>
+                </article>
+                <article>
+                  <span>W min</span>
+                  <strong class="admin-number" id="waitMetric">0.0</strong>
+                </article>
+              </div>
+
+              <div class="floor-monitor" id="floorMonitor" aria-label="Floor congestion monitor"></div>
+            </section>
+
+            <section class="control-block">
+              <div class="section-heading compact">
+                <div>
+                  <p class="eyebrow">Simulation</p>
+                  <h2>방문객 흐름 제어</h2>
+                </div>
+                <span class="mode-pill" id="simState">RUNNING</span>
+              </div>
+
+              <label class="range-control">
+                <span>사람 수 <strong id="peopleCountLabel">90</strong></span>
+                <input id="peopleCount" type="range" min="20" max="220" value="90" step="10" />
+              </label>
+
+              <label class="range-control">
+                <span>RouteFinder 사용 비율 <strong id="rfRatioLabel">55%</strong></span>
+                <input id="rfRatio" type="range" min="0" max="100" value="55" step="5" />
+              </label>
+
+              <label class="range-control">
+                <span>시뮬레이션 속도 <strong id="speedLabel">1.0x</strong></span>
+                <input id="speedRange" type="range" min="0.5" max="2" value="1" step="0.1" />
+              </label>
+
+              <div class="button-row">
+                <button class="ghost-button" type="button" id="pauseBtn">Pause</button>
+                <button class="ghost-button" type="button" id="resetBtn">Reset</button>
+              </div>
+            </section>
+
+            <section class="control-block">
+              <p class="eyebrow">Need Mix</p>
+              <div class="need-grid" id="needGrid"></div>
+            </section>
+
+            <section class="control-block">
+              <p class="eyebrow">Congestion By Zone</p>
+              <div class="zone-list" id="zoneList"></div>
+            </section>
+
+            <section class="control-block">
+              <p class="eyebrow">Decision Feed</p>
+              <div class="insight-list" id="insightList"></div>
+            </section>
+          </aside>
+        </section>
+      </main>
+    </div>
+
+    <script src="./app.js"></script>
+  </body>
+</html>
