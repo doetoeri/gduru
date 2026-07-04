@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>국어 담론 격률 판별 AI</title>
+    
+    <!-- 1. Google Material You (M3) 라이브러리 및 폰트 임포트 -->
+    <link href="https://googleapis.com" rel="stylesheet">
+    <link href="https://googleapis.com" rel="stylesheet">
+    <script src="https://jsdelivr.net" type="module"></script>
+
+    <style>
+        :root {
+            /* Material You 파스텔 톤 컬러 팔레트 구성 */
+            --md-sys-color-primary: #0061A4;
+            --md-sys-color-on-primary: #FFFFFF;
+            --md-sys-color-primary-container: #D1E4FF;
+            --md-sys-color-on-primary-container: #001D36;
+            --md-sys-color-surface: #F8F9FF;
+            --md-sys-color-on-surface: #191C20;
+            --md-sys-color-surface-variant: #DFE2EB;
+            --md-sys-color-on-surface-variant: #43474E;
+            --md-sys-color-outline: #73777F;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Roboto', 'Malgun Gothic', sans-serif;
+            background-color: #F1F4F9;
+            color: var(--md-sys-color-on-surface);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        /* 메인 컨테이너 카드 */
+        .app-container {
+            width: 100%;
+            max-width: 540px;
+            height: 90vh;
+            background: var(--md-sys-color-surface);
+            border-radius: 28px; /* Material 3 특유의 둥근 모서리 */
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            margin: 20px;
+        }
+
+        /* 앱바 상단 */
+        .app-bar {
+            background-color: var(--md-sys-color-primary-container);
+            color: var(--md-sys-color-on-primary-container);
+            padding: 16px 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        .app-bar .icon {
+            font-size: 28px;
+            color: var(--md-sys-color-primary);
+        }
+
+        .app-bar .title-box h1 {
+            margin: 0;
+            font-size: 1.15rem;
+            font-weight: 700;
+        }
+
+        .app-bar .title-box p {
+            margin: 2px 0 0 0;
+            font-size: 0.75rem;
+            opacity: 0.8;
+        }
+
+        /* 채팅 영역 */
+        .chat-content {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            background: #FFFFFF;
+        }
+
+        /* 말풍선 공통 디자인 */
+        .bubble-wrapper {
+            display: flex;
+            flex-direction: column;
+            max-width: 85%;
+        }
+
+        .bubble-wrapper.user { align-self: flex-end; }
+        .bubble-wrapper.ai { align-self: flex-start; }
+
+        .bubble-info {
+            font-size: 0.75rem;
+            margin-bottom: 4px;
+            color: var(--md-sys-color-on-surface-variant);
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .bubble {
+            padding: 14px 18px;
+            font-size: 0.95rem;
+            line-height: 1.5;
+            letter-spacing: -0.2px;
+        }
+
+        /* 유저 말풍선: Material You Primary 스타일 */
+        .user .bubble {
+            background-color: var(--md-sys-color-primary);
+            color: var(--md-sys-color-on-primary);
+            border-radius: 20px 20px 4px 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        /* AI 말풍선: Material You Surface Variant 스타일 */
+        .ai .bubble {
+            background-color: var(--md-sys-color-surface-variant);
+            color: var(--md-sys-color-on-surface-variant);
+            border-radius: 20px 20px 20px 4px;
+            white-space: pre-wrap;
+        }
+
+        /* 입력 공간 하단바 */
+        .input-bar {
+            padding: 16px 20px;
+            background-color: var(--md-sys-color-surface);
+            border-top: 1px solid #E0E2EC;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        /* Material UI 입력창 확장 스타일 */
+        .text-field-box {
+            flex: 1;
+            position: relative;
+        }
+
+        textarea {
+            width: 100%;
+            height: 48px;
+            background-color: #FFFFFF;
+            border: 1px solid var(--md-sys-color-outline);
+            border-radius: 12px;
+            padding: 12px 16px;
+            box-sizing: border-box;
+            font-family: inherit;
+            font-size: 0.95rem;
+            resize: none;
+            outline: none;
+            transition: border 0.2s;
+        }
+
+        textarea:focus {
+            border: 2px solid var(--md-sys-color-primary);
+            padding: 11px 15px; /* 테두리 굵어짐에 따른 보정 */
+        }
+
+        /* Material 원형 전송 버튼 */
+        .send-btn {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background-color: var(--md-sys-color-primary-container);
+            color: var(--md-sys-color-on-primary-container);
+            border: none;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: background-color 0.2s, transform 0.1s;
+        }
+
+        .send-btn:hover { background-color: #B9D3FF; }
+        .send-btn:active { transform: scale(0.95); }
+        .send-btn span { font-size: 22px; }
+    </style>
+</head>
+<body>
+
+<div class="app-container">
+    <!-- 상단 헤더 (Material AppBar) -->
+    <div class="app-bar">
+        <span class="material-icons-outlined icon">psychology</span>
+        <div class="title-box">
+            <h1>국어 담론 격률 판별 AI</h1>
+            <p>Qwen2.5-3B Fine-Tuned Model</p>
+        </div>
+    </div>
+
+    <!-- 대화창 본문 -->
+    <div class="chat-content" id="chatContent">
+        <div class="bubble-wrapper ai">
+            <div class="bubble-info">
+                <span class="material-icons-outlined" style="font-size:12px;">smart_toy</span> 판별기 엔진
+            </div>
+            <div class="bubble">안녕하세요! 분석할 대화문을 양식에 맞춰 하단에 입력해 주세요. 원리 및 격률 위반을 과학적으로 판별합니다.</div>
+        </div>
+    </div>
+
+    <!-- 하단 입력 공간 (Material Input Field & Fab) -->
+    <div class="input-bar">
+        <div class="text-field-box">
+            <textarea id="userInput" placeholder="A: 오늘 학교 가?&#10;B: 나 어제 치킨 먹었어."></textarea>
+        </div>
+        <button class="send-btn" onclick="analyzeConversation()">
+            <span class="material-icons-outlined">send</span>
+        </button>
+    </div>
+</div>
+
+<script>
+    async function analyzeConversation() {
+        const inputField = document.getElementById('userInput');
+        const chatContent = document.getElementById('chatContent');
+        const rawText = inputField.value.trim();
+        
+        if (!rawText) return;
+
+        // 1. 유저 입력 말풍선 추가
+        chatContent.innerHTML += `
+            <div class="bubble-wrapper user">
+                <div class="bubble-info" style="justify-content: flex-end;">분석 요청</div>
+                <div class="bubble">${rawText.replace(/\n/g, '<br>')}</div>
+            </div>
+        `;
+        inputField.value = '';
+        chatContent.scrollTop = chatContent.scrollHeight;
+
+        // 2. AI 대기 상태 말풍선 추가
+        const aiMessageId = 'ai-' + Date.now();
+        chatContent.innerHTML += `
+            <div class="bubble-wrapper ai" id="${aiMessageId}">
+                <div class="bubble-info">
+                    <span class="material-icons-outlined" style="font-size:12px;">hourglass_empty</span> 연산 중
+                </div>
+                <div class="bubble">🤖 코랩 GPU에서 담론을 분석하고 있습니다. 잠시만 기다려 주세요...</div>
+            </div>
+        `;
+        chatContent.scrollTop = chatContent.scrollHeight;
+
+        try {
+            // ⚠️ [중요] 이전 단계 3번에서 출력된 본인의 Ngrok 주소 주입 영역
+            const NGROK_SERVER_URL = "https://pectin-angled-parsnip.ngrok-free.dev"; 
+            
+            const response = await fetch(`${NGROK_SERVER_URL}/generate`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ conversation: rawText })
+            });
+            const data = await response.json();
+            
+            // 3. 정상 응답 시 변환 및 덮어쓰기
+            const targetWrapper = document.getElementById(aiMessageId);
+            targetWrapper.innerHTML = `
+                <div class="bubble-info">
+                    <span class="material-icons-outlined" style="font-size:12px;">check_circle</span> 분석 완료
+                </div>
+                <div class="bubble">${data.result}</div>
+            );
+        } catch (error) {
+            // 4. 에러 발생 시 처리
+            const targetWrapper = document.getElementById(aiMessageId);
+            targetWrapper.innerHTML = `
+                <div class="bubble-info" style="color: #BA1A1A;">
+                    <span class="material-icons-outlined" style="font-size:12px;">error</span> 통신 오류
+                </div>
+                <div class="bubble" style="background-color: #FFDAD7; color: #410002;">
+                    ❌ 코랩 서버와의 연결에 실패했습니다.<br>Google Colab의 FastAPI 서버 스크립트가 실행 상태인지 재확인하세요.
+                </div>
+            `;
+        }
+        chatContent.scrollTop = chatContent.scrollHeight;
+    }
+
+    // 엔터키 누르면 전송 기능 (Shift+Enter는 줄바꿈)
+    document.getElementById('userInput').addEventListener('keydown', function(e) {
+        if (e.key === 'Enter' && !e.shiftKey) {
+            e.preventDefault();
+            analyzeConversation();
+        }
+    });
+</script>
+</body>
+</html>
