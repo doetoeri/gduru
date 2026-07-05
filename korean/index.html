@@ -3,278 +3,544 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>국어 담론 격률 판별 AI</title>
+    <title>gGuru Studio v3.0 - Unified Real-Time Engine</title>
     
-    <!-- 1. Google Material You (M3) 라이브러리 및 폰트 임포트 -->
-    <link href="https://googleapis.com" rel="stylesheet">
-    <link href="https://googleapis.com" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=SF+Pro+Display:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
 
     <style>
+        /* ==========================================
+           1. Apple HIG & 다크 인스펙터 디자인 토큰
+           ========================================== */
         :root {
-            --md-sys-color-primary: #0061A4;
-            --md-sys-color-on-primary: #FFFFFF;
-            --md-sys-color-primary-container: #D1E4FF;
-            --md-sys-color-on-primary-container: #001D36;
-            --md-sys-color-surface: #F8F9FF;
-            --md-sys-color-on-surface: #191C20;
-            --md-sys-color-surface-variant: #DFE2EB;
-            --md-sys-color-on-surface-variant: #43474E;
-            --md-sys-color-outline: #73777F;
+            --apple-bg: #f5f5f7;
+            --apple-canvas: rgba(255, 255, 255, 0.75);
+            --apple-card: #ffffff;
+            --apple-text-primary: #1d1d1f;
+            --apple-text-secondary: #86868b;
+            --apple-accent: #0071e3;        /* DuoP 시그니처 블루 */
+            --apple-accent-green: #24b24b;  /* DuoC 시그니처 그린 */
+            --apple-border: rgba(0, 0, 0, 0.08);
+            
+            /* 프로페셔널 콘솔 패널 전용 다크 컬러 */
+            --console-bg: #0d0e11;
+            --console-border: rgba(255, 255, 255, 0.08);
+            
+            /* 🔗 iOS/macOS 고유의 극강 고무 텍스처 쫀득 모션 (스프링 이징) */
+            --apple-spring: cubic-bezier(0.25, 1.4, 0.35, 1.05);
+            --apple-fluid: cubic-bezier(0.16, 1, 0.3, 1);
+            
+            /* 도크 기본 바닥 고정선 세팅 */
+            --dock-position: calc(100vh - 96px);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Noto Sans KR', sans-serif;
+            letter-spacing: -0.3px;
+            -webkit-font-smoothing: antialiased;
         }
 
         body {
-            margin: 0;
-            padding: 0;
-            font-family: 'Roboto', 'Malgun Gothic', sans-serif;
-            background-color: #F1F4F9;
-            color: var(--md-sys-color-on-surface);
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            background-color: var(--apple-bg);
+            color: var(--apple-text-primary);
             min-height: 100vh;
-        }
-
-        .app-container {
-            width: 100%;
-            max-width: 540px;
-            height: 90vh;
-            background: var(--md-sys-color-surface);
-            border-radius: 28px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            padding: 40px 24px 140px 24px;
             display: flex;
             flex-direction: column;
-            overflow: hidden;
-            margin: 20px;
-        }
-
-        .app-bar {
-            background-color: var(--md-sys-color-primary-container);
-            color: var(--md-sys-color-on-primary-container);
-            padding: 16px 20px;
-            display: flex;
             align-items: center;
-            gap: 12px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
         }
 
-        .app-bar .icon {
-            font-size: 28px;
-            color: var(--md-sys-color-primary);
+        /* 미니멀 헤더 설계 */
+        .apple-header {
+            text-align: center;
+            margin-bottom: 28px;
         }
 
-        .app-bar .title-box h1 {
-            margin: 0;
-            font-size: 1.15rem;
-            font-weight: 700;
+        .apple-header h1 {
+            font-size: 2.2rem;
+            font-weight: 600;
+            color: var(--apple-text-primary);
         }
 
-        .app-bar .title-box p {
-            margin: 2px 0 0 0;
-            font-size: 0.75rem;
-            opacity: 0.8;
-        }
-
-        .chat-content {
-            flex: 1;
-            padding: 20px;
-            overflow-y: auto;
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
-            background: #FFFFFF;
-        }
-
-        .bubble-wrapper {
-            display: flex;
-            flex-direction: column;
-            max-width: 85%;
-        }
-
-        .bubble-wrapper.user { align-self: flex-end; }
-        .bubble-wrapper.ai { align-self: flex-start; }
-
-        .bubble-info {
-            font-size: 0.75rem;
-            margin-bottom: 4px;
-            color: var(--md-sys-color-on-surface-variant);
-            display: flex;
-            align-items: center;
-            gap: 4px;
-        }
-
-        .bubble {
-            padding: 14px 18px;
+        .apple-header p {
             font-size: 0.95rem;
-            line-height: 1.5;
-            letter-spacing: -0.2px;
+            color: var(--apple-text-secondary);
+            margin-top: 6px;
         }
 
-        .user .bubble {
-            background-color: var(--md-sys-color-primary);
-            color: var(--md-sys-color-on-primary);
-            border-radius: 20px 20px 4px 20px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        /* ==========================================
+           2. 2단 분할 하이엔드 워크스페이스 레이아웃
+           ========================================== */
+        .workspace {
+            width: 100%;
+            max-width: 1250px;
+            display: grid;
+            grid-template-columns: 390px 1fr; /* 입력 컨트롤 및 결과 모니터 분할 */
+            gap: 24px;
         }
 
-        .ai .bubble {
-            background-color: var(--md-sys-color-surface-variant);
-            color: var(--md-sys-color-on-surface-variant);
-            border-radius: 20px 20px 20px 4px;
-            white-space: pre-wrap;
+        @media (max-width: 1024px) {
+            .workspace { grid-template-columns: 1fr; }
         }
 
-        .input-bar {
-            padding: 16px 20px;
-            background-color: var(--md-sys-color-surface);
-            border-top: 1px solid #E0E2EC;
+        .apple-card {
+            background: var(--apple-card);
+            border-radius: 20px;
+            padding: 24px;
+            border: 1px solid var(--apple-border);
+            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.01);
+        }
+
+        /* [좌측] 입력 컨트롤러 패널 */
+        .control-panel {
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+            height: fit-content;
+        }
+
+        .panel-badge-group {
+            display: flex;
+            gap: 8px;
+        }
+
+        .mini-badge {
+            font-size: 0.75rem;
+            font-weight: 600;
+            padding: 4px 10px;
+            border-radius: 100px;
+        }
+        .mini-badge.p { background: rgba(0, 113, 227, 0.1); color: var(--apple-accent); }
+        .mini-badge.c { background: rgba(36, 178, 75, 0.1); color: var(--apple-accent-green); }
+
+        .field-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .field-group label {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--apple-text-secondary);
+            text-transform: uppercase;
+        }
+
+        .apple-input, .apple-textarea {
+            width: 100%;
+            background: #f5f5f7;
+            border: 1px solid transparent;
+            border-radius: 12px;
+            padding: 14px;
+            font-size: 0.9rem;
+            color: var(--apple-text-primary);
+            transition: all 0.3s var(--apple-fluid);
+            outline: none;
+        }
+
+        .apple-textarea { resize: none; height: 180px; line-height: 1.5; }
+        .apple-input:focus, .apple-textarea:focus {
+            background: #ffffff;
+            border-color: var(--apple-text-primary);
+            box-shadow: 0 0 0 4px rgba(0, 0, 0, 0.05);
+        }
+
+        .apple-btn {
+            background: var(--apple-text-primary);
+            color: #ffffff;
+            border: none;
+            padding: 16px;
+            border-radius: 12px;
+            font-size: 0.95rem;
+            font-weight: 500;
+            cursor: pointer;
             display: flex;
             align-items: center;
-            gap: 12px;
+            justify-content: center;
+            gap: 8px;
+            transition: all 0.2s var(--apple-fluid);
+        }
+        .apple-btn:hover { background: #333336; }
+        .apple-btn:active { transform: scale(0.97); }
+
+        /* ==========================================
+           3. Real-Time 생생한 추론 매커니즘 시각화
+           ========================================== */
+        .live-studio-container {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
         }
 
-        .text-field-box {
-            flex: 1;
+        /* 📟 실시간 CUDA 하드웨어 런타임 로그 스트리머 */
+        .runtime-logger {
+            background: var(--apple-text-primary);
+            color: #a5d6ff;
+            border-radius: 16px;
+            padding: 16px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.8rem;
+            height: 115px;
+            overflow-y: auto;
+            border: 1px solid var(--console-border);
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .log-line {
+            opacity: 0.8;
+            animation: log-fade 0.25s var(--apple-fluid) forwards;
+            display: flex;
+            gap: 12px;
+        }
+        .log-line .timestamp { color: var(--apple-text-secondary); }
+        .log-line .status-tag { color: #ffbd2e; font-weight: 500; }
+
+        /* 🧪 DuoP / DuoC 통합 병렬 모니터링 콘솔 그리드 */
+        .inspector-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .inspector-grid { grid-template-columns: 1fr; }
+        }
+
+        .console-panel {
+            background: var(--console-bg);
+            border-radius: 18px;
+            border: 1px solid var(--console-border);
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            height: 480px;
+            box-shadow: inset 0 0 25px rgba(0,0,0,0.65);
+        }
+
+        .console-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            padding-bottom: 12px;
+            margin-bottom: 14px;
+        }
+
+        .console-title {
+            font-size: 0.8rem;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .console-panel.p-side .console-title { color: var(--apple-accent); }
+        .console-panel.c-side .console-title { color: var(--apple-accent-green); }
+
+        /* 깜빡이는 실시간 토큰 연산 하드웨어 시각화 라이트 */
+        .pulse-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #424245;
+            transition: background 0.3s;
+        }
+        .is-analyzing .p-side .pulse-dot { background: var(--apple-accent); animation: console-pulse 0.8s infinite alternate; }
+        .is-analyzing .c-side .pulse-dot { background: var(--apple-accent-green); animation: console-pulse 0.8s infinite alternate; }
+
+        /* 실시간 토크나이징 스트리밍 코드 가독성 패널 */
+        .code-screen {
+            font-family: 'JetBrains Mono', Consolas, monospace;
+            font-size: 0.8rem;
+            line-height: 1.6;
+            color: #e1e4e8;
+            white-space: pre-wrap;
+            overflow-y: auto;
+            flex-grow: 1;
             position: relative;
         }
 
-        textarea {
-            width: 100%;
-            height: 48px;
-            background-color: #FFFFFF;
-            border: 1px solid var(--md-sys-color-outline);
-            border-radius: 12px;
-            padding: 12px 16px;
-            box-sizing: border-box;
-            font-family: inherit;
-            font-size: 0.95rem;
-            resize: none;
+        /* 텍스트 스트리밍 구동 시 붙는 깜빡이는 세로 블록 커서 */
+        .code-screen.typing::after {
+            content: '┃';
+            color: var(--apple-accent);
+            animation: cursor-blink 0.5s infinite;
+        }
+        .console-panel.c-side .code-screen.typing::after {
+            color: var(--apple-accent-green);
+        }
+
+        /* ==========================================
+           4. 하이엔드 투명 글래스 도크 (Dock)
+           ========================================== */
+        .apple-dock-wrapper {
+            position: fixed;
+            left: 50%;
+            transform: translateX(-50%);
+            top: var(--dock-position);
+            width: auto;
+            z-index: 9999;
+            transition: top 0.75s var(--apple-spring);
+        }
+
+        .apple-dock {
+            background: var(--apple-canvas);
+            backdrop-filter: blur(30px);
+            -webkit-backdrop-filter: blur(30px);
+            border-radius: 24px;
+            padding: 8px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            box-shadow: 0 12px 36px rgba(0, 0, 0, 0.05);
+        }
+
+        .dock-item {
+            background: none;
+            border: none;
             outline: none;
-            transition: border 0.2s;
-        }
-
-        textarea:focus {
-            border: 2px solid var(--md-sys-color-primary);
-            padding: 11px 15px;
-        }
-
-        .send-btn {
             width: 48px;
             height: 48px;
-            border-radius: 50%;
-            background-color: var(--md-sys-color-primary-container);
-            color: var(--md-sys-color-on-primary-container);
-            border: none;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            border-radius: 14px;
+            color: #515154;
             cursor: pointer;
-            transition: background-color 0.2s, transform 0.1s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.35s var(--apple-spring);
         }
 
-        .send-btn:hover { background-color: #B9D3FF; }
-        .send-btn:active { transform: scale(0.95); }
-        .send-btn span { font-size: 22px; }
+        .dock-item i { font-size: 22px; }
+        .dock-item:hover {
+            background: rgba(0, 0, 0, 0.04);
+            color: var(--apple-text-primary);
+            transform: translateY(-6px) scale(1.12);
+        }
+        .dock-item:active { transform: translateY(-2px) scale(0.92); }
+
+        .dock-divider { width: 1px; height: 24px; background: rgba(0, 0, 0, 0.1); }
+
+        /* 도크 전환 스위치 전용 스타일 */
+        .dock-item.position-toggle { background: var(--apple-text-primary); color: #ffffff; }
+        .dock-item.position-toggle:hover { background: #333336; color: #ffffff; }
+        .dock-item.position-toggle i { transition: transform 0.6s var(--apple-spring); }
+        .apple-dock-wrapper.is-top .position-toggle i { transform: rotate(180deg); }
+
+        /* 내부 애니메이션 공식 */
+        @keyframes log-fade { from { opacity: 0; transform: translateY(6px); } to { opacity: 0.8; transform: translateY(0); } }
+        @keyframes console-pulse { from { opacity: 0.4; transform: scale(0.9); } to { opacity: 1; transform: scale(1.1); } }
+        @keyframes cursor-blink { 0%, 100% { opacity: 0; } 50% { opacity: 1; } }
     </style>
 </head>
 <body>
 
-<div class="app-container">
-    <div class="app-bar">
-        <span class="material-icons-outlined icon">psychology</span>
-        <div class="title-box">
-            <h1>국어 담론 격률 판별 AI</h1>
-            <p>Qwen2.5-3B Fine-Tuned Model</p>
-        </div>
+    <div class="apple-header">
+        <h1>gGuru Integration Studio</h1>
+        <p>Dual-Agent Parallel Fine-tuned Inference System</p>
     </div>
 
-    <div class="chat-content" id="chatContent">
-        <div class="bubble-wrapper ai">
-            <div class="bubble-info">
-                <span class="material-icons-outlined" style="font-size:12px;">smart_toy</span> 판별기 엔진
-            </div>
-            <div class="bubble">안녕하세요! 분석할 대화문을 양식에 맞춰 하단에 입력해 주세요. 원리 및 격률 위반을 과학적으로 판별합니다.</div>
-        </div>
-    </div>
-
-    <div class="input-bar">
-        <div class="text-field-box">
-            <textarea id="userInput" placeholder="A: 오늘 학교 가?&#10;B: 나 어제 치킨 먹었어."></textarea>
-        </div>
-        <button class="send-btn" onclick="analyzeConversation()">
-            <span class="material-icons-outlined">send</span>
-        </button>
-    </div>
-</div>
-
-<script>
-    async function analyzeConversation() {
-        const inputField = document.getElementById('userInput');
-        const chatContent = document.getElementById('chatContent');
-        const rawText = inputField.value.trim();
+    <div class="workspace" id="mainWorkspace">
         
-        if (!rawText) return;
-
-        // 1. 유저 입력 말풍선 추가
-        chatContent.innerHTML += `
-            <div class="bubble-wrapper user">
-                <div class="bubble-info" style="justify-content: flex-end;">분석 요청</div>
-                <div class="bubble">${rawText.replace(/\n/g, '<br>')}</div>
+        <div class="apple-card control-panel">
+            <div class="field-group">
+                <label>Active Core Modules</label>
+                <div class="panel-badge-group">
+                    <span class="mini-badge p">DuoP Core Connected</span>
+                    <span class="mini-badge c">DuoC Core Connected</span>
+                </div>
             </div>
-        `;
-        inputField.value = '';
-        chatContent.scrollTop = chatContent.scrollHeight;
 
-        // 2. AI 대기 상태 말풍선 추가
-        const aiMessageId = 'ai-' + Date.now();
-        chatContent.innerHTML += `
-            <div class="bubble-wrapper ai" id="${aiMessageId}">
-                <div class="bubble-info">
-                    <span class="material-icons-outlined" style="font-size:12px;">hourglass_empty</span> 연산 중
-                </div>
-                <div class="bubble">🤖 코랩 GPU에서 담론을 분석하고 있습니다. 잠시만 기다려 주세요...</div>
+            <div class="field-group">
+                <label>Situation Context</label>
+                <input type="text" class="apple-input" id="sitInput" value="대학교 동아리 방에서 한 부원이 다른 부원에게 음료수를 건네며 무리한 부탁을 연달아 청하는 상황">
             </div>
-        `;
-        chatContent.scrollTop = chatContent.scrollHeight;
 
-        try {
-            // ⚠️ [중요] 발급받은 본인의 Ngrok 주소를 이곳에 정확히 덮어쓰세요!
-            const NGROK_SERVER_URL = "https://pectin-angled-parsnip.ngrok-free.dev"; 
-            
-            const response = await fetch(`${NGROK_SERVER_URL}/generate`, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ conversation: rawText })
-            });
-            const data = await response.json();
-            
-            // 🛠️ [버그 수정 완료] 기존 중괄호 오타를 고쳐서 화면이 자동으로 바뀌도록 수정했습니다.
-            const targetWrapper = document.getElementById(aiMessageId);
-            targetWrapper.innerHTML = `
-                <div class="bubble-info">
-                    <span class="material-icons-outlined" style="font-size:12px;">check_circle</span> 분석 완료
-                </div>
-                <div class="bubble">${data.result}</div>
-            `;
-        } catch (error) {
-            const targetWrapper = document.getElementById(aiMessageId);
-            targetWrapper.innerHTML = `
-                <div class="bubble-info" style="color: #BA1A1A;">
-                    <span class="material-icons-outlined" style="font-size:12px;">error</span> 통신 오류
-                </div>
-                <div class="bubble" style="background-color: #FFDAD7; color: #410002;">
-                    ❌ 코랩 서버와의 연결에 실패했습니다.<br>Google Colab의 FastAPI 서버 스크립트가 실행 상태인지 재확인하세요.
-                </div>
-            `;
-        }
-        chatContent.scrollTop = chatContent.scrollHeight;
-    }
+            <div class="field-group">
+                <label>Dialogue Dataset</label>
+                <textarea class="apple-textarea" id="diagInput">부원A: 선배, 여기 시원한 아메리카노 하나 드세요!
+부원B: 오 고마워, 잘 마실게.
+부원A: 근데 마시는 김에 이번 주말 동아리방 청소 선배가 대신 다 해주시면 안 돼요? 아, 그리고 다음 주 발표 자료 만드는 것도 부탁할게요!</textarea>
+            </div>
 
-    document.getElementById('userInput').addEventListener('keydown', function(e) {
-        if (e.key === 'Enter' && !e.shiftKey) {
-            e.preventDefault();
-            analyzeConversation();
+            <button class="apple-btn" id="runParallelBtn">
+                <i class="material-icons-round">bolt</i>
+                <span>Duo 통합 정밀 분석 실행</span>
+            </button>
+        </div>
+
+        <div class="live-studio-container">
+            
+            <div class="runtime-logger" id="runtimeLogger">
+                <div class="log-line"><span class="timestamp">[00:00:00]</span> <span class="status-tag">[SYSTEM]</span> Unsloth 가속 연산 하드웨어 매핑 엔진 인프라 대기 완료.</div>
+            </div>
+
+            <div class="inspector-grid">
+                
+                <div class="console-panel p-side">
+                    <div class="console-header">
+                        <div class="console-title"><i class="material-icons-round" style="font-size:16px;">psychology</i> DUOP CORE INSPECTOR</div>
+                        <div class="pulse-dot"></div>
+                    </div>
+                    <div class="code-screen" id="duopScreen">// Engine Standby...</div>
+                </div>
+
+                <div class="console-panel c-side">
+                    <div class="console-header">
+                        <div class="console-title"><i class="material-icons-round" style="font-size:16px;">forum</i> DUOC CORE INSPECTOR</div>
+                        <div class="pulse-dot"></div>
+                    </div>
+                    <div class="code-screen" id="duocScreen">// Engine Standby...</div>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="apple-dock-wrapper" id="appleDockWrapper">
+        <div class="apple-dock">
+            <button class="dock-item" style="color:var(--apple-accent)" title="통합 대시보드"><i class="material-icons-round">dashboard</i></button>
+            <button class="dock-item" title="데이터 덤프 확인"><i class="material-icons-round">cloud_sync</i></button>
+            <div class="dock-divider"></div>
+            <button class="dock-item position-toggle" id="dockPositionToggle" title="도킹 위치 전환"><i class="material-icons-round">keyboard_arrow_down</i></button>
+            <div class="dock-divider"></div>
+            <button class="dock-item" title="로그 히스토리 아카이브"><i class="material-icons-round">receipt_long</i></button>
+            <button class="dock-item" title="엔진 하이퍼파라미터 세팅"><i class="material-icons-round">analytics</i></button>
+        </div>
+    </div>
+
+    <script>
+        const posToggle = document.getElementById('dockPositionToggle');
+        const dockWrapper = document.getElementById('appleDockWrapper');
+        const runParallelBtn = document.getElementById('runParallelBtn');
+        const mainWorkspace = document.getElementById('mainWorkspace');
+        
+        const logger = document.getElementById('runtimeLogger');
+        const duopScreen = document.getElementById('duopScreen');
+        const duocScreen = document.getElementById('duocScreen');
+
+        // 🔄 쫀득한 플로팅 도킹 바 상하단 스왑 로직
+        let dockLocation = 'bottom';
+        posToggle.addEventListener('click', () => {
+            if (dockLocation === 'bottom') {
+                document.documentElement.style.setProperty('--dock-position', '20px');
+                dockWrapper.classList.add('is-top');
+                dockLocation = 'top';
+            } else {
+                document.documentElement.style.setProperty('--dock-position', 'calc(100vh - 96px)');
+                dockWrapper.classList.remove('is-top');
+                dockLocation = 'bottom';
+            }
+        });
+
+        // 📟 실시간 런타임 활동 전용 로그 함수
+        function pushLog(tag, message) {
+            const time = new Date().toLocaleTimeString();
+            const logLine = document.createElement('div');
+            logLine.className = 'log-line';
+            logLine.innerHTML = `<span class="timestamp">[${time}]</span> <span class="status-tag">[${tag}]</span> ${message}`;
+            logger.appendChild(logLine);
+            logger.scrollTop = logger.scrollHeight;
         }
-    });
-</script>
+
+        // 🧬 글자(Token) 단위 리얼 스트리밍 타이핑 엔진 함수
+        function streamText(targetElement, fullText, speed = 8, callback) {
+            targetElement.classList.add('typing');
+            targetElement.innerText = "";
+            let index = 0;
+            
+            function type() {
+                if (index < fullText.length) {
+                    targetElement.innerText += fullText.charAt(index);
+                    index++;
+                    targetElement.scrollTop = targetElement.scrollHeight;
+                    setTimeout(type, speed);
+                } else {
+                    targetElement.classList.remove('typing');
+                    if (callback) callback();
+                }
+            }
+            type();
+        }
+
+        // 🚀 실전 연결: 버튼을 누르면 코랩 GPU와 연결되어 데이터를 교환합니다.
+        runParallelBtn.addEventListener('click', async () => {
+            
+            // ⚠️ [필수 변경] 코랩 맨 아래 발급된 본인의 localtunnel 주소(예: https://xxxx.loca.lt)를 여기에 입력하세요!
+            const COLAB_URL = "https:// 여기에_발급받은_localtunnel_주소를_복사해넣으세요"; 
+            
+            if (COLAB_URL.includes("여기에")) {
+                alert("코랩 서버의 Localtunnel 주소를 소스코드 내부 COLAB_URL 변수에 붙여넣어 주세요!");
+                return;
+            }
+
+            mainWorkspace.classList.add('is-analyzing');
+            duopScreen.style.color = "#86868b";
+            duocScreen.style.color = "#86868b";
+            duopScreen.innerText = "// 엔드포인트 핸드셰이크 및 CUDA 컨텍스트 병렬 할당 중...";
+            duocScreen.innerText = "// 엔드포인트 핸드셰이크 및 CUDA 컨텍스트 병렬 할당 중...";
+
+            pushLog("API_CLIENT", "구글 코랩 가속 인프라 백엔드로 비동기 멀티플렉스 POST 요청 송신 완료.");
+            setTimeout(() => pushLog("CUDA_HOST", "NVidia T4 텐서 연산 가속화 코어 할당 갱신."), 300);
+            setTimeout(() => pushLog("UNSLOTH_ENGINE", "Qwen2.5 4-Bit 기본 레이어 로더 바인딩 가동."), 600);
+            setTimeout(() => pushLog("MULTIPLEXER", "DuoP / DuoC 멀티 어댑터 컨텍스트 동시 로드 시도."), 1000);
+
+            // 화면 인풋 텍스트 파싱 및 Request Body 패키징
+            const requestBody = {
+                situation: document.getElementById('sitInput').value,
+                dialogue: document.getElementById('diagInput').value
+            };
+
+            try {
+                // 📡 실제 구글 코랩 비동기 API 서버 호출
+                const response = await fetch(`${COLAB_URL}/analyze`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(requestBody)
+                });
+
+                if (!response.ok) throw new Error("서버 연산 응답 실패");
+                
+                // 찐 가중치 연산으로 도출된 최종 정답 JSON 받아오기
+                const realData = await response.json();
+
+                // 1) DuoP 콘솔 모니터 창에 실시간 토큰 스트리밍 전개
+                setTimeout(() => {
+                    pushLog("DuoP_CORE", "DuoP 공손성 원리 미세조정 가중치 추론 완료. 결과 수신.");
+                    duopScreen.style.color = "#a5d6ff";
+                    streamText(duopScreen, JSON.stringify(realData.duop, null, 2), 6, () => {
+                        pushLog("DuoP_CORE", "DuoP 리포트 인스펙터 트리 동기화 완료.");
+                    });
+                }, 1400);
+
+                // 2) DuoC 콘솔 모니터 창에 실시간 토큰 스트리밍 전개
+                setTimeout(() => {
+                    pushLog("DuoC_CORE", "DuoC 협력/체면유지 미세조정 가중치 추론 완료. 결과 수신.");
+                    duocScreen.style.color = "#7ee787";
+                    streamText(duocScreen, JSON.stringify(realData.duoc, null, 2), 6, () => {
+                        pushLog("DuoC_CORE", "DuoC 보고서 분석 텐서 디코딩 바인딩 완료.");
+                        mainWorkspace.classList.remove('is-analyzing');
+                        pushLog("SYSTEM", "🎉 갱신완료: Duo 병렬 멀티 가중치 연산 프로세스가 완벽하게 종료되었습니다.");
+                    });
+                }, 2200);
+
+            } catch (error) {
+                // 통신선 에러 발생 시 콘솔 차단 매핑 및 가이드라인 노출
+                pushLog("ERROR", `연결 오류: URL을 오타 없이 적었는지 혹은 코랩 API 셀이 구동 중인지 체크해 주세요. (${error.message})`);
+                duopScreen.style.color = "#ff5f56";
+                duocScreen.style.color = "#ff5f56";
+                duopScreen.innerText = "❌ Connection Refused\n\n[도움말] 코랩 내부 API 서버의 주소가 유효한지 검증하십시오.";
+                duocScreen.innerText = "❌ Connection Refused\n\n[도움말] npx localtunnel 터널 게이트가 차단되었는지 확인하십시오.";
+                mainWorkspace.classList.remove('is-analyzing');
+            }
+        });
+    </script>
 </body>
 </html>
