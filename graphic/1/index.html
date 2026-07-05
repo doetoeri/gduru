@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>시네마틱 PPT용 이미지 변환 히트맵 스튜디오</title>
+    <style>
+        * { box-sizing: border-box; }
+        body, html {
+            margin: 0; padding: 0; width: 100%; height: 100%;
+            overflow: hidden; background-color: #0b0b0c; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        }
+        
+        #canvas-container {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            display: flex; align-items: center; justify-content: center;
+            padding: 20px; padding-left: 370px;
+            background-color: #050506;
+        }
+        
+        canvas {
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.85);
+            background-color: #000;
+            max-width: 100%; max-height: 100%;
+            object-fit: contain;
+        }
+        
+        #control-panel {
+            position: absolute; top: 0; left: 0; bottom: 0; width: 350px; z-index: 10;
+            display: flex; flex-direction: column; gap: 14px;
+            background-color: rgba(18, 18, 20, 0.95); padding: 25px;
+            border-right: 1px solid rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(20px); color: #fff; overflow-y: auto;
+        }
+        
+        h2 { margin: 0 0 5px 0; font-size: 19px; color: #fff; font-weight: 600; text-align: center; border-bottom: 1px solid rgba(255,255,255,0.08); padding-bottom: 12px; }
+        h3 { margin: 10px 0 2px 0; font-size: 12px; color: #007bff; text-transform: uppercase; letter-spacing: 1px; }
+        
+        .control-group { display: flex; flex-direction: column; gap: 6px; }
+        .control-group label { font-size: 13px; color: #aaa; display: flex; justify-content: space-between; font-weight: 500; }
+        .control-group label span { color: #007bff; font-weight: bold; }
+        
+        .checkbox-group { flex-direction: row; align-items: center; gap: 8px; cursor: pointer; padding: 4px 0; }
+        .checkbox-group input { width: 16px; height: 16px; cursor: pointer; }
+        .checkbox-group label { cursor: pointer; }
+
+        select, input[type="range"], input[type="file"] {
+            width: 100%; padding: 8px 12px; background: #252528; border: 1px solid #3a3a3d;
+            color: #fff; border-radius: 6px; font-size: 13px; outline: none;
+        }
+        input[type="file"] { padding: 6px 10px; cursor: pointer; }
+        input[type="range"] { padding: 0; cursor: pointer; height: 6px; -webkit-appearance: none; }
+        input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; width: 16px; height: 16px; border-radius: 50%; background: #007bff; }
+        
+        #btn-group { display: flex; flex-direction: column; gap: 10px; margin-top: 5px; }
+        .row-btns { display: flex; gap: 10px; }
+        button {
+            flex: 1; padding: 12px; font-size: 13px; font-weight: bold;
+            color: white; background-color: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.12); border-radius: 8px;
+            cursor: pointer; transition: all 0.2s ease;
+        }
+        button:hover { background-color: rgba(255, 255, 255, 0.15); border-color: rgba(255, 255, 255, 0.25); }
+        button.action-btn { background-color: #007bff; border-color: #0069d9; }
+        button.action-btn:hover { background-color: #0062cc; }
+        button.record-btn { background-color: #dc3545; border-color: #bd2130; }
+        button.record-btn:hover { background-color: #bd2130; }
+        button:disabled { opacity: 0.3; cursor: not-allowed; }
+        
+        #status-msg { 
+            font-size: 12px; color: #ffc107; text-align: center; margin-top: 5px; 
+            background: rgba(255, 193, 7, 0.1); padding: 8px; border-radius: 6px; display: none; 
+        }
+        
+        @media (max-width: 768px) {
+            #control-panel { width: 100%; height: auto; bottom: auto; border-right: none; border-bottom: 1px solid rgba(255,255,255,0.1); }
+            #canvas-container { padding-left: 20px; top: 500px; height: calc(100% - 500px); }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="control-panel">
+        <h2>히트맵 스튜디오 Ultra</h2>
+        
+        <div class="control-group">
+            <label>작동 모드 (Generator Mode)</label>
+            <select id="app-mode" onchange="toggleMode()">
+                <option value="image">원하는 이미지 기반 변환</option>
+                <option value="pattern">기본 기하학 패턴 (랜덤)</option>
+            </select>
+        </div>
+
+        <div class="control-group" id="image-upload-group">
+            <label>소스 이미지 업로드</label>
+            <input type="file" id="image-loader" accept="image/*" onchange="handleImageUpload(event)">
+        </div>
+
+        <h3>디스플레이 설정</h3>
+        <div class="control-group">
+            <label>출력 화면비 (Aspect Ratio)</label>
+            <select id="aspect-ratio" onchange="initCanvasSize()">
+                <option value="16-9">16:9 와이드스크린 (PPT 기본)</option>
+                <option value="4-3">4:3 표준 스크린</option>
+                <option value="1-1">1:1 정사각형 (디스플레이용)</option>
+                <option value="9-16">9:16 세로형 숏폼 영상</option>
+            </select>
+        </div>
+
+        <div class="control-group">
+            <label>출력 해상도 (Resolution)</label>
+            <select id="export-res" onchange="initCanvasSize()">
+                <option value="1080" selected>FHD (1920x1080급)</option>
+                <option value="1440">QHD (2560x1440급)</option>
+                <option value="720">HD (1280x720급)</option>
+            </select>
+        </div>
+
+        <div class="control-group">
+            <label>연산 디테일 (성능 최적화) <span id="quality-val">2x</span></label>
+            <input type="range" id="render-scale" min="1" max="4" value="2" step="1" oninput="updateParams()">
+        </div>
+
+        <div class="control-group">
+            <label>컬러 맵 테마 (Theme)</label>
+            <select id="color-theme" onchange="renderFrame()">
+                <option value="thermal">Thermal (리얼 열화상)</option>
+                <option value="magma">Magma (화산 용암)</option>
+                <option value="ice">Ocean Ice (네온 블루)</option>
+                <option value="standard">Standard (무지개 레트로)</option>
+                <option value="monochrome">Monochrome (모던 그레이)</option>
+            </select>
+        </div>
+
+        <div id="image-controls-group">
+            <h3>리얼 열화상 시뮬레이터 필터</h3>
+            
+            <div class="control-group">
+                <label>열 확산 블러 (Smooth Bloom) <span id="blur-val">8px</span></label>
+                <input type="range" id="image-blur" min="0" max="25" value="8" oninput="updateParams()">
+            </div>
+
+            <div class="control-group">
+                <label>열 반응 민감도 (Contrast) <span id="contrast-val">120%</span></label>
+                <input type="range" id="image-contrast" min="40" max="250" value="120" oninput="updateParams()">
+            </div>
+
+            <div class="control-group">
+                <label>기본 온도 레이어 (Brightness) <span id="bright-val">100%</span></label>
+                <input type="range" id="image-bright" min="40" max="200" value="100" oninput="updateParams()">
+            </div>
+
+            <div class="control-group checkbox-group">
+                <input type="checkbox" id="image-invert" onchange="updateParams()">
+                <label for="image-invert">고온 / 저온 영역 반전 (Invert Heat)</label>
+            </div>
+
+            <div class="control-group">
+                <label>열 아지랑이 왜곡 강도 <span id="shimmer-val">35%</span></label>
+                <input type="range" id="shimmer-intensity" min="0" max="100" value="35" oninput="updateParams()">
+            </div>
+        </div>
+
+        <div id="pattern-controls-group" style="display: none;">
+            <h3>기하학 패턴 옵션</h3>
+            <div class="control-group">
+                <label>패턴 개수 <span id="count-val">12</span></label>
+                <input type="range" id="point-count" min="4" max="35" value="12" oninput="updateParams()">
+            </div>
+            <div class="control-group">
+                <label>패턴 크기 (반경) <span id="size-val">100%</span></label>
+                <input type="range" id="point-size" min="40" max="200" value="100" oninput="updateParams()">
+            </div>
+        </div>
+
+        <h3>동적 루프 제어</h3>
+        <div class="control-group">
+            <label>애니메이션 속도 <span id="speed-val">100%</span></label>
+            <input type="range" id="anim-speed" min="20" max="250" value="100" oninput="updateParams()">
+        </div>
+
+        <div class="control-group">
+            <label>루프 주기 <span id="loop-val">5초</span></label>
+            <input type="range" id="loop-duration" min="3" max="15" value="5" step="1" oninput="updateParams()">
+        </div>
+
+        <div id="btn-group">
+            <div class="row-btns">
+                <button onclick="resetPoints()" id="reset-pattern-btn" disabled style="opacity:0.3;">새 패턴 조합</button>
+                <button onclick="togglePlay()" id="play-btn">일시정지</button>
+            </div>
+            <button onclick="downloadImage()" class="action-btn">현재 스크린샷 (PNG)</button>
+            <button onclick="recordLoopVideo()" id="record-btn" class="record-btn">PPT용 고화질 무한루프 비디오 (WebM)</button>
+            <div id="status-msg">루프 비디오 녹화 중...</div>
+        </div>
+    </div>
+    
+    <div id="canvas-container">
+        <canvas id="heatmapCanvas"></canvas>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('heatmapCanvas');
+        const ctx = canvas.getContext('2d');
+
+        const bufferCanvas = document.createElement('canvas');
+        const bufferCtx = bufferCanvas.getContext('2d');
+
+        let points = [];
+        let isPlaying = true;
+        let animationFrameId = null;
+        
+        let angleTime = 0; 
+        let lastTime = 0;
+        let uploadedImage = null;
+
+        const ASPECT_RATIOS = {
+            "16-9": 16 / 9,
+            "4-3": 4 / 3,
+            "1-1": 1 / 1,
+            "9-16": 9 / 16
+        };
+
+        function toggleMode() {
+            const mode = document.getElementById('app-mode').value;
+            const isImageMode = (mode === 'image');
+            
+            document.getElementById('image-upload-group').style.display = isImageMode ? 'flex' : 'none';
+            document.getElementById('image-controls-group').style.display = isImageMode ? 'block' : 'none';
+            document.getElementById('pattern-controls-group').style.display = isImageMode ? 'none' : 'block';
+            
+            const pBtn = document.getElementById('reset-pattern-btn');
+            pBtn.disabled = isImageMode;
+            pBtn.style.opacity = isImageMode ? '0.3' : '1';
+
+            renderFrame();
+        }
+
+        function handleImageUpload(e) {
+            const reader = new FileReader();
+            reader.onload = function(event) {
+                uploadedImage = new Image();
+                uploadedImage.onload = function() {
+                    renderFrame();
+                };
+                uploadedImage.src = event.target.result;
+            };
+            if(e.target.files[0]) {
+                reader.readAsDataURL(e.target.files[0]);
+            }
+        }
+
+        function initCanvasSize() {
+            const ratioType = document.getElementById('aspect-ratio').value;
+            const targetHeight = parseInt(document.getElementById('export-res').value);
+            const ratio = ASPECT_RATIOS[ratioType];
+            
+            canvas.height = targetHeight;
+            canvas.width = Math.round(targetHeight * ratio);
+            canvas.style.aspectRatio = ratio;
+
+            resetPoints();
+        }
+
+        function updateParams() {
+            document.getElementById('count-val').innerText = document.getElementById('point-count').value;
+            document.getElementById('size-val').innerText = document.getElementById('point-size').value + '%';
+            document.getElementById('speed-val').innerText = document.getElementById('anim-speed').value + '%';
+            document.getElementById('loop-val').innerText = document.getElementById('loop-duration').value + '초';
+            document.getElementById('quality-val').innerText = document.getElementById('render-scale').value + 'x';
+            document.getElementById('shimmer-val').innerText = document.getElementById('shimmer-intensity').value + '%';
+            
+            document.getElementById('blur-val').innerText = document.getElementById('image-blur').value + 'px';
+            document.getElementById('contrast-val').innerText = document.getElementById('image-contrast').value + '%';
+            document.getElementById('bright-val').innerText = document.getElementById('image-bright').value + '%';
+            
+            if (!isPlaying) renderFrame();
+        }
+
+        function togglePlay() {
+            isPlaying = !isPlaying;
+            document.getElementById('play-btn').innerText = isPlaying ? "일시정지" : "재생";
+            if (isPlaying) {
+                lastTime = 0;
+                animate();
+            }
+        }
+
+        function getHeatmapColor(value, theme) {
+            let r = 0, g = 0, b = 0;
+            
+            if (theme === 'magma') {
+                if (value < 0.2) { r = Math.floor(value / 0.2 * 60); b = Math.floor(value / 0.2 * 40); }
+                else if (value < 0.4) { r = Math.floor(60 + (value - 0.2) / 0.2 * 140); b = Math.floor(40 + (value - 0.2) / 0.2 * 20); }
+                else if (value < 0.7) { r = 200; g = Math.floor((value - 0.4) / 0.3 * 120); b = Math.floor(60 - (value - 0.4) / 0.3 * 40); }
+                else if (value < 0.9) { r = 255; g = Math.floor(120 + (value - 0.7) / 0.2 * 115); b = Math.floor(20 + (value - 0.7) / 0.2 * 100); }
+                else { r = 255; g = 255; b = Math.floor(120 + (value - 0.9) / 0.1 * 135); }
+            } else if (theme === 'ice') {
+                if (value < 0.3) { b = Math.floor(50 + (value / 0.3) * 150); r = Math.floor((value / 0.3) * 10); }
+                else if (value < 0.6) { g = Math.floor((value - 0.3) / 0.3 * 200); b = 255; }
+                else if (value < 0.8) { r = Math.floor((value - 0.6) / 0.2 * 100); g = 255; b = 255; }
+                else { r = Math.floor(100 + (value - 0.8) / 0.2 * 155); g = 255; b = 255; }
+            } else if (theme === 'thermal') {
+                if (value < 0.15) { b = Math.floor((value / 0.15) * 160); }
+                else if (value < 0.4) { g = Math.floor((value - 0.15) / 0.25 * 220); b = Math.floor(160 + (value - 0.15) / 0.25 * 95); }
+                else if (value < 0.65) { r = Math.floor((value - 0.4) / 0.25 * 255); g = 255; b = Math.floor(255 - (value - 0.4) / 0.25 * 255); }
+                else if (value < 0.85) { r = 255; g = Math.floor(255 - (value - 0.65) / 0.2 * 200); }
+                else { r = 255; g = Math.floor(55 + (value - 0.85) / 0.15 * 200); b = Math.floor((value - 0.85) / 0.15 * 255); }
+            } else if (theme === 'monochrome') {
+                let gray = Math.floor(value * 255); r = gray; g = gray; b = gray;
+            } else {
+                if (value < 0.20) { r = Math.floor((0.20 - value) / 0.20 * 130); b = Math.floor(140 + (value / 0.20) * 115); }
+                else if (value < 0.40) { g = Math.floor((value - 0.20) / 0.20 * 255); b = 255; }
+                else if (value < 0.60) { g = 255; b = Math.floor((0.60 - value) / 0.20 * 255); }
+                else if (value < 0.75) { r = Math.floor((value - 0.60) / 0.15 * 255); g = 255; }
+                else if (value < 0.98) { r = 255; g = Math.floor((0.98 - value) / 0.23 * 255); }
+                else { r = 255; b = Math.floor((value - 0.98) / 0.02 * 255); }
+            }
+            return { r, g, b };
+        }
+
+        function resetPoints() {
+            const width = canvas.width;
+            const height = canvas.height;
+            if (width === 0 || height === 0) return;
+
+            const numPoints = parseInt(document.getElementById('point-count').value);
+            const sizeModifier = parseInt(document.getElementById('point-size').value) / 100;
+            const baseRadius = Math.min(width, height) * 0.45 * sizeModifier;
+
+            points = [];
+            for (let i = 0; i < numPoints; i++) {
+                const centerX = Math.random() * width;
+                const centerY = Math.random() * height;
+                points.push({
+                    centerX, centerY, 
+                    orbitRadiusX: Math.random() * (width * 0.1) + (width * 0.03),
+                    orbitRadiusY: Math.random() * (height * 0.1) + (height * 0.03),
+                    phaseOffset: Math.random() * Math.PI * 2,
+                    x: centerX, y: centerY,
+                    radius: baseRadius * (Math.random() * 0.4 + 0.8),
+                    intensity: Math.random() * 0.15 + 0.25
+                });
+            }
+
+            for (let i = 0; i < 5; i++) {
+                points.push({
+                    centerX: Math.random() * width, centerY: Math.random() * height,
+                    orbitRadiusX: width * 0.05, orbitRadiusY: height * 0.05, phaseOffset: Math.random() * Math.PI * 2,
+                    x: 0, y: 0, isNegative: true, radius: Math.min(width, height) * 0.7 * sizeModifier, intensity: -0.35
+                });
+            }
+
+            if (!isPlaying) renderFrame();
+        }
+
+        function renderFrame() {
+            const width = canvas.width;
+            const height = canvas.height;
+            const scale = parseInt(document.getElementById('render-scale').value);
+            
+            const bWidth = Math.ceil(width / scale);
+            const bHeight = Math.ceil(height / scale);
+            
+            bufferCanvas.width = bWidth;
+            bufferCanvas.height = bHeight;
+
+            const activeTheme = document.getElementById('color-theme').value;
+            const mode = document.getElementById('app-mode').value;
+
+            if (mode === 'image' && uploadedImage) {
+                // [개선된 하드웨어 가속 필터 프리셋 빌드]
+                const bVal = document.getElementById('image-blur').value;
+                const cVal = document.getElementById('image-contrast').value;
+                const brVal = document.getElementById('image-bright').value;
+                const isInverted = document.getElementById('image-invert').checked;
+                
+                // 가상 연산 캔버스에 GPU 필터 적용 후 소스 렌더링 (노이즈 제거 및 아우라 형성)
+                bufferCtx.filter = `blur(${bVal / scale}px) brightness(${brVal}%) contrast(${cVal}%)`;
+                bufferCtx.drawImage(uploadedImage, 0, 0, bWidth, bHeight);
+                bufferCtx.filter = 'none'; 
+
+                const imgData = bufferCtx.getImageData(0, 0, bWidth, bHeight);
+                const data = imgData.data;
+                const shimmerInput = parseInt(document.getElementById('shimmer-intensity').value) / 100;
+
+                for (let y = 0; y < bHeight; y++) {
+                    for (let x = 0; x < bWidth; x++) {
+                        const idx = (y * bWidth + x) * 4;
+                        
+                        // Luma 명도 분석
+                        let brightness = (0.299 * data[idx] + 0.587 * data[idx+1] + 0.114 * data[idx+2]) / 255;
+                        
+                        if (isInverted) {
+                            brightness = 1 - brightness;
+                        }
+
+                        // 아지랑이 물리 웨이브 수식
+                        const wave1 = Math.sin(angleTime + x * 0.07 + y * 0.04);
+                        const wave2 = Math.cos(angleTime * 1.8 - x * 0.03 + y * 0.05);
+                        const shimmerEffect = ((wave1 + wave2) / 2) * 0.20 * shimmerInput;
+
+                        let intensity = brightness + shimmerEffect * (0.2 + brightness * 0.8);
+                        intensity = Math.max(0, Math.min(1, intensity));
+
+                        const color = getHeatmapColor(intensity, activeTheme);
+                        data[idx]     = color.r;
+                        data[idx + 1] = color.g;
+                        data[idx + 2] = color.b;
+                        data[idx + 3] = 255;
+                    }
+                }
+                bufferCtx.putImageData(imgData, 0, 0);
+            } else {
+                // [패턴 모드]
+                const imgData = bufferCtx.createImageData(bWidth, bHeight);
+                const data = imgData.data;
+
+                for (let i = 0; i < points.length; i++) {
+                    const p = points[i];
+                    const angle = angleTime + p.phaseOffset;
+                    p.x = p.centerX + Math.cos(angle) * p.orbitRadiusX;
+                    p.y = p.centerY + Math.sin(angle) * p.orbitRadiusY;
+                }
+
+                for (let y = 0; y < bHeight; y++) {
+                    const actualY = y * scale; 
+                    for (let x = 0; x < bWidth; x++) {
+                        const actualX = x * scale;
+                        let totalIntensity = 0.18; 
+
+                        for (let i = 0; i < points.length; i++) {
+                            const p = points[i];
+                            const dx = actualX - p.x;
+                            const dy = actualY - p.y;
+                            const distanceSquared = dx * dx + dy * dy;
+                            const rSquared = p.radius * p.radius;
+
+                            if (distanceSquared < rSquared) {
+                                const r = Math.sqrt(distanceSquared);
+                                const influence = (Math.cos((r / p.radius) * Math.PI) + 1) / 2;
+                                totalIntensity += influence * p.intensity;
+                            }
+                        }
+
+                        totalIntensity = Math.max(0, Math.min(1, totalIntensity));
+                        const color = getHeatmapColor(totalIntensity, activeTheme);
+                        const pixelIndex = (y * bWidth + x) * 4;
+
+                        data[pixelIndex]     = color.r;
+                        data[pixelIndex + 1] = color.g;
+                        data[pixelIndex + 2] = color.b;
+                        data[pixelIndex + 3] = 255;
+                    }
+                }
+                bufferCtx.putImageData(imgData, 0, 0);
+            }
+            
+            ctx.clearRect(0, 0, width, height);
+            // 메인 화면에 쏠 때 Bilinear 보간 업스케일링을 거쳐 계단 현상을 최종 억제
+            ctx.imageSmoothingEnabled = true;
+            ctx.imageSmoothingQuality = 'high';
+            ctx.drawImage(bufferCanvas, 0, 0, bWidth, bHeight, 0, 0, width, height);
+        }
+
+        function animate(timestamp) {
+            if (!isPlaying) return;
+            if (!lastTime) lastTime = timestamp;
+            
+            const delta = timestamp - lastTime;
+            lastTime = timestamp;
+
+            const speedModifier = parseInt(document.getElementById('anim-speed').value) / 100;
+            const loopDurationInput = parseInt(document.getElementById('loop-duration').value) * 1000;
+            
+            angleTime += (delta * (Math.PI * 2 / loopDurationInput)) * speedModifier;
+
+            renderFrame();
+            animationFrameId = requestAnimationFrame(animate);
+        }
+
+        function downloadImage() {
+            const image = canvas.toDataURL("image/png");
+            const link = document.createElement('a');
+            link.download = `thermal_ultra_${document.getElementById('aspect-ratio').value}.png`;
+            link.href = image;
+            link.click();
+        }
+
+        function recordLoopVideo() {
+            const mode = document.getElementById('app-mode').value;
+            if (mode === 'image' && !uploadedImage) {
+                alert("녹화할 베이스 이미지가 없습니다. 이미지를 먼저 업로드해 주세요.");
+                return;
+            }
+
+            if (!isPlaying) togglePlay(); 
+            angleTime = 0; 
+            
+            const stream = canvas.captureStream(30); 
+            let options = { mimeType: 'video/webm;codecs=vp9' };
+            if (!MediaRecorder.isTypeSupported(options.mimeType)) {
+                options = { mimeType: 'video/webm;codecs=vp8' };
+            }
+            
+            const mediaRecorder = new MediaRecorder(stream, options);
+            const chunks = [];
+
+            const recordBtn = document.getElementById('record-btn');
+            const statusMsg = document.getElementById('status-msg');
+            const loopSec = parseInt(document.getElementById('loop-duration').value);
+            const speedModifier = parseInt(document.getElementById('anim-speed').value) / 100;
+            const calculatedDuration = (loopSec * 1000) / speedModifier;
+
+            recordBtn.disabled = true;
+            statusMsg.style.display = "block";
+            statusMsg.innerText = `고화질 루프 비디오 녹화 중... (약 ${loopSec}초)`;
+
+            mediaRecorder.ondataavailable = (e) => {
+                if (e.data.size > 0) chunks.push(e.data);
+            };
+
+            mediaRecorder.onstop = () => {
+                const blob = new Blob(chunks, { type: 'video/webm' });
+                const videoURL = URL.createObjectURL(blob);
+                const link = document.createElement('a');
+                link.href = videoURL;
+                link.download = `thermal_loop_ultra_${document.getElementById('aspect-ratio').value}.webm`;
+                link.click();
+
+                recordBtn.disabled = false;
+                statusMsg.style.display = "none";
+            };
+
+            mediaRecorder.start();
+
+            setTimeout(() => {
+                mediaRecorder.stop();
+            }, calculatedDuration);
+        }
+
+        window.onload = () => {
+            initCanvasSize();
+            requestAnimationFrame(animate);
+        };
+    </script>
+</body>
+</html>
+
