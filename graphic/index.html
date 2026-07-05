@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PPT용 무한 루프 히트맵 생성기</title>
+    <style>
+        * { box-sizing: border-box; }
+        body, html {
+            margin: 0; padding: 0; width: 100%; height: 100%;
+            overflow: hidden; background-color: #000; font-family: sans-serif;
+        }
+        canvas { display: block; width: 100%; height: 100%; }
+        
+        #control-panel {
+            position: absolute; top: 20px; left: 20px; z-index: 10;
+            display: flex; flex-direction: column; gap: 12px;
+            background-color: rgba(0, 0, 0, 0.75); padding: 20px;
+            border-radius: 15px; border: 1px solid rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px); color: #fff; min-width: 290px;
+        }
+        .control-group { display: flex; flex-direction: column; gap: 5px; }
+        .control-group label { font-size: 13px; color: #ccc; display: flex; justify-content: space-between; }
+        .control-group input[type="range"] { width: 100%; cursor: pointer; }
+        
+        #btn-group { display: flex; flex-direction: column; gap: 8px; margin-top: 5px; }
+        .row-btns { display: flex; gap: 8px; }
+        button {
+            flex: 1; padding: 11px; font-size: 13px; font-weight: bold;
+            color: white; background-color: rgba(255, 255, 255, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.3); border-radius: 8px;
+            cursor: pointer; transition: all 0.2s ease;
+        }
+        button:hover { background-color: rgba(255, 255, 255, 0.3); }
+        button.action-btn { background-color: rgba(0, 123, 255, 0.4); border-color: rgba(0, 123, 255, 0.6); }
+        button.action-btn:hover { background-color: rgba(0, 123, 255, 0.6); }
+        button:disabled { opacity: 0.4; cursor: not-allowed; }
+        
+        #status-msg { font-size: 12px; color: #ffc107; text-align: center; margin-top: 2px; display: none; }
+    </style>
+</head>
+<body>
+
+    <div id="control-panel">
+        <div class="control-group">
+            <label>패턴 개수 (수) <span id="count-val">12</span></label>
+            <input type="range" id="point-count" min="4" max="30" value="12" oninput="updateParams()">
+        </div>
+        
+        <div class="control-group">
+            <label>패턴 크기 (반경) <span id="size-val">100%</span></label>
+            <input type="range" id="point-size" min="40" max="180" value="100" oninput="updateParams()">
+        </div>
+
+        <div class="control-group">
+            <label>애니메이션 속도 <span id="speed-val">100%</span></label>
+            <input type="range" id="anim-speed" min="20" max="250" value="100" oninput="updateParams()">
+        </div>
+
+        <div id="btn-group">
+            <div class="row-btns">
+                <button onclick="resetPoints()">새 패턴 조합</button>
+                <button onclick="togglePlay()" id="play-btn">일시정지</button>
+            </div>
+            <button onclick="downloadImage()" class="action-btn">현재 스크린샷 (PNG)</button>
+            <button onclick="recordLoopVideo()" id="record-btn" class="action-btn">PPT용 무한루프 비디오 (WebM)</button>
+            <div id="status-msg">루프 비디오 녹화 중... (5초)</div>
+        </div>
+    </div>
+    
+    <canvas id="heatmapCanvas"></canvas>
+    <script>
+        const canvas = document.getElementById('heatmapCanvas');
+        const ctx = canvas.getContext('2d');
+        const dpr = 1; 
+
+        let points = [];
+        let isPlaying = true;
+        let animationFrameId = null;
+        
+        let angleTime = 0; 
+        const LOOP_DURATION = 5000; 
+
+        function updateParams() {
+            document.getElementById('count-val').innerText = document.getElementById('point-count').value;
+            document.getElementById('size-val').innerText = document.getElementById('point-size').value + '%';
+            document.getElementById('speed-val').innerText = document.getElementById('anim-speed').value + '%';
+            resetPoints();
+        }
+
+        function togglePlay() {
+            isPlaying = !isPlaying;
+            document.getElementById('play-btn').innerText = isPlaying ? "일시정지" : "재생";
+            if (isPlaying) animate();
+        }
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth * dpr;
+            canvas.height = window.innerHeight * dpr;
+            resetPoints();
+        }
+
+        function getHeatmapColor(value) {
+            let r = 0, g = 0, b = 0;
+            if (value < 0.20) {
+                r = Math.floor((0.20 - value) / 0.20 * 130); b = Math.floor(140 + (value / 0.20) * 115);
+            } else if (value < 0.40) {
+                g = Math.floor((value - 0.20) / 0.20 * 255); b = 255;
+            } else if (value < 0.60) {
+                g = 255; b = Math.floor((0.60 - value) / 0.20 * 255);
+            } else if (value < 0.75) {
+                r = Math.floor((value - 0.60) / 0.15 * 255); g = 255;
+            } else if (value < 0.98) {
+                r = 255; g = Math.floor((0.98 - value) / 0.23 * 255);
+            } else {
+                r = 255; b = Math.floor((value - 0.98) / 0.02 * 255); 
+            }
+            return { r, g, b };
+        }
+
+        function resetPoints() {
+            const width = canvas.width;
+            const height = canvas.height;
+            if (width === 0 || height === 0) return;
+
+            const numPoints = parseInt(document.getElementById('point-count').value);
+            const sizeModifier = parseInt(document.getElementById('point-size').value) / 100;
+            const baseRadius = Math.min(width, height) * 0.45 * sizeModifier;
+
+            points = [];
+
+            for (let i = 0; i < numPoints; i++) {
+                const centerX = Math.random() * width;
+                const centerY = Math.random() * height;
+                const orbitRadiusX = Math.random() * 80 + 40;
+                const orbitRadiusY = Math.random() * 80 + 40;
+                const phaseOffset = Math.random() * Math.PI * 2;
+
+                points.push({
+                    centerX, centerY, orbitRadiusX, orbitRadiusY, phaseOffset,
+                    x: centerX, y: centerY, isNegative: false,
+                    radius: baseRadius * (Math.random() * 0.3 + 0.85),
+                    intensity: Math.random() * 0.12 + 0.22
+                });
+            }
+
+            for (let i = 0; i < 4; i++) {
+                const centerX = Math.random() * width;
+                const centerY = Math.random() * height;
+                points.push({
+                    centerX, centerY, orbitRadiusX: 60, orbitRadiusY: 60, phaseOffset: Math.random() * Math.PI * 2,
+                    x: centerX, y: centerY, isNegative: true,
+                    radius: Math.min(width, height) * 0.6 * sizeModifier,
+                    intensity: -0.3
+                });
+            }
+
+            if (!isPlaying) renderFrame();
+        }
+
+        function renderFrame() {
+            const width = canvas.width;
+            const height = canvas.height;
+            const imgData = ctx.createImageData(width, height);
+            const data = imgData.data;
+
+            const speedModifier = parseInt(document.getElementById('anim-speed').value) / 100;
+            
+            for (let i = 0; i < points.length; i++) {
+                const p = points[i];
+                const angle = angleTime + p.phaseOffset;
+                p.x = p.centerX + Math.cos(angle) * p.orbitRadiusX;
+                p.y = p.centerY + Math.sin(angle) * p.orbitRadiusY;
+            }
+
+            for (let y = 0; y < height; y++) {
+                for (let x = 0; x < width; x++) {
+                    let totalIntensity = 0.22;
+
+                    for (let i = 0; i < points.length; i++) {
+                        const p = points[i];
+                        const dx = x - p.x;
+                        const dy = y - p.y;
+                        const distanceSquared = dx * dx + dy * dy;
+                        const rSquared = p.radius * p.radius;
+
+                        if (distanceSquared < rSquared) {
+                            const r = Math.sqrt(distanceSquared);
+                            const influence = (Math.cos((r / p.radius) * Math.PI) + 1) / 2;
+                            totalIntensity += influence * p.intensity;
+                        }
+                    }
+
+                    totalIntensity = Math.max(0, Math.min(1, totalIntensity));
+                    const color = getHeatmapColor(totalIntensity);
+                    const pixelIndex = (y * width + x) * 4;
+
+                    data[pixelIndex]     = color.r;
+                    data[pixelIndex + 1] = color.g;
+                    data[pixelIndex + 2] = color.b;
+                    data[pixelIndex + 3] = 255;
+                }
+            }
+            ctx.putImageData(imgData, 0, 0);
+        }
+
+        let lastTime = 0;
+        function animate(timestamp) {
+            if (!isPlaying) return;
+            if (!lastTime) lastTime = timestamp;
+            
+            const delta = timestamp - lastTime;
+            lastTime = timestamp;
+
+            const speedModifier = parseInt(document.getElementById('anim-speed').value) / 100;
+            angleTime += (delta * (Math.PI * 2 / LOOP_DURATION)) * speedModifier;
+
+            renderFrame();
+            animationFrameId = requestAnimationFrame(animate);
+        }
+
+        function downloadImage() {
+            const image = canvas.toDataURL("image/png");
+            const link = document.createElement('a');
+            link.download = `heatmap_frame.png`;
+            link.href = image;
+            link.click();
+        }
+
+        function recordLoopVideo() {
+            if (!isPlaying) togglePlay(); 
+
+            angleTime = 0; 
+            
+            const stream = canvas.captureStream(30); 
+            const mediaRecorder = new MediaRecorder(stream, { mimeType: 'video/webm;codecs=vp9' });
+            const chunks = [];
+
+            const recordBtn = document.getElementById('record-btn');
+            const statusMsg = document.getElementById('status-msg');
+            
+            recordBtn.disabled = true;
+            statusMsg.style.display = "block";
+
+            mediaRecorder.ondataavailable = (e) => {
+                if (e.data.size > 0) chunks.push(e.data);
+            };
+
+            mediaRecorder.onstop = () => {
+                const blob = new Blob(chunks, { type: 'video/webm' });
+                const videoURL = URL.createObjectURL(blob);
+                const link = document.createElement('a');
+                link.href = videoURL;
+                link.download = `ppt_heatmap_loop.webm`;
+                link.click();
+
+                recordBtn.disabled = false;
+                statusMsg.style.display = "none";
+            };
+
+            mediaRecorder.start();
+
+            const speedModifier = parseInt(document.getElementById('anim-speed').value) / 100;
+            const calculatedDuration = LOOP_DURATION / speedModifier;
+
+            setTimeout(() => {
+                mediaRecorder.stop();
+            }, calculatedDuration);
+        }
+
+        window.addEventListener('resize', resizeCanvas);
+        window.onload = () => {
+            resizeCanvas();
+            requestAnimationFrame(animate);
+        };
+    </script>
+</body>
+</html>
