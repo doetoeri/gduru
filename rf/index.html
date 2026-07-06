@@ -1357,7 +1357,7 @@ function App(){
                   <input type="range" min="0.25" max="3" step="0.25" value={speed} onChange={e=>setSpeed(parseFloat(e.target.value))} className="w-20"/>
                   <span className="font-mono font-bold text-bp-ink w-8">{speed}x</span></label>
                 <label className="flex items-center gap-1.5 text-[10px] hair text-bp-sub">인원
-                  <input type="range" min="30" max="160" step="5" value={pop} onChange={e=>setPop(parseInt(e.target.value))} className="w-24"/>
+                  <input type="range" min="30" max="1600" step="5" value={pop} onChange={e=>setPop(parseInt(e.target.value))} className="w-24"/>
                   <span className="font-mono font-bold text-bp-ink w-8">{pop}</span></label>
                 <Btn tone="mint" active={thermalOn} onClick={()=>setThermalOn(!thermalOn)}>열화상</Btn>
               </div>
