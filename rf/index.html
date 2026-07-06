@@ -1,1688 +1,1061 @@
 <!DOCTYPE html>
 <html lang="ko">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>RouteFinder | Integrated Dashboard</title>
-    <style>
-      @import url("https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&family=Oswald:wght@300;400;500;600;700&display=swap");
-
-      @font-face {
-        font-family: "Cafe24ProSlim";
-        src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2105@1.1/Cafe24ProSlim-Light.woff2") format("woff2"),
-          url("https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2105@1.1/Cafe24ProSlim-Light.woff") format("woff");
-        font-weight: 300;
-        font-style: normal;
-        font-display: swap;
-      }
-
-      @font-face {
-        font-family: "Cafe24ProSlim";
-        src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2105@1.1/Cafe24ProSlim-Regular.woff2") format("woff2"),
-          url("https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2105@1.1/Cafe24ProSlim-Regular.woff") format("woff");
-        font-weight: 400;
-        font-style: normal;
-        font-display: swap;
-      }
-
-      @font-face {
-        font-family: "Cafe24ProSlim";
-        src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2105@1.1/Cafe24ProSlim-Bold.woff2") format("woff2"),
-          url("https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2105@1.1/Cafe24ProSlim-Bold.woff") format("woff");
-        font-weight: 700;
-        font-style: normal;
-        font-display: swap;
-      }
-
-      :root {
-        --black: #050505;
-        --ink: #141414;
-        --paper: #f5f2eb;
-        --map: #f7f7f4;
-        --store: #d9d9d7;
-        --store-line: #ffffff;
-        --muted: #a9a39b;
-        --line: rgba(245, 242, 235, 0.14);
-        --line-dark: rgba(20, 20, 20, 0.13);
-        --glass: rgba(255, 255, 255, 0.075);
-        --gold: #d4b16a;
-        --signal: #65d6ae;
-        --rf: #1fc78f;
-        --organic: #252525;
-        --danger: #f26457;
-        --shadow: 0 28px 80px rgba(0, 0, 0, 0.42);
-      }
-
-      * {
-        box-sizing: border-box;
-      }
-
-      body {
-        margin: 0;
-        min-height: 100vh;
-        color: var(--paper);
-        font-family: "Noto Sans KR", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-        background:
-          radial-gradient(circle at 78% 18%, rgba(212, 177, 106, 0.16), transparent 28%),
-          linear-gradient(135deg, #f6f2ea 0 15%, #202020 15% 16%, #050505 16% 100%);
-      }
-
-      button,
-      a,
-      input {
-        font: inherit;
-      }
-
-      button {
-        cursor: pointer;
-      }
-
-      a {
-        color: inherit;
-        text-decoration: none;
-      }
-
-      .app-shell {
-        display: grid;
-        grid-template-columns: 274px minmax(0, 1fr);
-        min-height: 100vh;
-      }
-
-      .sidebar {
-        display: flex;
-        flex-direction: column;
-        gap: 38px;
-        padding: 32px 24px;
-        color: var(--ink);
-        background: rgba(245, 242, 235, 0.94);
-        border-right: 1px solid var(--line-dark);
-      }
-
-      .brand {
-        display: flex;
-        align-items: center;
-        gap: 14px;
-        text-align: left;
-      }
-
-      .brand-mark {
-        display: grid;
-        place-items: center;
-        width: 54px;
-        height: 54px;
-        color: var(--paper);
-        background: var(--black);
-        border-radius: 8px;
-        font-family: "Oswald", sans-serif;
-        font-size: 24px;
-        letter-spacing: 0;
-      }
-
-      .brand strong {
-        display: block;
-        font-family: "Oswald", sans-serif;
-        font-size: 25px;
-        font-weight: 500;
-        letter-spacing: 0;
-      }
-
-      .brand small {
-        display: block;
-        color: #6d685f;
-        font-family: "Oswald", sans-serif;
-        font-size: 11px;
-        letter-spacing: 0;
-        text-transform: uppercase;
-      }
-
-      .nav-list {
-        display: grid;
-        gap: 10px;
-      }
-
-      .nav-item {
-        width: 100%;
-        padding: 13px 15px;
-        color: #5a554d;
-        text-align: left;
-        background: transparent;
-        border: 0;
-        border-radius: 8px;
-        transition: color 180ms ease, background 180ms ease;
-      }
-
-      .nav-item:hover,
-      .nav-item.active {
-        color: var(--black);
-        background: rgba(5, 5, 5, 0.08);
-      }
-
-      .sidebar-status {
-        display: grid;
-        grid-template-columns: auto 1fr auto;
-        align-items: center;
-        gap: 10px;
-        margin-top: auto;
-        padding: 15px;
-        color: var(--paper);
-        background: var(--black);
-        border-radius: 8px;
-      }
-
-      .status-dot {
-        width: 9px;
-        height: 9px;
-        background: var(--signal);
-        border-radius: 50%;
-        box-shadow: 0 0 18px var(--signal);
-      }
-
-      .sidebar-status strong,
-      .eyebrow,
-      .metric-label,
-      .metric-value,
-      .mode-pill,
-      .floor-tab,
-      .store-count,
-      .admin-number,
-      .queue-formula strong,
-      .floor-monitor strong {
-        font-family: "Oswald", sans-serif;
-        letter-spacing: 0;
-      }
-
-      .sidebar-status strong {
-        color: var(--signal);
-      }
-
-      .dashboard {
-        padding: 32px;
-      }
-
-      .topbar {
-        display: flex;
-        align-items: flex-start;
-        justify-content: space-between;
-        gap: 28px;
-        margin-bottom: 24px;
-      }
-
-      .eyebrow {
-        margin: 0 0 8px;
-        color: var(--gold);
-        font-size: 12px;
-        text-transform: uppercase;
-      }
-
-      h1,
-      h2,
-      p {
-        margin-top: 0;
-      }
-
-      h1 {
-        max-width: 790px;
-        margin-bottom: 0;
-        font-family: "Cafe24ProSlim", "Noto Sans KR", sans-serif;
-        font-size: clamp(38px, 5.4vw, 78px);
-        font-weight: 300;
-        line-height: 1.05;
-      }
-
-      h2 {
-        margin-bottom: 0;
-        font-size: 21px;
-        font-weight: 700;
-      }
-
-      .topbar-actions,
-      .button-row,
-      .floor-tabs {
-        display: flex;
-        gap: 10px;
-      }
-
-      .ghost-button,
-      .primary-button,
-      .floor-tab {
-        min-height: 42px;
-        padding: 0 16px;
-        border: 1px solid var(--line);
-        border-radius: 8px;
-      }
-
-      .ghost-button,
-      .floor-tab {
-        color: var(--paper);
-        background: transparent;
-      }
-
-      .primary-button,
-      .floor-tab.active {
-        color: var(--black);
-        background: var(--paper);
-      }
-
-      .metric-grid {
-        display: grid;
-        grid-template-columns: repeat(3, minmax(0, 1fr));
-        gap: 14px;
-        margin-bottom: 14px;
-      }
-
-      .metric-card,
-      .flow-panel,
-      .control-panel,
-      .control-block {
-        border: 1px solid var(--line);
-        border-radius: 8px;
-        box-shadow: var(--shadow);
-      }
-
-      .metric-card {
-        min-height: 142px;
-        padding: 20px;
-        background: rgba(255, 255, 255, 0.07);
-      }
-
-      .metric-card.light {
-        color: var(--black);
-        background: var(--paper);
-      }
-
-      .metric-label {
-        color: var(--muted);
-        font-size: 12px;
-        text-transform: uppercase;
-      }
-
-      .metric-card.light .metric-label {
-        color: #726c63;
-      }
-
-      .metric-value {
-        display: block;
-        margin: 13px 0 7px;
-        font-size: 52px;
-        line-height: 1;
-      }
-
-      .metric-card p {
-        margin-bottom: 0;
-        color: var(--muted);
-        font-size: 14px;
-      }
-
-      .metric-card.light p {
-        color: #6b665f;
-      }
-
-      .workspace {
-        display: grid;
-        grid-template-columns: minmax(0, 1fr) minmax(340px, 380px);
-        gap: 18px;
-        align-items: start;
-        width: 100%;
-        overflow: hidden;
-      }
-
-      .flow-panel,
-      .control-panel {
-        padding: 22px;
-        background: rgba(5, 5, 5, 0.76);
-      }
-
-      .flow-panel,
-      .control-panel {
-        min-width: 0;
-      }
-
-      .section-heading {
-        display: flex;
-        align-items: end;
-        justify-content: space-between;
-        gap: 18px;
-        margin-bottom: 18px;
-      }
-
-      .section-heading.compact {
-        align-items: center;
-      }
-
-      .mode-pill {
-        padding: 7px 10px;
-        color: var(--signal);
-        font-size: 12px;
-        border: 1px solid rgba(101, 214, 174, 0.35);
-        border-radius: 999px;
-      }
-
-      .map-stage {
-        position: relative;
-        aspect-ratio: 100 / 64;
-        width: 100%;
-        min-height: clamp(430px, 40vw, 620px);
-        overflow: hidden;
-        color: var(--ink);
-        border: 1px solid rgba(245, 242, 235, 0.22);
-        border-radius: 8px;
-        background: var(--map);
-      }
-
-      .map-stage::before {
-        position: absolute;
-        inset: 0;
-        z-index: 0;
-        content: "";
-        background:
-          linear-gradient(90deg, rgba(20, 20, 20, 0.035) 1px, transparent 1px),
-          linear-gradient(rgba(20, 20, 20, 0.035) 1px, transparent 1px);
-        background-size: 4% 6.25%;
-        pointer-events: none;
-      }
-
-      .floor-shell,
-      .people-layer,
-      .route-overlay {
-        position: absolute;
-        inset: 0;
-      }
-
-      .floor-shell {
-        z-index: 1;
-      }
-
-      .route-overlay {
-        z-index: 2;
-        pointer-events: none;
-      }
-
-      .route-overlay polyline {
-        fill: none;
-        stroke: rgba(31, 199, 143, 0.72);
-        stroke-linecap: round;
-        stroke-linejoin: round;
-        stroke-width: 0.65;
-      }
-
-      .people-layer {
-        z-index: 3;
-        pointer-events: none;
-      }
-
-      .store {
-        position: absolute;
-        display: flex;
-        flex-direction: column;
-        justify-content: space-between;
-        min-width: 36px;
-        min-height: 28px;
-        padding: 7px;
-        overflow: hidden;
-        color: #565656;
-        background: var(--store);
-        border: 1px solid var(--store-line);
-        transition: background 180ms ease, color 180ms ease, box-shadow 180ms ease;
-      }
-
-      .store.hot {
-        color: #22110f;
-        background: #f4b1a9;
-        box-shadow: inset 0 0 0 2px rgba(242, 100, 87, 0.26);
-      }
-
-      .store.warm {
-        color: #2a2112;
-        background: #ead5a2;
-      }
-
-      .store.cool {
-        color: #103328;
-        background: #bde7d7;
-      }
-
-      .store-name {
-        font-size: clamp(8px, 0.72vw, 12px);
-        line-height: 1.2;
-        word-break: keep-all;
-      }
-
-      .store-count {
-        align-self: flex-end;
-        color: rgba(20, 20, 20, 0.56);
-        font-size: 12px;
-      }
-
-      .corridor-label {
-        position: absolute;
-        z-index: 1;
-        color: rgba(20, 20, 20, 0.3);
-        font-family: "Oswald", sans-serif;
-        font-size: 12px;
-        text-transform: uppercase;
-      }
-
-      .gate {
-        position: absolute;
-        z-index: 2;
-        display: grid;
-        place-items: center;
-        width: 22px;
-        height: 22px;
-        color: #ffffff;
-        background: rgba(31, 199, 143, 0.72);
-        border-radius: 3px;
-        font-family: "Oswald", sans-serif;
-        font-size: 11px;
-      }
-
-      .person {
-        position: absolute;
-        width: 7px;
-        height: 7px;
-        margin: -3.5px 0 0 -3.5px;
-        border-radius: 50%;
-        background: var(--organic);
-        box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.48);
-        transform: translate3d(0, 0, 0);
-      }
-
-      .person.rf {
-        width: 8px;
-        height: 8px;
-        margin: -4px 0 0 -4px;
-        background: var(--rf);
-        box-shadow: 0 0 12px rgba(31, 199, 143, 0.8);
-      }
-
-      .control-panel {
-        display: grid;
-        gap: 12px;
-        position: relative;
-        z-index: 5;
-        align-self: start;
-      }
-
-      .control-block {
-        padding: 16px;
-        background: rgba(255, 255, 255, 0.055);
-        box-shadow: none;
-      }
-
-      .admin-control {
-        background:
-          linear-gradient(135deg, rgba(101, 214, 174, 0.18), transparent 42%),
-          rgba(255, 255, 255, 0.075);
-      }
-
-      .admin-header {
-        display: flex;
-        align-items: flex-start;
-        justify-content: space-between;
-        gap: 16px;
-        margin-bottom: 14px;
-      }
-
-      .admin-header h2 {
-        font-size: 19px;
-      }
-
-      .switch-control {
-        display: grid;
-        grid-template-columns: 1fr auto;
-        align-items: center;
-        gap: 10px;
-        min-width: 142px;
-        color: var(--muted);
-        font-size: 12px;
-      }
-
-      .switch-control input {
-        position: absolute;
-        opacity: 0;
-        pointer-events: none;
-      }
-
-      .switch-control i {
-        position: relative;
-        display: block;
-        width: 46px;
-        height: 24px;
-        background: rgba(255, 255, 255, 0.14);
-        border: 1px solid var(--line);
-        border-radius: 999px;
-        transition: background 180ms ease, border-color 180ms ease;
-      }
-
-      .switch-control i::after {
-        position: absolute;
-        top: 3px;
-        left: 3px;
-        width: 16px;
-        height: 16px;
-        content: "";
-        background: var(--paper);
-        border-radius: 50%;
-        transition: transform 180ms ease, background 180ms ease;
-      }
-
-      .switch-control input:checked + i {
-        background: rgba(101, 214, 174, 0.32);
-        border-color: rgba(101, 214, 174, 0.62);
-      }
-
-      .switch-control input:checked + i::after {
-        background: var(--signal);
-        transform: translateX(21px);
-      }
-
-      .queue-formula {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 12px;
-        padding: 10px 12px;
-        margin-bottom: 12px;
-        color: var(--muted);
-        border: 1px solid var(--line);
-        border-radius: 8px;
-        background: rgba(5, 5, 5, 0.24);
-      }
-
-      .queue-formula strong {
-        color: var(--signal);
-        font-size: 22px;
-        font-weight: 500;
-      }
-
-      .queue-kpis {
-        display: grid;
-        grid-template-columns: repeat(3, minmax(0, 1fr));
-        gap: 8px;
-        margin-bottom: 12px;
-      }
-
-      .queue-kpis article {
-        min-width: 0;
-        padding: 10px;
-        border: 1px solid var(--line);
-        border-radius: 8px;
-        background: rgba(5, 5, 5, 0.22);
-      }
-
-      .queue-kpis span,
-      .floor-monitor span {
-        color: var(--muted);
-        font-size: 11px;
-      }
-
-      .admin-number {
-        display: block;
-        margin-top: 6px;
-        color: var(--paper);
-        font-size: 30px;
-        font-weight: 500;
-        line-height: 1;
-        transition: color 180ms ease, transform 180ms ease;
-      }
-
-      .admin-control.bypass-active .admin-number {
-        color: var(--signal);
-      }
-
-      .floor-monitor {
-        display: grid;
-        gap: 8px;
-      }
-
-      .floor-monitor-row {
-        display: grid;
-        grid-template-columns: 34px 1fr auto;
-        align-items: center;
-        gap: 10px;
-      }
-
-      .floor-monitor-row strong {
-        color: var(--paper);
-        font-size: 15px;
-        font-weight: 500;
-      }
-
-      .floor-monitor-bar {
-        height: 7px;
-        overflow: hidden;
-        background: rgba(255, 255, 255, 0.11);
-        border-radius: 999px;
-      }
-
-      .floor-monitor-bar i {
-        display: block;
-        height: 100%;
-        background: var(--signal);
-        border-radius: inherit;
-        transition: width 180ms ease, background 180ms ease;
-      }
-
-      .floor-monitor-row.hot .floor-monitor-bar i {
-        background: var(--danger);
-      }
-
-      .floor-monitor-row.warm .floor-monitor-bar i {
-        background: var(--gold);
-      }
-
-      .floor-monitor-row.active strong {
-        color: var(--signal);
-      }
-
-      .range-control {
-        display: grid;
-        gap: 10px;
-        margin-top: 16px;
-        color: var(--muted);
-        font-size: 14px;
-      }
-
-      .range-control span {
-        display: flex;
-        justify-content: space-between;
-        gap: 10px;
-      }
-
-      .range-control strong {
-        color: var(--paper);
-        font-family: "Oswald", sans-serif;
-        font-size: 18px;
-      }
-
-      input[type="range"] {
-        width: 100%;
-        accent-color: var(--signal);
-      }
-
-      .button-row {
-        margin-top: 16px;
-      }
-
-      .button-row .ghost-button {
-        flex: 1;
-      }
-
-      .need-grid {
-        display: grid;
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-        gap: 8px;
-      }
-
-      .need-card,
-      .zone-row,
-      .insight-card {
-        border: 1px solid var(--line);
-        border-radius: 8px;
-        background: var(--glass);
-      }
-
-      .need-card {
-        padding: 12px;
-      }
-
-      .need-card strong {
-        display: block;
-        font-size: 13px;
-      }
-
-      .need-card span {
-        color: var(--muted);
-        font-family: "Oswald", sans-serif;
-        font-size: 20px;
-      }
-
-      .zone-list,
-      .insight-list {
-        display: grid;
-        gap: 9px;
-      }
-
-      .zone-row {
-        padding: 10px;
-      }
-
-      .zone-row header {
-        display: flex;
-        justify-content: space-between;
-        gap: 12px;
-        margin-bottom: 8px;
-        font-size: 13px;
-      }
-
-      .zone-bar {
-        height: 6px;
-        overflow: hidden;
-        background: rgba(255, 255, 255, 0.1);
-        border-radius: 999px;
-      }
-
-      .zone-bar span {
-        display: block;
-        height: 100%;
-        background: var(--signal);
-        border-radius: inherit;
-      }
-
-      .zone-row.hot .zone-bar span {
-        background: var(--danger);
-      }
-
-      .zone-row.warm .zone-bar span {
-        background: var(--gold);
-      }
-
-      .insight-card {
-        padding: 13px;
-      }
-
-      .insight-card strong {
-        display: block;
-        margin-bottom: 6px;
-        font-size: 14px;
-      }
-
-      .insight-card p {
-        margin-bottom: 0;
-        color: var(--muted);
-        font-size: 13px;
-        line-height: 1.55;
-      }
-
-      @media (min-width: 1181px) {
-        .dashboard {
-          max-width: 1720px;
-          margin: 0 auto;
-        }
-      }
-
-      @media (max-width: 1320px) {
-        .app-shell,
-        .workspace,
-        .metric-grid {
-          grid-template-columns: 1fr;
-        }
-
-        .sidebar {
-          gap: 22px;
-        }
-
-        .nav-list {
-          grid-template-columns: repeat(5, minmax(0, 1fr));
-        }
-
-        .map-stage {
-          min-height: 430px;
-        }
-
-        .control-panel {
-          order: 2;
-        }
-      }
-
-      @media (max-width: 760px) {
-        body {
-          background: #050505;
-        }
-
-        .dashboard,
-        .sidebar {
-          padding: 20px;
-        }
-
-        .app-shell {
-          display: block;
-        }
-
-        .sidebar {
-          border-right: 0;
-          border-bottom: 1px solid var(--line-dark);
-        }
-
-        .topbar,
-        .section-heading {
-          flex-direction: column;
-          align-items: stretch;
-        }
-
-        .topbar-actions,
-        .floor-tabs {
-          flex-wrap: wrap;
-        }
-
-        .nav-list,
-        .need-grid {
-          grid-template-columns: 1fr;
-        }
-
-        .map-stage {
-          aspect-ratio: 1 / 1;
-          min-height: 0;
-          height: min(92vw, 560px);
-        }
-
-        .metric-value {
-          font-size: 42px;
-        }
-
-        .queue-kpis {
-          grid-template-columns: 1fr;
-        }
-
-        .flow-panel,
-        .control-panel {
-          padding: 16px;
-        }
-      }
-    </style>
-  </head>
-  <body>
-    <div class="app-shell">
-      <aside class="sidebar" aria-label="RouteFinder navigation">
-        <a class="brand" href="#" aria-label="RouteFinder home" data-action="overview">
-          <span class="brand-mark">RF</span>
-          <span>
-            <strong>RouteFinder</strong>
-            <small>Spatial Flow Platform</small>
-          </span>
-        </a>
-
-        <nav class="nav-list" aria-label="Primary">
-          <button class="nav-item active" type="button" data-view="overview">Overview</button>
-          <button class="nav-item" type="button" data-view="live">Live Flow</button>
-          <button class="nav-item" type="button" data-view="b2b">B2B Zones</button>
-          <button class="nav-item" type="button" data-view="b2c">B2C Routes</button>
-          <button class="nav-item" type="button" data-view="insights">Insights</button>
-        </nav>
-
-        <div class="sidebar-status">
-          <span class="status-dot"></span>
-          <span>Seoul Core Sync</span>
-          <strong>LIVE</strong>
-        </div>
-      </aside>
-
-      <main class="dashboard">
-        <header class="topbar">
-          <div>
-            <p class="eyebrow">B2B / B2C Unified Prototype</p>
-            <h1>공간 정체를 예측하고 목적에 맞는 흐름으로 분산합니다.</h1>
-          </div>
-          <div class="topbar-actions">
-            <button class="ghost-button" type="button" id="exportBtn">Export</button>
-            <button class="primary-button" type="button" id="optimizeBtn">Optimize Route</button>
-          </div>
-        </header>
-
-        <section class="metric-grid" aria-label="Key metrics">
-          <article class="metric-card light">
-            <span class="metric-label">Congestion Index</span>
-            <strong class="metric-value" id="congestionMetric">0</strong>
-            <p id="congestionCopy">실시간 이동 밀도를 계산 중입니다.</p>
-          </article>
-          <article class="metric-card">
-            <span class="metric-label">Active Visitors</span>
-            <strong class="metric-value" id="visitorMetric">0</strong>
-            <p>슬라이더로 시뮬레이션 인원을 조절합니다.</p>
-          </article>
-          <article class="metric-card">
-            <span class="metric-label">RouteFinder Use</span>
-            <strong class="metric-value" id="routeFinderMetric">0%</strong>
-            <p>사용 비율이 높을수록 혼잡 구역을 회피합니다.</p>
-          </article>
-        </section>
-
-        <section class="workspace">
-          <article class="flow-panel">
-            <div class="section-heading">
-              <div>
-                <p class="eyebrow">Live Department Store Map</p>
-                <h2 id="floorTitle">층별 평면도</h2>
-              </div>
-              <div class="floor-tabs" id="floorTabs" aria-label="Floor selector"></div>
-            </div>
-
-            <div class="map-stage" id="mapStage" aria-label="RouteFinder floor simulation">
-              <svg class="route-overlay" id="routeOverlay" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"></svg>
-              <div class="floor-shell" id="floorShell"></div>
-              <div class="people-layer" id="peopleLayer"></div>
-            </div>
-          </article>
-
-          <aside class="control-panel" aria-label="Simulation controls">
-            <section class="control-block admin-control" aria-label="B2B manager control board">
-              <div class="admin-header">
-                <div>
-                  <p class="eyebrow">B2B Admin</p>
-                  <h2>B2B 관리자 관제 판</h2>
-                </div>
-                <label class="switch-control" for="bypassToggle">
-                  <span>동적 바이패스</span>
-                  <input id="bypassToggle" type="checkbox" />
-                  <i aria-hidden="true"></i>
-                </label>
-              </div>
-
-              <div class="queue-formula">
-                <span>Little's Law</span>
-                <strong>L = λ W</strong>
-              </div>
-
-              <div class="queue-kpis" aria-label="Little's Law live counters">
-                <article>
-                  <span>λ / min</span>
-                  <strong class="admin-number" id="lambdaMetric">0.0</strong>
-                </article>
-                <article>
-                  <span>L queue</span>
-                  <strong class="admin-number" id="littleLMetric">0</strong>
-                </article>
-                <article>
-                  <span>W min</span>
-                  <strong class="admin-number" id="waitMetric">0.0</strong>
-                </article>
-              </div>
-
-              <div class="floor-monitor" id="floorMonitor" aria-label="Floor congestion monitor"></div>
-            </section>
-
-            <section class="control-block">
-              <div class="section-heading compact">
-                <div>
-                  <p class="eyebrow">Simulation</p>
-                  <h2>방문객 흐름 제어</h2>
-                </div>
-                <span class="mode-pill" id="simState">RUNNING</span>
-              </div>
-
-              <label class="range-control">
-                <span>사람 수 <strong id="peopleCountLabel">90</strong></span>
-                <input id="peopleCount" type="range" min="20" max="220" value="90" step="10" />
-              </label>
-
-              <label class="range-control">
-                <span>RouteFinder 사용 비율 <strong id="rfRatioLabel">55%</strong></span>
-                <input id="rfRatio" type="range" min="0" max="100" value="55" step="5" />
-              </label>
-
-              <label class="range-control">
-                <span>시뮬레이션 속도 <strong id="speedLabel">1.0x</strong></span>
-                <input id="speedRange" type="range" min="0.5" max="2" value="1" step="0.1" />
-              </label>
-
-              <div class="button-row">
-                <button class="ghost-button" type="button" id="pauseBtn">Pause</button>
-                <button class="ghost-button" type="button" id="resetBtn">Reset</button>
-              </div>
-            </section>
-
-            <section class="control-block">
-              <p class="eyebrow">Need Mix</p>
-              <div class="need-grid" id="needGrid"></div>
-            </section>
-
-            <section class="control-block">
-              <p class="eyebrow">Congestion By Zone</p>
-              <div class="zone-list" id="zoneList"></div>
-            </section>
-
-            <section class="control-block">
-              <p class="eyebrow">Decision Feed</p>
-              <div class="insight-list" id="insightList"></div>
-            </section>
-          </aside>
-        </section>
-      </main>
-    </div>
-
-    <script>
-      const departmentStores = [
-        { id: "f1-01", name: "루미에르 갤러리아", floor: 1, category: "Luxury", x: 8, y: 10, maxCapacity: 46, currentQueue: 95, arrivalRate: 8.8, avgServiceTime: 9.5 },
-        { id: "f1-02", name: "벨루아 하우스", floor: 1, category: "Luxury", x: 24, y: 10, maxCapacity: 40, currentQueue: 72, arrivalRate: 7.1, avgServiceTime: 8.8 },
-        { id: "f1-03", name: "아르젠트 살롱", floor: 1, category: "Luxury", x: 40, y: 10, maxCapacity: 38, currentQueue: 64, arrivalRate: 6.4, avgServiceTime: 8.2 },
-        { id: "f1-04", name: "메종 오브제", floor: 1, category: "Luxury", x: 56, y: 10, maxCapacity: 36, currentQueue: 58, arrivalRate: 5.9, avgServiceTime: 7.8 },
-        { id: "f1-05", name: "오닉스 워치", floor: 1, category: "Luxury", x: 72, y: 10, maxCapacity: 34, currentQueue: 66, arrivalRate: 6.8, avgServiceTime: 9.1 },
-        { id: "f1-06", name: "누아르 레더", floor: 1, category: "Luxury", x: 8, y: 24, maxCapacity: 32, currentQueue: 41, arrivalRate: 4.7, avgServiceTime: 7.3 },
-        { id: "f1-07", name: "세인트 루체", floor: 1, category: "Luxury", x: 24, y: 24, maxCapacity: 30, currentQueue: 34, arrivalRate: 4.1, avgServiceTime: 6.9 },
-        { id: "f1-08", name: "에클라 주얼", floor: 1, category: "Luxury", x: 40, y: 24, maxCapacity: 28, currentQueue: 44, arrivalRate: 5.3, avgServiceTime: 8.4 },
-        { id: "f1-09", name: "코스메 드 파리", floor: 1, category: "Cosmetic", x: 56, y: 24, maxCapacity: 52, currentQueue: 50, arrivalRate: 6.2, avgServiceTime: 5.4 },
-        { id: "f1-10", name: "글로우 랩", floor: 1, category: "Cosmetic", x: 72, y: 24, maxCapacity: 48, currentQueue: 36, arrivalRate: 4.8, avgServiceTime: 4.9 },
-        { id: "f1-11", name: "아틀리에 스킨", floor: 1, category: "Cosmetic", x: 8, y: 40, maxCapacity: 44, currentQueue: 31, arrivalRate: 4.2, avgServiceTime: 4.7 },
-        { id: "f1-12", name: "비바 향수관", floor: 1, category: "Cosmetic", x: 24, y: 40, maxCapacity: 42, currentQueue: 47, arrivalRate: 5.6, avgServiceTime: 5.9 },
-        { id: "f1-13", name: "리추얼 뷰티", floor: 1, category: "Cosmetic", x: 40, y: 40, maxCapacity: 40, currentQueue: 22, arrivalRate: 3.6, avgServiceTime: 4.5 },
-        { id: "f1-14", name: "더 브로우 바", floor: 1, category: "Cosmetic", x: 56, y: 40, maxCapacity: 28, currentQueue: 24, arrivalRate: 3.8, avgServiceTime: 6.3 },
-        { id: "f1-15", name: "메이크업 스튜디오", floor: 1, category: "Cosmetic", x: 72, y: 40, maxCapacity: 36, currentQueue: 38, arrivalRate: 5.1, avgServiceTime: 6.8 },
-        { id: "f1-16", name: "크리스탈 팝업", floor: 1, category: "Luxury", x: 8, y: 56, maxCapacity: 60, currentQueue: 70, arrivalRate: 7.7, avgServiceTime: 6.2 },
-        { id: "f1-17", name: "라운지 101", floor: 1, category: "Service", x: 24, y: 56, maxCapacity: 62, currentQueue: 18, arrivalRate: 2.8, avgServiceTime: 3.5 },
-        { id: "f1-18", name: "컨시어지 데스크", floor: 1, category: "Service", x: 40, y: 56, maxCapacity: 50, currentQueue: 20, arrivalRate: 3.1, avgServiceTime: 4.1 },
-        { id: "f1-19", name: "프레스티지 클럽", floor: 1, category: "Luxury", x: 56, y: 56, maxCapacity: 44, currentQueue: 52, arrivalRate: 5.8, avgServiceTime: 8.6 },
-        { id: "f1-20", name: "센트럴 게이트", floor: 1, category: "Transit", x: 72, y: 56, maxCapacity: 120, currentQueue: 40, arrivalRate: 9.2, avgServiceTime: 2.1 },
-
-        { id: "f2-01", name: "아크 컨템포러리", floor: 2, category: "Contemporary Fashion", x: 8, y: 10, maxCapacity: 44, currentQueue: 38, arrivalRate: 5.2, avgServiceTime: 5.8 },
-        { id: "f2-02", name: "모노크롬 스튜디오", floor: 2, category: "Contemporary Fashion", x: 24, y: 10, maxCapacity: 40, currentQueue: 32, arrivalRate: 4.7, avgServiceTime: 5.4 },
-        { id: "f2-03", name: "시티 레이어", floor: 2, category: "Contemporary Fashion", x: 40, y: 10, maxCapacity: 42, currentQueue: 30, arrivalRate: 4.4, avgServiceTime: 5.2 },
-        { id: "f2-04", name: "뉴 웨이브 셀렉트", floor: 2, category: "Contemporary Fashion", x: 56, y: 10, maxCapacity: 46, currentQueue: 48, arrivalRate: 5.9, avgServiceTime: 6.1 },
-        { id: "f2-05", name: "오프 그리드", floor: 2, category: "Contemporary Fashion", x: 72, y: 10, maxCapacity: 38, currentQueue: 29, arrivalRate: 4.2, avgServiceTime: 5.5 },
-        { id: "f2-06", name: "에센셜 맨즈", floor: 2, category: "Contemporary Fashion", x: 8, y: 24, maxCapacity: 42, currentQueue: 27, arrivalRate: 4.0, avgServiceTime: 5.1 },
-        { id: "f2-07", name: "우먼스 아틀리에", floor: 2, category: "Contemporary Fashion", x: 24, y: 24, maxCapacity: 46, currentQueue: 43, arrivalRate: 5.4, avgServiceTime: 5.9 },
-        { id: "f2-08", name: "스니커 허브", floor: 2, category: "Contemporary Fashion", x: 40, y: 24, maxCapacity: 52, currentQueue: 68, arrivalRate: 7.8, avgServiceTime: 6.6 },
-        { id: "f2-09", name: "데님 랩", floor: 2, category: "Contemporary Fashion", x: 56, y: 24, maxCapacity: 36, currentQueue: 22, arrivalRate: 3.5, avgServiceTime: 5.0 },
-        { id: "f2-10", name: "어반 테일러", floor: 2, category: "Contemporary Fashion", x: 72, y: 24, maxCapacity: 34, currentQueue: 25, arrivalRate: 3.8, avgServiceTime: 6.4 },
-        { id: "f2-11", name: "블랙 라벨", floor: 2, category: "Contemporary Fashion", x: 8, y: 40, maxCapacity: 40, currentQueue: 35, arrivalRate: 4.8, avgServiceTime: 5.7 },
-        { id: "f2-12", name: "오브젝트 룩", floor: 2, category: "Contemporary Fashion", x: 24, y: 40, maxCapacity: 38, currentQueue: 19, arrivalRate: 3.0, avgServiceTime: 4.8 },
-        { id: "f2-13", name: "크리에이터스 숍", floor: 2, category: "Contemporary Fashion", x: 40, y: 40, maxCapacity: 44, currentQueue: 41, arrivalRate: 5.1, avgServiceTime: 5.6 },
-        { id: "f2-14", name: "로컬 디자이너스", floor: 2, category: "Contemporary Fashion", x: 56, y: 40, maxCapacity: 35, currentQueue: 24, arrivalRate: 3.9, avgServiceTime: 5.2 },
-        { id: "f2-15", name: "런웨이 포스트", floor: 2, category: "Contemporary Fashion", x: 72, y: 40, maxCapacity: 48, currentQueue: 46, arrivalRate: 5.7, avgServiceTime: 6.0 },
-        { id: "f2-16", name: "키즈 컨셉", floor: 2, category: "Contemporary Fashion", x: 8, y: 56, maxCapacity: 36, currentQueue: 18, arrivalRate: 3.4, avgServiceTime: 4.9 },
-        { id: "f2-17", name: "액세서리 마켓", floor: 2, category: "Contemporary Fashion", x: 24, y: 56, maxCapacity: 50, currentQueue: 33, arrivalRate: 4.6, avgServiceTime: 4.2 },
-        { id: "f2-18", name: "피팅 라운지", floor: 2, category: "Service", x: 40, y: 56, maxCapacity: 54, currentQueue: 28, arrivalRate: 3.7, avgServiceTime: 3.8 },
-        { id: "f2-19", name: "스타일 컨시어지", floor: 2, category: "Service", x: 56, y: 56, maxCapacity: 32, currentQueue: 21, arrivalRate: 2.9, avgServiceTime: 5.0 },
-        { id: "f2-20", name: "패션 브릿지", floor: 2, category: "Transit", x: 72, y: 56, maxCapacity: 110, currentQueue: 34, arrivalRate: 8.4, avgServiceTime: 2.0 },
-
-        { id: "f3-01", name: "라이프 큐브", floor: 3, category: "Lifestyle", x: 8, y: 10, maxCapacity: 48, currentQueue: 33, arrivalRate: 4.5, avgServiceTime: 5.0 },
-        { id: "f3-02", name: "홈 리빙 아카이브", floor: 3, category: "Lifestyle", x: 24, y: 10, maxCapacity: 44, currentQueue: 29, arrivalRate: 4.0, avgServiceTime: 5.4 },
-        { id: "f3-03", name: "키친 오브제", floor: 3, category: "Lifestyle", x: 40, y: 10, maxCapacity: 38, currentQueue: 24, arrivalRate: 3.5, avgServiceTime: 5.2 },
-        { id: "f3-04", name: "슬립 스튜디오", floor: 3, category: "Lifestyle", x: 56, y: 10, maxCapacity: 32, currentQueue: 16, arrivalRate: 2.8, avgServiceTime: 5.8 },
-        { id: "f3-05", name: "그린 오브젝트", floor: 3, category: "Lifestyle", x: 72, y: 10, maxCapacity: 42, currentQueue: 37, arrivalRate: 4.9, avgServiceTime: 5.5 },
-        { id: "f3-06", name: "북 라운지 시그널", floor: 3, category: "Books", x: 8, y: 24, maxCapacity: 58, currentQueue: 54, arrivalRate: 6.1, avgServiceTime: 7.0 },
-        { id: "f3-07", name: "페이지 원", floor: 3, category: "Books", x: 24, y: 24, maxCapacity: 40, currentQueue: 23, arrivalRate: 3.6, avgServiceTime: 5.7 },
-        { id: "f3-08", name: "아트북 셀렉트", floor: 3, category: "Books", x: 40, y: 24, maxCapacity: 34, currentQueue: 31, arrivalRate: 4.1, avgServiceTime: 6.2 },
-        { id: "f3-09", name: "매거진 클럽", floor: 3, category: "Books", x: 56, y: 24, maxCapacity: 36, currentQueue: 19, arrivalRate: 3.2, avgServiceTime: 4.6 },
-        { id: "f3-10", name: "키즈 라이브러리", floor: 3, category: "Books", x: 72, y: 24, maxCapacity: 46, currentQueue: 35, arrivalRate: 4.8, avgServiceTime: 6.0 },
-        { id: "f3-11", name: "테크 데스크", floor: 3, category: "Lifestyle", x: 8, y: 40, maxCapacity: 44, currentQueue: 47, arrivalRate: 5.4, avgServiceTime: 6.4 },
-        { id: "f3-12", name: "오디오 살롱", floor: 3, category: "Lifestyle", x: 24, y: 40, maxCapacity: 30, currentQueue: 26, arrivalRate: 3.9, avgServiceTime: 7.2 },
-        { id: "f3-13", name: "문구 실험실", floor: 3, category: "Books", x: 40, y: 40, maxCapacity: 38, currentQueue: 28, arrivalRate: 3.8, avgServiceTime: 5.3 },
-        { id: "f3-14", name: "리추얼 홈", floor: 3, category: "Lifestyle", x: 56, y: 40, maxCapacity: 36, currentQueue: 20, arrivalRate: 3.2, avgServiceTime: 5.1 },
-        { id: "f3-15", name: "컬처 클래스룸", floor: 3, category: "Books", x: 72, y: 40, maxCapacity: 52, currentQueue: 49, arrivalRate: 5.8, avgServiceTime: 7.5 },
-        { id: "f3-16", name: "플랜트 바", floor: 3, category: "Lifestyle", x: 8, y: 56, maxCapacity: 34, currentQueue: 28, arrivalRate: 4.2, avgServiceTime: 5.9 },
-        { id: "f3-17", name: "테이블웨어 갤러리", floor: 3, category: "Lifestyle", x: 24, y: 56, maxCapacity: 40, currentQueue: 22, arrivalRate: 3.4, avgServiceTime: 5.0 },
-        { id: "f3-18", name: "디자인 전문 서적", floor: 3, category: "Books", x: 40, y: 56, maxCapacity: 42, currentQueue: 34, arrivalRate: 4.5, avgServiceTime: 5.8 },
-        { id: "f3-19", name: "멤버스 리딩룸", floor: 3, category: "Books", x: 56, y: 56, maxCapacity: 28, currentQueue: 15, arrivalRate: 2.4, avgServiceTime: 6.5 },
-        { id: "f3-20", name: "라이프 브릿지", floor: 3, category: "Transit", x: 72, y: 56, maxCapacity: 100, currentQueue: 26, arrivalRate: 7.2, avgServiceTime: 2.0 },
-
-        { id: "f4-01", name: "에픽 가든(Epic Garden)", floor: 4, category: "Landmark Garden", x: 28, y: 16, maxCapacity: 180, currentQueue: 210, arrivalRate: 16.5, avgServiceTime: 14.0 },
-        { id: "f4-02", name: "가든 테라스 바", floor: 4, category: "Signature F&B", x: 8, y: 10, maxCapacity: 64, currentQueue: 82, arrivalRate: 8.2, avgServiceTime: 8.8 },
-        { id: "f4-03", name: "루프 브런치", floor: 4, category: "Signature F&B", x: 72, y: 10, maxCapacity: 58, currentQueue: 64, arrivalRate: 7.4, avgServiceTime: 8.4 },
-        { id: "f4-04", name: "오로라 디저트", floor: 4, category: "Signature F&B", x: 8, y: 24, maxCapacity: 46, currentQueue: 55, arrivalRate: 6.7, avgServiceTime: 7.2 },
-        { id: "f4-05", name: "포레스트 티룸", floor: 4, category: "Signature F&B", x: 72, y: 24, maxCapacity: 52, currentQueue: 48, arrivalRate: 5.9, avgServiceTime: 7.0 },
-        { id: "f4-06", name: "스카이 누들", floor: 4, category: "Signature F&B", x: 8, y: 40, maxCapacity: 54, currentQueue: 42, arrivalRate: 5.6, avgServiceTime: 6.5 },
-        { id: "f4-07", name: "그릴 온 더 루프", floor: 4, category: "Signature F&B", x: 72, y: 40, maxCapacity: 62, currentQueue: 58, arrivalRate: 6.9, avgServiceTime: 8.0 },
-        { id: "f4-08", name: "시그니처 베이커리", floor: 4, category: "Signature F&B", x: 8, y: 56, maxCapacity: 48, currentQueue: 46, arrivalRate: 5.8, avgServiceTime: 5.4 },
-        { id: "f4-09", name: "클라우드 커피", floor: 4, category: "Signature F&B", x: 24, y: 56, maxCapacity: 50, currentQueue: 44, arrivalRate: 5.6, avgServiceTime: 4.8 },
-        { id: "f4-10", name: "가든 포토 스팟", floor: 4, category: "Garden Experience", x: 40, y: 56, maxCapacity: 70, currentQueue: 76, arrivalRate: 7.9, avgServiceTime: 6.6 },
-        { id: "f4-11", name: "미스트 파빌리온", floor: 4, category: "Garden Experience", x: 56, y: 56, maxCapacity: 66, currentQueue: 63, arrivalRate: 6.8, avgServiceTime: 6.1 },
-        { id: "f4-12", name: "센트 가든 숍", floor: 4, category: "Garden Experience", x: 72, y: 56, maxCapacity: 36, currentQueue: 29, arrivalRate: 3.9, avgServiceTime: 5.6 },
-        { id: "f4-13", name: "플로럴 아틀리에", floor: 4, category: "Garden Experience", x: 8, y: 70, maxCapacity: 34, currentQueue: 27, arrivalRate: 3.6, avgServiceTime: 5.8 },
-        { id: "f4-14", name: "루프 팝업 키친", floor: 4, category: "Signature F&B", x: 24, y: 70, maxCapacity: 44, currentQueue: 39, arrivalRate: 5.1, avgServiceTime: 6.3 },
-        { id: "f4-15", name: "글라스 하우스", floor: 4, category: "Garden Experience", x: 40, y: 70, maxCapacity: 58, currentQueue: 51, arrivalRate: 5.7, avgServiceTime: 7.4 },
-        { id: "f4-16", name: "선셋 라운지", floor: 4, category: "Signature F&B", x: 56, y: 70, maxCapacity: 60, currentQueue: 69, arrivalRate: 7.5, avgServiceTime: 8.6 },
-        { id: "f4-17", name: "가든 인포 데스크", floor: 4, category: "Service", x: 72, y: 70, maxCapacity: 48, currentQueue: 24, arrivalRate: 3.1, avgServiceTime: 3.8 },
-        { id: "f4-18", name: "웨이팅 라운지", floor: 4, category: "Service", x: 8, y: 82, maxCapacity: 90, currentQueue: 88, arrivalRate: 8.9, avgServiceTime: 4.2 },
-        { id: "f4-19", name: "루프 브릿지", floor: 4, category: "Transit", x: 40, y: 82, maxCapacity: 120, currentQueue: 45, arrivalRate: 9.8, avgServiceTime: 2.0 },
-        { id: "f4-20", name: "스카이 엘리베이터", floor: 4, category: "Transit", x: 72, y: 82, maxCapacity: 120, currentQueue: 52, arrivalRate: 10.4, avgServiceTime: 2.0 },
-      ];
-
-      const floorMeta = [
-        { id: "f1", label: "1F", title: "1F Luxury / Cosmetic", gates: [{ x: 4, y: 48, label: "IN" }, { x: 94, y: 48, label: "IN" }, { x: 50, y: 4, label: "E" }, { x: 50, y: 94, label: "E" }] },
-        { id: "f2", label: "2F", title: "2F Contemporary Fashion", gates: [{ x: 4, y: 48, label: "E" }, { x: 94, y: 48, label: "E" }, { x: 50, y: 4, label: "UP" }, { x: 50, y: 94, label: "DN" }] },
-        { id: "f3", label: "3F", title: "3F Lifestyle / Books", gates: [{ x: 4, y: 48, label: "E" }, { x: 94, y: 48, label: "E" }, { x: 50, y: 4, label: "UP" }, { x: 50, y: 94, label: "DN" }] },
-        { id: "f4", label: "4F", title: "4F Rooftop Epic Garden / Signature F&B", gates: [{ x: 6, y: 82, label: "IN" }, { x: 94, y: 82, label: "OUT" }, { x: 50, y: 6, label: "E" }, { x: 50, y: 94, label: "G" }] },
-      ];
-
-      const floors = floorMeta.map((floor) => ({
-        ...floor,
-        stores: departmentStores.filter((storeItem) => storeItem.floor === Number(floor.label.replace("F", ""))),
-      }));
-
-      const needs = [
-        { id: "Luxury", label: "명품", share: 16 },
-        { id: "Cosmetic", label: "코스메틱", share: 13 },
-        { id: "Contemporary Fashion", label: "패션", share: 22 },
-        { id: "Lifestyle", label: "라이프", share: 12 },
-        { id: "Books", label: "북스", share: 10 },
-        { id: "Signature F&B", label: "F&B", share: 15 },
-        { id: "Garden Experience", label: "가든", share: 8 },
-        { id: "Service", label: "서비스", share: 4 },
-      ];
-
-      const state = {
-        floorIndex: 0,
-        peopleCount: 90,
-        rfRatio: 55,
-        speed: 1,
-        running: true,
-        people: [],
-        congestion: new Map(),
-        bypassEnabled: false,
-        selectedView: "overview",
-        lastTime: performance.now(),
-      };
-
-      const floorTabs = document.querySelector("#floorTabs");
-      const floorTitle = document.querySelector("#floorTitle");
-      const floorShell = document.querySelector("#floorShell");
-      const peopleLayer = document.querySelector("#peopleLayer");
-      const routeOverlay = document.querySelector("#routeOverlay");
-      const peopleCount = document.querySelector("#peopleCount");
-      const rfRatio = document.querySelector("#rfRatio");
-      const speedRange = document.querySelector("#speedRange");
-      const peopleCountLabel = document.querySelector("#peopleCountLabel");
-      const rfRatioLabel = document.querySelector("#rfRatioLabel");
-      const speedLabel = document.querySelector("#speedLabel");
-      const congestionMetric = document.querySelector("#congestionMetric");
-      const visitorMetric = document.querySelector("#visitorMetric");
-      const routeFinderMetric = document.querySelector("#routeFinderMetric");
-      const congestionCopy = document.querySelector("#congestionCopy");
-      const zoneList = document.querySelector("#zoneList");
-      const needGrid = document.querySelector("#needGrid");
-      const insightList = document.querySelector("#insightList");
-      const pauseBtn = document.querySelector("#pauseBtn");
-      const resetBtn = document.querySelector("#resetBtn");
-      const optimizeBtn = document.querySelector("#optimizeBtn");
-      const exportBtn = document.querySelector("#exportBtn");
-      const simState = document.querySelector("#simState");
-      const bypassToggle = document.querySelector("#bypassToggle");
-      const lambdaMetric = document.querySelector("#lambdaMetric");
-      const littleLMetric = document.querySelector("#littleLMetric");
-      const waitMetric = document.querySelector("#waitMetric");
-      const floorMonitor = document.querySelector("#floorMonitor");
-      const adminControl = document.querySelector(".admin-control");
-
-      function point(x, y) {
-        return { x, y };
-      }
-
-      function currentFloor() {
-        return floors[state.floorIndex];
-      }
-
-      function sizeOf(storeItem) {
-        if (storeItem.category === "Landmark Garden") return { w: 36, h: 26 };
-        if (storeItem.category === "Transit") return { w: 12, h: 9 };
-        if (storeItem.category === "Service") return { w: 11, h: 9 };
-        return { w: 12, h: 10 };
-      }
-
-      function centerOf(storeItem) {
-        const size = sizeOf(storeItem);
-        return point(storeItem.x + size.w / 2, storeItem.y + size.h / 2);
-      }
-
-      const queueEngine = {
-        bypassArrivalDrop: 0.4,
-        bypassWaitDrop: 0.28,
-        congestionThreshold: 1,
-      };
-
-      function isCongestedStore(storeItem) {
-        const queuePressure = storeItem.currentQueue / Math.max(storeItem.maxCapacity, 1);
-        const arrivalPressure = (storeItem.arrivalRate * storeItem.avgServiceTime) / Math.max(storeItem.maxCapacity, 1);
-        return queuePressure >= queueEngine.congestionThreshold || arrivalPressure >= 0.8;
-      }
-
-      function calculateLittleLaw(storeItem) {
-        const baseLambda = storeItem.arrivalRate;
-        const baseWait = storeItem.currentQueue / Math.max(baseLambda, 0.1);
-        const bypassActive = state.bypassEnabled && isCongestedStore(storeItem);
-        const lambda = bypassActive ? baseLambda * (1 - queueEngine.bypassArrivalDrop) : baseLambda;
-        const waitTime = bypassActive ? baseWait * (1 - queueEngine.bypassWaitDrop) : baseWait;
-        const queueLength = lambda * waitTime;
-
-        return {
-          baseLambda,
-          lambda,
-          queueLength,
-          waitTime,
-          bypassActive,
-        };
-      }
-
-      function aggregateLittleLaw(stores) {
-        const metrics = stores.map(calculateLittleLaw);
-        const lambda = metrics.reduce((sum, item) => sum + item.lambda, 0);
-        const queueLength = metrics.reduce((sum, item) => sum + item.queueLength, 0);
-        const waitTime = lambda ? queueLength / lambda : 0;
-        const bypassedStores = metrics.filter((item) => item.bypassActive).length;
-
-        return { lambda, queueLength, waitTime, bypassedStores };
-      }
-
-      function calculateFloorPressure(floor) {
-        const metrics = floor.stores.map((storeItem) => {
-          const queue = calculateLittleLaw(storeItem);
-          return Math.min(100, Math.round((queue.queueLength / Math.max(storeItem.maxCapacity, 1)) * 100));
-        });
-
-        return metrics.length ? Math.round(metrics.reduce((sum, level) => sum + level, 0) / metrics.length) : 0;
-      }
-
-      function pickNeed() {
-        const visibleCategories = new Set(currentFloor().stores.map((item) => item.category));
-        const availableNeeds = needs.filter((need) => visibleCategories.has(need.id));
-        const pool = availableNeeds.length ? availableNeeds : needs;
-        const total = pool.reduce((sum, need) => sum + need.share, 0);
-        let roll = Math.random() * total;
-
-        for (const need of pool) {
-          roll -= need.share;
-          if (roll <= 0) return need.id;
-        }
-
-        return pool[0].id;
-      }
-
-      function pickDestination(needId) {
-        const floorStores = currentFloor().stores;
-        const candidates = floorStores.filter((item) => item.category === needId);
-        const fallback = floorStores.filter((item) => item.category !== "Transit");
-        const pool = candidates.length ? candidates : fallback;
-        return pool[Math.floor(Math.random() * pool.length)];
-      }
-
-      function gatePoint() {
-        const gates = currentFloor().gates;
-        const gate = gates[Math.floor(Math.random() * gates.length)];
-        return point(gate.x, gate.y);
-      }
-
-      function occupancyNear(pointValue, radius = 12) {
-        return state.people.reduce((sum, person) => {
-          const dx = person.x - pointValue.x;
-          const dy = person.y - pointValue.y;
-          return sum + (Math.hypot(dx, dy) < radius ? 1 : 0);
-        }, 0);
-      }
-
-      function buildRoute(start, destination, usesRouteFinder) {
-        const target = centerOf(destination);
-        const candidates = [
-          [start, point(16, start.y), point(16, 48), point(target.x, 48), target],
-          [start, point(50, start.y), point(50, 22), point(target.x, 22), target],
-          [start, point(84, start.y), point(84, 50), point(target.x, 50), target],
-          [start, point(start.x, target.y), target],
-        ];
-
-        if (!usesRouteFinder) return candidates[3];
-
-        return candidates
-          .map((route) => {
-            const distance = route.reduce((sum, routePoint, index) => {
-              if (index === 0) return 0;
-              const previous = route[index - 1];
-              return sum + Math.hypot(routePoint.x - previous.x, routePoint.y - previous.y);
-            }, 0);
-            const crowdPenalty = route.reduce((sum, routePoint) => sum + occupancyNear(routePoint), 0);
-            const queuePenalty = destination.currentQueue / Math.max(destination.maxCapacity, 1);
-            const servicePenalty = destination.avgServiceTime / 4;
-            return { route, score: distance + crowdPenalty * 4 + queuePenalty * 12 + servicePenalty };
-          })
-          .sort((a, b) => a.score - b.score)[0].route;
-      }
-
-      function createPerson(index) {
-        const need = pickNeed();
-        const destination = pickDestination(need);
-        const start = gatePoint();
-        const usesRouteFinder = Math.random() * 100 < state.rfRatio;
-        const route = buildRoute(start, destination, usesRouteFinder);
-        const element = document.createElement("span");
-
-        element.className = usesRouteFinder ? "person rf" : "person";
-        element.title = `${usesRouteFinder ? "RouteFinder" : "Direct"} · ${destination.name}`;
-        element.style.left = `${start.x}%`;
-        element.style.top = `${start.y}%`;
-        peopleLayer.appendChild(element);
-
-        return { id: index, need, destination, usesRouteFinder, route, segment: 0, progress: Math.random() * 0.75, speed: 0.045 + Math.random() * 0.055, x: start.x, y: start.y, element };
-      }
-
-      function rebuildPeople() {
-        peopleLayer.innerHTML = "";
-        state.people = Array.from({ length: state.peopleCount }, (_, index) => createPerson(index));
-        renderRouteOverlay();
-        updateStats();
-      }
-
-      function reroutePerson(person) {
-        const start = point(person.x, person.y);
-        person.need = pickNeed();
-        person.destination = pickDestination(person.need);
-        person.usesRouteFinder = Math.random() * 100 < state.rfRatio;
-        person.route = buildRoute(start, person.destination, person.usesRouteFinder);
-        person.segment = 0;
-        person.progress = 0;
-        person.speed = 0.045 + Math.random() * 0.055;
-        person.element.className = person.usesRouteFinder ? "person rf" : "person";
-        person.element.title = `${person.usesRouteFinder ? "RouteFinder" : "Direct"} · ${person.destination.name}`;
-      }
-
-      function movePeople(deltaSeconds) {
-        for (const person of state.people) {
-          const to = person.route[person.segment + 1];
-          if (!to) {
-            reroutePerson(person);
-            continue;
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>RouteFinder — Expo Crowd Intelligence Platform</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+<script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+<script>
+  tailwind.config = {
+    corePlugins: { preflight: true },
+    theme: {
+      extend: {
+        colors: {
+          bp: {
+            bg: '#eef1f5',
+            panel: '#f7f9fc',
+            silver: '#dfe4ec',
+            grid: '#c8d2df',
+            ink: '#1f2733',
+            sub: '#5b6675',
+            line: '#9aa7b8',
+            accent: '#2f6fb0',
+            accent2: '#1b4e82',
+            mint: '#12d3b0',
+            solo: '#2fae5a',
+            couple: '#8a4fd6',
+            family: '#e08a2b',
+            wait: '#e0453b',
+            bypass: '#2f7fd6',
           }
+        },
+        borderRadius: { none: '0px' },
+        fontFamily: { mono: ['ui-monospace','SFMono-Regular','Menlo','monospace'] }
+      }
+    }
+  }
+</script>
+<style>
+  * { border-radius: 0 !important; }
+  html, body { background:#eef1f5; }
+  .blueprint-grid {
+    background-image:
+      linear-gradient(rgba(150,167,190,0.18) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(150,167,190,0.18) 1px, transparent 1px);
+    background-size: 22px 22px;
+  }
+  .hair { letter-spacing: .12em; }
+  ::-webkit-scrollbar { width: 8px; height: 8px; }
+  ::-webkit-scrollbar-thumb { background:#9aa7b8; }
+  ::-webkit-scrollbar-track { background:#dfe4ec; }
+  .dash-flow { stroke-dasharray: 6 5; animation: dashmove 1.1s linear infinite; }
+  @keyframes dashmove { to { stroke-dashoffset: -22; } }
+  .pulse-ring { transform-origin:center; animation: pr 1.6s ease-out infinite; }
+  @keyframes pr { 0%{ transform:scale(.4); opacity:.9 } 100%{ transform:scale(2.4); opacity:0 } }
+  .toast-in { animation: ti .35s cubic-bezier(.2,.9,.3,1); }
+  @keyframes ti { from{ transform:translateY(14px); opacity:0 } to{ transform:translateY(0); opacity:1 } }
+  .kpi-pop { animation: kp .5s ease; }
+  @keyframes kp { from{ transform:scale(.9); opacity:.4 } to{ transform:scale(1); opacity:1 } }
+</style>
+</head>
+<body>
+<div id="root"></div>
 
-          person.progress += person.speed * state.speed * deltaSeconds;
-          if (person.progress >= 1) {
-            person.segment += 1;
-            person.progress = 0;
-            if (person.segment >= person.route.length - 1) {
-              reroutePerson(person);
+<script type="text/plain" id="app-src">
+const { useState, useEffect, useRef, useMemo, useCallback } = React;
+
+/* ============================================================
+   FIGMA-DERIVED DESIGN TOKENS
+   (Color dictionary + logo SVG + button shape scanned from the
+    linked Figma nodes 34-3 / 34-13 / 34-7 / 34-12 and bound here)
+   ============================================================ */
+const TOKENS = {
+  bg:'#eef1f5', panel:'#f7f9fc', silver:'#dfe4ec', grid:'#c8d2df',
+  ink:'#1f2733', sub:'#5b6675', line:'#9aa7b8',
+  accent:'#2f6fb0', accent2:'#1b4e82', mint:'#12d3b0',
+  solo:'#2fae5a', couple:'#8a4fd6', family:'#e08a2b',
+  wait:'#e0453b', bypass:'#2f7fd6', wall:'#3a4657', entry:'#2fae5a'
+};
+
+/* RouteFinder wordmark + waypoint pin logo (Figma node 34-3) */
+function Logo({ size=34 }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 48 48" fill="none" aria-label="RouteFinder logo">
+      <rect x="2" y="2" width="44" height="44" fill="#f7f9fc" stroke={TOKENS.accent2} strokeWidth="2"/>
+      <path d="M13 34 L24 10 L35 34" stroke={TOKENS.accent} strokeWidth="2.4" fill="none"/>
+      <path d="M18 24 L30 24" stroke={TOKENS.line} strokeWidth="1.4" strokeDasharray="2 2"/>
+      <path d="M24 14 L24 40" stroke={TOKENS.grid} strokeWidth="1"/>
+      <rect x="20" y="20" width="8" height="8" fill={TOKENS.mint} stroke={TOKENS.ink} strokeWidth="1.4"/>
+      <rect x="22.5" y="22.5" width="3" height="3" fill={TOKENS.ink}/>
+    </svg>
+  );
+}
+
+/* Sharp-cornered button component shape (Figma node 34-7) */
+function Btn({ children, onClick, active, tone='default', className='', disabled }) {
+  const tones = {
+    default: active
+      ? 'bg-bp-accent2 text-white border-bp-accent2'
+      : 'bg-bp-panel text-bp-ink border-bp-line hover:border-bp-accent hover:text-bp-accent',
+    solid:   'bg-bp-accent2 text-white border-bp-accent2 hover:bg-bp-accent',
+    ghost:   'bg-transparent text-bp-sub border-bp-line hover:text-bp-ink hover:border-bp-ink',
+    danger:  'bg-white text-bp-wait border-bp-wait hover:bg-bp-wait hover:text-white'
+  };
+  return (
+    <button
+      onClick={onClick} disabled={disabled}
+      className={`px-3 py-1.5 text-xs font-semibold border tracking-wide transition-colors
+        disabled:opacity-40 disabled:cursor-not-allowed ${tones[tone]} ${className}`}>
+      {children}
+    </button>
+  );
+}
+
+/* ============================================================
+   4 EXHIBITION HALL FLOOR PLANS  (inline SVG geometry)
+   Each booth carries a physical ENTRY gate opening. Agents may
+   only pass through the gate — never through a wall.
+   ============================================================ */
+const VW = 760, VH = 560;
+
+// helper booth: {x,y,w,h,label,gate:{side,pos},hotspot,tone}
+function makeHalls() {
+  return {
+    1: {
+      code:'A', name:'제1전시관 · 미래 모빌리티 & 로보틱스관',
+      atrium:{ x:300, y:210, w:160, h:150, label:'CENTRAL ATRIUM' },
+      booths:[
+        { id:'a1', x:60,  y:60,  w:180, h:120, label:'ROBOTICS HALL', sub:'대기업 특별관', gate:{side:'right'}, hotspot:true,  tone:TOKENS.wait },
+        { id:'a2', x:520, y:60,  w:180, h:120, label:'MOBILITY LAB',   sub:'자율주행 데모', gate:{side:'left'},  hotspot:false, tone:TOKENS.accent },
+        { id:'a3', x:60,  y:380, w:180, h:120, label:'ECO REST',       sub:'가든 베이커리', gate:{side:'right'}, hotspot:false, tone:TOKENS.solo, sink:true },
+        { id:'a4', x:520, y:380, w:180, h:120, label:'EV DRIVE ZONE',  sub:'전기차 체험', gate:{side:'left'},  hotspot:false, tone:TOKENS.accent },
+      ],
+      facilities:[
+        { x:355, y:20, label:'ENTRY', kind:'entry' },
+        { x:355, y:530, label:'EXIT', kind:'exit' },
+        { x:30,  y:270, label:'WC',  kind:'wc' },
+        { x:715, y:270, label:'E/V', kind:'ev' },
+      ]
+    },
+    2: {
+      code:'B', name:'제2전시관 · IT 디바이스 & 스마트 혁신기술관',
+      atrium:null,
+      booths:[
+        { id:'b1', x:250, y:50,  w:260, h:130, label:'SMART POPUP', sub:'모바일 팝업스토어', gate:{side:'bottom'}, hotspot:true, tone:TOKENS.wait },
+        { id:'b2', x:60,  y:230, w:180, h:110, label:'WEARABLE',   sub:'착용형 디바이스', gate:{side:'right'}, hotspot:false, tone:TOKENS.accent },
+        { id:'b3', x:520, y:230, w:180, h:110, label:'XR STUDIO',  sub:'확장현실 체험', gate:{side:'left'},  hotspot:false, tone:TOKENS.accent },
+        { id:'b4', x:250, y:400, w:120, h:110, label:'CHIP LAB',   sub:'반도체관', gate:{side:'top'}, hotspot:false, tone:TOKENS.accent },
+        { id:'b5', x:400, y:400, w:120, h:110, label:'AI CORNER',  sub:'온디바이스 AI', gate:{side:'top'}, hotspot:false, tone:TOKENS.solo, sink:true },
+      ],
+      facilities:[
+        { x:355, y:20,  label:'ENTRY', kind:'entry' },
+        { x:120, y:530, label:'EXIT', kind:'exit' },
+        { x:30,  y:130, label:'WC',  kind:'wc' },
+        { x:715, y:130, label:'E/V', kind:'ev' },
+      ]
+    },
+    3: {
+      code:'C', name:'제3전시관 · 푸드테크 & 글로벌 고메 박람회',
+      atrium:null,
+      booths:[
+        { id:'c1', x:270, y:60,  w:230, h:140, label:'PASTA CREW', sub:'3D 로봇 키친', gate:{side:'bottom'}, hotspot:true, tone:TOKENS.wait },
+        { id:'c2', x:60,  y:250, w:170, h:110, label:'BARISTA BOT', sub:'스마트 커피', gate:{side:'right'}, hotspot:false, tone:TOKENS.accent },
+        { id:'c3', x:540, y:250, w:170, h:110, label:'GLOBAL GOURMET', sub:'세계 미식관', gate:{side:'left'}, hotspot:false, tone:TOKENS.accent },
+        { id:'c4', x:300, y:400, w:170, h:110, label:'FOOD LOUNGE', sub:'식음 라운지', gate:{side:'top'}, hotspot:false, tone:TOKENS.solo, sink:true },
+      ],
+      facilities:[
+        { x:355, y:20,  label:'ENTRY', kind:'entry' },
+        { x:355, y:530, label:'EXIT', kind:'exit' },
+        { x:30,  y:120, label:'E/S UP', kind:'esup' },
+        { x:715, y:470, label:'E/S DN', kind:'esdn' },
+        { x:715, y:120, label:'WC', kind:'wc' },
+      ]
+    },
+    4: {
+      code:'D', name:'제4전시관 · 미디어아트 & 크리에이티브 공간',
+      atrium:null,
+      booths:[
+        { id:'d1', x:230, y:60,  w:300, h:170, label:'AETHER LIBRARY', sub:'인터랙티브 크리에이티브 홀', gate:{side:'bottom'}, hotspot:true, tone:TOKENS.wait },
+        { id:'d2', x:60,  y:290, w:180, h:120, label:'PROJECTION', sub:'프로젝션 맵핑', gate:{side:'right'}, hotspot:false, tone:TOKENS.accent },
+        { id:'d3', x:520, y:290, w:180, h:120, label:'SOUND DOME', sub:'사운드 아트', gate:{side:'left'}, hotspot:false, tone:TOKENS.accent },
+        { id:'d4', x:300, y:430, w:160, h:90,  label:'ART LOUNGE', sub:'미디어 쉼터', gate:{side:'top'}, hotspot:false, tone:TOKENS.solo, sink:true },
+      ],
+      facilities:[
+        { x:355, y:20,  label:'ENTRY', kind:'entry' },
+        { x:355, y:530, label:'EXIT', kind:'exit' },
+        { x:30,  y:200, label:'WC',  kind:'wc' },
+        { x:715, y:200, label:'E/V', kind:'ev' },
+      ]
+    }
+  };
+}
+const HALLS = makeHalls();
+
+// gate world coordinate for a booth
+function gatePoint(b) {
+  const g = b.gate;
+  if (g.side==='top')    return { x:b.x+b.w/2, y:b.y };
+  if (g.side==='bottom') return { x:b.x+b.w/2, y:b.y+b.h };
+  if (g.side==='left')   return { x:b.x,       y:b.y+b.h/2 };
+  return { x:b.x+b.w,    y:b.y+b.h/2 }; // right
+}
+function boothCenter(b){ return { x:b.x+b.w/2, y:b.y+b.h/2 }; }
+
+// axis-aligned wall segments for a booth, EXCLUDING the gate opening
+function boothWalls(b) {
+  const g = b.gate.side, open = 34;
+  const segs = [];
+  const cx=b.x+b.w/2, cy=b.y+b.h/2;
+  // top
+  if (g==='top') { segs.push([b.x,b.y,cx-open/2,b.y]); segs.push([cx+open/2,b.y,b.x+b.w,b.y]); }
+  else segs.push([b.x,b.y,b.x+b.w,b.y]);
+  // bottom
+  if (g==='bottom'){ segs.push([b.x,b.y+b.h,cx-open/2,b.y+b.h]); segs.push([cx+open/2,b.y+b.h,b.x+b.w,b.y+b.h]); }
+  else segs.push([b.x,b.y+b.h,b.x+b.w,b.y+b.h]);
+  // left
+  if (g==='left'){ segs.push([b.x,b.y,b.x,cy-open/2]); segs.push([b.x,cy+open/2,b.x,b.y+b.h]); }
+  else segs.push([b.x,b.y,b.x,b.y+b.h]);
+  // right
+  if (g==='right'){ segs.push([b.x+b.w,b.y,b.x+b.w,cy-open/2]); segs.push([b.x+b.w,cy+open/2,b.x+b.w,b.y+b.h]); }
+  else segs.push([b.x+b.w,b.y,b.x+b.w,b.y+b.h]);
+  return segs;
+}
+
+// segment intersection test (for wall-avoidance)
+function segHit(ax,ay,bx,by, cx,cy,dx,dy){
+  const d=(bx-ax)*(dy-cy)-(by-ay)*(dx-cx);
+  if (Math.abs(d)<1e-9) return false;
+  const t=((cx-ax)*(dy-cy)-(cy-ay)*(dx-cx))/d;
+  const u=((cx-ax)*(by-ay)-(cy-ay)*(bx-ax))/d;
+  return t>=0&&t<=1&&u>=0&&u<=1;
+}
+
+/* ============================================================
+   AGENT MODEL — 150 visitors
+   ============================================================ */
+const COMPANIONS = [
+  { key:'solo',   ko:'혼자',  color:TOKENS.solo },
+  { key:'couple', ko:'연인',  color:TOKENS.couple },
+  { key:'family', ko:'가족',  color:TOKENS.family },
+];
+const PREFS = ['테크','트렌디','F&B','문화예술'];
+
+function seededRand(seed){ let s=seed%2147483647; if(s<=0)s+=2147483646;
+  return ()=>{ s=(s*16807)%2147483647; return (s-1)/2147483646; }; }
+
+function spawnAgents(hallId){
+  const hall = HALLS[hallId];
+  const rnd = seededRand(hallId*7919 + 13);
+  const agents = [];
+  const hotspot = hall.booths.find(b=>b.hotspot);
+  for(let i=0;i<150;i++){
+    const comp = COMPANIONS[Math.floor(rnd()*3)];
+    // seed positions in corridors (avoid inside booths roughly)
+    let x = 40 + rnd()*(VW-80);
+    let y = 40 + rnd()*(VH-80);
+    const goHot = rnd() < 0.42;
+    agents.push({
+      id:'V'+String(1000+i),
+      x, y, vx:0, vy:0,
+      comp:comp.key, color:comp.color,
+      pref: PREFS[Math.floor(rnd()*4)],
+      patience: Math.floor(40+rnd()*60),
+      state: goHot ? 'toHot':'roam',
+      target: goHot ? hotspot.id : hall.booths[Math.floor(rnd()*hall.booths.length)].id,
+      wait: 0, phase: 'toGate',
+      accuracy: (rnd()*2.2+0.6), // indoor positioning error metric (m)
+      speed: 0.9 + rnd()*0.7,
+    });
+  }
+  return agents;
+}
+
+/* ============================================================
+   MAIN SIMULATION MAP (left, fixed)
+   ============================================================ */
+function CongestionMap({ hallId, agentsRef, tick, onHover, userPulse, bypass }) {
+  const hall = HALLS[hallId];
+  const agents = agentsRef.current;
+  return (
+    <svg viewBox={`0 0 ${VW} ${VH}`} className="w-full h-full block" style={{background:TOKENS.bg}}>
+      <defs>
+        <pattern id="bp" width="22" height="22" patternUnits="userSpaceOnUse">
+          <path d="M22 0 L0 0 0 22" fill="none" stroke={TOKENS.grid} strokeWidth="0.8" opacity="0.6"/>
+        </pattern>
+      </defs>
+      <rect x="0" y="0" width={VW} height={VH} fill="url(#bp)"/>
+      <rect x="12" y="12" width={VW-24} height={VH-24} fill="none" stroke={TOKENS.line} strokeWidth="2"/>
+
+      {/* atrium (non-enterable) */}
+      {hall.atrium && (
+        <g>
+          <rect x={hall.atrium.x} y={hall.atrium.y} width={hall.atrium.w} height={hall.atrium.h}
+                fill="#e4e9f1" stroke={TOKENS.line} strokeWidth="2" strokeDasharray="2 3"/>
+          <line x1={hall.atrium.x} y1={hall.atrium.y} x2={hall.atrium.x+hall.atrium.w} y2={hall.atrium.y+hall.atrium.h} stroke={TOKENS.grid}/>
+          <line x1={hall.atrium.x+hall.atrium.w} y1={hall.atrium.y} x2={hall.atrium.x} y2={hall.atrium.y+hall.atrium.h} stroke={TOKENS.grid}/>
+          <text x={hall.atrium.x+hall.atrium.w/2} y={hall.atrium.y+hall.atrium.h/2-6} textAnchor="middle"
+                fontSize="11" fontWeight="700" fill={TOKENS.sub} className="hair">CENTRAL ATRIUM</text>
+          <text x={hall.atrium.x+hall.atrium.w/2} y={hall.atrium.y+hall.atrium.h/2+12} textAnchor="middle"
+                fontSize="9" fill={TOKENS.line}>NO ENTRY · 진입 불가</text>
+        </g>
+      )}
+
+      {/* booths */}
+      {hall.booths.map(b=>{
+        const g = gatePoint(b);
+        return (
+          <g key={b.id}>
+            <rect x={b.x} y={b.y} width={b.w} height={b.h}
+                  fill={b.hotspot ? 'rgba(224,69,59,0.06)' : (b.sink?'rgba(47,174,90,0.07)':'#ffffff')}
+                  stroke="none"/>
+            {boothWalls(b).map((s,i)=>(
+              <line key={i} x1={s[0]} y1={s[1]} x2={s[2]} y2={s[3]} stroke={TOKENS.wall} strokeWidth="3"/>
+            ))}
+            {/* gate opening marker (green dashed ENTRY) */}
+            <g>
+              {b.gate.side==='top' || b.gate.side==='bottom'
+                ? <line x1={g.x-17} y1={g.y} x2={g.x+17} y2={g.y} stroke={TOKENS.entry} strokeWidth="2.5" className="dash-flow"/>
+                : <line x1={g.x} y1={g.y-17} x2={g.x} y2={g.y+17} stroke={TOKENS.entry} strokeWidth="2.5" className="dash-flow"/>}
+              <text x={g.x + (b.gate.side==='left'?-6:b.gate.side==='right'?6:0)}
+                    y={g.y + (b.gate.side==='top'?-6:b.gate.side==='bottom'?14:-6)}
+                    textAnchor={b.gate.side==='left'?'end':b.gate.side==='right'?'start':'middle'}
+                    fontSize="8" fontWeight="700" fill={TOKENS.entry} className="hair">ENTRY</text>
+            </g>
+            <text x={b.x+b.w/2} y={b.y+b.h/2-4} textAnchor="middle" fontSize="12" fontWeight="800" fill={TOKENS.ink} className="hair">{b.label}</text>
+            <text x={b.x+b.w/2} y={b.y+b.h/2+12} textAnchor="middle" fontSize="9" fill={TOKENS.sub}>{b.sub}</text>
+            {b.hotspot && (
+              <text x={b.x+b.w/2} y={b.y+b.h/2+27} textAnchor="middle" fontSize="8" fontWeight="700"
+                    fill={bypass?TOKENS.bypass:TOKENS.wait} className="hair">
+                {bypass ? 'BYPASS ACTIVE' : 'HOTSPOT · 대기 유발'}
+              </text>
+            )}
+          </g>
+        );
+      })}
+
+      {/* facilities */}
+      {hall.facilities.map((f,i)=>(
+        <g key={i}>
+          <rect x={f.x-16} y={f.y-11} width="32" height="22" fill={TOKENS.silver} stroke={TOKENS.line} strokeWidth="1.5"/>
+          <text x={f.x} y={f.y+3} textAnchor="middle" fontSize="8" fontWeight="800" fill={TOKENS.accent2} className="hair">{f.label}</text>
+        </g>
+      ))}
+
+      {/* ===== AGENT LAYER (last layer) ===== */}
+      <g>
+        {agents.map(a=>{
+          let fill = a.color;
+          if (a.state==='queue') fill = TOKENS.wait;
+          else if (a.state==='bypass') fill = TOKENS.bypass;
+          return (
+            <circle key={a.id} cx={a.x} cy={a.y} r={a.state==='queue'||a.state==='bypass'?3.4:3}
+              fill={fill} stroke="#ffffff" strokeWidth="0.7"
+              onMouseEnter={(e)=>onHover(a,e)} onMouseMove={(e)=>onHover(a,e)}
+              onMouseLeave={()=>onHover(null)} style={{cursor:'pointer'}}/>
+          );
+        })}
+      </g>
+
+      {/* user location mint pulse */}
+      {userPulse && userPulse.hall===hallId && (
+        <g transform={`translate(${userPulse.x},${userPulse.y})`}>
+          <circle r="10" fill="none" stroke={TOKENS.mint} strokeWidth="2" className="pulse-ring"/>
+          <circle r="6" fill={TOKENS.mint} stroke="#fff" strokeWidth="1.5"/>
+          <circle r="2.4" fill="#04352c"/>
+        </g>
+      )}
+    </svg>
+  );
+}
+
+/* ============================================================
+   TOOLTIP
+   ============================================================ */
+function AgentTooltip({ data }) {
+  if(!data) return null;
+  const { a, x, y } = data;
+  const comp = COMPANIONS.find(c=>c.key===a.comp);
+  const stateKo = a.state==='queue'?'혼잡 대기(RED)':a.state==='bypass'?'우회 수락(BLUE)':a.state==='inside'?'부스 관람':'이동 중';
+  return (
+    <div className="fixed z-50 pointer-events-none" style={{ left:x+14, top:y+14 }}>
+      <div className="bg-bp-ink text-white text-[11px] w-56 border border-bp-accent shadow-xl">
+        <div className="px-3 py-1.5 bg-bp-accent2 flex items-center justify-between">
+          <span className="font-mono font-bold">{a.id}</span>
+          <span className="hair" style={{color:comp.color}}>● {comp.ko}</span>
+        </div>
+        <div className="px-3 py-2 space-y-1">
+          <Row k="관람 선호" v={a.pref}/>
+          <Row k="인내심" v={`${a.patience} / 100`}/>
+          <Row k="현재 상태" v={stateKo}/>
+          <div className="mt-2 pt-2 border-t border-bp-line/40">
+            <div className="text-bp-mint hair text-[9px] mb-1">실내 측위 · 센서 퓨전 보정</div>
+            <Row k="측위 오차" v={`± ${a.accuracy.toFixed(2)} m`}/>
+            <Row k="퓨전 신뢰도" v={`${Math.max(72,100-Math.round(a.accuracy*9))} %`}/>
+            <Row k="RSSI/IMU" v="SYNCED"/>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+function Row({k,v}){ return (
+  <div className="flex justify-between"><span className="text-bp-line">{k}</span><span className="font-mono">{v}</span></div>
+);}
+
+/* ============================================================
+   SHARED KPI TILE
+   ============================================================ */
+function Tile({ label, value, unit, tone='ink', hint }) {
+  const c = { ink:'text-bp-ink', accent:'text-bp-accent2', wait:'text-bp-wait', mint:'text-bp-mint', bypass:'text-bp-bypass' }[tone];
+  return (
+    <div className="bg-bp-panel border border-bp-line p-3">
+      <div className="text-[10px] text-bp-sub hair uppercase">{label}</div>
+      <div className={`text-2xl font-bold font-mono ${c} kpi-pop`} key={value}>{value}<span className="text-sm ml-0.5">{unit}</span></div>
+      {hint && <div className="text-[9px] text-bp-line mt-0.5">{hint}</div>}
+    </div>
+  );
+}
+
+function Bar({ pct, tone='accent', h='h-2' }) {
+  const c = { accent:'bg-bp-accent', wait:'bg-bp-wait', mint:'bg-bp-mint', bypass:'bg-bp-bypass', silver:'bg-bp-line' }[tone];
+  return (
+    <div className={`w-full ${h} bg-bp-silver border border-bp-line`}>
+      <div className={`${c} h-full transition-all duration-500`} style={{ width:`${Math.max(0,Math.min(100,pct))}%` }}/>
+    </div>
+  );
+}
+
+/* ============================================================
+   VIEW 1 — REAL-TIME CONGESTION DASHBOARD
+   ============================================================ */
+function View1Dashboard({ stats, bypass, nudge, edge }) {
+  const cong = bypass ? 31.2 : 84.6;
+  return (
+    <div className="space-y-3">
+      <SectionTitle no="01" title="실시간 컨벤션 혼잡도 대시보드" sub="Live Convention Congestion Monitor"/>
+      <div className="grid grid-cols-2 gap-2">
+        <Tile label="전시장 평균 혼잡도" value={cong.toFixed(1)} unit="%" tone={bypass?'mint':'wait'}
+              hint={bypass?'스마트 바이패스 ON':'바이패스 OFF · 병목 발생'}/>
+        <Tile label="넛지 수락 협조율" value={bypass?nudge:0} unit="%" tone="accent" hint="Nudge acceptance"/>
+        <Tile label="유동 병목 완화치" value={stats.relief.toFixed(1)} unit="%" tone="bypass" hint="Bottleneck relief"/>
+        <Tile label="실시간 관람객" value={stats.total} unit="명" tone="ink" hint="Active visitors"/>
+      </div>
+
+      <div className="bg-bp-panel border border-bp-line p-3">
+        <div className="flex items-center justify-between mb-2">
+          <span className="text-[10px] hair text-bp-sub uppercase">초저지연 엣지 컴퓨팅 트래픽 바</span>
+          <span className={`text-[10px] font-mono font-bold ${edge>82?'text-bp-wait':'text-bp-mint'}`}>
+            {edge>82?'CONGESTED':'NOMINAL'} · {edge.toFixed(0)}%
+          </span>
+        </div>
+        <Bar pct={edge} tone={edge>82?'wait':'mint'} h="h-3"/>
+        <div className="grid grid-cols-4 gap-1 mt-2">
+          {['EDGE-N','EDGE-E','EDGE-S','EDGE-W'].map((n,i)=>{
+            const v = Math.max(8, Math.min(99, edge + (i-1.5)*11));
+            return (
+              <div key={n} className="border border-bp-line p-1">
+                <div className="text-[8px] text-bp-line font-mono">{n}</div>
+                <Bar pct={v} tone={v>82?'wait':'accent'}/>
+                <div className="text-[8px] font-mono text-bp-sub mt-0.5">{v.toFixed(0)}ms</div>
+              </div>
+            );
+          })}
+        </div>
+        <div className="text-[9px] text-bp-line mt-2">대규모 트래픽 집중에 의한 네트워크 정체 방지 상태를 실시간 관제합니다.</div>
+      </div>
+
+      <div className="bg-bp-panel border border-bp-line p-3">
+        <div className="text-[10px] hair text-bp-sub uppercase mb-2">관람객 구성 · 도트 범례</div>
+        <div className="grid grid-cols-2 gap-x-4 gap-y-1 text-[11px]">
+          <Legend c={TOKENS.solo} t="혼자 (SOLO)"/>
+          <Legend c={TOKENS.couple} t="연인 (COUPLE)"/>
+          <Legend c={TOKENS.family} t="가족 (FAMILY)"/>
+          <Legend c={TOKENS.wait} t="혼잡 대기 (QUEUE)"/>
+          <Legend c={TOKENS.bypass} t="우회 이동 (BYPASS)"/>
+          <Legend c={TOKENS.mint} t="사용자 위치 (YOU)"/>
+        </div>
+      </div>
+    </div>
+  );
+}
+function Legend({c,t}){ return (
+  <div className="flex items-center gap-2"><span className="w-3 h-3 border border-white" style={{background:c}}/><span className="text-bp-ink">{t}</span></div>
+);}
+
+/* ============================================================
+   VIEW 2 — B2C EXPO WAY GUIDE APP (iPhone frame)
+   ============================================================ */
+function View2Guide({ setHallId, setUserPulse, pushToast, bypass }) {
+  const [comp, setComp] = useState('solo');
+  const [theme, setTheme] = useState('신기술');
+  const [route, setRoute] = useState(null);
+  const [couponShown, setCouponShown] = useState(false);
+
+  const buildRoute = () => {
+    const base = [
+      { hall:1, booth:'a2', name:'A · 자율주행 모빌리티 랩', tag:'신기술', min:15 },
+      { hall:2, booth:'b3', name:'B · XR 스튜디오 체험', tag:'체험', min:20 },
+      { hall:4, booth:'d1', name:'D · 아에테르 미디어아트 홀', tag:'문화예술', min:25 },
+      { hall:3, booth:'c4', name:'C · 푸드 라운지 안착', tag:'푸드테크', min:18 },
+    ];
+    let seq = [...base];
+    if (bypass) {
+      // smart schedule swap: visit quiet culture hall FIRST, avoid mega-booth queue
+      seq = [ base[2], base[0], base[1], base[3] ];
+      setCouponShown(true);
+      pushToast('푸드테크 20% 특별 우회 쿠폰이 발급되었습니다', 'mint');
+    } else {
+      setCouponShown(false);
+    }
+    seq = seq.map((s,i)=>({ ...s, order:i+1 }));
+    setRoute(seq);
+    pushToast('AI 분산 동선이 생성되었습니다', 'accent');
+  };
+
+  const clickStep = (s) => {
+    setHallId(s.hall);
+    const hall = HALLS[s.hall];
+    const b = hall.booths.find(x=>x.id===s.booth);
+    const g = gatePoint(b);
+    setUserPulse({ hall:s.hall, x:g.x, y:g.y });
+  };
+
+  return (
+    <div className="space-y-3">
+      <SectionTitle no="02" title="B2C 엑스포 웨이 가이드" sub="Visitor Companion App"/>
+      <div className="flex justify-center">
+        <div className="w-[300px] bg-bp-ink p-2 border-4 border-bp-ink shadow-2xl">
+          <div className="bg-bp-bg blueprint-grid">
+            {/* status bar */}
+            <div className="flex justify-between items-center px-3 py-1.5 bg-white border-b border-bp-line text-[10px] font-mono text-bp-sub">
+              <span>09:41</span>
+              <span className="hair font-bold text-bp-accent2">ROUTEFINDER</span>
+              <span>5G · 100%</span>
+            </div>
+            <div className="p-3 space-y-3 max-h-[440px] overflow-y-auto">
+              <div>
+                <div className="text-[10px] hair text-bp-sub mb-1">동반인 유형</div>
+                <div className="grid grid-cols-3 gap-1">
+                  {COMPANIONS.map(c=>(
+                    <Btn key={c.key} active={comp===c.key} onClick={()=>setComp(c.key)}>{c.ko}</Btn>
+                  ))}
+                </div>
+              </div>
+              <div>
+                <div className="text-[10px] hair text-bp-sub mb-1">탐색 테마</div>
+                <div className="grid grid-cols-3 gap-1">
+                  {['신기술','체험','푸드테크'].map(t=>(
+                    <Btn key={t} active={theme===t} onClick={()=>setTheme(t)}>{t}</Btn>
+                  ))}
+                </div>
+              </div>
+              <Btn tone="solid" className="w-full py-2" onClick={buildRoute}>AI 분산 동선 생성</Btn>
+
+              {couponShown && (
+                <div className="border-2 border-bp-mint bg-white p-2 toast-in">
+                  <div className="text-[10px] hair text-bp-mint font-bold">SMART BYPASS COUPON</div>
+                  <div className="text-sm font-bold text-bp-ink">푸드테크 20% 특별 우회 쿠폰</div>
+                  <div className="text-[9px] text-bp-sub">혼잡 메가 부스를 우회하고 한적한 문화예술관을 먼저 방문한 참여 보상입니다.</div>
+                </div>
+              )}
+
+              {route && (
+                <div>
+                  <div className="text-[10px] hair text-bp-sub mb-1">추천 타임라인 {bypass && <span className="text-bp-mint">· 스마트 스왑 적용</span>}</div>
+                  <div className="space-y-1">
+                    {route.map(s=>(
+                      <button key={s.order} onClick={()=>clickStep(s)}
+                        className="w-full text-left border border-bp-line bg-white hover:border-bp-mint p-2 flex items-center gap-2 transition-colors">
+                        <span className="w-6 h-6 shrink-0 bg-bp-accent2 text-white text-[11px] font-bold flex items-center justify-center font-mono">{s.order}</span>
+                        <span className="flex-1">
+                          <span className="block text-[11px] font-bold text-bp-ink">{s.name}</span>
+                          <span className="block text-[9px] text-bp-sub">{s.tag} · 예상 {s.min}분</span>
+                        </span>
+                        <span className="text-[8px] hair text-bp-mint">TAP→MAP</span>
+                      </button>
+                    ))}
+                  </div>
+                  <div className="text-[9px] text-bp-line mt-2">단계를 누르면 좌측 지도가 해당 전시관으로 전환되고 입구에 민트색 위치 펄스가 표시됩니다.</div>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ============================================================
+   VIEW 3 — B2B ORGANIZER CONTROL PANEL
+   ============================================================ */
+function View3Control({ bypass, setBypass, nudge, setNudge, stats, roi, predictive, setPredictive }) {
+  const L = stats.L, lam = stats.lambda, W = stats.W;
+  return (
+    <div className="space-y-3">
+      <SectionTitle no="03" title="B2B 엑스포 주최측 관제판" sub="Organizer Control Deck"/>
+
+      <div className="bg-bp-panel border border-bp-line p-3 flex items-center justify-between">
+        <div>
+          <div className="text-[11px] font-bold text-bp-ink">실시간 동적 바이패스 개입</div>
+          <div className="text-[9px] text-bp-sub">Dynamic Smart Bypass Control</div>
+        </div>
+        <button onClick={()=>setBypass(!bypass)}
+          className={`w-16 h-8 border-2 flex items-center transition-colors ${bypass?'bg-bp-bypass border-bp-bypass justify-end':'bg-bp-silver border-bp-line justify-start'}`}>
+          <span className="w-6 h-6 bg-white block m-0.5"/>
+        </button>
+      </div>
+
+      <div className="bg-bp-panel border border-bp-line p-3">
+        <div className="flex justify-between text-[11px] mb-1">
+          <span className="font-bold text-bp-ink">넛지 혜택 강도 조절</span>
+          <span className="font-mono font-bold text-bp-accent2">{nudge}%</span>
+        </div>
+        <input type="range" min="30" max="100" value={nudge} disabled={!bypass}
+          onChange={e=>setNudge(parseInt(e.target.value))}
+          className="w-full accent-bp-accent2 disabled:opacity-40"/>
+        <div className="flex justify-between text-[8px] text-bp-line font-mono"><span>30%</span><span>100%</span></div>
+        <div className="text-[9px] text-bp-sub mt-1">슬라이더 값에 비례해 우회 수락 성공률이 상승합니다.</div>
+      </div>
+
+      <div className="bg-white border-2 border-bp-accent2 p-3">
+        <div className="text-[10px] hair text-bp-accent2 font-bold mb-2">LITTLE&apos;S LAW · 실시간 대기행렬 모형</div>
+        <div className="text-center font-mono text-lg text-bp-ink mb-3">
+          L = &lambda; &times; W　　→　　W = L / &lambda;
+        </div>
+        <div className="grid grid-cols-3 gap-2 text-center">
+          <div className="border border-bp-line p-2">
+            <div className="text-[9px] text-bp-sub font-mono">&lambda; 유입률</div>
+            <div className="text-lg font-bold font-mono text-bp-accent2 kpi-pop" key={lam}>{lam.toFixed(2)}</div>
+            <div className="text-[8px] text-bp-line">명/분</div>
+          </div>
+          <div className="border border-bp-line p-2">
+            <div className="text-[9px] text-bp-sub font-mono">L 대기열</div>
+            <div className="text-lg font-bold font-mono text-bp-wait kpi-pop" key={L}>{L}</div>
+            <div className="text-[8px] text-bp-line">명</div>
+          </div>
+          <div className="border border-bp-line p-2">
+            <div className="text-[9px] text-bp-sub font-mono">W 대기시간</div>
+            <div className="text-lg font-bold font-mono text-bp-mint kpi-pop" key={W}>{W.toFixed(2)}</div>
+            <div className="text-[8px] text-bp-line">분</div>
+          </div>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-2 gap-2">
+        <div className="bg-bp-panel border border-bp-line p-3">
+          <div className="text-[10px] hair text-bp-sub uppercase">누적 대기시간 절감</div>
+          <div className="text-2xl font-bold font-mono text-bp-mint kpi-pop" key={Math.floor(roi.savedMin)}>{Math.floor(roi.savedMin).toLocaleString()}<span className="text-sm ml-1">분</span></div>
+        </div>
+        <div className="bg-bp-panel border border-bp-line p-3">
+          <div className="text-[10px] hair text-bp-sub uppercase">우회 연계 부가매출</div>
+          <div className="text-2xl font-bold font-mono text-bp-accent2 kpi-pop" key={Math.floor(roi.revenue)}>&#8361;{Math.floor(roi.revenue).toLocaleString()}</div>
+        </div>
+      </div>
+
+      <div className={`border-2 p-3 ${predictive?'border-bp-wait bg-white':'border-bp-line bg-bp-panel'}`}>
+        <div className="flex items-center justify-between">
+          <div>
+            <div className="text-[11px] font-bold text-bp-ink">예측형 혼잡도 제어 (Predictive Crowd Control)</div>
+            <div className="text-[9px] text-bp-sub">게릴라 이벤트 30분 전 선제 제어</div>
+          </div>
+          <Btn tone={predictive?'danger':'default'} active={false} onClick={()=>setPredictive(!predictive)}>
+            {predictive?'ARMED':'STANDBY'}
+          </Btn>
+        </div>
+        {predictive && (
+          <div className="mt-2 border border-bp-wait/50 p-2 text-[10px] toast-in">
+            <div className="font-mono text-bp-wait font-bold">⚑ ALERT · T-30:00</div>
+            <div className="text-bp-ink">유명인 사인회 · 선착순 경품 이벤트 감지 → A홀 로보틱스 특별관 선제 분산 제어 개시.</div>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+/* ============================================================
+   VIEW 4 — DATA MARKETPLACE
+   ============================================================ */
+const DATASETS = [
+  { id:'ds1', cat:'Tech', title:'2F IT 디바이스관 이동 벡터 로우 데이터', size:'2.4 GB', price:1200000, big:true, partner:'스마트팝업 참가사' },
+  { id:'ds2', cat:'F&B',  title:'3F 푸드코트 부역별 정체 효율 분석 리포트', size:'860 MB', price:940000, big:true, partner:'파스타 크루 참가사' },
+  { id:'ds3', cat:'Culture', title:'4F 미디어아트홀 체류시간 히트맵 데이터셋', size:'1.1 GB', price:780000, big:false, partner:'아에테르 참가사' },
+  { id:'ds4', cat:'F&B',  title:'1F 에코 쉼터 최종 안착 전환율 패키지', size:'540 MB', price:610000, big:false, partner:'가든 베이커리' },
+];
+
+function View4Market({ pushToast, salesRef, tick }) {
+  const [filter, setFilter] = useState('All');
+  const [owned, setOwned] = useState({});
+  const list = DATASETS.filter(d=> filter==='All' || d.cat===filter);
+
+  const buy = (d) => {
+    if (owned[d.id]) return;
+    setOwned(o=>({ ...o, [d.id]:true }));
+    salesRef.current.month += d.price;
+    pushToast(`${d.title} · 다운로드 완료`, 'accent');
+    if (d.big) {
+      setTimeout(()=>pushToast(`${d.partner}에 유동 벡터 전이 리포트 제공 알림 발송`, 'mint'), 500);
+    }
+  };
+
+  return (
+    <div className="space-y-3">
+      <SectionTitle no="04" title="데이터 비즈니스 마켓플레이스" sub="Data Monetization Portal"/>
+
+      <div className="bg-white border-2 border-bp-accent2 p-3 flex items-center justify-between">
+        <div>
+          <div className="text-[10px] hair text-bp-sub uppercase">이번 달 누적 데이터 판매고</div>
+          <div className="text-2xl font-bold font-mono text-bp-accent2 kpi-pop" key={salesRef.current.month}>
+            &#8361;{salesRef.current.month.toLocaleString()}
+          </div>
+        </div>
+        <div className="text-right text-[9px] text-bp-line font-mono">
+          <div>DATASETS · {DATASETS.length}</div>
+          <div>OWNED · {Object.keys(owned).length}</div>
+        </div>
+      </div>
+
+      <div className="flex gap-1">
+        {['All','F&B','Tech','Culture'].map(c=>(
+          <Btn key={c} active={filter===c} onClick={()=>setFilter(c)}>{c}</Btn>
+        ))}
+      </div>
+
+      <div className="space-y-2">
+        {list.map(d=>(
+          <div key={d.id} className="bg-bp-panel border border-bp-line p-3">
+            <div className="flex items-start justify-between gap-2">
+              <div className="flex-1">
+                <div className="flex items-center gap-2 mb-1">
+                  <span className="text-[8px] hair font-bold text-white bg-bp-accent2 px-1.5 py-0.5">{d.cat}</span>
+                  {d.big && <span className="text-[8px] hair font-bold text-bp-mint border border-bp-mint px-1.5 py-0.5">LARGE BOOTH</span>}
+                </div>
+                <div className="text-[12px] font-bold text-bp-ink leading-snug">{d.title}</div>
+                <div className="text-[9px] text-bp-sub font-mono mt-0.5">{d.size} · {d.partner}</div>
+              </div>
+              <div className="text-right shrink-0">
+                <div className="text-sm font-bold font-mono text-bp-accent2 mb-1">&#8361;{d.price.toLocaleString()}</div>
+                {owned[d.id]
+                  ? <span className="inline-block text-[10px] hair font-bold text-bp-mint border border-bp-mint px-2 py-1">DOWNLOADED</span>
+                  : <Btn tone="solid" onClick={()=>buy(d)}>패키지 구매</Btn>}
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+      <div className="text-[9px] text-bp-line">우회 경로를 수락한 대형 부스 참가사에 한해 [유동 벡터 전이 리포트]가 자동 제공됩니다.</div>
+    </div>
+  );
+}
+
+/* ============================================================
+   SHARED small components
+   ============================================================ */
+function SectionTitle({ no, title, sub }) {
+  return (
+    <div className="flex items-end gap-2 border-b border-bp-line pb-2">
+      <span className="text-2xl font-bold font-mono text-bp-line">{no}</span>
+      <div>
+        <div className="text-sm font-bold text-bp-ink">{title}</div>
+        <div className="text-[9px] hair text-bp-sub uppercase">{sub}</div>
+      </div>
+    </div>
+  );
+}
+
+/* ============================================================
+   ROOT APP + SIMULATION LOOP
+   ============================================================ */
+function App() {
+  const [hallId, setHallId] = useState(1);
+  const [view, setView] = useState(1);
+  const [bypass, setBypass] = useState(false);
+  const [nudge, setNudge] = useState(65);
+  const [predictive, setPredictive] = useState(false);
+  const [hover, setHover] = useState(null);
+  const [userPulse, setUserPulse] = useState(null);
+  const [toasts, setToasts] = useState([]);
+  const [tick, setTick] = useState(0);
+  const [stats, setStats] = useState({ total:150, L:0, lambda:0, W:0, relief:0 });
+  const [edge, setEdge] = useState(46);
+
+  const agentsRef = useRef(spawnAgents(1));
+  const roiRef = useRef({ savedMin:0, revenue:0 });
+  const salesRef = useRef({ month: 4820000 });
+  const bypassRef = useRef(bypass);
+  const nudgeRef = useRef(nudge);
+  const hallRef = useRef(hallId);
+  const rngRef = useRef(seededRand(999));
+  const toastId = useRef(0);
+
+  useEffect(()=>{ bypassRef.current = bypass; }, [bypass]);
+  useEffect(()=>{ nudgeRef.current = nudge; }, [nudge]);
+  useEffect(()=>{ hallRef.current = hallId; agentsRef.current = spawnAgents(hallId); }, [hallId]);
+
+  const pushToast = useCallback((msg, tone='accent')=>{
+    const id = ++toastId.current;
+    setToasts(t=>[...t, { id, msg, tone }]);
+    setTimeout(()=> setToasts(t=>t.filter(x=>x.id!==id)), 3600);
+  }, []);
+
+  const onHover = useCallback((a, e)=>{
+    if(!a){ setHover(null); return; }
+    setHover({ a, x:e.clientX, y:e.clientY });
+  }, []);
+
+  // ===== physics + queue loop =====
+  useEffect(()=>{
+    let raf, last=0, statAcc=0;
+    const step = (ts)=>{
+      const dt = Math.min(40, ts-last || 16); last=ts;
+      const hall = HALLS[hallRef.current];
+      const agents = agentsRef.current;
+      const rnd = rngRef.current;
+      const hot = hall.booths.find(b=>b.hotspot);
+      const alt = hall.booths.filter(b=>!b.hotspot && !b.sink);
+      const bp = bypassRef.current;
+      const nudgeP = nudgeRef.current/100;
+
+      let queueCount=0, insideCount=0, bypassCount=0;
+
+      for(const a of agents){
+        const b = hall.booths.find(x=>x.id===a.target) || hall.booths[0];
+        const gate = gatePoint(b);
+        const center = boothCenter(b);
+
+        // determine current waypoint
+        let wx, wy;
+        if (a.phase==='toGate') { wx=gate.x; wy=gate.y; }
+        else if (a.phase==='inside') { wx=center.x; wy=center.y; }
+        else { wx=gate.x; wy=gate.y; }
+
+        // hotspot queueing: form a red queue near the gate
+        const isHot = b.hotspot;
+        if (isHot && a.phase==='toGate') {
+          // bypass diversion decision
+          if (bp && a.state!=='bypass') {
+            if (rnd() < 0.02 * nudgeP * 3) {
+              // accept nudge → reroute to symmetric marketing booth
+              const nb = alt[Math.floor(rnd()*alt.length)];
+              a.target = nb.id; a.state='bypass'; a.phase='toGate';
               continue;
             }
           }
-
-          const nextFrom = person.route[person.segment];
-          const nextTo = person.route[person.segment + 1];
-          person.x = nextFrom.x + (nextTo.x - nextFrom.x) * person.progress;
-          person.y = nextFrom.y + (nextTo.y - nextFrom.y) * person.progress;
-          person.element.style.left = `${person.x}%`;
-          person.element.style.top = `${person.y}%`;
-        }
-      }
-
-      function calculateCongestion() {
-        const result = new Map();
-
-        for (const item of currentFloor().stores) {
-          const c = centerOf(item);
-          const movingCount = state.people.reduce((sum, person) => {
-            const dx = person.x - c.x;
-            const dy = person.y - c.y;
-            return sum + (Math.hypot(dx, dy) < 10 ? 1 : 0);
-          }, 0);
-          const queueMetrics = calculateLittleLaw(item);
-          const queuePressure = queueMetrics.queueLength / Math.max(item.maxCapacity, 1);
-          const arrivalPressure = (queueMetrics.lambda * item.avgServiceTime) / Math.max(item.maxCapacity, 1);
-          const level = Math.min(100, Math.round(queuePressure * 58 + arrivalPressure * 24 + (movingCount / item.maxCapacity) * 180));
-          result.set(item.id, { count: movingCount, level, queueMetrics });
         }
 
-        state.congestion = result;
-      }
+        const dx=wx-a.x, dy=wy-a.y;
+        const dist=Math.hypot(dx,dy)||1;
 
-      function classify(level) {
-        if (level >= 68) return "hot";
-        if (level >= 38) return "warm";
-        return "cool";
-      }
-
-      function renderFloor() {
-        const floor = currentFloor();
-        floorTitle.textContent = floor.title;
-        floorShell.innerHTML = "";
-
-        for (const item of floor.stores) {
-          const size = sizeOf(item);
-          const node = document.createElement("button");
-          node.type = "button";
-          node.className = `store store-${item.category.toLowerCase().replace(/[^a-z0-9]+/g, "-")}`;
-          node.dataset.storeId = item.id;
-          node.style.left = `${item.x}%`;
-          node.style.top = `${item.y}%`;
-          node.style.width = `${size.w}%`;
-          node.style.height = `${size.h}%`;
-          node.innerHTML = `<span class="store-name">${item.name}</span><span class="store-count">0</span>`;
-          node.addEventListener("click", () => focusStore(item));
-          floorShell.appendChild(node);
-        }
-
-        for (const gate of floor.gates) {
-          const node = document.createElement("span");
-          node.className = "gate";
-          node.style.left = `${gate.x}%`;
-          node.style.top = `${gate.y}%`;
-          node.textContent = gate.label;
-          floorShell.appendChild(node);
-        }
-
-        const axis = document.createElement("span");
-        axis.className = "corridor-label";
-        axis.style.left = "42%";
-        axis.style.top = "47%";
-        axis.textContent = "Main Corridor";
-        floorShell.appendChild(axis);
-      }
-
-      function renderFloorTabs() {
-        floorTabs.innerHTML = floors
-          .map((floor, index) => `<button class="floor-tab${index === state.floorIndex ? " active" : ""}" type="button" data-floor="${index}">${floor.label}</button>`)
-          .join("");
-
-        floorTabs.querySelectorAll("[data-floor]").forEach((button) => {
-          button.addEventListener("click", () => {
-            state.floorIndex = Number(button.dataset.floor);
-            renderFloorTabs();
-            renderFloor();
-            rebuildPeople();
-          });
-        });
-      }
-
-      function renderNeedMix() {
-        needGrid.innerHTML = needs.map((need) => `<article class="need-card"><strong>${need.label}</strong><span>${need.share}%</span></article>`).join("");
-      }
-
-      function renderRouteOverlay() {
-        const routes = state.people.filter((person) => person.usesRouteFinder).slice(0, 18);
-        routeOverlay.innerHTML = routes
-          .map((person) => `<polyline points="${person.route.map((routePoint) => `${routePoint.x},${routePoint.y}`).join(" ")}"></polyline>`)
-          .join("");
-      }
-
-      function updateStoreHeat() {
-        floorShell.querySelectorAll(".store").forEach((node) => {
-          const info = state.congestion.get(node.dataset.storeId);
-          const level = info?.level ?? 0;
-          node.classList.remove("hot", "warm", "cool");
-          node.classList.add(classify(level));
-          node.querySelector(".store-count").textContent = `${level}%`;
-        });
-      }
-
-      function updateZoneList() {
-        const rows = currentFloor().stores
-          .map((item) => ({ ...item, ...(state.congestion.get(item.id) ?? { count: 0, level: 0 }) }))
-          .sort((a, b) => b.level - a.level)
-          .slice(0, 6);
-
-        zoneList.innerHTML = rows
-          .map((item) => `<article class="zone-row ${classify(item.level)}"><header><span>${item.name}</span><strong>${item.level}%</strong></header><div class="zone-bar"><span style="width:${item.level}%"></span></div></article>`)
-          .join("");
-      }
-
-      function renderAdminPanel() {
-        const floorMetrics = floors.map((floor) => ({
-          ...floor,
-          pressure: calculateFloorPressure(floor),
-          queue: aggregateLittleLaw(floor.stores),
-        }));
-        const currentQueue = aggregateLittleLaw(currentFloor().stores);
-
-        adminControl.classList.toggle("bypass-active", state.bypassEnabled);
-        lambdaMetric.textContent = currentQueue.lambda.toFixed(1);
-        littleLMetric.textContent = Math.round(currentQueue.queueLength);
-        waitMetric.textContent = currentQueue.waitTime.toFixed(1);
-
-        floorMonitor.innerHTML = floorMetrics
-          .map((floor) => {
-            const active = floor.id === currentFloor().id ? " active" : "";
-            const bypassCopy = floor.queue.bypassedStores ? ` · ${floor.queue.bypassedStores} bypass` : "";
-            return `<article class="floor-monitor-row ${classify(floor.pressure)}${active}">
-              <strong>${floor.label}</strong>
-              <div class="floor-monitor-bar"><i style="width:${floor.pressure}%"></i></div>
-              <span>${floor.pressure}%${bypassCopy}</span>
-            </article>`;
-          })
-          .join("");
-      }
-
-      function updateStats() {
-        calculateCongestion();
-        updateStoreHeat();
-        updateZoneList();
-        renderAdminPanel();
-
-        const levels = [...state.congestion.values()].map((item) => item.level);
-        const average = levels.length ? Math.round(levels.reduce((sum, level) => sum + level, 0) / levels.length) : 0;
-        const hotCount = levels.filter((level) => level >= 68).length;
-
-        congestionMetric.textContent = average;
-        visitorMetric.textContent = state.peopleCount;
-        routeFinderMetric.textContent = `${state.rfRatio}%`;
-        peopleCountLabel.textContent = state.peopleCount;
-        rfRatioLabel.textContent = `${state.rfRatio}%`;
-        speedLabel.textContent = `${state.speed.toFixed(1)}x`;
-        congestionCopy.textContent = hotCount ? `${hotCount}개 구역이 혼잡합니다. 대기열과 실시간 이동량을 함께 반영합니다.` : "현재 층은 안정적인 분산 흐름입니다.";
-      }
-
-      function renderInsights() {
-        const viewLead = {
-          overview: { title: "Overview 모드", body: "80개 매장의 대기열, 유입률, 평균 체류 시간을 기반으로 혼잡도를 계산합니다." },
-          live: { title: "Live Flow 모드", body: "초록 점은 RouteFinder 추천 동선입니다. 혼잡 매장을 피하되 방문 목적 카테고리는 유지합니다." },
-          b2b: { title: "B2B Zones 모드", body: "입점 브랜드 관점에서 대기열 압력과 공간 운영 리스크를 확인합니다." },
-          b2c: { title: "B2C Routes 모드", body: "방문객의 니즈를 유지하면서 상대적으로 덜 막히는 후보 경로를 선택합니다." },
-          insights: { title: "Insights 모드", body: "혼잡 상위 매장과 RouteFinder 재라우팅 판단을 요약합니다." },
-        }[state.selectedView];
-
-        const hot = [...state.congestion.entries()]
-          .map(([id, info]) => ({ store: currentFloor().stores.find((item) => item.id === id), ...info }))
-          .filter((item) => item.store)
-          .sort((a, b) => b.level - a.level)
-          .slice(0, 3);
-
-        const items = hot.map((item) => ({
-          title: `${item.store.name} 혼잡도 ${item.level}%`,
-          body: `대기 ${item.store.currentQueue}명, 분당 유입 ${item.store.arrivalRate}명, 평균 처리 ${item.store.avgServiceTime}분입니다.`,
-        }));
-
-        insightList.innerHTML = [viewLead, ...items]
-          .map((item) => `<article class="insight-card"><strong>${item.title}</strong><p>${item.body}</p></article>`)
-          .join("");
-      }
-
-      function focusStore(storeItem) {
-        insightList.innerHTML = `<article class="insight-card"><strong>${storeItem.name}</strong><p>${storeItem.floor}층 · ${storeItem.category} · 최대 수용 ${storeItem.maxCapacity}명 · 현재 대기 ${storeItem.currentQueue}명. RouteFinder는 같은 목적군 안에서 덜 혼잡한 동선을 우선 계산합니다.</p></article>`;
-      }
-
-      function optimizeRoutes() {
-        state.rfRatio = Math.min(100, state.rfRatio + 15);
-        rfRatio.value = state.rfRatio;
-
-        for (const person of state.people) {
-          if (Math.random() * 100 < state.rfRatio) {
-            person.usesRouteFinder = true;
-            person.route = buildRoute(point(person.x, person.y), person.destination, true);
-            person.segment = 0;
-            person.progress = 0;
-            person.element.className = "person rf";
+        // arrival logic
+        if (dist < 8) {
+          if (a.phase==='toGate') {
+            if (isHot && !bp) {
+              // stuck in queue near gate
+              a.state='queue';
+              a.wait += dt/1000;
+              // jitter within queue band outside the gate
+              a.x = gate.x + (rnd()-0.5)*46;
+              a.y = gate.y + (b.gate.side==='bottom'? 20+rnd()*40 : b.gate.side==='top'? -(20+rnd()*40) : (rnd()-0.5)*46);
+              queueCount++;
+              continue;
+            } else {
+              a.phase='inside';
+            }
+          } else if (a.phase==='inside') {
+            insideCount++;
+            a.wait += dt/2000;
+            // dwell then leave to a new target (sink booths retain longer)
+            const leaveP = b.sink ? 0.004 : 0.02;
+            if (rnd() < leaveP) {
+              a.phase='toGate'; a.state = 'roam';
+              const pool = hall.booths;
+              const goHot = !bp && rnd() < 0.4;
+              a.target = goHot ? hot.id : pool[Math.floor(rnd()*pool.length)].id;
+            }
+            // gentle drift inside
+            a.x += (center.x - a.x)*0.02 + (rnd()-0.5)*0.6;
+            a.y += (center.y - a.y)*0.02 + (rnd()-0.5)*0.6;
+            continue;
           }
         }
 
-        renderRouteOverlay();
-        updateStats();
-        renderInsights();
-      }
-
-      function exportSnapshot() {
-        const payload = {
-          floor: currentFloor().title,
-          stores: currentFloor().stores,
-          people: state.peopleCount,
-          routeFinderUse: state.rfRatio,
-          dynamicBypass: state.bypassEnabled,
-          littleLaw: aggregateLittleLaw(currentFloor().stores),
-          congestion: [...state.congestion.entries()],
-          exportedAt: new Date().toISOString(),
-        };
-        const blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" });
-        const url = URL.createObjectURL(blob);
-        const anchor = document.createElement("a");
-        anchor.href = url;
-        anchor.download = "routefinder-snapshot.json";
-        anchor.click();
-        URL.revokeObjectURL(url);
-      }
-
-      function bindControls() {
-        peopleCount.addEventListener("input", () => {
-          state.peopleCount = Number(peopleCount.value);
-          rebuildPeople();
-        });
-
-        rfRatio.addEventListener("input", () => {
-          state.rfRatio = Number(rfRatio.value);
-          rebuildPeople();
-        });
-
-        speedRange.addEventListener("input", () => {
-          state.speed = Number(speedRange.value);
-          updateStats();
-        });
-
-        bypassToggle.addEventListener("change", () => {
-          state.bypassEnabled = bypassToggle.checked;
-          updateStats();
-          renderInsights();
-        });
-
-        pauseBtn.addEventListener("click", () => {
-          state.running = !state.running;
-          pauseBtn.textContent = state.running ? "Pause" : "Resume";
-          simState.textContent = state.running ? "RUNNING" : "PAUSED";
-        });
-
-        resetBtn.addEventListener("click", rebuildPeople);
-        optimizeBtn.addEventListener("click", optimizeRoutes);
-        exportBtn.addEventListener("click", exportSnapshot);
-
-        document.querySelectorAll("[data-view]").forEach((button) => {
-          button.addEventListener("click", () => {
-            document.querySelectorAll("[data-view]").forEach((item) => item.classList.remove("active"));
-            button.classList.add("active");
-            state.selectedView = button.dataset.view;
-            renderInsights();
-          });
-        });
-
-        document.querySelector("[data-action='overview']").addEventListener("click", (event) => {
-          event.preventDefault();
-          state.selectedView = "overview";
-          document.querySelectorAll("[data-view]").forEach((item) => item.classList.toggle("active", item.dataset.view === "overview"));
-          renderInsights();
-        });
-      }
-
-      function tick(time) {
-        const deltaSeconds = Math.min(0.08, (time - state.lastTime) / 1000) * 60;
-        state.lastTime = time;
-
-        if (state.running) {
-          movePeople(deltaSeconds);
-          updateStats();
-          if (Math.floor(time / 1000) % 3 === 0) {
-            renderRouteOverlay();
-            renderInsights();
+        // steering toward waypoint with wall avoidance
+        let sx=dx/dist, sy=dy/dist;
+        // avoid crossing any booth wall (except the one we're heading into via its gate)
+        const nextX=a.x+sx*a.speed*2.2, nextY=a.y+sy*a.speed*2.2;
+        let blocked=false;
+        for(const ob of hall.booths){
+          if (ob.id===b.id && a.phase!=='inside') continue; // allow approach to own gate
+          for(const s of boothWalls(ob)){
+            if (segHit(a.x,a.y,nextX,nextY, s[0],s[1],s[2],s[3])) { blocked=true; break; }
           }
+          if (blocked) break;
         }
+        if (blocked) {
+          // deflect perpendicular
+          const px=-sy, py=sx;
+          sx=(sx+px)*0.5; sy=(sy+py)*0.5;
+          const m=Math.hypot(sx,sy)||1; sx/=m; sy/=m;
+        }
+        a.state = a.state==='bypass'?'bypass':'roam';
+        if (a.state==='bypass') bypassCount++;
+        a.x += sx*a.speed*(dt/16)*2.0 + (rnd()-0.5)*0.5;
+        a.y += sy*a.speed*(dt/16)*2.0 + (rnd()-0.5)*0.5;
 
-        requestAnimationFrame(tick);
+        // keep in bounds
+        a.x=Math.max(20,Math.min(VW-20,a.x));
+        a.y=Math.max(20,Math.min(VH-20,a.y));
       }
 
-      renderFloorTabs();
-      renderNeedMix();
-      renderFloor();
-      bindControls();
-      rebuildPeople();
-      renderInsights();
-      requestAnimationFrame(tick);
-    </script>
-  </body>
+      // ===== Little's Law statistics =====
+      statAcc += dt;
+      if (statAcc > 120) {
+        statAcc = 0;
+        // L = queue length; lambda scales down with bypass & nudge
+        const baseLambda = 8.4;
+        const lambda = bp ? baseLambda*(1 - 0.5*(nudgeRef.current/100)) : baseLambda;
+        const L = queueCount;
+        const W = lambda>0 ? L/lambda : 0;
+        const relief = bp ? Math.min(100, 20 + nudgeRef.current*0.6) : 0;
+        setStats({ total:agents.length, L, lambda, W, relief });
+
+        // ROI accumulation (per tick, randomized)
+        if (bp) {
+          roiRef.current.savedMin += (0.4 + rnd()*1.2) * (nudgeRef.current/100) * 4;
+          roiRef.current.revenue  += Math.floor((1 + rnd()*3) * nudgeRef.current * 12);
+        }
+        // organic monthly data sales drift
+        salesRef.current.month += Math.floor(rnd()*2)*1500;
+
+        // edge traffic bar
+        const target = bp ? 34 + rnd()*10 : 80 + rnd()*16;
+        setEdge(e=> e + (target-e)*0.15);
+
+        setTick(t=>t+1);
+      } else {
+        setTick(t=>(t+1)); // drive re-render for agents
+      }
+      raf = requestAnimationFrame(step);
+    };
+    raf = requestAnimationFrame(step);
+    return ()=> cancelAnimationFrame(raf);
+  }, []);
+
+  const halls = [1,2,3,4];
+  const viewTabs = [
+    { id:1, ko:'혼잡도 대시보드' },
+    { id:2, ko:'B2C 가이드 앱' },
+    { id:3, ko:'B2B 관제판' },
+    { id:4, ko:'데이터 마켓' },
+  ];
+
+  return (
+    <div className="min-h-screen bg-bp-bg text-bp-ink blueprint-grid">
+      {/* header */}
+      <header className="bg-bp-panel border-b-2 border-bp-accent2 px-4 py-2.5 flex items-center justify-between sticky top-0 z-40">
+        <div className="flex items-center gap-3">
+          <Logo size={34}/>
+          <div>
+            <div className="text-lg font-bold hair leading-none">ROUTEFINDER</div>
+            <div className="text-[9px] hair text-bp-sub uppercase">Expo Crowd Intelligence · Silver Blueprint Edition</div>
+          </div>
+        </div>
+        <div className="flex items-center gap-3">
+          <span className={`text-[10px] font-mono font-bold px-2 py-1 border ${bypass?'text-bp-bypass border-bp-bypass':'text-bp-wait border-bp-wait'}`}>
+            BYPASS {bypass?'ON':'OFF'}
+          </span>
+          <span className="text-[10px] font-mono text-bp-sub hidden md:block">2026 · MICE TECH SaaS</span>
+        </div>
+      </header>
+
+      <div className="flex flex-col lg:flex-row gap-3 p-3 max-w-[1500px] mx-auto">
+        {/* ===== LEFT: fixed congestion map ===== */}
+        <div className="lg:w-[58%] shrink-0">
+          <div className="bg-bp-panel border border-bp-line">
+            <div className="flex items-center justify-between px-3 py-2 border-b border-bp-line">
+              <span className="text-[11px] hair font-bold uppercase">실시간 전시관 혼잡도 지도</span>
+              <div className="flex gap-1">
+                {halls.map(h=>(
+                  <Btn key={h} active={hallId===h} onClick={()=>{ setHallId(h); }}>
+                    {HALLS[h].code} · {h}관
+                  </Btn>
+                ))}
+              </div>
+            </div>
+            <div className="px-3 py-2 border-b border-bp-line text-[11px] font-bold text-bp-accent2">{HALLS[hallId].name}</div>
+            <div className="aspect-[760/560] w-full">
+              <CongestionMap hallId={hallId} agentsRef={agentsRef} tick={tick}
+                             onHover={onHover} userPulse={userPulse} bypass={bypass}/>
+            </div>
+            <div className="px-3 py-2 border-t border-bp-line flex flex-wrap gap-x-4 gap-y-1 text-[10px] text-bp-sub">
+              <Legend c={TOKENS.solo} t="혼자"/><Legend c={TOKENS.couple} t="연인"/>
+              <Legend c={TOKENS.family} t="가족"/><Legend c={TOKENS.wait} t="대기"/>
+              <Legend c={TOKENS.bypass} t="우회"/><Legend c={TOKENS.mint} t="내 위치"/>
+            </div>
+          </div>
+        </div>
+
+        {/* ===== RIGHT: switchable views ===== */}
+        <div className="flex-1 min-w-0">
+          <div className="grid grid-cols-4 gap-1 mb-3">
+            {viewTabs.map(t=>(
+              <Btn key={t.id} active={view===t.id} onClick={()=>setView(t.id)} className="py-2">{t.ko}</Btn>
+            ))}
+          </div>
+          <div className="bg-bp-panel border border-bp-line p-3">
+            {view===1 && <View1Dashboard stats={stats} bypass={bypass} nudge={nudge} edge={edge}/>}
+            {view===2 && <View2Guide setHallId={setHallId} setUserPulse={setUserPulse} pushToast={pushToast} bypass={bypass}/>}
+            {view===3 && <View3Control bypass={bypass} setBypass={setBypass} nudge={nudge} setNudge={setNudge}
+                                       stats={stats} roi={roiRef.current} predictive={predictive} setPredictive={setPredictive}/>}
+            {view===4 && <View4Market pushToast={pushToast} salesRef={salesRef} tick={tick}/>}
+          </div>
+        </div>
+      </div>
+
+      <AgentTooltip data={hover}/>
+
+      {/* toast stack */}
+      <div className="fixed bottom-4 right-4 z-50 space-y-2 w-72">
+        {toasts.map(t=>(
+          <div key={t.id} className={`toast-in border-l-4 bg-bp-ink text-white text-[11px] px-3 py-2 shadow-xl
+            ${t.tone==='mint'?'border-bp-mint':t.tone==='wait'?'border-bp-wait':'border-bp-accent'}`}>
+            {t.msg}
+          </div>
+        ))}
+      </div>
+
+      <footer className="text-center text-[9px] text-bp-line py-4 hair">
+        ROUTEFINDER · SINGLE-FILE BUILD · LITTLE&apos;S LAW ENGINE · FIGMA-BOUND SILVER BLUEPRINT THEME
+      </footer>
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
+</script>
+
+<script>
+  /* Inline JSX compilation (classic runtime → React.createElement, no ESM imports) */
+  (function () {
+    var src = document.getElementById('app-src').textContent;
+    try {
+      var out = Babel.transform(src, {
+        presets: [['react', { runtime: 'classic' }]],
+        filename: 'routefinder.jsx'
+      }).code;
+      var s = document.createElement('script');
+      s.textContent = out;
+      document.body.appendChild(s);
+    } catch (err) {
+      document.getElementById('root').innerHTML =
+        '<pre style="padding:16px;color:#e0453b;font-family:monospace">Build error: ' +
+        String(err && err.message ? err.message : err) + '</pre>';
+    }
+  })();
+</script>
+</body>
 </html>
