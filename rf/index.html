@@ -3,62 +3,42 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>RouteFinder — Expo Crowd Intelligence Platform</title>
+<title>RouteFinder — Large Expo Crowd Simulator</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
 <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
 <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 <script>
   tailwind.config = {
-    corePlugins: { preflight: true },
-    theme: {
-      extend: {
-        colors: {
-          bp: {
-            bg: '#eef1f5',
-            panel: '#f7f9fc',
-            silver: '#dfe4ec',
-            grid: '#c8d2df',
-            ink: '#1f2733',
-            sub: '#5b6675',
-            line: '#9aa7b8',
-            accent: '#2f6fb0',
-            accent2: '#1b4e82',
-            mint: '#12d3b0',
-            solo: '#2fae5a',
-            couple: '#8a4fd6',
-            family: '#e08a2b',
-            wait: '#e0453b',
-            bypass: '#2f7fd6',
-          }
-        },
-        borderRadius: { none: '0px' },
-        fontFamily: { mono: ['ui-monospace','SFMono-Regular','Menlo','monospace'] }
-      }
-    }
+    theme: { extend: {
+      colors: { bp: {
+        bg:'#eef1f5', panel:'#f7f9fc', silver:'#dfe4ec', grid:'#c8d2df',
+        ink:'#1f2733', sub:'#5b6675', line:'#9aa7b8',
+        accent:'#2f6fb0', accent2:'#1b4e82', mint:'#12d3b0',
+        solo:'#2fae5a', couple:'#8a4fd6', family:'#e08a2b',
+        wait:'#e0453b', bypass:'#2f7fd6',
+        tech:'#2f6fb0', fnb:'#e08a2b', culture:'#8a4fd6', trend:'#2f9e8f'
+      }},
+      fontFamily: { mono:['ui-monospace','SFMono-Regular','Menlo','monospace'] }
+    }}
   }
 </script>
 <style>
   * { border-radius: 0 !important; }
   html, body { background:#eef1f5; }
-  .blueprint-grid {
-    background-image:
-      linear-gradient(rgba(150,167,190,0.18) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(150,167,190,0.18) 1px, transparent 1px);
-    background-size: 22px 22px;
-  }
-  .hair { letter-spacing: .12em; }
-  ::-webkit-scrollbar { width: 8px; height: 8px; }
+  .hair { letter-spacing:.1em; }
+  ::-webkit-scrollbar { width:8px; height:8px; }
   ::-webkit-scrollbar-thumb { background:#9aa7b8; }
   ::-webkit-scrollbar-track { background:#dfe4ec; }
-  .dash-flow { stroke-dasharray: 6 5; animation: dashmove 1.1s linear infinite; }
-  @keyframes dashmove { to { stroke-dashoffset: -22; } }
+  .blueprint-grid { background-image:
+     linear-gradient(rgba(150,167,190,.16) 1px,transparent 1px),
+     linear-gradient(90deg,rgba(150,167,190,.16) 1px,transparent 1px);
+     background-size:22px 22px; }
+  .toast-in { animation: ti .3s cubic-bezier(.2,.9,.3,1); }
+  @keyframes ti { from{transform:translateY(12px);opacity:0} to{transform:translateY(0);opacity:1} }
   .pulse-ring { transform-origin:center; animation: pr 1.6s ease-out infinite; }
-  @keyframes pr { 0%{ transform:scale(.4); opacity:.9 } 100%{ transform:scale(2.4); opacity:0 } }
-  .toast-in { animation: ti .35s cubic-bezier(.2,.9,.3,1); }
-  @keyframes ti { from{ transform:translateY(14px); opacity:0 } to{ transform:translateY(0); opacity:1 } }
-  .kpi-pop { animation: kp .5s ease; }
-  @keyframes kp { from{ transform:scale(.9); opacity:.4 } to{ transform:scale(1); opacity:1 } }
+  @keyframes pr { 0%{transform:scale(.4);opacity:.85} 100%{transform:scale(2.3);opacity:0} }
+  input[type=range]{ accent-color:#1b4e82; }
 </style>
 </head>
 <body>
@@ -68,45 +48,40 @@
 const { useState, useEffect, useRef, useMemo, useCallback } = React;
 
 /* ============================================================
-   FIGMA-DERIVED DESIGN TOKENS
-   (Color dictionary + logo SVG + button shape scanned from the
-    linked Figma nodes 34-3 / 34-13 / 34-7 / 34-12 and bound here)
+   DESIGN TOKENS + LOGO + BUTTON  (Figma-bound Silver Blueprint)
    ============================================================ */
-const TOKENS = {
+const T = {
   bg:'#eef1f5', panel:'#f7f9fc', silver:'#dfe4ec', grid:'#c8d2df',
   ink:'#1f2733', sub:'#5b6675', line:'#9aa7b8',
   accent:'#2f6fb0', accent2:'#1b4e82', mint:'#12d3b0',
   solo:'#2fae5a', couple:'#8a4fd6', family:'#e08a2b',
-  wait:'#e0453b', bypass:'#2f7fd6', wall:'#3a4657', entry:'#2fae5a'
+  wait:'#e0453b', bypass:'#2f7fd6',
+  tech:'#2f6fb0', fnb:'#e08a2b', culture:'#8a4fd6', trend:'#2f9e8f'
 };
+const CAT_COLOR = { Tech:T.tech, 'F&B':T.fnb, Culture:T.culture, Trend:T.trend };
 
-/* RouteFinder wordmark + waypoint pin logo (Figma node 34-3) */
-function Logo({ size=34 }) {
+function Logo({ size=32 }) {
   return (
-    <svg width={size} height={size} viewBox="0 0 48 48" fill="none" aria-label="RouteFinder logo">
-      <rect x="2" y="2" width="44" height="44" fill="#f7f9fc" stroke={TOKENS.accent2} strokeWidth="2"/>
-      <path d="M13 34 L24 10 L35 34" stroke={TOKENS.accent} strokeWidth="2.4" fill="none"/>
-      <path d="M18 24 L30 24" stroke={TOKENS.line} strokeWidth="1.4" strokeDasharray="2 2"/>
-      <path d="M24 14 L24 40" stroke={TOKENS.grid} strokeWidth="1"/>
-      <rect x="20" y="20" width="8" height="8" fill={TOKENS.mint} stroke={TOKENS.ink} strokeWidth="1.4"/>
-      <rect x="22.5" y="22.5" width="3" height="3" fill={TOKENS.ink}/>
+    <svg width={size} height={size} viewBox="0 0 48 48" aria-label="RouteFinder">
+      <rect x="2" y="2" width="44" height="44" fill="#f7f9fc" stroke={T.accent2} strokeWidth="2"/>
+      <path d="M13 34 L24 10 L35 34" stroke={T.accent} strokeWidth="2.4" fill="none"/>
+      <path d="M18 24 L30 24" stroke={T.line} strokeWidth="1.4" strokeDasharray="2 2"/>
+      <rect x="20" y="20" width="8" height="8" fill={T.mint} stroke={T.ink} strokeWidth="1.4"/>
+      <rect x="22.5" y="22.5" width="3" height="3" fill={T.ink}/>
     </svg>
   );
 }
 
-/* Sharp-cornered button component shape (Figma node 34-7) */
 function Btn({ children, onClick, active, tone='default', className='', disabled }) {
   const tones = {
-    default: active
-      ? 'bg-bp-accent2 text-white border-bp-accent2'
+    default: active ? 'bg-bp-accent2 text-white border-bp-accent2'
       : 'bg-bp-panel text-bp-ink border-bp-line hover:border-bp-accent hover:text-bp-accent',
-    solid:   'bg-bp-accent2 text-white border-bp-accent2 hover:bg-bp-accent',
-    ghost:   'bg-transparent text-bp-sub border-bp-line hover:text-bp-ink hover:border-bp-ink',
-    danger:  'bg-white text-bp-wait border-bp-wait hover:bg-bp-wait hover:text-white'
+    solid:'bg-bp-accent2 text-white border-bp-accent2 hover:bg-bp-accent',
+    ghost:'bg-transparent text-bp-sub border-bp-line hover:text-bp-ink hover:border-bp-ink',
+    danger:'bg-white text-bp-wait border-bp-wait hover:bg-bp-wait hover:text-white'
   };
   return (
-    <button
-      onClick={onClick} disabled={disabled}
+    <button onClick={onClick} disabled={disabled}
       className={`px-3 py-1.5 text-xs font-semibold border tracking-wide transition-colors
         disabled:opacity-40 disabled:cursor-not-allowed ${tones[tone]} ${className}`}>
       {children}
@@ -115,470 +90,490 @@ function Btn({ children, onClick, active, tone='default', className='', disabled
 }
 
 /* ============================================================
-   4 EXHIBITION HALL FLOOR PLANS  (inline SVG geometry)
-   Each booth carries a physical ENTRY gate opening. Agents may
-   only pass through the gate — never through a wall.
+   LARGE EXPO — 4 halls x 10 booths = 40 booths (open floor, no walls)
    ============================================================ */
-const VW = 760, VH = 560;
+const VW = 900, VH = 620;
 
-// helper booth: {x,y,w,h,label,gate:{side,pos},hotspot,tone}
-function makeHalls() {
-  return {
-    1: {
-      code:'A', name:'제1전시관 · 미래 모빌리티 & 로보틱스관',
-      atrium:{ x:300, y:210, w:160, h:150, label:'CENTRAL ATRIUM' },
-      booths:[
-        { id:'a1', x:60,  y:60,  w:180, h:120, label:'ROBOTICS HALL', sub:'대기업 특별관', gate:{side:'right'}, hotspot:true,  tone:TOKENS.wait },
-        { id:'a2', x:520, y:60,  w:180, h:120, label:'MOBILITY LAB',   sub:'자율주행 데모', gate:{side:'left'},  hotspot:false, tone:TOKENS.accent },
-        { id:'a3', x:60,  y:380, w:180, h:120, label:'ECO REST',       sub:'가든 베이커리', gate:{side:'right'}, hotspot:false, tone:TOKENS.solo, sink:true },
-        { id:'a4', x:520, y:380, w:180, h:120, label:'EV DRIVE ZONE',  sub:'전기차 체험', gate:{side:'left'},  hotspot:false, tone:TOKENS.accent },
-      ],
-      facilities:[
-        { x:355, y:20, label:'ENTRY', kind:'entry' },
-        { x:355, y:530, label:'EXIT', kind:'exit' },
-        { x:30,  y:270, label:'WC',  kind:'wc' },
-        { x:715, y:270, label:'E/V', kind:'ev' },
-      ]
-    },
-    2: {
-      code:'B', name:'제2전시관 · IT 디바이스 & 스마트 혁신기술관',
-      atrium:null,
-      booths:[
-        { id:'b1', x:250, y:50,  w:260, h:130, label:'SMART POPUP', sub:'모바일 팝업스토어', gate:{side:'bottom'}, hotspot:true, tone:TOKENS.wait },
-        { id:'b2', x:60,  y:230, w:180, h:110, label:'WEARABLE',   sub:'착용형 디바이스', gate:{side:'right'}, hotspot:false, tone:TOKENS.accent },
-        { id:'b3', x:520, y:230, w:180, h:110, label:'XR STUDIO',  sub:'확장현실 체험', gate:{side:'left'},  hotspot:false, tone:TOKENS.accent },
-        { id:'b4', x:250, y:400, w:120, h:110, label:'CHIP LAB',   sub:'반도체관', gate:{side:'top'}, hotspot:false, tone:TOKENS.accent },
-        { id:'b5', x:400, y:400, w:120, h:110, label:'AI CORNER',  sub:'온디바이스 AI', gate:{side:'top'}, hotspot:false, tone:TOKENS.solo, sink:true },
-      ],
-      facilities:[
-        { x:355, y:20,  label:'ENTRY', kind:'entry' },
-        { x:120, y:530, label:'EXIT', kind:'exit' },
-        { x:30,  y:130, label:'WC',  kind:'wc' },
-        { x:715, y:130, label:'E/V', kind:'ev' },
-      ]
-    },
-    3: {
-      code:'C', name:'제3전시관 · 푸드테크 & 글로벌 고메 박람회',
-      atrium:null,
-      booths:[
-        { id:'c1', x:270, y:60,  w:230, h:140, label:'PASTA CREW', sub:'3D 로봇 키친', gate:{side:'bottom'}, hotspot:true, tone:TOKENS.wait },
-        { id:'c2', x:60,  y:250, w:170, h:110, label:'BARISTA BOT', sub:'스마트 커피', gate:{side:'right'}, hotspot:false, tone:TOKENS.accent },
-        { id:'c3', x:540, y:250, w:170, h:110, label:'GLOBAL GOURMET', sub:'세계 미식관', gate:{side:'left'}, hotspot:false, tone:TOKENS.accent },
-        { id:'c4', x:300, y:400, w:170, h:110, label:'FOOD LOUNGE', sub:'식음 라운지', gate:{side:'top'}, hotspot:false, tone:TOKENS.solo, sink:true },
-      ],
-      facilities:[
-        { x:355, y:20,  label:'ENTRY', kind:'entry' },
-        { x:355, y:530, label:'EXIT', kind:'exit' },
-        { x:30,  y:120, label:'E/S UP', kind:'esup' },
-        { x:715, y:470, label:'E/S DN', kind:'esdn' },
-        { x:715, y:120, label:'WC', kind:'wc' },
-      ]
-    },
-    4: {
-      code:'D', name:'제4전시관 · 미디어아트 & 크리에이티브 공간',
-      atrium:null,
-      booths:[
-        { id:'d1', x:230, y:60,  w:300, h:170, label:'AETHER LIBRARY', sub:'인터랙티브 크리에이티브 홀', gate:{side:'bottom'}, hotspot:true, tone:TOKENS.wait },
-        { id:'d2', x:60,  y:290, w:180, h:120, label:'PROJECTION', sub:'프로젝션 맵핑', gate:{side:'right'}, hotspot:false, tone:TOKENS.accent },
-        { id:'d3', x:520, y:290, w:180, h:120, label:'SOUND DOME', sub:'사운드 아트', gate:{side:'left'}, hotspot:false, tone:TOKENS.accent },
-        { id:'d4', x:300, y:430, w:160, h:90,  label:'ART LOUNGE', sub:'미디어 쉼터', gate:{side:'top'}, hotspot:false, tone:TOKENS.solo, sink:true },
-      ],
-      facilities:[
-        { x:355, y:20,  label:'ENTRY', kind:'entry' },
-        { x:355, y:530, label:'EXIT', kind:'exit' },
-        { x:30,  y:200, label:'WC',  kind:'wc' },
-        { x:715, y:200, label:'E/V', kind:'ev' },
-      ]
-    }
-  };
-}
-const HALLS = makeHalls();
+const HALL_META = {
+  1: { code:'A', name:'제1전시관 · 미래 모빌리티 & 로보틱스',
+    booths:[
+      ['AUTO DRIVE','자율주행 데모','Tech',true],['ROBO ARM','산업 로봇','Tech',false],
+      ['DRONE BAY','드론 배송','Tech',false],['EV CHARGE','초고속 충전','Tech',false],
+      ['HYDROGEN','수소 모빌리티','Tech',false],['SMART TIRE','스마트 타이어','Trend',false],
+      ['AI COCKPIT','AI 콕핏','Tech',true],['MOBILITY CAFE','모빌리티 카페','F&B',false],
+      ['TEST TRACK','시승 트랙','Trend',false],['ECO REST','에코 쉼터','Culture',false] ] },
+  2: { code:'B', name:'제2전시관 · IT 디바이스 & 스마트 혁신',
+    booths:[
+      ['SMART PHONE','차세대 폰','Trend',true],['WEARABLE','착용형 기기','Trend',false],
+      ['XR STUDIO','확장현실','Tech',true],['CHIP LAB','반도체','Tech',false],
+      ['AI CORNER','온디바이스 AI','Tech',false],['SMART HOME','스마트홈','Trend',false],
+      ['GAMING RIG','게이밍','Trend',false],['DEV TOOLS','개발 도구','Tech',false],
+      ['TECH CAFE','테크 카페','F&B',false],['CHILL ZONE','휴식 존','Culture',false] ] },
+  3: { code:'C', name:'제3전시관 · 푸드테크 & 글로벌 고메',
+    booths:[
+      ['PASTA BOT','3D 로봇 키친','F&B',true],['BARISTA BOT','스마트 커피','F&B',false],
+      ['GLOBAL GOURMET','세계 미식','F&B',true],['VEGAN LAB','비건 랩','F&B',false],
+      ['DESSERT 3D','3D 디저트','F&B',false],['CRAFT BREW','수제 음료','F&B',false],
+      ['STREET FOOD','스트리트 푸드','F&B',false],['SPICE WORLD','향신료관','Trend',false],
+      ['FOOD LOUNGE','식음 라운지','Culture',false],['TASTE TECH','미각 테크','Tech',false] ] },
+  4: { code:'D', name:'제4전시관 · 미디어아트 & 크리에이티브',
+    booths:[
+      ['AETHER HALL','인터랙티브 홀','Culture',true],['PROJECTION','프로젝션 맵핑','Culture',false],
+      ['SOUND DOME','사운드 아트','Culture',true],['NFT GALLERY','NFT 갤러리','Trend',false],
+      ['LIGHT MAZE','라이트 미로','Culture',false],['AR MURAL','AR 벽화','Tech',false],
+      ['PHOTO ZONE','포토 존','Trend',false],['VR CINEMA','VR 시네마','Tech',false],
+      ['ART CAFE','아트 카페','F&B',false],['ART LOUNGE','미디어 쉼터','Culture',false] ] },
+};
 
-// gate world coordinate for a booth
-function gatePoint(b) {
-  const g = b.gate;
-  if (g.side==='top')    return { x:b.x+b.w/2, y:b.y };
-  if (g.side==='bottom') return { x:b.x+b.w/2, y:b.y+b.h };
-  if (g.side==='left')   return { x:b.x,       y:b.y+b.h/2 };
-  return { x:b.x+b.w,    y:b.y+b.h/2 }; // right
-}
-function boothCenter(b){ return { x:b.x+b.w/2, y:b.y+b.h/2 }; }
-
-// axis-aligned wall segments for a booth, EXCLUDING the gate opening
-function boothWalls(b) {
-  const g = b.gate.side, open = 34;
-  const segs = [];
-  const cx=b.x+b.w/2, cy=b.y+b.h/2;
-  // top
-  if (g==='top') { segs.push([b.x,b.y,cx-open/2,b.y]); segs.push([cx+open/2,b.y,b.x+b.w,b.y]); }
-  else segs.push([b.x,b.y,b.x+b.w,b.y]);
-  // bottom
-  if (g==='bottom'){ segs.push([b.x,b.y+b.h,cx-open/2,b.y+b.h]); segs.push([cx+open/2,b.y+b.h,b.x+b.w,b.y+b.h]); }
-  else segs.push([b.x,b.y+b.h,b.x+b.w,b.y+b.h]);
-  // left
-  if (g==='left'){ segs.push([b.x,b.y,b.x,cy-open/2]); segs.push([b.x,cy+open/2,b.x,b.y+b.h]); }
-  else segs.push([b.x,b.y,b.x,b.y+b.h]);
-  // right
-  if (g==='right'){ segs.push([b.x+b.w,b.y,b.x+b.w,cy-open/2]); segs.push([b.x+b.w,cy+open/2,b.x+b.w,b.y+b.h]); }
-  else segs.push([b.x+b.w,b.y,b.x+b.w,b.y+b.h]);
-  return segs;
+// build positioned booths for a hall (5 columns x 2 rows)
+function buildBooths(hallId) {
+  const meta = HALL_META[hallId];
+  const BW=145, BH=170, X0=30, Y0=70, GX=170, GY=290;
+  return meta.booths.map((b,i)=>{
+    const col=i%5, row=Math.floor(i/5);
+    const x=X0+col*GX, y=Y0+row*GY;
+    return {
+      id:'h'+hallId+'b'+i, x, y, w:BW, h:BH,
+      label:b[0], sub:b[1], cat:b[2], hot:b[3],
+      cap: b[3]?5:8,
+      counter:{ x:x+BW/2, y:y+BH+6 },  // service point (queue forms below)
+      color: CAT_COLOR[b[2]],
+    };
+  });
 }
 
-// segment intersection test (for wall-avoidance)
-function segHit(ax,ay,bx,by, cx,cy,dx,dy){
-  const d=(bx-ax)*(dy-cy)-(by-ay)*(dx-cx);
-  if (Math.abs(d)<1e-9) return false;
-  const t=((cx-ax)*(dy-cy)-(cy-ay)*(dx-cx))/d;
-  const u=((cx-ax)*(by-ay)-(cy-ay)*(bx-ax))/d;
-  return t>=0&&t<=1&&u>=0&&u<=1;
-}
+const FACILITIES = [
+  {x:VW/2,y:26,label:'ENTRY'},{x:VW/2,y:VH-16,label:'EXIT'},
+  {x:24,y:VH/2,label:'WC'},{x:VW-24,y:VH/2,label:'E/V'},
+  {x:24,y:26,label:'INFO'},{x:VW-24,y:26,label:'MEDIA'},
+];
 
 /* ============================================================
-   AGENT MODEL — 150 visitors
+   VISITORS
    ============================================================ */
 const COMPANIONS = [
-  { key:'solo',   ko:'혼자',  color:TOKENS.solo },
-  { key:'couple', ko:'연인',  color:TOKENS.couple },
-  { key:'family', ko:'가족',  color:TOKENS.family },
+  { key:'solo', ko:'혼자', color:T.solo },
+  { key:'couple', ko:'연인', color:T.couple },
+  { key:'family', ko:'가족', color:T.family },
 ];
-const PREFS = ['테크','트렌디','F&B','문화예술'];
+const PREFS = [
+  { ko:'테크', cat:'Tech' }, { ko:'트렌디', cat:'Trend' },
+  { ko:'F&B', cat:'F&B' }, { ko:'문화예술', cat:'Culture' },
+];
 
-function seededRand(seed){ let s=seed%2147483647; if(s<=0)s+=2147483646;
-  return ()=>{ s=(s*16807)%2147483647; return (s-1)/2147483646; }; }
+function rnd(){ return Math.random(); }
+function pick(arr){ return arr[Math.floor(rnd()*arr.length)]; }
+function clamp(v,a,b){ return v<a?a:v>b?b:v; }
 
-function spawnAgents(hallId){
-  const hall = HALLS[hallId];
-  const rnd = seededRand(hallId*7919 + 13);
-  const agents = [];
-  const hotspot = hall.booths.find(b=>b.hotspot);
-  for(let i=0;i<150;i++){
-    const comp = COMPANIONS[Math.floor(rnd()*3)];
-    // seed positions in corridors (avoid inside booths roughly)
-    let x = 40 + rnd()*(VW-80);
-    let y = 40 + rnd()*(VH-80);
-    const goHot = rnd() < 0.42;
-    agents.push({
+function spawnAgents(n) {
+  const arr=[];
+  for(let i=0;i<n;i++){
+    const comp=pick(COMPANIONS), pref=pick(PREFS);
+    arr.push({
       id:'V'+String(1000+i),
-      x, y, vx:0, vy:0,
-      comp:comp.key, color:comp.color,
-      pref: PREFS[Math.floor(rnd()*4)],
-      patience: Math.floor(40+rnd()*60),
-      state: goHot ? 'toHot':'roam',
-      target: goHot ? hotspot.id : hall.booths[Math.floor(rnd()*hall.booths.length)].id,
-      wait: 0, phase: 'toGate',
-      accuracy: (rnd()*2.2+0.6), // indoor positioning error metric (m)
-      speed: 0.9 + rnd()*0.7,
+      x:60+rnd()*(VW-120), y:60+rnd()*(VH-120),
+      vx:0, vy:0,
+      comp:comp.key, color:comp.color, pref:pref.ko, prefCat:pref.cat,
+      patience:Math.floor(45+rnd()*55),
+      spd:0.8+rnd()*0.5,
+      state:'wander', target:null,
+      waitT:0, dwellT:0, dwellMax:0, joinOrder:0,
+      servePos:null, roamPt:{x:60+rnd()*(VW-120),y:60+rnd()*(VH-120)},
+      accuracy:0.6+rnd()*2.0, dist:0,
+      bubble:null, seekTimer:1+rnd()*4,
     });
   }
-  return agents;
+  return arr;
+}
+
+/* need / speech-bubble text */
+function needText(a, booths) {
+  if(a.state==='queue'){
+    const opt=['줄이 좀 기네요','얼마나 기다려야 하죠?','조금 지치네요','앞에 몇 명이지?'];
+    return opt[a.id.charCodeAt(4)%opt.length];
+  }
+  if(a.state==='serve'){
+    return a.prefCat==='F&B' ? '오 이거 맛있다!'
+      : a.prefCat==='Culture' ? '분위기 좋다'
+      : '와 신기하네요';
+  }
+  if(a.patience<32) return '다리 아파요, 쉬고 싶어';
+  if(a.state==='seek' && a.target){
+    const b=booths.find(x=>x.id===a.target);
+    if(b) return b.label+' 가는 중';
+  }
+  return ({ 'Tech':'테크 부스 어디예요?', 'F&B':'뭐 좀 먹을까?',
+            'Culture':'전시 보러 가자', 'Trend':'요즘 핫한 곳!' })[a.prefCat];
+}
+
+/* pick a booth to visit, weighted by preference + popularity */
+function chooseBooth(a, booths){
+  let total=0; const w=[];
+  for(const b of booths){
+    let x=1;
+    if(b.cat===a.prefCat) x+=3;
+    if(b.hot) x+=1.6;
+    w.push(x); total+=x;
+  }
+  let r=rnd()*total;
+  for(let i=0;i<booths.length;i++){ r-=w[i]; if(r<=0) return booths[i].id; }
+  return booths[0].id;
 }
 
 /* ============================================================
-   MAIN SIMULATION MAP (left, fixed)
+   EXPO MAP  (SVG)
    ============================================================ */
-function CongestionMap({ hallId, agentsRef, tick, onHover, userPulse, bypass }) {
-  const hall = HALLS[hallId];
-  const agents = agentsRef.current;
+function ExpoMap({ hallId, engine, tick, onHover, onSelect, selectedId,
+                   playMode, avatarRef, onBgClick, filter }) {
+  const booths = engine.booths;
+  const agents = engine.agents;
+  const av = avatarRef.current;
+  const trail = engine.trail;
+
   return (
-    <svg viewBox={`0 0 ${VW} ${VH}`} className="w-full h-full block" style={{background:TOKENS.bg}}>
+    <svg viewBox={`0 0 ${VW} ${VH}`} className="w-full h-full block select-none"
+         style={{ background:T.bg }}
+         onClick={(e)=>{
+           if(e.target.tagName==='svg' || e.target.getAttribute('data-bg')){
+             const pt=svgPoint(e); onBgClick(pt);
+           }
+         }}>
       <defs>
         <pattern id="bp" width="22" height="22" patternUnits="userSpaceOnUse">
-          <path d="M22 0 L0 0 0 22" fill="none" stroke={TOKENS.grid} strokeWidth="0.8" opacity="0.6"/>
+          <path d="M22 0 L0 0 0 22" fill="none" stroke={T.grid} strokeWidth=".8" opacity=".6"/>
         </pattern>
       </defs>
-      <rect x="0" y="0" width={VW} height={VH} fill="url(#bp)"/>
-      <rect x="12" y="12" width={VW-24} height={VH-24} fill="none" stroke={TOKENS.line} strokeWidth="2"/>
+      <rect data-bg="1" x="0" y="0" width={VW} height={VH} fill="url(#bp)"/>
+      <rect data-bg="1" x="12" y="12" width={VW-24} height={VH-24} fill="none" stroke={T.line} strokeWidth="1.5"/>
 
-      {/* atrium (non-enterable) */}
-      {hall.atrium && (
-        <g>
-          <rect x={hall.atrium.x} y={hall.atrium.y} width={hall.atrium.w} height={hall.atrium.h}
-                fill="#e4e9f1" stroke={TOKENS.line} strokeWidth="2" strokeDasharray="2 3"/>
-          <line x1={hall.atrium.x} y1={hall.atrium.y} x2={hall.atrium.x+hall.atrium.w} y2={hall.atrium.y+hall.atrium.h} stroke={TOKENS.grid}/>
-          <line x1={hall.atrium.x+hall.atrium.w} y1={hall.atrium.y} x2={hall.atrium.x} y2={hall.atrium.y+hall.atrium.h} stroke={TOKENS.grid}/>
-          <text x={hall.atrium.x+hall.atrium.w/2} y={hall.atrium.y+hall.atrium.h/2-6} textAnchor="middle"
-                fontSize="11" fontWeight="700" fill={TOKENS.sub} className="hair">CENTRAL ATRIUM</text>
-          <text x={hall.atrium.x+hall.atrium.w/2} y={hall.atrium.y+hall.atrium.h/2+12} textAnchor="middle"
-                fontSize="9" fill={TOKENS.line}>NO ENTRY · 진입 불가</text>
-        </g>
-      )}
+      {/* aisles (guide lines, not walls) */}
+      <line x1="12" y1={VH/2} x2={VW-12} y2={VH/2} stroke={T.grid} strokeDasharray="4 6"/>
+      <line x1={VW/2} y1="12" x2={VW/2} y2={VH-12} stroke={T.grid} strokeDasharray="4 6"/>
 
-      {/* booths */}
-      {hall.booths.map(b=>{
-        const g = gatePoint(b);
+      {/* booths (open display zones — no walls) */}
+      {booths.map(b=>{
+        const dim = filter!=='All' && b.cat!==filter;
+        const occ = engine.rt[b.id] || { served:0, queue:0 };
+        const load = clamp((occ.served+occ.queue)/(b.cap+6),0,1);
         return (
-          <g key={b.id}>
+          <g key={b.id} opacity={dim?0.28:1}>
             <rect x={b.x} y={b.y} width={b.w} height={b.h}
-                  fill={b.hotspot ? 'rgba(224,69,59,0.06)' : (b.sink?'rgba(47,174,90,0.07)':'#ffffff')}
-                  stroke="none"/>
-            {boothWalls(b).map((s,i)=>(
-              <line key={i} x1={s[0]} y1={s[1]} x2={s[2]} y2={s[3]} stroke={TOKENS.wall} strokeWidth="3"/>
-            ))}
-            {/* gate opening marker (green dashed ENTRY) */}
-            <g>
-              {b.gate.side==='top' || b.gate.side==='bottom'
-                ? <line x1={g.x-17} y1={g.y} x2={g.x+17} y2={g.y} stroke={TOKENS.entry} strokeWidth="2.5" className="dash-flow"/>
-                : <line x1={g.x} y1={g.y-17} x2={g.x} y2={g.y+17} stroke={TOKENS.entry} strokeWidth="2.5" className="dash-flow"/>}
-              <text x={g.x + (b.gate.side==='left'?-6:b.gate.side==='right'?6:0)}
-                    y={g.y + (b.gate.side==='top'?-6:b.gate.side==='bottom'?14:-6)}
-                    textAnchor={b.gate.side==='left'?'end':b.gate.side==='right'?'start':'middle'}
-                    fontSize="8" fontWeight="700" fill={TOKENS.entry} className="hair">ENTRY</text>
-            </g>
-            <text x={b.x+b.w/2} y={b.y+b.h/2-4} textAnchor="middle" fontSize="12" fontWeight="800" fill={TOKENS.ink} className="hair">{b.label}</text>
-            <text x={b.x+b.w/2} y={b.y+b.h/2+12} textAnchor="middle" fontSize="9" fill={TOKENS.sub}>{b.sub}</text>
-            {b.hotspot && (
-              <text x={b.x+b.w/2} y={b.y+b.h/2+27} textAnchor="middle" fontSize="8" fontWeight="700"
-                    fill={bypass?TOKENS.bypass:TOKENS.wait} className="hair">
-                {bypass ? 'BYPASS ACTIVE' : 'HOTSPOT · 대기 유발'}
+                  fill={b.color} fillOpacity={0.06 + load*0.16}
+                  stroke={b.color} strokeWidth="1.5" strokeOpacity="0.7"/>
+            {/* category tag */}
+            <rect x={b.x} y={b.y} width="40" height="14" fill={b.color}/>
+            <text x={b.x+20} y={b.y+10} textAnchor="middle" fontSize="8" fontWeight="700" fill="#fff" className="hair">{b.cat}</text>
+            <text x={b.x+b.w/2} y={b.y+b.h/2-4} textAnchor="middle" fontSize="12" fontWeight="800" fill={T.ink} className="hair">{b.label}</text>
+            <text x={b.x+b.w/2} y={b.y+b.h/2+11} textAnchor="middle" fontSize="8.5" fill={T.sub}>{b.sub}</text>
+            {b.hot && (
+              <text x={b.x+b.w/2} y={b.y+b.h/2+25} textAnchor="middle" fontSize="8" fontWeight="700"
+                    fill={occ.queue>4?T.wait:T.sub} className="hair">
+                {occ.queue>4?'대기 발생':'인기 부스'}
               </text>
             )}
+            {/* service counter marker */}
+            <rect x={b.counter.x-16} y={b.y+b.h-3} width="32" height="6" fill={b.color}/>
+            {/* live occupancy pill */}
+            <g>
+              <rect x={b.x+b.w-38} y={b.y+2} width="36" height="14" fill="#fff" stroke={T.line} strokeWidth="0.8"/>
+              <text x={b.x+b.w-20} y={b.y+12} textAnchor="middle" fontSize="8" fontWeight="700"
+                    fill={occ.queue>4?T.wait:T.accent2} className="font-mono">{occ.served}/{occ.queue}</text>
+            </g>
           </g>
         );
       })}
 
-      {/* facilities */}
-      {hall.facilities.map((f,i)=>(
+      {/* facilities (labels only, no barriers) */}
+      {FACILITIES.map((f,i)=>(
         <g key={i}>
-          <rect x={f.x-16} y={f.y-11} width="32" height="22" fill={TOKENS.silver} stroke={TOKENS.line} strokeWidth="1.5"/>
-          <text x={f.x} y={f.y+3} textAnchor="middle" fontSize="8" fontWeight="800" fill={TOKENS.accent2} className="hair">{f.label}</text>
+          <rect x={f.x-17} y={f.y-9} width="34" height="18" fill={T.silver} stroke={T.line} strokeWidth="1"/>
+          <text x={f.x} y={f.y+3} textAnchor="middle" fontSize="8" fontWeight="800" fill={T.accent2} className="hair">{f.label}</text>
         </g>
       ))}
 
-      {/* ===== AGENT LAYER (last layer) ===== */}
+      {/* tracked trail */}
+      {selectedId && trail.length>1 && (
+        <polyline fill="none" stroke={T.mint} strokeWidth="1.6" strokeOpacity="0.7"
+                  points={trail.map(p=>`${p.x},${p.y}`).join(' ')} />
+      )}
+
+      {/* AGENTS */}
       <g>
         {agents.map(a=>{
-          let fill = a.color;
-          if (a.state==='queue') fill = TOKENS.wait;
-          else if (a.state==='bypass') fill = TOKENS.bypass;
+          const isSel = a.id===selectedId;
+          let fill=a.color;
+          if(a.state==='queue') fill=T.wait;
+          else if(a.state==='bypass') fill=T.bypass;
           return (
-            <circle key={a.id} cx={a.x} cy={a.y} r={a.state==='queue'||a.state==='bypass'?3.4:3}
-              fill={fill} stroke="#ffffff" strokeWidth="0.7"
-              onMouseEnter={(e)=>onHover(a,e)} onMouseMove={(e)=>onHover(a,e)}
-              onMouseLeave={()=>onHover(null)} style={{cursor:'pointer'}}/>
+            <g key={a.id}>
+              {isSel && <circle cx={a.x} cy={a.y} r="9" fill="none" stroke={T.mint} strokeWidth="2"/>}
+              <circle cx={a.x} cy={a.y} r={isSel?4.4:(a.state==='queue'?3.6:3.2)}
+                fill={fill} stroke={isSel?T.mint:'#fff'} strokeWidth={isSel?1.4:0.7}
+                onMouseEnter={(e)=>onHover(a,e)} onMouseMove={(e)=>onHover(a,e)}
+                onMouseLeave={()=>onHover(null)}
+                onClick={(e)=>{ e.stopPropagation(); onSelect(a.id); }}
+                style={{cursor:'pointer'}}/>
+            </g>
           );
         })}
       </g>
 
-      {/* user location mint pulse */}
-      {userPulse && userPulse.hall===hallId && (
-        <g transform={`translate(${userPulse.x},${userPulse.y})`}>
-          <circle r="10" fill="none" stroke={TOKENS.mint} strokeWidth="2" className="pulse-ring"/>
-          <circle r="6" fill={TOKENS.mint} stroke="#fff" strokeWidth="1.5"/>
-          <circle r="2.4" fill="#04352c"/>
+      {/* SPEECH BUBBLES (limited set + tracked) */}
+      <g style={{pointerEvents:'none'}}>
+        {agents.filter(a=>a.bubble).map(a=>{
+          const w = Math.min(150, 22 + a.bubble.length*6.6);
+          let bx=a.x-w/2, by=a.y-24;
+          bx=clamp(bx,4,VW-w-4); by=clamp(by,4,VH-20);
+          const sel=a.id===selectedId;
+          return (
+            <g key={'b'+a.id}>
+              <rect x={bx} y={by} width={w} height="15" fill="#fff"
+                    stroke={sel?T.mint:T.line} strokeWidth={sel?1.4:0.8}/>
+              <rect x={a.x-3} y={by+13} width="6" height="5" fill="#fff" stroke={sel?T.mint:T.line} strokeWidth="0.6"/>
+              <text x={bx+w/2} y={by+11} textAnchor="middle" fontSize="8.5" fill={T.ink}>{a.bubble}</text>
+            </g>
+          );
+        })}
+      </g>
+
+      {/* PLAY AVATAR */}
+      {playMode && av && (
+        <g transform={`translate(${av.x},${av.y})`}>
+          <circle r="12" fill="none" stroke={T.mint} strokeWidth="2" className="pulse-ring"/>
+          <rect x="-6" y="-6" width="12" height="12" fill={T.mint} stroke={T.ink} strokeWidth="1.6"/>
+          <text x="0" y="-12" textAnchor="middle" fontSize="9" fontWeight="800" fill={T.ink} className="hair">YOU</text>
         </g>
       )}
     </svg>
   );
 }
 
+function svgPoint(e){
+  const svg=e.currentTarget;
+  const r=svg.getBoundingClientRect();
+  return { x:(e.clientX-r.left)/r.width*VW, y:(e.clientY-r.top)/r.height*VH };
+}
+
 /* ============================================================
-   TOOLTIP
+   HOVER TOOLTIP
    ============================================================ */
-function AgentTooltip({ data }) {
+function Tooltip({ data, booths }) {
   if(!data) return null;
-  const { a, x, y } = data;
-  const comp = COMPANIONS.find(c=>c.key===a.comp);
-  const stateKo = a.state==='queue'?'혼잡 대기(RED)':a.state==='bypass'?'우회 수락(BLUE)':a.state==='inside'?'부스 관람':'이동 중';
+  const { a,x,y }=data;
+  const comp=COMPANIONS.find(c=>c.key===a.comp);
+  const st={ wander:'이동 중', seek:'부스로 이동', queue:'대기줄', serve:'관람 중', bypass:'우회 이동', leave:'퇴장 중' }[a.state]||a.state;
+  const tb=booths.find(b=>b.id===a.target);
   return (
     <div className="fixed z-50 pointer-events-none" style={{ left:x+14, top:y+14 }}>
-      <div className="bg-bp-ink text-white text-[11px] w-56 border border-bp-accent shadow-xl">
-        <div className="px-3 py-1.5 bg-bp-accent2 flex items-center justify-between">
+      <div className="bg-bp-ink text-white text-[11px] w-52 border border-bp-accent shadow-xl">
+        <div className="px-2.5 py-1.5 bg-bp-accent2 flex justify-between">
           <span className="font-mono font-bold">{a.id}</span>
-          <span className="hair" style={{color:comp.color}}>● {comp.ko}</span>
+          <span style={{color:comp.color}}>● {comp.ko}</span>
         </div>
-        <div className="px-3 py-2 space-y-1">
-          <Row k="관람 선호" v={a.pref}/>
-          <Row k="인내심" v={`${a.patience} / 100`}/>
-          <Row k="현재 상태" v={stateKo}/>
-          <div className="mt-2 pt-2 border-t border-bp-line/40">
-            <div className="text-bp-mint hair text-[9px] mb-1">실내 측위 · 센서 퓨전 보정</div>
+        <div className="px-2.5 py-2 space-y-1">
+          <Row k="선호" v={a.pref}/>
+          <Row k="상태" v={st}/>
+          {tb && <Row k="목적 부스" v={tb.label}/>}
+          <Row k="인내심" v={`${Math.round(a.patience)}/100`}/>
+          <div className="mt-1.5 pt-1.5 border-t border-white/20">
             <Row k="측위 오차" v={`± ${a.accuracy.toFixed(2)} m`}/>
-            <Row k="퓨전 신뢰도" v={`${Math.max(72,100-Math.round(a.accuracy*9))} %`}/>
-            <Row k="RSSI/IMU" v="SYNCED"/>
           </div>
+          <div className="text-[9px] text-bp-mint mt-1">클릭하면 이 관람객을 추적합니다</div>
         </div>
       </div>
     </div>
   );
 }
-function Row({k,v}){ return (
-  <div className="flex justify-between"><span className="text-bp-line">{k}</span><span className="font-mono">{v}</span></div>
+function Row({k,v}){ return <div className="flex justify-between"><span className="text-bp-line">{k}</span><span className="font-mono">{v}</span></div>; }
+
+/* ============================================================
+   TRACKING PANEL
+   ============================================================ */
+function TrackPanel({ agent, booths, onClear }) {
+  if(!agent) return null;
+  const comp=COMPANIONS.find(c=>c.key===agent.comp);
+  const tb=booths.find(b=>b.id===agent.target);
+  const st={ wander:'자유 이동', seek:'부스로 이동', queue:'대기줄 대기', serve:'부스 관람', bypass:'우회 이동', leave:'퇴장 중' }[agent.state]||agent.state;
+  return (
+    <div className="bg-white border-2 border-bp-mint mb-3">
+      <div className="flex items-center justify-between px-3 py-2 bg-bp-mint/15 border-b border-bp-mint">
+        <span className="text-[11px] hair font-bold text-bp-ink">개인 추적 · {agent.id}</span>
+        <button onClick={onClear} className="text-[10px] hair font-bold text-bp-sub hover:text-bp-wait border border-bp-line px-2 py-0.5">해제</button>
+      </div>
+      <div className="p-3 grid grid-cols-2 gap-2 text-[11px]">
+        <TInfo k="동반 유형" v={comp.ko} c={comp.color}/>
+        <TInfo k="관람 선호" v={agent.pref}/>
+        <TInfo k="현재 상태" v={st}/>
+        <TInfo k="목적 부스" v={tb?tb.label:'-'}/>
+        <TInfo k="대기 시간" v={`${agent.waitT.toFixed(1)} s`}/>
+        <TInfo k="관람 시간" v={`${agent.dwellT.toFixed(1)} s`}/>
+        <TInfo k="이동 거리" v={`${Math.round(agent.dist)} px`}/>
+        <TInfo k="측위 오차" v={`± ${agent.accuracy.toFixed(2)} m`}/>
+      </div>
+      <div className="px-3 pb-3">
+        <div className="text-[9px] hair text-bp-sub mb-1">인내심</div>
+        <Bar pct={agent.patience} tone={agent.patience<35?'wait':'mint'}/>
+        <div className="text-[9px] text-bp-line mt-1">지도에서 민트색 링과 이동 궤적으로 실시간 추적 중입니다.</div>
+      </div>
+    </div>
+  );
+}
+function TInfo({k,v,c}){ return (
+  <div className="border border-bp-line px-2 py-1.5">
+    <div className="text-[9px] text-bp-sub hair">{k}</div>
+    <div className="font-mono font-bold text-bp-ink" style={c?{color:c}:null}>{v}</div>
+  </div>
 );}
 
 /* ============================================================
-   SHARED KPI TILE
+   SHARED UI
    ============================================================ */
-function Tile({ label, value, unit, tone='ink', hint }) {
-  const c = { ink:'text-bp-ink', accent:'text-bp-accent2', wait:'text-bp-wait', mint:'text-bp-mint', bypass:'text-bp-bypass' }[tone];
+function Tile({label,value,unit,tone='ink',hint}) {
+  const c={ink:'text-bp-ink',accent:'text-bp-accent2',wait:'text-bp-wait',mint:'text-bp-mint',bypass:'text-bp-bypass'}[tone];
   return (
     <div className="bg-bp-panel border border-bp-line p-3">
       <div className="text-[10px] text-bp-sub hair uppercase">{label}</div>
-      <div className={`text-2xl font-bold font-mono ${c} kpi-pop`} key={value}>{value}<span className="text-sm ml-0.5">{unit}</span></div>
+      <div className={`text-2xl font-bold font-mono ${c}`}>{value}<span className="text-sm ml-0.5">{unit}</span></div>
       {hint && <div className="text-[9px] text-bp-line mt-0.5">{hint}</div>}
     </div>
   );
 }
-
-function Bar({ pct, tone='accent', h='h-2' }) {
-  const c = { accent:'bg-bp-accent', wait:'bg-bp-wait', mint:'bg-bp-mint', bypass:'bg-bp-bypass', silver:'bg-bp-line' }[tone];
+function Bar({pct,tone='accent',h='h-2'}) {
+  const c={accent:'bg-bp-accent',wait:'bg-bp-wait',mint:'bg-bp-mint',bypass:'bg-bp-bypass',trend:'bg-bp-trend'}[tone];
+  return <div className={`w-full ${h} bg-bp-silver border border-bp-line`}>
+    <div className={`${c} h-full transition-all duration-500`} style={{width:`${clamp(pct,0,100)}%`}}/></div>;
+}
+function SectionTitle({no,title,sub}) {
   return (
-    <div className={`w-full ${h} bg-bp-silver border border-bp-line`}>
-      <div className={`${c} h-full transition-all duration-500`} style={{ width:`${Math.max(0,Math.min(100,pct))}%` }}/>
+    <div className="flex items-end gap-2 border-b border-bp-line pb-2">
+      <span className="text-2xl font-bold font-mono text-bp-line">{no}</span>
+      <div><div className="text-sm font-bold text-bp-ink">{title}</div>
+      <div className="text-[9px] hair text-bp-sub uppercase">{sub}</div></div>
     </div>
   );
 }
+function Legend({c,t}){ return <div className="flex items-center gap-1.5"><span className="w-3 h-3 border border-white" style={{background:c}}/><span>{t}</span></div>; }
 
 /* ============================================================
-   VIEW 1 — REAL-TIME CONGESTION DASHBOARD
+   VIEW 1 — LIVE CONTROL DASHBOARD
    ============================================================ */
-function View1Dashboard({ stats, bypass, nudge, edge }) {
-  const cong = bypass ? 31.2 : 84.6;
+function View1({ stats, booths, engine }) {
+  const busy = [...booths].map(b=>({ b, occ:(engine.rt[b.id]||{served:0,queue:0}) }))
+    .sort((p,q)=>(q.occ.served+q.occ.queue)-(p.occ.served+p.occ.queue)).slice(0,4);
   return (
     <div className="space-y-3">
-      <SectionTitle no="01" title="실시간 컨벤션 혼잡도 대시보드" sub="Live Convention Congestion Monitor"/>
+      <SectionTitle no="01" title="실시간 관제 대시보드" sub="Live Floor Monitor"/>
       <div className="grid grid-cols-2 gap-2">
-        <Tile label="전시장 평균 혼잡도" value={cong.toFixed(1)} unit="%" tone={bypass?'mint':'wait'}
-              hint={bypass?'스마트 바이패스 ON':'바이패스 OFF · 병목 발생'}/>
-        <Tile label="넛지 수락 협조율" value={bypass?nudge:0} unit="%" tone="accent" hint="Nudge acceptance"/>
-        <Tile label="유동 병목 완화치" value={stats.relief.toFixed(1)} unit="%" tone="bypass" hint="Bottleneck relief"/>
-        <Tile label="실시간 관람객" value={stats.total} unit="명" tone="ink" hint="Active visitors"/>
+        <Tile label="전시장 혼잡도" value={stats.cong.toFixed(1)} unit="%" tone={stats.cong>62?'wait':'accent'} hint="현재 밀집 수준"/>
+        <Tile label="활동 관람객" value={stats.total} unit="명" tone="ink"/>
+        <Tile label="총 대기 인원 (L)" value={stats.L} unit="명" tone="wait"/>
+        <Tile label="평균 대기시간 (W)" value={stats.W.toFixed(2)} unit="분" tone="mint"/>
       </div>
-
       <div className="bg-bp-panel border border-bp-line p-3">
-        <div className="flex items-center justify-between mb-2">
-          <span className="text-[10px] hair text-bp-sub uppercase">초저지연 엣지 컴퓨팅 트래픽 바</span>
-          <span className={`text-[10px] font-mono font-bold ${edge>82?'text-bp-wait':'text-bp-mint'}`}>
-            {edge>82?'CONGESTED':'NOMINAL'} · {edge.toFixed(0)}%
-          </span>
+        <div className="flex justify-between items-center mb-2">
+          <span className="text-[10px] hair text-bp-sub uppercase">엣지 컴퓨팅 트래픽</span>
+          <span className={`text-[10px] font-mono font-bold ${stats.edge>70?'text-bp-wait':'text-bp-mint'}`}>{stats.edge.toFixed(0)}% · {stats.edge>70?'BUSY':'OK'}</span>
         </div>
-        <Bar pct={edge} tone={edge>82?'wait':'mint'} h="h-3"/>
-        <div className="grid grid-cols-4 gap-1 mt-2">
-          {['EDGE-N','EDGE-E','EDGE-S','EDGE-W'].map((n,i)=>{
-            const v = Math.max(8, Math.min(99, edge + (i-1.5)*11));
-            return (
-              <div key={n} className="border border-bp-line p-1">
-                <div className="text-[8px] text-bp-line font-mono">{n}</div>
-                <Bar pct={v} tone={v>82?'wait':'accent'}/>
-                <div className="text-[8px] font-mono text-bp-sub mt-0.5">{v.toFixed(0)}ms</div>
+        <Bar pct={stats.edge} tone={stats.edge>70?'wait':'mint'} h="h-3"/>
+      </div>
+      <div className="bg-bp-panel border border-bp-line p-3">
+        <div className="text-[10px] hair text-bp-sub uppercase mb-2">부스별 실시간 혼잡 (관람/대기)</div>
+        <div className="space-y-2">
+          {busy.map(({b,occ})=>(
+            <div key={b.id}>
+              <div className="flex justify-between text-[11px]">
+                <span className="font-semibold text-bp-ink">{b.label}</span>
+                <span className="font-mono text-bp-sub">{occ.served} 관람 · {occ.queue} 대기</span>
               </div>
-            );
-          })}
+              <Bar pct={(occ.served+occ.queue)/(b.cap+8)*100} tone={occ.queue>4?'wait':'accent'}/>
+            </div>
+          ))}
         </div>
-        <div className="text-[9px] text-bp-line mt-2">대규모 트래픽 집중에 의한 네트워크 정체 방지 상태를 실시간 관제합니다.</div>
       </div>
-
       <div className="bg-bp-panel border border-bp-line p-3">
-        <div className="text-[10px] hair text-bp-sub uppercase mb-2">관람객 구성 · 도트 범례</div>
+        <div className="text-[10px] hair text-bp-sub uppercase mb-2">도트 범례</div>
         <div className="grid grid-cols-2 gap-x-4 gap-y-1 text-[11px]">
-          <Legend c={TOKENS.solo} t="혼자 (SOLO)"/>
-          <Legend c={TOKENS.couple} t="연인 (COUPLE)"/>
-          <Legend c={TOKENS.family} t="가족 (FAMILY)"/>
-          <Legend c={TOKENS.wait} t="혼잡 대기 (QUEUE)"/>
-          <Legend c={TOKENS.bypass} t="우회 이동 (BYPASS)"/>
-          <Legend c={TOKENS.mint} t="사용자 위치 (YOU)"/>
+          <Legend c={T.solo} t="혼자"/><Legend c={T.couple} t="연인"/>
+          <Legend c={T.family} t="가족"/><Legend c={T.wait} t="대기줄"/>
+          <Legend c={T.bypass} t="우회"/><Legend c={T.mint} t="추적/내 위치"/>
         </div>
       </div>
     </div>
   );
 }
-function Legend({c,t}){ return (
-  <div className="flex items-center gap-2"><span className="w-3 h-3 border border-white" style={{background:c}}/><span className="text-bp-ink">{t}</span></div>
-);}
 
 /* ============================================================
-   VIEW 2 — B2C EXPO WAY GUIDE APP (iPhone frame)
+   VIEW 2 — GUIDE APP + PLAY MODE
    ============================================================ */
-function View2Guide({ setHallId, setUserPulse, pushToast, bypass }) {
-  const [comp, setComp] = useState('solo');
-  const [theme, setTheme] = useState('신기술');
-  const [route, setRoute] = useState(null);
-  const [couponShown, setCouponShown] = useState(false);
+function View2({ setHallId, pushToast, bypass, playMode, setPlayMode, stamps, boothCount }) {
+  const [comp,setComp]=useState('solo');
+  const [theme,setTheme]=useState('신기술');
+  const [route,setRoute]=useState(null);
 
-  const buildRoute = () => {
-    const base = [
-      { hall:1, booth:'a2', name:'A · 자율주행 모빌리티 랩', tag:'신기술', min:15 },
-      { hall:2, booth:'b3', name:'B · XR 스튜디오 체험', tag:'체험', min:20 },
-      { hall:4, booth:'d1', name:'D · 아에테르 미디어아트 홀', tag:'문화예술', min:25 },
-      { hall:3, booth:'c4', name:'C · 푸드 라운지 안착', tag:'푸드테크', min:18 },
+  const build=()=>{
+    const base=[
+      {hall:1,name:'A · 자율주행 콕핏',tag:'신기술',min:15},
+      {hall:2,name:'B · XR 스튜디오',tag:'체험',min:20},
+      {hall:4,name:'D · 아에테르 미디어홀',tag:'문화예술',min:22},
+      {hall:3,name:'C · 푸드 라운지',tag:'푸드테크',min:16},
     ];
-    let seq = [...base];
-    if (bypass) {
-      // smart schedule swap: visit quiet culture hall FIRST, avoid mega-booth queue
-      seq = [ base[2], base[0], base[1], base[3] ];
-      setCouponShown(true);
-      pushToast('푸드테크 20% 특별 우회 쿠폰이 발급되었습니다', 'mint');
-    } else {
-      setCouponShown(false);
-    }
-    seq = seq.map((s,i)=>({ ...s, order:i+1 }));
+    let seq = bypass ? [base[2],base[0],base[1],base[3]] : base;
+    seq=seq.map((s,i)=>({...s,order:i+1}));
     setRoute(seq);
-    pushToast('AI 분산 동선이 생성되었습니다', 'accent');
-  };
-
-  const clickStep = (s) => {
-    setHallId(s.hall);
-    const hall = HALLS[s.hall];
-    const b = hall.booths.find(x=>x.id===s.booth);
-    const g = gatePoint(b);
-    setUserPulse({ hall:s.hall, x:g.x, y:g.y });
+    pushToast('AI 분산 동선이 생성되었습니다','accent');
+    if(bypass){ setTimeout(()=>pushToast('한적한 문화예술관 우선 방문 · 푸드테크 10% 쿠폰 발급','mint'),400); }
   };
 
   return (
     <div className="space-y-3">
-      <SectionTitle no="02" title="B2C 엑스포 웨이 가이드" sub="Visitor Companion App"/>
-      <div className="flex justify-center">
-        <div className="w-[300px] bg-bp-ink p-2 border-4 border-bp-ink shadow-2xl">
-          <div className="bg-bp-bg blueprint-grid">
-            {/* status bar */}
-            <div className="flex justify-between items-center px-3 py-1.5 bg-white border-b border-bp-line text-[10px] font-mono text-bp-sub">
-              <span>09:41</span>
-              <span className="hair font-bold text-bp-accent2">ROUTEFINDER</span>
-              <span>5G · 100%</span>
+      <SectionTitle no="02" title="B2C 가이드 앱 & 직접 플레이" sub="Companion App + Play Mode"/>
+
+      <div className={`border-2 p-3 ${playMode?'border-bp-mint bg-bp-mint/5':'border-bp-line bg-bp-panel'}`}>
+        <div className="flex items-center justify-between">
+          <div>
+            <div className="text-[11px] font-bold text-bp-ink">직접 플레이 모드 (스탬프 랠리)</div>
+            <div className="text-[9px] text-bp-sub">WASD · 화살표 이동 / 지도 클릭 이동</div>
+          </div>
+          <Btn tone={playMode?'solid':'default'} onClick={()=>setPlayMode(!playMode)}>{playMode?'플레이 중':'플레이 시작'}</Btn>
+        </div>
+        {playMode && (
+          <div className="mt-2">
+            <div className="flex justify-between text-[10px] mb-1">
+              <span className="hair text-bp-sub">스탬프 수집</span>
+              <span className="font-mono font-bold text-bp-mint">{stamps} / {boothCount}</span>
             </div>
-            <div className="p-3 space-y-3 max-h-[440px] overflow-y-auto">
-              <div>
-                <div className="text-[10px] hair text-bp-sub mb-1">동반인 유형</div>
-                <div className="grid grid-cols-3 gap-1">
-                  {COMPANIONS.map(c=>(
-                    <Btn key={c.key} active={comp===c.key} onClick={()=>setComp(c.key)}>{c.ko}</Btn>
-                  ))}
-                </div>
-              </div>
-              <div>
-                <div className="text-[10px] hair text-bp-sub mb-1">탐색 테마</div>
-                <div className="grid grid-cols-3 gap-1">
-                  {['신기술','체험','푸드테크'].map(t=>(
-                    <Btn key={t} active={theme===t} onClick={()=>setTheme(t)}>{t}</Btn>
-                  ))}
-                </div>
-              </div>
-              <Btn tone="solid" className="w-full py-2" onClick={buildRoute}>AI 분산 동선 생성</Btn>
+            <Bar pct={stamps/boothCount*100} tone="mint"/>
+            <div className="text-[9px] text-bp-line mt-1">부스 카운터에 가까이 가면 스탬프가 자동 적립됩니다. 인파 사이를 헤치고 이동해 보세요.</div>
+          </div>
+        )}
+      </div>
 
-              {couponShown && (
-                <div className="border-2 border-bp-mint bg-white p-2 toast-in">
-                  <div className="text-[10px] hair text-bp-mint font-bold">SMART BYPASS COUPON</div>
-                  <div className="text-sm font-bold text-bp-ink">푸드테크 20% 특별 우회 쿠폰</div>
-                  <div className="text-[9px] text-bp-sub">혼잡 메가 부스를 우회하고 한적한 문화예술관을 먼저 방문한 참여 보상입니다.</div>
-                </div>
-              )}
-
+      <div className="flex justify-center">
+        <div className="w-[290px] bg-bp-ink p-2 border-4 border-bp-ink shadow-2xl">
+          <div className="bg-bp-bg blueprint-grid">
+            <div className="flex justify-between items-center px-3 py-1.5 bg-white border-b border-bp-line text-[10px] font-mono text-bp-sub">
+              <span>09:41</span><span className="hair font-bold text-bp-accent2">ROUTEFINDER</span><span>5G · 100%</span>
+            </div>
+            <div className="p-3 space-y-3 max-h-[380px] overflow-y-auto">
+              <div><div className="text-[10px] hair text-bp-sub mb-1">동반인 유형</div>
+                <div className="grid grid-cols-3 gap-1">{COMPANIONS.map(c=><Btn key={c.key} active={comp===c.key} onClick={()=>setComp(c.key)}>{c.ko}</Btn>)}</div></div>
+              <div><div className="text-[10px] hair text-bp-sub mb-1">탐색 테마</div>
+                <div className="grid grid-cols-3 gap-1">{['신기술','체험','푸드테크'].map(t=><Btn key={t} active={theme===t} onClick={()=>setTheme(t)}>{t}</Btn>)}</div></div>
+              <Btn tone="solid" className="w-full py-2" onClick={build}>AI 분산 동선 생성</Btn>
               {route && (
-                <div>
-                  <div className="text-[10px] hair text-bp-sub mb-1">추천 타임라인 {bypass && <span className="text-bp-mint">· 스마트 스왑 적용</span>}</div>
+                <div><div className="text-[10px] hair text-bp-sub mb-1">추천 타임라인 {bypass&&<span className="text-bp-mint">· 스마트 스왑</span>}</div>
                   <div className="space-y-1">
                     {route.map(s=>(
-                      <button key={s.order} onClick={()=>clickStep(s)}
+                      <button key={s.order} onClick={()=>setHallId(s.hall)}
                         className="w-full text-left border border-bp-line bg-white hover:border-bp-mint p-2 flex items-center gap-2 transition-colors">
                         <span className="w-6 h-6 shrink-0 bg-bp-accent2 text-white text-[11px] font-bold flex items-center justify-center font-mono">{s.order}</span>
-                        <span className="flex-1">
-                          <span className="block text-[11px] font-bold text-bp-ink">{s.name}</span>
-                          <span className="block text-[9px] text-bp-sub">{s.tag} · 예상 {s.min}분</span>
-                        </span>
-                        <span className="text-[8px] hair text-bp-mint">TAP→MAP</span>
+                        <span className="flex-1"><span className="block text-[11px] font-bold text-bp-ink">{s.name}</span>
+                        <span className="block text-[9px] text-bp-sub">{s.tag} · 예상 {s.min}분</span></span>
+                        <span className="text-[8px] hair text-bp-mint">MAP→</span>
                       </button>
                     ))}
                   </div>
-                  <div className="text-[9px] text-bp-line mt-2">단계를 누르면 좌측 지도가 해당 전시관으로 전환되고 입구에 민트색 위치 펄스가 표시됩니다.</div>
+                  <div className="text-[9px] text-bp-line mt-2">단계를 누르면 좌측 지도가 해당 전시관으로 전환됩니다.</div>
                 </div>
               )}
             </div>
@@ -590,88 +585,53 @@ function View2Guide({ setHallId, setUserPulse, pushToast, bypass }) {
 }
 
 /* ============================================================
-   VIEW 3 — B2B ORGANIZER CONTROL PANEL
+   VIEW 3 — ORGANIZER CONTROL
    ============================================================ */
-function View3Control({ bypass, setBypass, nudge, setNudge, stats, roi, predictive, setPredictive }) {
-  const L = stats.L, lam = stats.lambda, W = stats.W;
+function View3({ bypass,setBypass,nudge,setNudge,stats,roi,predictive,setPredictive }) {
   return (
     <div className="space-y-3">
-      <SectionTitle no="03" title="B2B 엑스포 주최측 관제판" sub="Organizer Control Deck"/>
-
+      <SectionTitle no="03" title="B2B 주최측 관제판" sub="Organizer Control Deck"/>
       <div className="bg-bp-panel border border-bp-line p-3 flex items-center justify-between">
-        <div>
-          <div className="text-[11px] font-bold text-bp-ink">실시간 동적 바이패스 개입</div>
-          <div className="text-[9px] text-bp-sub">Dynamic Smart Bypass Control</div>
-        </div>
+        <div><div className="text-[11px] font-bold text-bp-ink">동적 스마트 바이패스</div>
+        <div className="text-[9px] text-bp-sub">혼잡 부스 대기객을 유사 부스로 부드럽게 분산</div></div>
         <button onClick={()=>setBypass(!bypass)}
           className={`w-16 h-8 border-2 flex items-center transition-colors ${bypass?'bg-bp-bypass border-bp-bypass justify-end':'bg-bp-silver border-bp-line justify-start'}`}>
-          <span className="w-6 h-6 bg-white block m-0.5"/>
-        </button>
+          <span className="w-6 h-6 bg-white block m-0.5"/></button>
       </div>
-
       <div className="bg-bp-panel border border-bp-line p-3">
-        <div className="flex justify-between text-[11px] mb-1">
-          <span className="font-bold text-bp-ink">넛지 혜택 강도 조절</span>
-          <span className="font-mono font-bold text-bp-accent2">{nudge}%</span>
-        </div>
+        <div className="flex justify-between text-[11px] mb-1"><span className="font-bold text-bp-ink">넛지 혜택 강도</span>
+          <span className="font-mono font-bold text-bp-accent2">{nudge}%</span></div>
         <input type="range" min="30" max="100" value={nudge} disabled={!bypass}
-          onChange={e=>setNudge(parseInt(e.target.value))}
-          className="w-full accent-bp-accent2 disabled:opacity-40"/>
+          onChange={e=>setNudge(parseInt(e.target.value))} className="w-full disabled:opacity-40"/>
         <div className="flex justify-between text-[8px] text-bp-line font-mono"><span>30%</span><span>100%</span></div>
-        <div className="text-[9px] text-bp-sub mt-1">슬라이더 값에 비례해 우회 수락 성공률이 상승합니다.</div>
       </div>
-
       <div className="bg-white border-2 border-bp-accent2 p-3">
-        <div className="text-[10px] hair text-bp-accent2 font-bold mb-2">LITTLE&apos;S LAW · 실시간 대기행렬 모형</div>
-        <div className="text-center font-mono text-lg text-bp-ink mb-3">
-          L = &lambda; &times; W　　→　　W = L / &lambda;
-        </div>
+        <div className="text-[10px] hair text-bp-accent2 font-bold mb-2">LITTLE&apos;S LAW · 대기행렬</div>
+        <div className="text-center font-mono text-base text-bp-ink mb-3">L = &lambda; &times; W　→　W = L / &lambda;</div>
         <div className="grid grid-cols-3 gap-2 text-center">
-          <div className="border border-bp-line p-2">
-            <div className="text-[9px] text-bp-sub font-mono">&lambda; 유입률</div>
-            <div className="text-lg font-bold font-mono text-bp-accent2 kpi-pop" key={lam}>{lam.toFixed(2)}</div>
-            <div className="text-[8px] text-bp-line">명/분</div>
-          </div>
-          <div className="border border-bp-line p-2">
-            <div className="text-[9px] text-bp-sub font-mono">L 대기열</div>
-            <div className="text-lg font-bold font-mono text-bp-wait kpi-pop" key={L}>{L}</div>
-            <div className="text-[8px] text-bp-line">명</div>
-          </div>
-          <div className="border border-bp-line p-2">
-            <div className="text-[9px] text-bp-sub font-mono">W 대기시간</div>
-            <div className="text-lg font-bold font-mono text-bp-mint kpi-pop" key={W}>{W.toFixed(2)}</div>
-            <div className="text-[8px] text-bp-line">분</div>
-          </div>
+          <div className="border border-bp-line p-2"><div className="text-[9px] text-bp-sub font-mono">&lambda; 유입</div>
+            <div className="text-lg font-bold font-mono text-bp-accent2">{stats.lambda.toFixed(2)}</div><div className="text-[8px] text-bp-line">명/분</div></div>
+          <div className="border border-bp-line p-2"><div className="text-[9px] text-bp-sub font-mono">L 대기</div>
+            <div className="text-lg font-bold font-mono text-bp-wait">{stats.L}</div><div className="text-[8px] text-bp-line">명</div></div>
+          <div className="border border-bp-line p-2"><div className="text-[9px] text-bp-sub font-mono">W 시간</div>
+            <div className="text-lg font-bold font-mono text-bp-mint">{stats.W.toFixed(2)}</div><div className="text-[8px] text-bp-line">분</div></div>
         </div>
       </div>
-
       <div className="grid grid-cols-2 gap-2">
-        <div className="bg-bp-panel border border-bp-line p-3">
-          <div className="text-[10px] hair text-bp-sub uppercase">누적 대기시간 절감</div>
-          <div className="text-2xl font-bold font-mono text-bp-mint kpi-pop" key={Math.floor(roi.savedMin)}>{Math.floor(roi.savedMin).toLocaleString()}<span className="text-sm ml-1">분</span></div>
-        </div>
-        <div className="bg-bp-panel border border-bp-line p-3">
-          <div className="text-[10px] hair text-bp-sub uppercase">우회 연계 부가매출</div>
-          <div className="text-2xl font-bold font-mono text-bp-accent2 kpi-pop" key={Math.floor(roi.revenue)}>&#8361;{Math.floor(roi.revenue).toLocaleString()}</div>
-        </div>
+        <div className="bg-bp-panel border border-bp-line p-3"><div className="text-[10px] hair text-bp-sub uppercase">누적 대기 절감</div>
+          <div className="text-2xl font-bold font-mono text-bp-mint">{Math.floor(roi.savedMin).toLocaleString()}<span className="text-sm ml-1">분</span></div></div>
+        <div className="bg-bp-panel border border-bp-line p-3"><div className="text-[10px] hair text-bp-sub uppercase">우회 연계 매출</div>
+          <div className="text-2xl font-bold font-mono text-bp-accent2">&#8361;{Math.floor(roi.revenue).toLocaleString()}</div></div>
       </div>
-
       <div className={`border-2 p-3 ${predictive?'border-bp-wait bg-white':'border-bp-line bg-bp-panel'}`}>
         <div className="flex items-center justify-between">
-          <div>
-            <div className="text-[11px] font-bold text-bp-ink">예측형 혼잡도 제어 (Predictive Crowd Control)</div>
-            <div className="text-[9px] text-bp-sub">게릴라 이벤트 30분 전 선제 제어</div>
-          </div>
-          <Btn tone={predictive?'danger':'default'} active={false} onClick={()=>setPredictive(!predictive)}>
-            {predictive?'ARMED':'STANDBY'}
-          </Btn>
+          <div><div className="text-[11px] font-bold text-bp-ink">예측형 혼잡 제어</div>
+          <div className="text-[9px] text-bp-sub">이벤트 30분 전 선제 분산</div></div>
+          <Btn tone={predictive?'danger':'default'} onClick={()=>setPredictive(!predictive)}>{predictive?'ARMED':'STANDBY'}</Btn>
         </div>
-        {predictive && (
-          <div className="mt-2 border border-bp-wait/50 p-2 text-[10px] toast-in">
-            <div className="font-mono text-bp-wait font-bold">⚑ ALERT · T-30:00</div>
-            <div className="text-bp-ink">유명인 사인회 · 선착순 경품 이벤트 감지 → A홀 로보틱스 특별관 선제 분산 제어 개시.</div>
-          </div>
-        )}
+        {predictive && <div className="mt-2 border border-bp-wait/50 p-2 text-[10px] toast-in">
+          <div className="font-mono text-bp-wait font-bold">ALERT · T-30:00</div>
+          <div className="text-bp-ink">사인회 · 선착순 경품 이벤트 감지 → 인기 부스 선제 분산 개시.</div></div>}
       </div>
     </div>
   );
@@ -680,58 +640,39 @@ function View3Control({ bypass, setBypass, nudge, setNudge, stats, roi, predicti
 /* ============================================================
    VIEW 4 — DATA MARKETPLACE
    ============================================================ */
-const DATASETS = [
-  { id:'ds1', cat:'Tech', title:'2F IT 디바이스관 이동 벡터 로우 데이터', size:'2.4 GB', price:1200000, big:true, partner:'스마트팝업 참가사' },
-  { id:'ds2', cat:'F&B',  title:'3F 푸드코트 부역별 정체 효율 분석 리포트', size:'860 MB', price:940000, big:true, partner:'파스타 크루 참가사' },
-  { id:'ds3', cat:'Culture', title:'4F 미디어아트홀 체류시간 히트맵 데이터셋', size:'1.1 GB', price:780000, big:false, partner:'아에테르 참가사' },
-  { id:'ds4', cat:'F&B',  title:'1F 에코 쉼터 최종 안착 전환율 패키지', size:'540 MB', price:610000, big:false, partner:'가든 베이커리' },
+const DATASETS=[
+  {id:'d1',cat:'Tech',title:'2F IT관 이동 벡터 로우 데이터',size:'2.4 GB',price:1200000,big:true,partner:'스마트폰 참가사'},
+  {id:'d2',cat:'F&B',title:'3F 푸드코트 정체 효율 리포트',size:'860 MB',price:940000,big:true,partner:'파스타 봇 참가사'},
+  {id:'d3',cat:'Culture',title:'4F 미디어아트 체류 히트맵',size:'1.1 GB',price:780000,big:false,partner:'아에테르 홀'},
+  {id:'d4',cat:'F&B',title:'1F 에코 쉼터 전환율 패키지',size:'540 MB',price:610000,big:false,partner:'모빌리티 카페'},
+  {id:'d5',cat:'Tech',title:'전관 동선 OD 매트릭스 데이터',size:'3.2 GB',price:1650000,big:true,partner:'전시 운영단'},
+  {id:'d6',cat:'Culture',title:'포토존 SNS 확산 지표 리포트',size:'420 MB',price:530000,big:false,partner:'포토 존'},
 ];
-
-function View4Market({ pushToast, salesRef, tick }) {
-  const [filter, setFilter] = useState('All');
-  const [owned, setOwned] = useState({});
-  const list = DATASETS.filter(d=> filter==='All' || d.cat===filter);
-
-  const buy = (d) => {
-    if (owned[d.id]) return;
-    setOwned(o=>({ ...o, [d.id]:true }));
-    salesRef.current.month += d.price;
-    pushToast(`${d.title} · 다운로드 완료`, 'accent');
-    if (d.big) {
-      setTimeout(()=>pushToast(`${d.partner}에 유동 벡터 전이 리포트 제공 알림 발송`, 'mint'), 500);
-    }
+function View4({ pushToast, salesRef }) {
+  const [filter,setFilter]=useState('All');
+  const [owned,setOwned]=useState({});
+  const list=DATASETS.filter(d=>filter==='All'||d.cat===filter);
+  const buy=(d)=>{ if(owned[d.id])return;
+    setOwned(o=>({...o,[d.id]:true})); salesRef.current.month+=d.price;
+    pushToast(`${d.title} · 다운로드 완료`,'accent');
+    if(d.big) setTimeout(()=>pushToast(`${d.partner}에 유동 벡터 전이 리포트 제공 알림`,'mint'),450);
   };
-
   return (
     <div className="space-y-3">
-      <SectionTitle no="04" title="데이터 비즈니스 마켓플레이스" sub="Data Monetization Portal"/>
-
+      <SectionTitle no="04" title="데이터 마켓플레이스" sub="Data Monetization Portal"/>
       <div className="bg-white border-2 border-bp-accent2 p-3 flex items-center justify-between">
-        <div>
-          <div className="text-[10px] hair text-bp-sub uppercase">이번 달 누적 데이터 판매고</div>
-          <div className="text-2xl font-bold font-mono text-bp-accent2 kpi-pop" key={salesRef.current.month}>
-            &#8361;{salesRef.current.month.toLocaleString()}
-          </div>
-        </div>
-        <div className="text-right text-[9px] text-bp-line font-mono">
-          <div>DATASETS · {DATASETS.length}</div>
-          <div>OWNED · {Object.keys(owned).length}</div>
-        </div>
+        <div><div className="text-[10px] hair text-bp-sub uppercase">이번 달 누적 판매고</div>
+        <div className="text-2xl font-bold font-mono text-bp-accent2">&#8361;{salesRef.current.month.toLocaleString()}</div></div>
+        <div className="text-right text-[9px] text-bp-line font-mono"><div>DATASETS · {DATASETS.length}</div><div>OWNED · {Object.keys(owned).length}</div></div>
       </div>
-
-      <div className="flex gap-1">
-        {['All','F&B','Tech','Culture'].map(c=>(
-          <Btn key={c} active={filter===c} onClick={()=>setFilter(c)}>{c}</Btn>
-        ))}
-      </div>
-
+      <div className="flex gap-1">{['All','F&B','Tech','Culture'].map(c=><Btn key={c} active={filter===c} onClick={()=>setFilter(c)}>{c}</Btn>)}</div>
       <div className="space-y-2">
         {list.map(d=>(
           <div key={d.id} className="bg-bp-panel border border-bp-line p-3">
             <div className="flex items-start justify-between gap-2">
               <div className="flex-1">
                 <div className="flex items-center gap-2 mb-1">
-                  <span className="text-[8px] hair font-bold text-white bg-bp-accent2 px-1.5 py-0.5">{d.cat}</span>
+                  <span className="text-[8px] hair font-bold text-white px-1.5 py-0.5" style={{background:CAT_COLOR[d.cat]||T.accent2}}>{d.cat}</span>
                   {d.big && <span className="text-[8px] hair font-bold text-bp-mint border border-bp-mint px-1.5 py-0.5">LARGE BOOTH</span>}
                 </div>
                 <div className="text-[12px] font-bold text-bp-ink leading-snug">{d.title}</div>
@@ -739,297 +680,341 @@ function View4Market({ pushToast, salesRef, tick }) {
               </div>
               <div className="text-right shrink-0">
                 <div className="text-sm font-bold font-mono text-bp-accent2 mb-1">&#8361;{d.price.toLocaleString()}</div>
-                {owned[d.id]
-                  ? <span className="inline-block text-[10px] hair font-bold text-bp-mint border border-bp-mint px-2 py-1">DOWNLOADED</span>
-                  : <Btn tone="solid" onClick={()=>buy(d)}>패키지 구매</Btn>}
+                {owned[d.id]?<span className="inline-block text-[10px] hair font-bold text-bp-mint border border-bp-mint px-2 py-1">DOWNLOADED</span>
+                  :<Btn tone="solid" onClick={()=>buy(d)}>패키지 구매</Btn>}
               </div>
             </div>
           </div>
         ))}
       </div>
-      <div className="text-[9px] text-bp-line">우회 경로를 수락한 대형 부스 참가사에 한해 [유동 벡터 전이 리포트]가 자동 제공됩니다.</div>
     </div>
   );
 }
 
 /* ============================================================
-   SHARED small components
-   ============================================================ */
-function SectionTitle({ no, title, sub }) {
-  return (
-    <div className="flex items-end gap-2 border-b border-bp-line pb-2">
-      <span className="text-2xl font-bold font-mono text-bp-line">{no}</span>
-      <div>
-        <div className="text-sm font-bold text-bp-ink">{title}</div>
-        <div className="text-[9px] hair text-bp-sub uppercase">{sub}</div>
-      </div>
-    </div>
-  );
-}
-
-/* ============================================================
-   ROOT APP + SIMULATION LOOP
+   ROOT APP
    ============================================================ */
 function App() {
-  const [hallId, setHallId] = useState(1);
-  const [view, setView] = useState(1);
-  const [bypass, setBypass] = useState(false);
-  const [nudge, setNudge] = useState(65);
-  const [predictive, setPredictive] = useState(false);
-  const [hover, setHover] = useState(null);
-  const [userPulse, setUserPulse] = useState(null);
-  const [toasts, setToasts] = useState([]);
-  const [tick, setTick] = useState(0);
-  const [stats, setStats] = useState({ total:150, L:0, lambda:0, W:0, relief:0 });
-  const [edge, setEdge] = useState(46);
+  const [hallId,setHallId]=useState(1);
+  const [view,setView]=useState(1);
+  const [bypass,setBypass]=useState(false);
+  const [nudge,setNudge]=useState(60);
+  const [predictive,setPredictive]=useState(false);
+  const [hover,setHover]=useState(null);
+  const [selectedId,setSelectedId]=useState(null);
+  const [toasts,setToasts]=useState([]);
+  const [tick,setTick]=useState(0);
+  const [stats,setStats]=useState({ total:0,cong:40,L:0,W:0,lambda:0,edge:45 });
+  const [speed,setSpeed]=useState(1);
+  const [pop,setPop]=useState(110);
+  const [playMode,setPlayMode]=useState(false);
+  const [filter,setFilter]=useState('All');
+  const [stamps,setStamps]=useState(0);
 
-  const agentsRef = useRef(spawnAgents(1));
-  const roiRef = useRef({ savedMin:0, revenue:0 });
-  const salesRef = useRef({ month: 4820000 });
-  const bypassRef = useRef(bypass);
-  const nudgeRef = useRef(nudge);
-  const hallRef = useRef(hallId);
-  const rngRef = useRef(seededRand(999));
-  const toastId = useRef(0);
+  // engine holds mutable simulation state (no re-render on mutation)
+  const engine=useRef({ agents:[], booths:[], rt:{}, trail:[], order:0 });
+  const avatarRef=useRef({ x:VW/2, y:VH-60, vx:0, vy:0, target:null, stamped:{} });
+  const keys=useRef({});
+  const roiRef=useRef({ savedMin:0, revenue:0 });
+  const salesRef=useRef({ month:4820000 });
+  const speedRef=useRef(speed), bypassRef=useRef(bypass), nudgeRef=useRef(nudge), playRef=useRef(playMode), selRef=useRef(selectedId);
+  const toastId=useRef(0), bubbleAcc=useRef(0), trailAcc=useRef(0);
 
-  useEffect(()=>{ bypassRef.current = bypass; }, [bypass]);
-  useEffect(()=>{ nudgeRef.current = nudge; }, [nudge]);
-  useEffect(()=>{ hallRef.current = hallId; agentsRef.current = spawnAgents(hallId); }, [hallId]);
+  useEffect(()=>{speedRef.current=speed;},[speed]);
+  useEffect(()=>{bypassRef.current=bypass;},[bypass]);
+  useEffect(()=>{nudgeRef.current=nudge;},[nudge]);
+  useEffect(()=>{playRef.current=playMode;},[playMode]);
+  useEffect(()=>{selRef.current=selectedId;},[selectedId]);
 
-  const pushToast = useCallback((msg, tone='accent')=>{
-    const id = ++toastId.current;
-    setToasts(t=>[...t, { id, msg, tone }]);
-    setTimeout(()=> setToasts(t=>t.filter(x=>x.id!==id)), 3600);
-  }, []);
+  // (re)build hall
+  const rebuild=useCallback((hid,n)=>{
+    engine.current.booths=buildBooths(hid);
+    engine.current.agents=spawnAgents(n);
+    engine.current.rt={}; engine.current.trail=[]; engine.current.order=0;
+    engine.current.booths.forEach(b=>engine.current.rt[b.id]={served:0,queue:0});
+    avatarRef.current={ x:VW/2, y:VH-60, vx:0, vy:0, target:null, stamped:{} };
+    setStamps(0); setSelectedId(null);
+  },[]);
 
-  const onHover = useCallback((a, e)=>{
-    if(!a){ setHover(null); return; }
-    setHover({ a, x:e.clientX, y:e.clientY });
-  }, []);
+  useEffect(()=>{ rebuild(hallId,pop); /* eslint-disable-next-line */ },[hallId]);
+  useEffect(()=>{ rebuild(hallId,pop); /* eslint-disable-next-line */ },[pop]);
 
-  // ===== physics + queue loop =====
+  const pushToast=useCallback((msg,tone='accent')=>{
+    const id=++toastId.current;
+    setToasts(t=>[...t,{id,msg,tone}]);
+    setTimeout(()=>setToasts(t=>t.filter(x=>x.id!==id)),3400);
+  },[]);
+  const onHover=useCallback((a,e)=>{ if(!a){setHover(null);return;} setHover({a,x:e.clientX,y:e.clientY}); },[]);
+  const onSelect=useCallback((id)=>{ setSelectedId(id); if(view!==1&&view!==2){} },[view]);
+  const onBgClick=useCallback((pt)=>{ if(playRef.current){ avatarRef.current.target={...pt}; } },[]);
+
+  // keyboard for play mode
+  useEffect(()=>{
+    const dn=(e)=>{ const k=e.key.toLowerCase(); if(['w','a','s','d','arrowup','arrowdown','arrowleft','arrowright'].includes(k)){ keys.current[k]=true; if(playRef.current) e.preventDefault(); } };
+    const up=(e)=>{ keys.current[e.key.toLowerCase()]=false; };
+    window.addEventListener('keydown',dn); window.addEventListener('keyup',up);
+    return ()=>{ window.removeEventListener('keydown',dn); window.removeEventListener('keyup',up); };
+  },[]);
+
+  // ===== simulation loop =====
   useEffect(()=>{
     let raf, last=0, statAcc=0;
-    const step = (ts)=>{
-      const dt = Math.min(40, ts-last || 16); last=ts;
-      const hall = HALLS[hallRef.current];
-      const agents = agentsRef.current;
-      const rnd = rngRef.current;
-      const hot = hall.booths.find(b=>b.hotspot);
-      const alt = hall.booths.filter(b=>!b.hotspot && !b.sink);
-      const bp = bypassRef.current;
-      const nudgeP = nudgeRef.current/100;
+    const step=(ts)=>{
+      let dt=(ts-last)/1000; last=ts; if(dt>0.05)dt=0.05;
+      const sdt=dt*speedRef.current;
+      const E=engine.current, booths=E.booths, agents=E.agents;
+      const bp=bypassRef.current, nudgeP=nudgeRef.current/100;
+      const R=12, SEP=90, DES=52; // sep radius, sep weight, desired speed px/s
 
-      let queueCount=0, insideCount=0, bypassCount=0;
-
+      // recompute per-booth served / queued
+      const served={}, queued={};
+      booths.forEach(b=>{ served[b.id]=0; queued[b.id]=[]; });
       for(const a of agents){
-        const b = hall.booths.find(x=>x.id===a.target) || hall.booths[0];
-        const gate = gatePoint(b);
-        const center = boothCenter(b);
+        if(a.state==='serve'&&a.target) served[a.target]++;
+        else if(a.state==='queue'&&a.target) queued[a.target].push(a);
+      }
+      const slots={};
+      booths.forEach(b=>{ slots[b.id]=b.cap-served[b.id]; queued[b.id].sort((p,q)=>p.joinOrder-q.joinOrder); });
+      // promote fronts of queues into service
+      let arrivalsThisFrame=0;
+      booths.forEach(b=>{
+        let s=slots[b.id];
+        for(const a of queued[b.id]){
+          if(s>0){ a.state='serve'; a.dwellT=0; a.dwellMax=(b.hot?9:6)+rnd()*6; a.servePos={x:b.x+16+rnd()*(b.w-32),y:b.y+22+rnd()*(b.h-44)}; s--; arrivalsThisFrame++; }
+          else break;
+        }
+        slots[b.id]=s;
+      });
 
-        // determine current waypoint
-        let wx, wy;
-        if (a.phase==='toGate') { wx=gate.x; wy=gate.y; }
-        else if (a.phase==='inside') { wx=center.x; wy=center.y; }
-        else { wx=gate.x; wy=gate.y; }
-
-        // hotspot queueing: form a red queue near the gate
-        const isHot = b.hotspot;
-        if (isHot && a.phase==='toGate') {
-          // bypass diversion decision
-          if (bp && a.state!=='bypass') {
-            if (rnd() < 0.02 * nudgeP * 3) {
-              // accept nudge → reroute to symmetric marketing booth
-              const nb = alt[Math.floor(rnd()*alt.length)];
-              a.target = nb.id; a.state='bypass'; a.phase='toGate';
-              continue;
+      // main per-agent update
+      for(const a of agents){
+        const b = a.target ? booths.find(x=>x.id===a.target) : null;
+        // choose waypoint by state
+        let wx,wy, ds=DES*a.spd;
+        if(a.state==='wander'){
+          a.seekTimer-=sdt;
+          const dx=a.roamPt.x-a.x, dy=a.roamPt.y-a.y;
+          if(Math.hypot(dx,dy)<24){ a.roamPt={x:40+rnd()*(VW-80),y:40+rnd()*(VH-80)}; }
+          wx=a.roamPt.x; wy=a.roamPt.y; ds*=0.7;
+          if(a.seekTimer<=0){ a.state='seek'; a.target=chooseBooth(a,booths); }
+        } else if(a.state==='seek'){
+          const c=b?b.counter:{x:VW/2,y:VH/2}; wx=c.x; wy=c.y;
+          if(b){
+            // bypass: if heading to a hot booth with a long queue, maybe divert
+            if(bp && b.hot && queued[b.id].length>4 && a.state!=='bypass'){
+              if(rnd() < 0.012*nudgeP*3){
+                const alt=booths.filter(x=>x.cat===b.cat && !x.hot);
+                if(alt.length){ a.target=pick(alt).id; a.state='bypass'; }
+              }
+            }
+            if(Math.hypot(wx-a.x,wy-a.y)<20){
+              if(slots[b.id]>0){ a.state='serve'; a.dwellT=0; a.dwellMax=(b.hot?9:6)+rnd()*6; slots[b.id]--; a.servePos={x:b.x+16+rnd()*(b.w-32),y:b.y+22+rnd()*(b.h-44)}; arrivalsThisFrame++; }
+              else { a.state='queue'; a.joinOrder=E.order++; a.waitT=0; }
             }
           }
-        }
-
-        const dx=wx-a.x, dy=wy-a.y;
-        const dist=Math.hypot(dx,dy)||1;
-
-        // arrival logic
-        if (dist < 8) {
-          if (a.phase==='toGate') {
-            if (isHot && !bp) {
-              // stuck in queue near gate
-              a.state='queue';
-              a.wait += dt/1000;
-              // jitter within queue band outside the gate
-              a.x = gate.x + (rnd()-0.5)*46;
-              a.y = gate.y + (b.gate.side==='bottom'? 20+rnd()*40 : b.gate.side==='top'? -(20+rnd()*40) : (rnd()-0.5)*46);
-              queueCount++;
-              continue;
-            } else {
-              a.phase='inside';
-            }
-          } else if (a.phase==='inside') {
-            insideCount++;
-            a.wait += dt/2000;
-            // dwell then leave to a new target (sink booths retain longer)
-            const leaveP = b.sink ? 0.004 : 0.02;
-            if (rnd() < leaveP) {
-              a.phase='toGate'; a.state = 'roam';
-              const pool = hall.booths;
-              const goHot = !bp && rnd() < 0.4;
-              a.target = goHot ? hot.id : pool[Math.floor(rnd()*pool.length)].id;
-            }
-            // gentle drift inside
-            a.x += (center.x - a.x)*0.02 + (rnd()-0.5)*0.6;
-            a.y += (center.y - a.y)*0.02 + (rnd()-0.5)*0.6;
-            continue;
+        } else if(a.state==='bypass'){
+          const c=b?b.counter:{x:VW/2,y:VH/2}; wx=c.x; wy=c.y;
+          if(b && Math.hypot(wx-a.x,wy-a.y)<20){
+            if(slots[b.id]>0){ a.state='serve'; a.dwellT=0; a.dwellMax=(b.hot?9:6)+rnd()*6; slots[b.id]--; a.servePos={x:b.x+16+rnd()*(b.w-32),y:b.y+22+rnd()*(b.h-44)}; }
+            else { a.state='queue'; a.joinOrder=E.order++; a.waitT=0; }
           }
-        }
-
-        // steering toward waypoint with wall avoidance
-        let sx=dx/dist, sy=dy/dist;
-        // avoid crossing any booth wall (except the one we're heading into via its gate)
-        const nextX=a.x+sx*a.speed*2.2, nextY=a.y+sy*a.speed*2.2;
-        let blocked=false;
-        for(const ob of hall.booths){
-          if (ob.id===b.id && a.phase!=='inside') continue; // allow approach to own gate
-          for(const s of boothWalls(ob)){
-            if (segHit(a.x,a.y,nextX,nextY, s[0],s[1],s[2],s[3])) { blocked=true; break; }
+        } else if(a.state==='queue'){
+          a.waitT+=sdt;
+          const idx=queued[b?b.id:'']? queued[b.id].indexOf(a):0;
+          const c=b?b.counter:{x:VW/2,y:VH/2};
+          wx=c.x + ((idx%2)?1:-1)*Math.ceil(idx/2)*0; // single-file line
+          wx=c.x; wy=c.y + 12 + Math.max(0,idx)*15;
+          ds*=0.5;
+          // patience: leave the queue if waited too long
+          if(a.waitT > a.patience*0.35){
+            if(bp){ const alt=booths.filter(x=>x.cat===(b?b.cat:'Tech') && !x.hot); if(alt.length){ a.target=pick(alt).id; a.state='bypass'; } else { a.state='wander'; a.target=null; a.seekTimer=1+rnd()*3; } }
+            else { a.state='wander'; a.target=null; a.seekTimer=1+rnd()*3; }
+            a.patience=clamp(a.patience-6,10,100);
           }
-          if (blocked) break;
+        } else if(a.state==='serve'){
+          a.dwellT+=sdt;
+          const sp=a.servePos||(b?b.counter:{x:VW/2,y:VH/2}); wx=sp.x; wy=sp.y; ds*=0.35;
+          if(a.dwellT>=a.dwellMax){ a.state='leave'; a.leavePt={x:40+rnd()*(VW-80),y:40+rnd()*(VH-80)}; a.patience=clamp(a.patience-4,8,100); }
+        } else if(a.state==='leave'){
+          const lp=a.leavePt||{x:VW/2,y:VH/2}; wx=lp.x; wy=lp.y;
+          if(Math.hypot(wx-a.x,wy-a.y)<26){ a.state='wander'; a.target=null; a.seekTimer=0.8+rnd()*3.5; a.roamPt={x:40+rnd()*(VW-80),y:40+rnd()*(VH-80)}; }
         }
-        if (blocked) {
-          // deflect perpendicular
-          const px=-sy, py=sx;
-          sx=(sx+px)*0.5; sy=(sy+py)*0.5;
-          const m=Math.hypot(sx,sy)||1; sx/=m; sy/=m;
-        }
-        a.state = a.state==='bypass'?'bypass':'roam';
-        if (a.state==='bypass') bypassCount++;
-        a.x += sx*a.speed*(dt/16)*2.0 + (rnd()-0.5)*0.5;
-        a.y += sy*a.speed*(dt/16)*2.0 + (rnd()-0.5)*0.5;
 
-        // keep in bounds
-        a.x=Math.max(20,Math.min(VW-20,a.x));
-        a.y=Math.max(20,Math.min(VH-20,a.y));
+        // steering toward waypoint
+        let dx=wx-a.x, dy=wy-a.y; const dd=Math.hypot(dx,dy)||1;
+        let sx=(dx/dd)*ds, sy=(dy/dd)*ds;
+        if(dd<6){ sx*=dd/6; sy*=dd/6; }
+        a._sx=sx; a._sy=sy;
       }
 
-      // ===== Little's Law statistics =====
-      statAcc += dt;
-      if (statAcc > 120) {
-        statAcc = 0;
-        // L = queue length; lambda scales down with bypass & nudge
-        const baseLambda = 8.4;
-        const lambda = bp ? baseLambda*(1 - 0.5*(nudgeRef.current/100)) : baseLambda;
-        const L = queueCount;
+      // separation pass (no overlap) — O(n^2), n~110
+      for(let i=0;i<agents.length;i++){
+        const a=agents[i]; let px=0,py=0;
+        for(let j=0;j<agents.length;j++){
+          if(i===j)continue; const o=agents[j];
+          const dx=a.x-o.x, dy=a.y-o.y; const d2=dx*dx+dy*dy;
+          if(d2<R*R && d2>0.0001){ const d=Math.sqrt(d2); const f=(R-d)/R; px+=(dx/d)*f; py+=(dy/d)*f; }
+        }
+        // avatar pushes crowd a bit
+        if(playRef.current){ const av=avatarRef.current; const dx=a.x-av.x,dy=a.y-av.y,d2=dx*dx+dy*dy; if(d2<(R+6)*(R+6)&&d2>0.01){ const d=Math.sqrt(d2); const f=(R+6-d)/(R+6); px+=(dx/d)*f*1.4; py+=(dy/d)*f*1.4; } }
+        a._px=px*SEP; a._py=py*SEP;
+      }
+
+      // integrate
+      for(const a of agents){
+        let vx=a._sx + a._px, vy=a._sy + a._py;
+        const mag=Math.hypot(vx,vy); const maxV=DES*1.7;
+        if(mag>maxV){ vx=vx/mag*maxV; vy=vy/mag*maxV; }
+        const nx=clamp(a.x+vx*sdt,16,VW-16), ny=clamp(a.y+vy*sdt,16,VH-16);
+        a.dist+=Math.hypot(nx-a.x,ny-a.y);
+        a.x=nx; a.y=ny; a.vx=vx; a.vy=vy;
+      }
+
+      // avatar (play mode)
+      if(playRef.current){
+        const av=avatarRef.current; let ax=0,ay=0;
+        if(keys.current['w']||keys.current['arrowup'])ay-=1;
+        if(keys.current['s']||keys.current['arrowdown'])ay+=1;
+        if(keys.current['a']||keys.current['arrowleft'])ax-=1;
+        if(keys.current['d']||keys.current['arrowright'])ax+=1;
+        if(ax||ay){ av.target=null; const m=Math.hypot(ax,ay); ax/=m; ay/=m; }
+        else if(av.target){ const dx=av.target.x-av.x,dy=av.target.y-av.y,d=Math.hypot(dx,dy); if(d>4){ax=dx/d;ay=dy/d;}else av.target=null; }
+        const AV=140*speedRef.current;
+        av.x=clamp(av.x+ax*AV*dt,14,VW-14); av.y=clamp(av.y+ay*AV*dt,14,VH-14);
+        // stamp rally
+        for(const b of booths){
+          if(av.stamped[b.id])continue;
+          if(Math.hypot(av.x-b.counter.x, av.y-b.counter.y)<34){
+            av.stamped[b.id]=true; const n=Object.keys(av.stamped).length;
+            setStamps(n); pushToast(`${b.label} 스탬프 획득! (${n}/${booths.length})`,'mint');
+          }
+        }
+      }
+
+      // speech bubbles: refresh a small rotating set (+tracked)
+      bubbleAcc.current+=dt;
+      if(bubbleAcc.current>0.9){
+        bubbleAcc.current=0;
+        agents.forEach(a=>a.bubble=null);
+        const talkers=[];
+        for(let k=0;k<6 && agents.length;k++) talkers.push(agents[Math.floor(rnd()*agents.length)]);
+        talkers.forEach(a=>{ a.bubble=needText(a,booths); });
+        const sel=agents.find(a=>a.id===selRef.current); if(sel) sel.bubble=needText(sel,booths);
+      }
+
+      // tracked trail
+      const sel=agents.find(a=>a.id===selRef.current);
+      trailAcc.current+=dt;
+      if(sel){ if(trailAcc.current>0.12){ trailAcc.current=0; E.trail.push({x:sel.x,y:sel.y}); if(E.trail.length>70)E.trail.shift(); } }
+      else if(E.trail.length){ E.trail=[]; }
+
+      // update runtime occupancy for rendering
+      booths.forEach(b=>{ E.rt[b.id]={served:served[b.id]+ (slots[b.id]<b.cap? (b.cap-slots[b.id]-served[b.id]):0), queue:queued[b.id].length}; });
+      // simpler served: recount
+      const s2={},q2={};
+      booths.forEach(b=>{s2[b.id]=0;q2[b.id]=0;});
+      for(const a of agents){ if(a.state==='serve'&&a.target)s2[a.target]++; else if(a.state==='queue'&&a.target)q2[a.target]++; }
+      booths.forEach(b=>{ E.rt[b.id]={served:s2[b.id],queue:q2[b.id]}; });
+
+      // stats
+      statAcc+=dt;
+      if(statAcc>0.25){
+        statAcc=0;
+        let L=0,servedTot=0; booths.forEach(b=>{ L+=q2[b.id]; servedTot+=s2[b.id]; });
+        const total=agents.length;
+        const lambda = clamp((bp? total/26*(1-0.28*nudgeP) : total/26), 1, 30);
         const W = lambda>0 ? L/lambda : 0;
-        const relief = bp ? Math.min(100, 20 + nudgeRef.current*0.6) : 0;
-        setStats({ total:agents.length, L, lambda, W, relief });
-
-        // ROI accumulation (per tick, randomized)
-        if (bp) {
-          roiRef.current.savedMin += (0.4 + rnd()*1.2) * (nudgeRef.current/100) * 4;
-          roiRef.current.revenue  += Math.floor((1 + rnd()*3) * nudgeRef.current * 12);
-        }
-        // organic monthly data sales drift
-        salesRef.current.month += Math.floor(rnd()*2)*1500;
-
-        // edge traffic bar
-        const target = bp ? 34 + rnd()*10 : 80 + rnd()*16;
-        setEdge(e=> e + (target-e)*0.15);
-
-        setTick(t=>t+1);
-      } else {
-        setTick(t=>(t+1)); // drive re-render for agents
+        const cong = clamp(30 + (L+servedTot)/total*70 - (bp?8:0) + (Math.sin(ts/4000)*2), 25, 82);
+        const edge = clamp(cong*0.85 + (bp?-4:2) + Math.sin(ts/2500)*4, 20, 92);
+        setStats({ total, cong, L, W, lambda, edge });
+        if(bp){ roiRef.current.savedMin += (0.15+rnd()*0.4)*nudgeP; roiRef.current.revenue += Math.floor((1+rnd()*2)*nudgeRef.current*1.2); }
       }
-      raf = requestAnimationFrame(step);
-    };
-    raf = requestAnimationFrame(step);
-    return ()=> cancelAnimationFrame(raf);
-  }, []);
 
-  const halls = [1,2,3,4];
-  const viewTabs = [
-    { id:1, ko:'혼잡도 대시보드' },
-    { id:2, ko:'B2C 가이드 앱' },
-    { id:3, ko:'B2B 관제판' },
-    { id:4, ko:'데이터 마켓' },
-  ];
+      setTick(t=>(t+1)%1000000);
+      raf=requestAnimationFrame(step);
+    };
+    raf=requestAnimationFrame(step);
+    return ()=>cancelAnimationFrame(raf);
+  },[]); // eslint-disable-line
+
+  const selAgent = engine.current.agents.find(a=>a.id===selectedId)||null;
+  const viewTabs=[{id:1,ko:'관제 대시보드'},{id:2,ko:'가이드/플레이'},{id:3,ko:'B2B 관제판'},{id:4,ko:'데이터 마켓'}];
 
   return (
     <div className="min-h-screen bg-bp-bg text-bp-ink blueprint-grid">
-      {/* header */}
       <header className="bg-bp-panel border-b-2 border-bp-accent2 px-4 py-2.5 flex items-center justify-between sticky top-0 z-40">
         <div className="flex items-center gap-3">
-          <Logo size={34}/>
-          <div>
-            <div className="text-lg font-bold hair leading-none">ROUTEFINDER</div>
-            <div className="text-[9px] hair text-bp-sub uppercase">Expo Crowd Intelligence · Silver Blueprint Edition</div>
-          </div>
+          <Logo size={32}/>
+          <div><div className="text-lg font-bold hair leading-none">ROUTEFINDER</div>
+          <div className="text-[9px] hair text-bp-sub uppercase">Large Expo Crowd Simulator · 4 Halls · 40 Booths</div></div>
         </div>
         <div className="flex items-center gap-3">
-          <span className={`text-[10px] font-mono font-bold px-2 py-1 border ${bypass?'text-bp-bypass border-bp-bypass':'text-bp-wait border-bp-wait'}`}>
-            BYPASS {bypass?'ON':'OFF'}
-          </span>
-          <span className="text-[10px] font-mono text-bp-sub hidden md:block">2026 · MICE TECH SaaS</span>
+          <span className={`text-[10px] font-mono font-bold px-2 py-1 border ${bypass?'text-bp-bypass border-bp-bypass':'text-bp-sub border-bp-line'}`}>BYPASS {bypass?'ON':'OFF'}</span>
+          {playMode && <span className="text-[10px] font-mono font-bold px-2 py-1 border text-bp-mint border-bp-mint">PLAY MODE</span>}
         </div>
       </header>
 
-      <div className="flex flex-col lg:flex-row gap-3 p-3 max-w-[1500px] mx-auto">
-        {/* ===== LEFT: fixed congestion map ===== */}
-        <div className="lg:w-[58%] shrink-0">
+      <div className="flex flex-col lg:flex-row gap-3 p-3 max-w-[1600px] mx-auto">
+        {/* LEFT: map */}
+        <div className="lg:w-[60%] shrink-0">
           <div className="bg-bp-panel border border-bp-line">
-            <div className="flex items-center justify-between px-3 py-2 border-b border-bp-line">
-              <span className="text-[11px] hair font-bold uppercase">실시간 전시관 혼잡도 지도</span>
-              <div className="flex gap-1">
-                {halls.map(h=>(
-                  <Btn key={h} active={hallId===h} onClick={()=>{ setHallId(h); }}>
-                    {HALLS[h].code} · {h}관
-                  </Btn>
-                ))}
+            <div className="flex items-center justify-between px-3 py-2 border-b border-bp-line flex-wrap gap-2">
+              <span className="text-[11px] hair font-bold uppercase">실시간 전시관 지도</span>
+              <div className="flex gap-1">{[1,2,3,4].map(h=><Btn key={h} active={hallId===h} onClick={()=>setHallId(h)}>{HALL_META[h].code} · {h}관</Btn>)}</div>
+            </div>
+            <div className="px-3 py-2 border-b border-bp-line flex items-center justify-between flex-wrap gap-2">
+              <span className="text-[11px] font-bold text-bp-accent2">{HALL_META[hallId].name}</span>
+              <div className="flex items-center gap-3 flex-wrap">
+                <label className="flex items-center gap-1.5 text-[10px] hair text-bp-sub">속도
+                  <input type="range" min="0.25" max="3" step="0.25" value={speed} onChange={e=>setSpeed(parseFloat(e.target.value))} className="w-24"/>
+                  <span className="font-mono font-bold text-bp-ink w-8">{speed}x</span></label>
+                <label className="flex items-center gap-1.5 text-[10px] hair text-bp-sub">인원
+                  <input type="range" min="40" max="150" step="10" value={pop} onChange={e=>setPop(parseInt(e.target.value))} className="w-24"/>
+                  <span className="font-mono font-bold text-bp-ink w-8">{pop}</span></label>
+                <div className="flex gap-1">{['All','F&B','Tech','Culture'].map(c=><Btn key={c} active={filter===c} onClick={()=>setFilter(c)}>{c}</Btn>)}</div>
               </div>
             </div>
-            <div className="px-3 py-2 border-b border-bp-line text-[11px] font-bold text-bp-accent2">{HALLS[hallId].name}</div>
-            <div className="aspect-[760/560] w-full">
-              <CongestionMap hallId={hallId} agentsRef={agentsRef} tick={tick}
-                             onHover={onHover} userPulse={userPulse} bypass={bypass}/>
+            <div className="aspect-[900/620] w-full">
+              <ExpoMap hallId={hallId} engine={engine.current} tick={tick} onHover={onHover}
+                       onSelect={onSelect} selectedId={selectedId} playMode={playMode}
+                       avatarRef={avatarRef} onBgClick={onBgClick} filter={filter}/>
             </div>
             <div className="px-3 py-2 border-t border-bp-line flex flex-wrap gap-x-4 gap-y-1 text-[10px] text-bp-sub">
-              <Legend c={TOKENS.solo} t="혼자"/><Legend c={TOKENS.couple} t="연인"/>
-              <Legend c={TOKENS.family} t="가족"/><Legend c={TOKENS.wait} t="대기"/>
-              <Legend c={TOKENS.bypass} t="우회"/><Legend c={TOKENS.mint} t="내 위치"/>
+              <Legend c={T.solo} t="혼자"/><Legend c={T.couple} t="연인"/><Legend c={T.family} t="가족"/>
+              <Legend c={T.wait} t="대기줄"/><Legend c={T.bypass} t="우회"/><Legend c={T.mint} t="추적/내 위치"/>
+              <span className="text-bp-line">도트 클릭 = 개인 추적 · 지도 클릭 = 플레이 이동</span>
             </div>
           </div>
         </div>
 
-        {/* ===== RIGHT: switchable views ===== */}
+        {/* RIGHT */}
         <div className="flex-1 min-w-0">
+          <TrackPanel agent={selAgent} booths={engine.current.booths} onClear={()=>setSelectedId(null)}/>
           <div className="grid grid-cols-4 gap-1 mb-3">
-            {viewTabs.map(t=>(
-              <Btn key={t.id} active={view===t.id} onClick={()=>setView(t.id)} className="py-2">{t.ko}</Btn>
-            ))}
+            {viewTabs.map(t=><Btn key={t.id} active={view===t.id} onClick={()=>setView(t.id)} className="py-2">{t.ko}</Btn>)}
           </div>
           <div className="bg-bp-panel border border-bp-line p-3">
-            {view===1 && <View1Dashboard stats={stats} bypass={bypass} nudge={nudge} edge={edge}/>}
-            {view===2 && <View2Guide setHallId={setHallId} setUserPulse={setUserPulse} pushToast={pushToast} bypass={bypass}/>}
-            {view===3 && <View3Control bypass={bypass} setBypass={setBypass} nudge={nudge} setNudge={setNudge}
-                                       stats={stats} roi={roiRef.current} predictive={predictive} setPredictive={setPredictive}/>}
-            {view===4 && <View4Market pushToast={pushToast} salesRef={salesRef} tick={tick}/>}
+            {view===1 && <View1 stats={stats} booths={engine.current.booths} engine={engine.current}/>}
+            {view===2 && <View2 setHallId={setHallId} pushToast={pushToast} bypass={bypass}
+                                playMode={playMode} setPlayMode={setPlayMode} stamps={stamps} boothCount={engine.current.booths.length||10}/>}
+            {view===3 && <View3 bypass={bypass} setBypass={setBypass} nudge={nudge} setNudge={setNudge}
+                                stats={stats} roi={roiRef.current} predictive={predictive} setPredictive={setPredictive}/>}
+            {view===4 && <View4 pushToast={pushToast} salesRef={salesRef}/>}
           </div>
         </div>
       </div>
 
-      <AgentTooltip data={hover}/>
+      <Tooltip data={hover} booths={engine.current.booths}/>
 
-      {/* toast stack */}
       <div className="fixed bottom-4 right-4 z-50 space-y-2 w-72">
         {toasts.map(t=>(
           <div key={t.id} className={`toast-in border-l-4 bg-bp-ink text-white text-[11px] px-3 py-2 shadow-xl
-            ${t.tone==='mint'?'border-bp-mint':t.tone==='wait'?'border-bp-wait':'border-bp-accent'}`}>
-            {t.msg}
-          </div>
+            ${t.tone==='mint'?'border-bp-mint':t.tone==='wait'?'border-bp-wait':'border-bp-accent'}`}>{t.msg}</div>
         ))}
       </div>
 
       <footer className="text-center text-[9px] text-bp-line py-4 hair">
-        ROUTEFINDER · SINGLE-FILE BUILD · LITTLE&apos;S LAW ENGINE · FIGMA-BOUND SILVER BLUEPRINT THEME
+        ROUTEFINDER · SINGLE-FILE · 40 BOOTHS · CROWD SEPARATION · QUEUE &amp; DWELL · PERSONAL TRACKING · PLAY MODE
       </footer>
     </div>
   );
@@ -1039,13 +1024,12 @@ ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
 </script>
 
 <script>
-  /* Inline JSX compilation (classic runtime → React.createElement, no ESM imports) */
+  /* Inline JSX compilation — classic runtime (React.createElement), no ESM imports */
   (function () {
     var src = document.getElementById('app-src').textContent;
     try {
       var out = Babel.transform(src, {
-        presets: [['react', { runtime: 'classic' }]],
-        filename: 'routefinder.jsx'
+        presets: [['react', { runtime:'classic' }]], filename:'routefinder.jsx'
       }).code;
       var s = document.createElement('script');
       s.textContent = out;
