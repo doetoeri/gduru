@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>gGuru Intelligence Dashboard v4.0</title>
+    <title>gGuru Intelligence Dashboard v4.1</title>
     
     <link href="https://fonts.googleapis.com/css2?family=SF+Pro+Display:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
@@ -19,11 +19,9 @@
             --apple-text-sub: #86868b;
             --apple-border: rgba(0, 0, 0, 0.08);
             
-            /* 핵심 의미별 액센트 컬러 */
             --color-blue: #0071e3;    /* DuoP 테마 */
             --color-green: #34c759;   /* DuoC 테마 */
-            --color-red: #ff3b30;     /* 위배(Violation) 경고 상태 */
-            --color-orange: #ff9500;  /* 주의 상태 */
+            --color-red: #ff3b30;     /* 위배 경고 상태 */
             --color-gray-bg: #f5f5f7;
             
             --apple-spring: cubic-bezier(0.25, 1.4, 0.35, 1.05);
@@ -50,7 +48,6 @@
             align-items: center;
         }
 
-        /* 스튜디오 타이틀 */
         .apple-header {
             text-align: center;
             margin-bottom: 32px;
@@ -58,7 +55,6 @@
         .apple-header h1 { font-size: 2.2rem; font-weight: 600; color: var(--apple-text-main); }
         .apple-header p { font-size: 0.95rem; color: var(--apple-text-sub); margin-top: 6px; }
 
-        /* 메인 레이아웃 (좌측 컨트롤러, 우측 와이드 비주얼 대시보드) */
         .workspace {
             width: 100%;
             max-width: 1300px;
@@ -71,7 +67,6 @@
             .workspace { grid-template-columns: 1fr; }
         }
 
-        /* Squircle 프레임 카드 */
         .apple-card {
             background: var(--apple-card);
             border-radius: 24px;
@@ -81,7 +76,6 @@
             transition: all 0.4s var(--apple-fluid);
         }
 
-        /* 좌측: 인풋 폼 구조 */
         .control-panel { display: flex; flex-direction: column; gap: 20px; height: fit-content; }
         .field-group { display: flex; flex-direction: column; gap: 8px; }
         .field-group label { font-size: 0.8rem; font-weight: 600; color: var(--apple-text-sub); text-transform: uppercase; letter-spacing: 0.5px; }
@@ -99,12 +93,8 @@
         .apple-btn:hover { background: #333336; }
         .apple-btn:active { transform: scale(0.97); }
 
-        /* ==========================================
-           2. 전면 교체 UX: 프리미엄 비주얼 대시보드
-           ========================================== */
         .dashboard-view { display: flex; flex-direction: column; gap: 24px; }
 
-        /* 📡 실시간 연산 하드웨어 텍스트 인디케이터 */
         .mini-status-bar {
             background: #1d1d1f; color: #fff; border-radius: 14px; padding: 12px 18px;
             font-family: 'JetBrains Mono', monospace; font-size: 0.78rem; display: flex; align-items: center; justify-content: space-between;
@@ -112,11 +102,9 @@
         .status-left { display: flex; align-items: center; gap: 8px; color: #a5d6ff; }
         .status-right { color: var(--apple-text-sub); }
 
-        /* 양대 인프라 에이전트(DuoP, DuoC) 격자 컨테이너 */
         .agent-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
         @media (max-width: 768px) { .agent-grid { grid-template-columns: 1fr; } }
 
-        /* 에이전트 스튜디오 메인 보드 */
         .agent-board { display: flex; flex-direction: column; gap: 20px; position: relative; }
         .agent-board-header { display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--apple-border); padding-bottom: 14px; }
         .agent-info { display: flex; align-items: center; gap: 10px; }
@@ -125,7 +113,6 @@
         .agent-info.c-color i { color: var(--color-green); }
         .agent-title { font-size: 1.05rem; font-weight: 600; }
 
-        /* 🏷️ 하이엔드 네온 토글 상태 배정 배지 */
         .status-badge {
             font-size: 0.75rem; font-weight: 700; padding: 6px 14px; border-radius: 100px; text-transform: uppercase;
             display: flex; align-items: center; gap: 4px; transition: all 0.3s var(--apple-fluid);
@@ -133,50 +120,28 @@
         .status-badge.pass { background: rgba(52, 199, 89, 0.1); color: var(--color-green); }
         .status-badge.violation { background: rgba(255, 59, 48, 0.1); color: var(--color-red); }
 
-        /* 🎯 적출된 핵심 문장 컴포넌트 */
         .target-box { background: var(--color-gray-bg); border-radius: 16px; padding: 16px; min-height: 68px; display: flex; flex-direction: column; gap: 4px; }
         .target-box .box-label { font-size: 0.72rem; font-weight: 700; color: var(--apple-text-sub); text-transform: uppercase; }
         .target-box .quote-text { font-size: 0.92rem; font-weight: 500; line-height: 1.5; color: var(--apple-text-main); }
 
-        /* 📊 데이터 비주얼라이제이션: 스쿼클 슬라이더 게이지 바 */
         .metric-container { display: flex; flex-direction: column; gap: 14px; }
         .metric-row { display: flex; flex-direction: column; gap: 6px; }
         .metric-meta { display: flex; align-items: center; justify-content: space-between; font-size: 0.82rem; font-weight: 500; }
         .metric-name { color: var(--apple-text-main); display: flex; align-items: center; gap: 4px; }
         .metric-score { font-weight: 600; }
         
-        /* 트랙 레이아웃 및 게이지 물리엔진 바 */
         .gauge-track { width: 100%; height: 8px; background: #e5e5ea; border-radius: 100px; overflow: hidden; position: relative; }
         .gauge-fill { height: 100%; width: 0%; border-radius: 100px; transition: width 1.2s cubic-bezier(0.1, 1, 0.1, 1); }
         .p-side .gauge-fill { background: var(--color-blue); }
         .c-side .gauge-fill { background: var(--color-green); }
         
-        /* 경고 발생 시 특정 트랙만 빨간색으로 하이라이트 */
         .metric-row.violated .gauge-fill { background: var(--color-red) !important; }
         .metric-row.violated .metric-name { color: var(--color-red); font-weight: 600; }
 
-        /* 📝 교과서 루브릭 기반 정밀 분석 리포트 카드 */
         .reason-card { background: #fafafa; border: 1px solid var(--apple-border); border-radius: 16px; padding: 16px; font-size: 0.88rem; line-height: 1.6; color: #424245; }
         .reason-card strong { color: var(--apple-text-main); display: block; margin-bottom: 4px; font-size: 0.82rem; }
 
-        /* ==========================================
-           3. 하이엔드 투명 글래스 도크 (Dock)
-           ========================================== */
-        .apple-dock-wrapper { position: fixed; left: 50%; transform: translateX(-50%); top: var(--dock-position); z-index: 9999; transition: top 0.75s var(--apple-spring); }
-        .apple-dock { background: var(--apple-canvas); backdrop-filter: blur(30px); -webkit-backdrop-filter: blur(30px); border-radius: 24px; padding: 8px; display: flex; align-items: center; gap: 12px; border: 1px solid rgba(255, 255, 255, 0.4); box-shadow: 0 12px 36px rgba(0, 0, 0, 0.05); }
-        .dock-item { background: none; border: none; outline: none; width: 48px; height: 48px; border-radius: 14px; color: #515154; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.35s var(--apple-spring); }
-        .dock-item i { font-size: 22px; }
-        .dock-item:hover { background: rgba(0, 0, 0, 0.04); color: var(--apple-text-main); transform: translateY(-6px) scale(1.12); }
-        .dock-item:active { transform: translateY(-2px) scale(0.92); }
-        .dock-divider { width: 1px; height: 24px; background: rgba(0, 0, 0, 0.1); }
-        .dock-item.position-toggle { background: var(--apple-text-main); color: #fff; }
-        .dock-item.position-toggle i { transition: transform 0.6s var(--apple-spring); }
-        .apple-dock-wrapper.is-top .position-toggle i { transform: rotate(180deg); }
-
-        /* 실시간 분석 활성화 빔 입체 연출 효과 */
         .workspace.is-analyzing .apple-card { opacity: 0.6; pointer-events: none; }
-        .workspace.is-analyzing .mini-status-bar { opacity: 1 !important; background: var(--color-blue); }
-
         @keyframes console-pulse { from { opacity: 0.5; } to { opacity: 1; } }
     </style>
 </head>
@@ -192,14 +157,13 @@
         <div class="apple-card control-panel">
             <div class="field-group">
                 <label>Context Situation</label>
-                <input type="text" class="apple-input" id="sitInput" value="대학교 동아리 방에서 한 부원이 다른 부원에게 음료수를 건네며 무리한 부탁을 연달아 청하는 상황">
+                <input type="text" class="apple-input" id="sitInput" value="조별 과제 모임에서 PPT 레이아웃을 정하고 있는데, 주제와 전혀 상관없는 예능 프로그램 이야기를 꺼내며 흐름을 끊는 상황">
             </div>
 
             <div class="field-group">
                 <label>Dialogue Script</label>
-                <textarea class="apple-textarea" id="diagInput">부원A: 선배, 여기 시원한 아메리카노 하나 드세요!
-부원B: 오 고마워, 잘 마실게.
-부원A: 근데 마시는 김에 이번 주말 동아리방 청소 선배가 대신 다 해주시면 안 돼요? 아, 그리고 다음 주 발표 자료 만드는 것도 부탁할게요!</textarea>
+                <textarea class="apple-textarea" id="diagInput">조장: 우리 이제 PPT 레이아웃 정해야 하니까 다들 의견 좀 내봐.
+팀원: 아 맞다, 어제 예능 스페셜 봤냐? 진짜 역대급으로 웃기던데 ㅋㅋㅋ</textarea>
             </div>
 
             <button class="apple-btn" id="runParallelBtn">
@@ -261,7 +225,7 @@
 
                     <div class="reason-card">
                         <strong>Linguistic Diagnostic Report</strong>
-                        <span id="p_reason">대화 스크립트를 주입한 후 가동 버튼을 누르면 실시간 텐서 연산 추론 분석표가 출력됩니다.</span>
+                        <span id="p_reason">대화 스크립트를 주입한 후 가동 버튼을 누르면 추론 분석표가 출력됩니다.</span>
                     </div>
                 </div>
 
@@ -287,11 +251,11 @@
                             <div class="gauge-track"><div class="gauge-fill" id="g_양의_격률"></div></div>
                         </div>
                         <div class="metric-row" id="row_질의_격률">
-                            <div class="metric-meta"><span class="metric-name"><i class="material-icons-round" style="font-size:14px;">verified</i> 질의 격률</span><span class="metric-score" id="v_질의_격률">0 / 5</span></div>
+                            <div class="metric-meta"><span class="metric-name"><i class="material-icons-round" style="font-size:14px;">help_outline</i> 질의 격률</span><span class="metric-score" id="v_질의_격률">0 / 5</span></div>
                             <div class="gauge-track"><div class="gauge-fill" id="g_질의_격률"></div></div>
                         </div>
                         <div class="metric-row" id="row_관련성의_격률">
-                            <div class="metric-meta"><span class="metric-name"><i class="material-icons-round" style="font-size:14px;">link</i> 관련성의 격률</span><span class="metric-score" id="v_관련성의_격률">0 / 5</span></div>
+                            <div class="metric-meta"><span class="metric-name"><i class="material-icons-round" style="font-size:14px;">link</i> 관계(관련성)의 격률</span><span class="metric-score" id="v_관련성의_격률">0 / 5</span></div>
                             <div class="gauge-track"><div class="gauge-fill" id="g_관련성의_격률"></div></div>
                         </div>
                         <div class="metric-row" id="row_태도의_격률">
@@ -306,103 +270,142 @@
 
                     <div class="reason-card">
                         <strong>Linguistic Diagnostic Report</strong>
-                        <span id="c_reason">대화 참여자들 간의 협력 격률 준수 스펙트럼 및 자율성/체면 훼손 수치가 실시간 추론되어 바인딩됩니다.</span>
+                        <span id="c_reason">대화 참여자들 간의 협력 격률 분석 데이터가 이곳에 맵핑됩니다.</span>
                     </div>
                 </div>
 
             </div>
-
-        </div>
-
-    </div>
-
-    <div class="apple-dock-wrapper" id="appleDockWrapper">
-        <div class="apple-dock">
-            <button class="dock-item" style="color:var(--apple-accent)"><i class="material-icons-round">dashboard</i></button>
-            <button class="dock-item"><i class="material-icons-round">cloud_sync</i></button>
-            <div class="dock-divider"></div>
-            <button class="dock-item position-toggle" id="dockPositionToggle"><i class="material-icons-round">keyboard_arrow_down</i></button>
-            <div class="dock-divider"></div>
-            <button class="dock-item"><i class="material-icons-round">receipt_long</i></button>
-            <button class="dock-item"><i class="material-icons-round">analytics</i></button>
         </div>
     </div>
 
     <script>
-        const posToggle = document.getElementById('dockPositionToggle');
-        const dockWrapper = document.getElementById('appleDockWrapper');
         const runParallelBtn = document.getElementById('runParallelBtn');
         const mainWorkspace = document.getElementById('mainWorkspace');
-        
         const runtimeText = document.getElementById('runtimeText');
         const runtimeTime = document.getElementById('runtimeTime');
 
-        // 🔄 쫀득한 상하단 플로팅 도크 위치 스왑 스위치
-        let dockLocation = 'bottom';
-        posToggle.addEventListener('click', () => {
-            if (dockLocation === 'bottom') {
-                document.documentElement.style.setProperty('--dock-position', '20px');
-                dockWrapper.classList.add('is-top');
-                dockLocation = 'top';
-            } else {
-                document.documentElement.style.setProperty('--dock-position', 'calc(100vh - 96px)');
-                dockWrapper.classList.remove('is-top');
-                dockLocation = 'bottom';
-            }
-        });
+        setInterval(() => { runtimeTime.innerText = new Date().toLocaleTimeString(); }, 1000);
 
-        // 실시간 시간 스탬프 기록기
-        setInterval(() => {
-            runtimeTime.innerText = new Date().toLocaleTimeString();
-        }, 1000);
+        // 💡 깨진 JSON을 수술하여 맑고 깨끗한 데이터 객체로 환원하는 프론트엔드 인터셉터
+        function superRescueParser(rawInput, side) {
+            if (!rawInput) return null;
+            
+            // 만약 스트링이 아니라 이미 객체라면 그대로 활용
+            if (typeof rawInput === 'object') return rawInput;
 
-        // 📊 대시보드 화면에 데이터 요소를 밀어 넣고 바운스 애니메이션을 작동시키는 트리거 함수
-        function updateAgentDashboard(sidePrefix, data) {
-            // 데이터 안전 가드 레일 매핑 (null 에러 완벽 원천 차단)
-            const safeData = data || {
-                target_sentence: "추론 데이터 유실 (Null Guard 가동)",
-                scores: {}, is_violation: false, violated_maxim: null, reason: "데이터 파이프라인에서 응답을 수신하지 못했습니다."
+            let txt = rawInput.trim();
+            let resultObj = {
+                target_sentence: "추출 실패",
+                scores: {},
+                is_violation: false,
+                violated_maxim: null,
+                reason: "분석 완료"
             };
 
-            // 1. 핵심 타깃 대화문 배치
+            try {
+                // 1단계: 모델이 중괄호 꼬리 부근을 파괴했을 때를 대비한 텍스트 기반 하이재킹 수술
+                // 괄호가 닫히고 뜬금없이 나타나는 ': "팀원은..."' 형태에서 이유 문장을 강제로 적출
+                if (txt.includes('}: "')) {
+                    let parts = txt.split('}: "');
+                    if (parts.length > 1) {
+                        resultObj.reason = parts[1].replace(/"/g, '').replace(/}/g, '').trim();
+                    }
+                    // 수술을 위해 뒷부분의 오염 영역 제거
+                    txt = parts[0] + "}";
+                }
+
+                // 2단계: 유연한 표준 파싱 시도
+                let parsed = JSON.parse(txt);
+                
+                resultObj.target_sentence = parsed.target_sentence || "핵심 타깃 문장 추출";
+                resultObj.scores = parsed.scores || {};
+                
+                // 3단계: DuoC 모델 특유의 가변 키 매핑 교정 작업
+                if (side === 'c') {
+                    // "관계의_격률"을 대시보드가 이해할 수 있는 "관련성의_격률"로 스왑
+                    if (resultObj.scores["관계의_격률"] !== undefined) {
+                        resultObj.scores["관련성의_격률"] = resultObj.scores["관계의_격률"];
+                    }
+                    if (resultObj.scores["체면 유지"] !== undefined) {
+                        resultObj.scores["체면_유지"] = resultObj.scores["체면 유지"];
+                    }
+                }
+
+                // 4단계: 감점된 내역(1점 혹은 2점)을 기반으로 위배(Violation) 상태 자동 판정
+                let lowestScore = 5;
+                let worstMaxim = null;
+                for (let k in resultObj.scores) {
+                    if (resultObj.scores[k] < lowestScore) {
+                        lowestScore = resultObj.scores[k];
+                        worstMaxim = k;
+                    }
+                }
+
+                if (lowestScore <= 2) {
+                    resultObj.is_violation = true;
+                    resultObj.violated_maxim = worstMaxim.replace('_', ' ');
+                }
+
+                return resultObj;
+
+            } catch (e) {
+                console.error("정밀 파서 내부 2차 예외 발생, 하드코어 정규식 스캔 실행", e);
+                
+                // 정형 파싱조차 실패한 완전 붕괴 상태일 때 정규식 힐러 가동
+                let targetMatch = txt.match(/"target_sentence"\s*:\s*"([^"]+)"/);
+                if (targetMatch) resultObj.target_sentence = targetMatch[1];
+                
+                let reasonMatch = rawInput.match(/\}:\s*"([^"]+)"/) || txt.match(/"reason"\s*:\s*"([^"]+)"/);
+                if (reasonMatch) resultObj.reason = reasonMatch[1];
+
+                // 스코어 강제 획득
+                const keys = ["양의_격률", "질의_격률", "관계의_격률", "관련성의_격률", "태도의_격률", "체면 유지", "체면_유지", "요령의_격률", "관용의_격률", "찬성의_격률", "겸양의_격률", "동의의_격률"];
+                keys.forEach(k => {
+                    let m = txt.match(new RegExp(`"${k}"\\s*:\\s*(\\d)`));
+                    if (m) {
+                        let finalKey = (k === "관계의_격률") ? "관련성의_격률" : (k === "체면 유지") ? "체면_유지" : k;
+                        resultObj.scores[finalKey] = parseInt(m[1]);
+                        if (parseInt(m[1]) <= 2) {
+                            resultObj.is_violation = true;
+                            resultObj.violated_maxim = finalKey.replace('_', ' ');
+                        }
+                    }
+                });
+
+                return resultObj;
+            }
+        }
+
+        // 📊 UI 컴포넌트 렌더링 엔진
+        function updateAgentDashboard(sidePrefix, rawData) {
+            const safeData = superRescueParser(rawData, sidePrefix);
+            
             document.getElementById(`${sidePrefix}_target`).innerText = safeData.target_sentence;
 
-            // 2. 위배 상태 배지 시각 토글
             const badge = document.getElementById(`${sidePrefix}_badge`);
             if (safeData.is_violation) {
                 badge.className = "status-badge violation";
-                badge.innerHTML = `<i class="material-icons-round" style="font-size:14px;">error</i><span>VIOLATION: ${safeData.violated_maxim || '격률 위배'}</span>`;
+                badge.innerHTML = `<i class="material-icons-round" style="font-size:14px;">error</i><span>VIOLATION: ${safeData.violated_maxim}</span>`;
             } else {
                 badge.className = "status-badge pass";
                 badge.innerHTML = `<i class="material-icons-round" style="font-size:14px;">check_circle</i><span>MAXIM PASSED</span>`;
             }
 
-            // 3. 점수 텍스트 및 그래프 게이지 두께 동적 맵핑
             const standardKeys = sidePrefix === 'p' 
                 ? ["요령의_격률", "관용의_격률", "찬성의_격률", "겸양의_격률", "동의의_격률"]
                 : ["양의_격률", "질의_격률", "관련성의_격률", "태도의_격률", "체면_유지"];
 
             standardKeys.forEach(key => {
-                // 모델이 간혹 '관련성의_격률' 대신 '관련성'으로 보낼 때를 대비한 퍼지 매칭 시스템
-                let score = safeData.scores[key];
-                if (score === undefined) {
-                    const shortKey = key.split('_')[0]; // '요령', '양', '관련성' 등만 추출
-                    const alternativeKey = Object.keys(safeData.scores).find(k => k.includes(shortKey));
-                    score = alternativeKey !== undefined ? safeData.scores[alternativeKey] : 5; // 누락되면 만점(5) 처리
-                }
+                let score = safeData.scores[key] !== undefined ? safeData.scores[key] : 5;
 
-                // UI 컴포넌트 실시간 탐색 및 강제 드로잉
                 const textElem = document.getElementById(`v_${key}`);
                 const gaugeElem = document.getElementById(`g_${key}`);
                 const rowElem = document.getElementById(`row_${key}`);
 
                 if (textElem && gaugeElem) {
                     textElem.innerText = `${score} / 5`;
-                    // 0~5점의 점수를 0%~100% 게이지 폭으로 환산 연산
-                    const percentage = (score / 5) * 100;
-                    gaugeElem.style.width = `${percentage}%`;
+                    gaugeElem.style.width = `${(score / 5) * 100}%`;
 
-                    // 감점폭이 심각한(2점 이하) 격률 라인은 시각적 경고 레이아웃으로 즉시 스위칭
                     if (score <= 2) {
                         rowElem.classList.add('violated');
                     } else {
@@ -411,46 +414,35 @@
                 }
             });
 
-            // 4. 리포트 종합 의견 텍스트 출력
             document.getElementById(`${sidePrefix}_reason`).innerText = safeData.reason;
         }
 
-        // 🚀 ngrok 하이패스 통신망 커널 작동
+        // 🚀 비동기 통신 코어
         runParallelBtn.addEventListener('click', async () => {
-            
-            // ⚠️ [필수 고칠 점] 코랩에 출력된 ngrok 주소(예: https://xxxx.ngrok-free.app)를 여기에 붙여넣으세요!
             const COLAB_URL = "https://pectin-angled-parsnip.ngrok-free.dev"; 
             
-            if (COLAB_URL.includes("여기에")) {
-                alert("코랩 서버에서 발급된 ngrok 주소를 HTML 소스코드의 COLAB_URL 변수에 입력해 주세요!");
-                return;
-            }
-
             mainWorkspace.classList.add('is-analyzing');
             runtimeText.innerText = "CUDA HOST RUNTIME // INFERENCE RUNNING...";
             runtimeText.parentElement.style.animation = "console-pulse 0.5s infinite alternate";
-
-            const requestBody = {
-                situation: document.getElementById('sitInput').value,
-                dialogue: document.getElementById('diagInput').value
-            };
 
             try {
                 const response = await fetch(`${COLAB_URL}/analyze`, {
                     method: 'POST',
                     headers: { 
                         'Content-Type': 'application/json',
-                        'ngrok-skip-browser-warning': 'true', 
-                        'User-Agent': 'gGuruStudioCustomClient/1.0'
+                        'ngrok-skip-browser-warning': 'true'
                     },
-                    body: JSON.stringify(requestBody)
+                    body: JSON.stringify({
+                        situation: document.getElementById('sitInput').value,
+                        dialogue: document.getElementById('diagInput').value
+                    })
                 });
 
-                if (!response.ok) throw new Error("가속 엔진 연산 실패");
+                if (!response.ok) throw new Error("서버 연산 실패");
                 
                 const realData = await response.json();
 
-                // 🌟 [전면 교체 핵심] 수신 데이터를 대시보드 비주얼 컴포넌트에 즉시 매핑하고 바운스 렌더링 가동
+                // 🌟 수신 즉시 하이재킹 수술 및 대시보드 맵핑 가동
                 updateAgentDashboard('p', realData.duop);
                 updateAgentDashboard('c', realData.duoc);
 
@@ -459,10 +451,10 @@
                 mainWorkspace.classList.remove('is-analyzing');
 
             } catch (error) {
-                runtimeText.innerText = `HARDWARE HOST TERMINATED // ENGIN FAILURE: ${error.message}`;
+                runtimeText.innerText = `ENGINE FAILURE: ${error.message}`;
                 runtimeText.parentElement.style.animation = "none";
                 mainWorkspace.classList.remove('is-analyzing');
-                alert("서버 통신선 오류 발생. 코랩 서버 상태 및 주소를 체크하십시오.");
+                alert("서버 통신선 연결 오류. 코랩 상태를 확인하세요.");
             }
         });
     </script>
