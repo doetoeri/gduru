@@ -1722,10 +1722,10 @@ function App(){
               <span className="text-[11px] font-bold text-bp-accent2">2026 GLOBAL INNOVATION EXPO · 통합 컨벤션 센터</span>
               <div className="flex items-center gap-3 flex-wrap">
                 <label className="flex items-center gap-1.5 text-[10px] hair text-bp-sub">속도
-                  <input type="range" min="0.25" max="3" step="0.25" value={speed} onChange={e=>setSpeed(parseFloat(e.target.value))} className="w-20"/>
+                  <input type="range" min="0.25" max="10" step="0.25" value={speed} onChange={e=>setSpeed(parseFloat(e.target.value))} className="w-20"/>
                   <span className="font-mono font-bold text-bp-ink w-8">{speed}x</span></label>
                 <label className="flex items-center gap-1.5 text-[10px] hair text-bp-sub">인원
-                  <input type="range" min="40" max="400" step="10" value={pop} onChange={e=>setPop(parseInt(e.target.value))} className="w-24"/>
+                  <input type="range" min="40" max="10000" step="10" value={pop} onChange={e=>setPop(parseInt(e.target.value))} className="w-24"/>
                   <span className="font-mono font-bold text-bp-ink w-8">{pop}</span></label>
                 <Btn tone="mint" active={thermalOn} onClick={()=>setThermalOn(!thermalOn)}>열화상</Btn>
                 <Btn tone="default" active={editMode} onClick={()=>{ setEditMode(!editMode); setPendingAdd(null); setMoveId(null); if(!editMode)setView(6); }}>편집</Btn>
