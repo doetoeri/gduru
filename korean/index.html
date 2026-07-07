@@ -3,34 +3,31 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>gGuru Studio v3.0 - Unified Real-Time Engine</title>
+    <title>gGuru Intelligence Dashboard v4.0</title>
     
     <link href="https://fonts.googleapis.com/css2?family=SF+Pro+Display:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
 
     <style>
         /* ==========================================
-           1. Apple HIG & 다크 인스펙터 디자인 토큰
+           1. Apple 프리미엄 대시보드 테마 토큰
            ========================================== */
         :root {
             --apple-bg: #f5f5f7;
-            --apple-canvas: rgba(255, 255, 255, 0.75);
             --apple-card: #ffffff;
-            --apple-text-primary: #1d1d1f;
-            --apple-text-secondary: #86868b;
-            --apple-accent: #0071e3;        /* DuoP 시그니처 블루 */
-            --apple-accent-green: #24b24b;  /* DuoC 시그니처 그린 */
+            --apple-text-main: #1d1d1f;
+            --apple-text-sub: #86868b;
             --apple-border: rgba(0, 0, 0, 0.08);
             
-            /* 프로페셔널 콘솔 패널 전용 다크 컬러 */
-            --console-bg: #0d0e11;
-            --console-border: rgba(255, 255, 255, 0.08);
+            /* 핵심 의미별 액센트 컬러 */
+            --color-blue: #0071e3;    /* DuoP 테마 */
+            --color-green: #34c759;   /* DuoC 테마 */
+            --color-red: #ff3b30;     /* 위배(Violation) 경고 상태 */
+            --color-orange: #ff9500;  /* 주의 상태 */
+            --color-gray-bg: #f5f5f7;
             
-            /* 🔗 iOS/macOS 고유의 극강 고무 텍스처 쫀득 모션 (스프링 이징) */
             --apple-spring: cubic-bezier(0.25, 1.4, 0.35, 1.05);
             --apple-fluid: cubic-bezier(0.16, 1, 0.3, 1);
-            
-            /* 도크 기본 바닥 고정선 세팅 */
             --dock-position: calc(100vh - 96px);
         }
 
@@ -45,7 +42,7 @@
 
         body {
             background-color: var(--apple-bg);
-            color: var(--apple-text-primary);
+            color: var(--apple-text-main);
             min-height: 100vh;
             padding: 40px 24px 140px 24px;
             display: flex;
@@ -53,316 +50,153 @@
             align-items: center;
         }
 
-        /* 미니멀 헤더 설계 */
+        /* 스튜디오 타이틀 */
         .apple-header {
             text-align: center;
-            margin-bottom: 28px;
+            margin-bottom: 32px;
         }
+        .apple-header h1 { font-size: 2.2rem; font-weight: 600; color: var(--apple-text-main); }
+        .apple-header p { font-size: 0.95rem; color: var(--apple-text-sub); margin-top: 6px; }
 
-        .apple-header h1 {
-            font-size: 2.2rem;
-            font-weight: 600;
-            color: var(--apple-text-primary);
-        }
-
-        .apple-header p {
-            font-size: 0.95rem;
-            color: var(--apple-text-secondary);
-            margin-top: 6px;
-        }
-
-        /* ==========================================
-           2. 2단 분할 하이엔드 워크스페이스 레이아웃
-           ========================================== */
+        /* 메인 레이아웃 (좌측 컨트롤러, 우측 와이드 비주얼 대시보드) */
         .workspace {
             width: 100%;
-            max-width: 1250px;
+            max-width: 1300px;
             display: grid;
-            grid-template-columns: 390px 1fr; /* 입력 컨트롤 및 결과 모니터 분할 */
-            gap: 24px;
+            grid-template-columns: 380px 1fr;
+            gap: 28px;
         }
 
-        @media (max-width: 1024px) {
+        @media (max-width: 1100px) {
             .workspace { grid-template-columns: 1fr; }
         }
 
+        /* Squircle 프레임 카드 */
         .apple-card {
             background: var(--apple-card);
-            border-radius: 20px;
-            padding: 24px;
+            border-radius: 24px;
+            padding: 26px;
             border: 1px solid var(--apple-border);
-            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.01);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.01);
+            transition: all 0.4s var(--apple-fluid);
         }
 
-        /* [좌측] 입력 컨트롤러 패널 */
-        .control-panel {
-            display: flex;
-            flex-direction: column;
-            gap: 18px;
-            height: fit-content;
-        }
-
-        .panel-badge-group {
-            display: flex;
-            gap: 8px;
-        }
-
-        .mini-badge {
-            font-size: 0.75rem;
-            font-weight: 600;
-            padding: 4px 10px;
-            border-radius: 100px;
-        }
-        .mini-badge.p { background: rgba(0, 113, 227, 0.1); color: var(--apple-accent); }
-        .mini-badge.c { background: rgba(36, 178, 75, 0.1); color: var(--apple-accent-green); }
-
-        .field-group {
-            display: flex;
-            flex-direction: column;
-            gap: 6px;
-        }
-
-        .field-group label {
-            font-size: 0.8rem;
-            font-weight: 600;
-            color: var(--apple-text-secondary);
-            text-transform: uppercase;
-        }
-
+        /* 좌측: 인풋 폼 구조 */
+        .control-panel { display: flex; flex-direction: column; gap: 20px; height: fit-content; }
+        .field-group { display: flex; flex-direction: column; gap: 8px; }
+        .field-group label { font-size: 0.8rem; font-weight: 600; color: var(--apple-text-sub); text-transform: uppercase; letter-spacing: 0.5px; }
         .apple-input, .apple-textarea {
-            width: 100%;
-            background: #f5f5f7;
-            border: 1px solid transparent;
-            border-radius: 12px;
-            padding: 14px;
-            font-size: 0.9rem;
-            color: var(--apple-text-primary);
-            transition: all 0.3s var(--apple-fluid);
-            outline: none;
+            width: 100%; background: #f5f5f7; border: 1px solid transparent; border-radius: 14px;
+            padding: 14px; font-size: 0.9rem; color: var(--apple-text-main); outline: none; transition: all 0.3s var(--apple-fluid);
         }
-
-        .apple-textarea { resize: none; height: 180px; line-height: 1.5; }
-        .apple-input:focus, .apple-textarea:focus {
-            background: #ffffff;
-            border-color: var(--apple-text-primary);
-            box-shadow: 0 0 0 4px rgba(0, 0, 0, 0.05);
-        }
-
+        .apple-textarea { resize: none; height: 160px; line-height: 1.5; }
+        .apple-input:focus, .apple-textarea:focus { background: #fff; border-color: var(--apple-text-main); box-shadow: 0 0 0 4px rgba(0,0,0,0.03); }
+        
         .apple-btn {
-            background: var(--apple-text-primary);
-            color: #ffffff;
-            border: none;
-            padding: 16px;
-            border-radius: 12px;
-            font-size: 0.95rem;
-            font-weight: 500;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            transition: all 0.2s var(--apple-fluid);
+            background: var(--apple-text-main); color: #fff; border: none; padding: 16px; border-radius: 14px;
+            font-size: 0.95rem; font-weight: 500; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; transition: all 0.2s var(--apple-fluid);
         }
         .apple-btn:hover { background: #333336; }
         .apple-btn:active { transform: scale(0.97); }
 
         /* ==========================================
-           3. Real-Time 생생한 추론 매커니즘 시각화
+           2. 전면 교체 UX: 프리미엄 비주얼 대시보드
            ========================================== */
-        .live-studio-container {
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-        }
+        .dashboard-view { display: flex; flex-direction: column; gap: 24px; }
 
-        /* 📟 실시간 CUDA 하드웨어 런타임 로그 스트리머 */
-        .runtime-logger {
-            background: var(--apple-text-primary);
-            color: #a5d6ff;
-            border-radius: 16px;
-            padding: 16px;
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.8rem;
-            height: 115px;
-            overflow-y: auto;
-            border: 1px solid var(--console-border);
-            display: flex;
-            flex-direction: column;
-            gap: 6px;
+        /* 📡 실시간 연산 하드웨어 텍스트 인디케이터 */
+        .mini-status-bar {
+            background: #1d1d1f; color: #fff; border-radius: 14px; padding: 12px 18px;
+            font-family: 'JetBrains Mono', monospace; font-size: 0.78rem; display: flex; align-items: center; justify-content: space-between;
         }
+        .status-left { display: flex; align-items: center; gap: 8px; color: #a5d6ff; }
+        .status-right { color: var(--apple-text-sub); }
 
-        .log-line {
-            opacity: 0.8;
-            animation: log-fade 0.25s var(--apple-fluid) forwards;
-            display: flex;
-            gap: 12px;
-        }
-        .log-line .timestamp { color: var(--apple-text-secondary); }
-        .log-line .status-tag { color: #ffbd2e; font-weight: 500; }
+        /* 양대 인프라 에이전트(DuoP, DuoC) 격자 컨테이너 */
+        .agent-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+        @media (max-width: 768px) { .agent-grid { grid-template-columns: 1fr; } }
 
-        /* 🧪 DuoP / DuoC 통합 병렬 모니터링 콘솔 그리드 */
-        .inspector-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 20px;
-        }
+        /* 에이전트 스튜디오 메인 보드 */
+        .agent-board { display: flex; flex-direction: column; gap: 20px; position: relative; }
+        .agent-board-header { display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--apple-border); padding-bottom: 14px; }
+        .agent-info { display: flex; align-items: center; gap: 10px; }
+        .agent-info i { font-size: 24px; }
+        .agent-info.p-color i { color: var(--color-blue); }
+        .agent-info.c-color i { color: var(--color-green); }
+        .agent-title { font-size: 1.05rem; font-weight: 600; }
 
-        @media (max-width: 768px) {
-            .inspector-grid { grid-template-columns: 1fr; }
+        /* 🏷️ 하이엔드 네온 토글 상태 배정 배지 */
+        .status-badge {
+            font-size: 0.75rem; font-weight: 700; padding: 6px 14px; border-radius: 100px; text-transform: uppercase;
+            display: flex; align-items: center; gap: 4px; transition: all 0.3s var(--apple-fluid);
         }
+        .status-badge.pass { background: rgba(52, 199, 89, 0.1); color: var(--color-green); }
+        .status-badge.violation { background: rgba(255, 59, 48, 0.1); color: var(--color-red); }
 
-        .console-panel {
-            background: var(--console-bg);
-            border-radius: 18px;
-            border: 1px solid var(--console-border);
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-            height: 480px;
-            box-shadow: inset 0 0 25px rgba(0,0,0,0.65);
-        }
+        /* 🎯 적출된 핵심 문장 컴포넌트 */
+        .target-box { background: var(--color-gray-bg); border-radius: 16px; padding: 16px; min-height: 68px; display: flex; flex-direction: column; gap: 4px; }
+        .target-box .box-label { font-size: 0.72rem; font-weight: 700; color: var(--apple-text-sub); text-transform: uppercase; }
+        .target-box .quote-text { font-size: 0.92rem; font-weight: 500; line-height: 1.5; color: var(--apple-text-main); }
 
-        .console-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-            padding-bottom: 12px;
-            margin-bottom: 14px;
-        }
+        /* 📊 데이터 비주얼라이제이션: 스쿼클 슬라이더 게이지 바 */
+        .metric-container { display: flex; flex-direction: column; gap: 14px; }
+        .metric-row { display: flex; flex-direction: column; gap: 6px; }
+        .metric-meta { display: flex; align-items: center; justify-content: space-between; font-size: 0.82rem; font-weight: 500; }
+        .metric-name { color: var(--apple-text-main); display: flex; align-items: center; gap: 4px; }
+        .metric-score { font-weight: 600; }
+        
+        /* 트랙 레이아웃 및 게이지 물리엔진 바 */
+        .gauge-track { width: 100%; height: 8px; background: #e5e5ea; border-radius: 100px; overflow: hidden; position: relative; }
+        .gauge-fill { height: 100%; width: 0%; border-radius: 100px; transition: width 1.2s cubic-bezier(0.1, 1, 0.1, 1); }
+        .p-side .gauge-fill { background: var(--color-blue); }
+        .c-side .gauge-fill { background: var(--color-green); }
+        
+        /* 경고 발생 시 특정 트랙만 빨간색으로 하이라이트 */
+        .metric-row.violated .gauge-fill { background: var(--color-red) !important; }
+        .metric-row.violated .metric-name { color: var(--color-red); font-weight: 600; }
 
-        .console-title {
-            font-size: 0.8rem;
-            font-weight: 600;
-            letter-spacing: 0.5px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        .console-panel.p-side .console-title { color: var(--apple-accent); }
-        .console-panel.c-side .console-title { color: var(--apple-accent-green); }
-
-        /* 깜빡이는 실시간 토큰 연산 하드웨어 시각화 라이트 */
-        .pulse-dot {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background: #424245;
-            transition: background 0.3s;
-        }
-        .is-analyzing .p-side .pulse-dot { background: var(--apple-accent); animation: console-pulse 0.8s infinite alternate; }
-        .is-analyzing .c-side .pulse-dot { background: var(--apple-accent-green); animation: console-pulse 0.8s infinite alternate; }
-
-        /* 실시간 토크나이징 스트리밍 코드 가독성 패널 */
-        .code-screen {
-            font-family: 'JetBrains Mono', Consolas, monospace;
-            font-size: 0.8rem;
-            line-height: 1.6;
-            color: #e1e4e8;
-            white-space: pre-wrap;
-            overflow-y: auto;
-            flex-grow: 1;
-            position: relative;
-        }
-
-        /* 텍스트 스트리밍 구동 시 붙는 깜빡이는 세로 블록 커서 */
-        .code-screen.typing::after {
-            content: '┃';
-            color: var(--apple-accent);
-            animation: cursor-blink 0.5s infinite;
-        }
-        .console-panel.c-side .code-screen.typing::after {
-            color: var(--apple-accent-green);
-        }
+        /* 📝 교과서 루브릭 기반 정밀 분석 리포트 카드 */
+        .reason-card { background: #fafafa; border: 1px solid var(--apple-border); border-radius: 16px; padding: 16px; font-size: 0.88rem; line-height: 1.6; color: #424245; }
+        .reason-card strong { color: var(--apple-text-main); display: block; margin-bottom: 4px; font-size: 0.82rem; }
 
         /* ==========================================
-           4. 하이엔드 투명 글래스 도크 (Dock)
+           3. 하이엔드 투명 글래스 도크 (Dock)
            ========================================== */
-        .apple-dock-wrapper {
-            position: fixed;
-            left: 50%;
-            transform: translateX(-50%);
-            top: var(--dock-position);
-            width: auto;
-            z-index: 9999;
-            transition: top 0.75s var(--apple-spring);
-        }
-
-        .apple-dock {
-            background: var(--apple-canvas);
-            backdrop-filter: blur(30px);
-            -webkit-backdrop-filter: blur(30px);
-            border-radius: 24px;
-            padding: 8px;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            border: 1px solid rgba(255, 255, 255, 0.4);
-            box-shadow: 0 12px 36px rgba(0, 0, 0, 0.05);
-        }
-
-        .dock-item {
-            background: none;
-            border: none;
-            outline: none;
-            width: 48px;
-            height: 48px;
-            border-radius: 14px;
-            color: #515154;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.35s var(--apple-spring);
-        }
-
+        .apple-dock-wrapper { position: fixed; left: 50%; transform: translateX(-50%); top: var(--dock-position); z-index: 9999; transition: top 0.75s var(--apple-spring); }
+        .apple-dock { background: var(--apple-canvas); backdrop-filter: blur(30px); -webkit-backdrop-filter: blur(30px); border-radius: 24px; padding: 8px; display: flex; align-items: center; gap: 12px; border: 1px solid rgba(255, 255, 255, 0.4); box-shadow: 0 12px 36px rgba(0, 0, 0, 0.05); }
+        .dock-item { background: none; border: none; outline: none; width: 48px; height: 48px; border-radius: 14px; color: #515154; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.35s var(--apple-spring); }
         .dock-item i { font-size: 22px; }
-        .dock-item:hover {
-            background: rgba(0, 0, 0, 0.04);
-            color: var(--apple-text-primary);
-            transform: translateY(-6px) scale(1.12);
-        }
+        .dock-item:hover { background: rgba(0, 0, 0, 0.04); color: var(--apple-text-main); transform: translateY(-6px) scale(1.12); }
         .dock-item:active { transform: translateY(-2px) scale(0.92); }
-
         .dock-divider { width: 1px; height: 24px; background: rgba(0, 0, 0, 0.1); }
-
-        /* 도크 전환 스위치 전용 스타일 */
-        .dock-item.position-toggle { background: var(--apple-text-primary); color: #ffffff; }
-        .dock-item.position-toggle:hover { background: #333336; color: #ffffff; }
+        .dock-item.position-toggle { background: var(--apple-text-main); color: #fff; }
         .dock-item.position-toggle i { transition: transform 0.6s var(--apple-spring); }
         .apple-dock-wrapper.is-top .position-toggle i { transform: rotate(180deg); }
 
-        /* 내부 애니메이션 공식 */
-        @keyframes log-fade { from { opacity: 0; transform: translateY(6px); } to { opacity: 0.8; transform: translateY(0); } }
-        @keyframes console-pulse { from { opacity: 0.4; transform: scale(0.9); } to { opacity: 1; transform: scale(1.1); } }
-        @keyframes cursor-blink { 0%, 100% { opacity: 0; } 50% { opacity: 1; } }
+        /* 실시간 분석 활성화 빔 입체 연출 효과 */
+        .workspace.is-analyzing .apple-card { opacity: 0.6; pointer-events: none; }
+        .workspace.is-analyzing .mini-status-bar { opacity: 1 !important; background: var(--color-blue); }
+
+        @keyframes console-pulse { from { opacity: 0.5; } to { opacity: 1; } }
     </style>
 </head>
 <body>
 
     <div class="apple-header">
-        <h1>gGuru Integration Studio</h1>
-        <p>Dual-Agent Parallel Fine-tuned Inference System</p>
+        <h1>gGuru Intelligence Studio</h1>
+        <p>Linguistic Maxim Dashboard & Analytics Framework</p>
     </div>
 
     <div class="workspace" id="mainWorkspace">
         
         <div class="apple-card control-panel">
             <div class="field-group">
-                <label>Active Core Modules</label>
-                <div class="panel-badge-group">
-                    <span class="mini-badge p">DuoP Core Connected</span>
-                    <span class="mini-badge c">DuoC Core Connected</span>
-                </div>
-            </div>
-
-            <div class="field-group">
-                <label>Situation Context</label>
+                <label>Context Situation</label>
                 <input type="text" class="apple-input" id="sitInput" value="대학교 동아리 방에서 한 부원이 다른 부원에게 음료수를 건네며 무리한 부탁을 연달아 청하는 상황">
             </div>
 
             <div class="field-group">
-                <label>Dialogue Dataset</label>
+                <label>Dialogue Script</label>
                 <textarea class="apple-textarea" id="diagInput">부원A: 선배, 여기 시원한 아메리카노 하나 드세요!
 부원B: 오 고마워, 잘 마실게.
 부원A: 근데 마시는 김에 이번 주말 동아리방 청소 선배가 대신 다 해주시면 안 돼요? 아, 그리고 다음 주 발표 자료 만드는 것도 부탁할게요!</textarea>
@@ -370,32 +204,110 @@
 
             <button class="apple-btn" id="runParallelBtn">
                 <i class="material-icons-round">bolt</i>
-                <span>Duo 통합 정밀 분석 실행</span>
+                <span>Duo 통합 데이터 추론 가동</span>
             </button>
         </div>
 
-        <div class="live-studio-container">
+        <div class="dashboard-view">
             
-            <div class="runtime-logger" id="runtimeLogger">
-                <div class="log-line"><span class="timestamp">[00:00:00]</span> <span class="status-tag">[SYSTEM]</span> Unsloth 가속 연산 하드웨어 매핑 엔진 인프라 대기 완료.</div>
+            <div class="mini-status-bar">
+                <div class="status-left" id="runtimeStatus">
+                    <i class="material-icons-round" style="font-size:16px;">terminal</i>
+                    <span id="runtimeText">SYSTEM STANDBY // READY TO INFERENCE</span>
+                </div>
+                <div class="status-right" id="runtimeTime">00:00:00</div>
             </div>
 
-            <div class="inspector-grid">
+            <div class="agent-grid">
                 
-                <div class="console-panel p-side">
-                    <div class="console-header">
-                        <div class="console-title"><i class="material-icons-round" style="font-size:16px;">psychology</i> DUOP CORE INSPECTOR</div>
-                        <div class="pulse-dot"></div>
+                <div class="apple-card agent-board p-side">
+                    <div class="agent-board-header">
+                        <div class="agent-info p-color">
+                            <i class="material-icons-round">psychology</i>
+                            <div class="agent-title">DuoP 공손성 분석기</div>
+                        </div>
+                        <div class="status-badge pass" id="p_badge">
+                            <i class="material-icons-round" style="font-size:14px;">check_circle</i><span>STANDBY</span>
+                        </div>
                     </div>
-                    <div class="code-screen" id="duopScreen">// Engine Standby...</div>
+
+                    <div class="target-box">
+                        <div class="box-label">Core Target Sentence</div>
+                        <div class="quote-text" id="p_target">—</div>
+                    </div>
+
+                    <div class="metric-container" id="p_metrics">
+                        <div class="metric-row" id="row_요령의_격률">
+                            <div class="metric-meta"><span class="metric-name"><i class="material-icons-round" style="font-size:14px;">ads_click</i> 요령의 격률</span><span class="metric-score" id="v_요령의_격률">0 / 5</span></div>
+                            <div class="gauge-track"><div class="gauge-fill" id="g_요령의_격률"></div></div>
+                        </div>
+                        <div class="metric-row" id="row_관용의_격률">
+                            <div class="metric-meta"><span class="metric-name"><i class="material-icons-round" style="font-size:14px;">favorite</i> 관용의 격률</span><span class="metric-score" id="v_관용의_격률">0 / 5</span></div>
+                            <div class="gauge-track"><div class="gauge-fill" id="g_관용의_격률"></div></div>
+                        </div>
+                        <div class="metric-row" id="row_찬성의_격률">
+                            <div class="metric-meta"><span class="metric-name"><i class="material-icons-round" style="font-size:14px;">thumb_up</i> 찬성의 격률</span><span class="metric-score" id="v_찬성의_격률">0 / 5</span></div>
+                            <div class="gauge-track"><div class="gauge-fill" id="g_찬성의_격률"></div></div>
+                        </div>
+                        <div class="metric-row" id="row_겸양의_격률">
+                            <div class="metric-meta"><span class="metric-name"><i class="material-icons-round" style="font-size:14px;">workspace_premium</i> 겸양의 격률</span><span class="metric-score" id="v_겸양의_격률">0 / 5</span></div>
+                            <div class="gauge-track"><div class="gauge-fill" id="g_겸양의_격률"></div></div>
+                        </div>
+                        <div class="metric-row" id="row_동의의_격률">
+                            <div class="metric-meta"><span class="metric-name"><i class="material-icons-round" style="font-size:14px;">handshake</i> 동의의 격률</span><span class="metric-score" id="v_동의의_격률">0 / 5</span></div>
+                            <div class="gauge-track"><div class="gauge-fill" id="g_동의의_격률"></div></div>
+                        </div>
+                    </div>
+
+                    <div class="reason-card">
+                        <strong>Linguistic Diagnostic Report</strong>
+                        <span id="p_reason">대화 스크립트를 주입한 후 가동 버튼을 누르면 실시간 텐서 연산 추론 분석표가 출력됩니다.</span>
+                    </div>
                 </div>
 
-                <div class="console-panel c-side">
-                    <div class="console-header">
-                        <div class="console-title"><i class="material-icons-round" style="font-size:16px;">forum</i> DUOC CORE INSPECTOR</div>
-                        <div class="pulse-dot"></div>
+                <div class="apple-card agent-board c-side">
+                    <div class="agent-board-header">
+                        <div class="agent-info c-color">
+                            <i class="material-icons-round">forum</i>
+                            <div class="agent-title">DuoC 협력·체면 분석기</div>
+                        </div>
+                        <div class="status-badge pass" id="c_badge">
+                            <i class="material-icons-round" style="font-size:14px;">check_circle</i><span>STANDBY</span>
+                        </div>
                     </div>
-                    <div class="code-screen" id="duocScreen">// Engine Standby...</div>
+
+                    <div class="target-box">
+                        <div class="box-label">Core Target Sentence</div>
+                        <div class="quote-text" id="c_target">—</div>
+                    </div>
+
+                    <div class="metric-container" id="c_metrics">
+                        <div class="metric-row" id="row_양의_격률">
+                            <div class="metric-meta"><span class="metric-name"><i class="material-icons-round" style="font-size:14px;">segment</i> 양의 격률</span><span class="metric-score" id="v_양의_격률">0 / 5</span></div>
+                            <div class="gauge-track"><div class="gauge-fill" id="g_양의_격률"></div></div>
+                        </div>
+                        <div class="metric-row" id="row_질의_격률">
+                            <div class="metric-meta"><span class="metric-name"><i class="material-icons-round" style="font-size:14px;">verified</i> 질의 격률</span><span class="metric-score" id="v_질의_격률">0 / 5</span></div>
+                            <div class="gauge-track"><div class="gauge-fill" id="g_질의_격률"></div></div>
+                        </div>
+                        <div class="metric-row" id="row_관련성의_격률">
+                            <div class="metric-meta"><span class="metric-name"><i class="material-icons-round" style="font-size:14px;">link</i> 관련성의 격률</span><span class="metric-score" id="v_관련성의_격률">0 / 5</span></div>
+                            <div class="gauge-track"><div class="gauge-fill" id="g_관련성의_격률"></div></div>
+                        </div>
+                        <div class="metric-row" id="row_태도의_격률">
+                            <div class="metric-meta"><span class="metric-name"><i class="material-icons-round" style="font-size:14px;">gavel</i> 태도의 격률</span><span class="metric-score" id="v_태도의_격률">0 / 5</span></div>
+                            <div class="gauge-track"><div class="gauge-fill" id="g_태도의_격률"></div></div>
+                        </div>
+                        <div class="metric-row" id="row_체면_유지">
+                            <div class="metric-meta"><span class="metric-name"><i class="material-icons-round" style="font-size:14px;">face</i> 체면 유지 원리</span><span class="metric-score" id="v_체면_유지">0 / 5</span></div>
+                            <div class="gauge-track"><div class="gauge-fill" id="g_체면_유지"></div></div>
+                        </div>
+                    </div>
+
+                    <div class="reason-card">
+                        <strong>Linguistic Diagnostic Report</strong>
+                        <span id="c_reason">대화 참여자들 간의 협력 격률 준수 스펙트럼 및 자율성/체면 훼손 수치가 실시간 추론되어 바인딩됩니다.</span>
+                    </div>
                 </div>
 
             </div>
@@ -406,13 +318,13 @@
 
     <div class="apple-dock-wrapper" id="appleDockWrapper">
         <div class="apple-dock">
-            <button class="dock-item" style="color:var(--apple-accent)" title="통합 대시보드"><i class="material-icons-round">dashboard</i></button>
-            <button class="dock-item" title="데이터 덤프 확인"><i class="material-icons-round">cloud_sync</i></button>
+            <button class="dock-item" style="color:var(--apple-accent)"><i class="material-icons-round">dashboard</i></button>
+            <button class="dock-item"><i class="material-icons-round">cloud_sync</i></button>
             <div class="dock-divider"></div>
-            <button class="dock-item position-toggle" id="dockPositionToggle" title="도킹 위치 전환"><i class="material-icons-round">keyboard_arrow_down</i></button>
+            <button class="dock-item position-toggle" id="dockPositionToggle"><i class="material-icons-round">keyboard_arrow_down</i></button>
             <div class="dock-divider"></div>
-            <button class="dock-item" title="로그 히스토리 아카이브"><i class="material-icons-round">receipt_long</i></button>
-            <button class="dock-item" title="엔진 하이퍼파라미터 세팅"><i class="material-icons-round">analytics</i></button>
+            <button class="dock-item"><i class="material-icons-round">receipt_long</i></button>
+            <button class="dock-item"><i class="material-icons-round">analytics</i></button>
         </div>
     </div>
 
@@ -422,11 +334,10 @@
         const runParallelBtn = document.getElementById('runParallelBtn');
         const mainWorkspace = document.getElementById('mainWorkspace');
         
-        const logger = document.getElementById('runtimeLogger');
-        const duopScreen = document.getElementById('duopScreen');
-        const duocScreen = document.getElementById('duocScreen');
+        const runtimeText = document.getElementById('runtimeText');
+        const runtimeTime = document.getElementById('runtimeTime');
 
-        // 🔄 쫀득한 플로팅 도킹 바 상하단 스왑 로직
+        // 🔄 쫀득한 상하단 플로팅 도크 위치 스왑 스위치
         let dockLocation = 'bottom';
         posToggle.addEventListener('click', () => {
             if (dockLocation === 'bottom') {
@@ -440,57 +351,84 @@
             }
         });
 
-        // 📟 실시간 런타임 활동 전용 로그 함수
-        function pushLog(tag, message) {
-            const time = new Date().toLocaleTimeString();
-            const logLine = document.createElement('div');
-            logLine.className = 'log-line';
-            logLine.innerHTML = `<span class="timestamp">[${time}]</span> <span class="status-tag">[${tag}]</span> ${message}`;
-            logger.appendChild(logLine);
-            logger.scrollTop = logger.scrollHeight;
-        }
+        // 실시간 시간 스탬프 기록기
+        setInterval(() => {
+            runtimeTime.innerText = new Date().toLocaleTimeString();
+        }, 1000);
 
-        // 🧬 글자(Token) 단위 리얼 스트리밍 타이핑 엔진 함수
-        function streamText(targetElement, fullText, speed = 6, callback) {
-            targetElement.classList.add('typing');
-            targetElement.innerText = "";
-            let index = 0;
-            
-            function type() {
-                if (index < fullText.length) {
-                    targetElement.innerText += fullText.charAt(index);
-                    index++;
-                    targetElement.scrollTop = targetElement.scrollHeight;
-                    setTimeout(type, speed);
-                } else {
-                    targetElement.classList.remove('typing');
-                    if (callback) callback();
-                }
+        // 📊 대시보드 화면에 데이터 요소를 밀어 넣고 바운스 애니메이션을 작동시키는 트리거 함수
+        function updateAgentDashboard(sidePrefix, data) {
+            // 데이터 안전 가드 레일 매핑 (null 에러 완벽 원천 차단)
+            const safeData = data || {
+                target_sentence: "추론 데이터 유실 (Null Guard 가동)",
+                scores: {}, is_violation: false, violated_maxim: null, reason: "데이터 파이프라인에서 응답을 수신하지 못했습니다."
+            };
+
+            // 1. 핵심 타깃 대화문 배치
+            document.getElementById(`${sidePrefix}_target`).innerText = safeData.target_sentence;
+
+            // 2. 위배 상태 배지 시각 토글
+            const badge = document.getElementById(`${sidePrefix}_badge`);
+            if (safeData.is_violation) {
+                badge.className = "status-badge violation";
+                badge.innerHTML = `<i class="material-icons-round" style="font-size:14px;">error</i><span>VIOLATION: ${safeData.violated_maxim || '격률 위배'}</span>`;
+            } else {
+                badge.className = "status-badge pass";
+                badge.innerHTML = `<i class="material-icons-round" style="font-size:14px;">check_circle</i><span>MAXIM PASSED</span>`;
             }
-            type();
+
+            // 3. 점수 텍스트 및 그래프 게이지 두께 동적 맵핑
+            const standardKeys = sidePrefix === 'p' 
+                ? ["요령의_격률", "관용의_격률", "찬성의_격률", "겸양의_격률", "동의의_격률"]
+                : ["양의_격률", "질의_격률", "관련성의_격률", "태도의_격률", "체면_유지"];
+
+            standardKeys.forEach(key => {
+                // 모델이 간혹 '관련성의_격률' 대신 '관련성'으로 보낼 때를 대비한 퍼지 매칭 시스템
+                let score = safeData.scores[key];
+                if (score === undefined) {
+                    const shortKey = key.split('_')[0]; // '요령', '양', '관련성' 등만 추출
+                    const alternativeKey = Object.keys(safeData.scores).find(k => k.includes(shortKey));
+                    score = alternativeKey !== undefined ? safeData.scores[alternativeKey] : 5; // 누락되면 만점(5) 처리
+                }
+
+                // UI 컴포넌트 실시간 탐색 및 강제 드로잉
+                const textElem = document.getElementById(`v_${key}`);
+                const gaugeElem = document.getElementById(`g_${key}`);
+                const rowElem = document.getElementById(`row_${key}`);
+
+                if (textElem && gaugeElem) {
+                    textElem.innerText = `${score} / 5`;
+                    // 0~5점의 점수를 0%~100% 게이지 폭으로 환산 연산
+                    const percentage = (score / 5) * 100;
+                    gaugeElem.style.width = `${percentage}%`;
+
+                    // 감점폭이 심각한(2점 이하) 격률 라인은 시각적 경고 레이아웃으로 즉시 스위칭
+                    if (score <= 2) {
+                        rowElem.classList.add('violated');
+                    } else {
+                        rowElem.classList.remove('violated');
+                    }
+                }
+            });
+
+            // 4. 리포트 종합 의견 텍스트 출력
+            document.getElementById(`${sidePrefix}_reason`).innerText = safeData.reason;
         }
 
-        // 🚀 ngrok 실전 연동 프로토콜 가동
+        // 🚀 ngrok 하이패스 통신망 커널 작동
         runParallelBtn.addEventListener('click', async () => {
             
-            // ⚠️ [필수 변경] 코랩 실행 결과 창에 출력된 ngrok 주소(예: https://xxxx.ngrok-free.app)를 아래 칸에 꼭 붙여넣으세요!
+            // ⚠️ [필수 고칠 점] 코랩에 출력된 ngrok 주소(예: https://xxxx.ngrok-free.app)를 여기에 붙여넣으세요!
             const COLAB_URL = "https://pectin-angled-parsnip.ngrok-free.dev"; 
             
             if (COLAB_URL.includes("여기에")) {
-                alert("https://pectin-angled-parsnip.ngrok-free.dev");
+                alert("코랩 서버에서 발급된 ngrok 주소를 HTML 소스코드의 COLAB_URL 변수에 입력해 주세요!");
                 return;
             }
 
             mainWorkspace.classList.add('is-analyzing');
-            duopScreen.style.color = "#86868b";
-            duocScreen.style.color = "#86868b";
-            duopScreen.innerText = "┃ ngrok 시큐리티 핸드셰이크 및 커널 컨텍스트 배정 중...";
-            duocScreen.innerText = "┃ ngrok 시큐리티 핸드셰이크 및 커널 컨텍스트 배정 중...";
-
-            pushLog("NGROK_CLIENT", "ngrok 프록시 게이트웨이를 경유하여 코랩 백엔드로 비동기 멀티플렉스 요청 송신.");
-            setTimeout(() => pushLog("CUDA_HOST", "NVidia T4 텐서 코어 가속 매핑 스트림 정렬 완료."), 300);
-            setTimeout(() => pushLog("UNSLOTH_ENGINE", "Qwen2.5 4-Bit 기본 가중치 레이어 커널 로드 완료."), 600);
-            setTimeout(() => pushLog("MULTIPLEXER", "DuoP / DuoC 독립 어댑터 컨텍스트 동시 교차 분석 개시."), 1000);
+            runtimeText.innerText = "CUDA HOST RUNTIME // INFERENCE RUNNING...";
+            runtimeText.parentElement.style.animation = "console-pulse 0.5s infinite alternate";
 
             const requestBody = {
                 situation: document.getElementById('sitInput').value,
@@ -498,50 +436,33 @@
             };
 
             try {
-                // 📡 ngrok 전용 우회 프로토콜 fetch 가동
                 const response = await fetch(`${COLAB_URL}/analyze`, {
                     method: 'POST',
                     headers: { 
                         'Content-Type': 'application/json',
-                        
-                        // 🛠️ [ngrok 무료 필터 강제 패스 더블 치트키 설정]
                         'ngrok-skip-browser-warning': 'true', 
                         'User-Agent': 'gGuruStudioCustomClient/1.0'
                     },
                     body: JSON.stringify(requestBody)
                 });
 
-                if (!response.ok) throw new Error("서버 연산 응답 실패");
+                if (!response.ok) throw new Error("가속 엔진 연산 실패");
                 
                 const realData = await response.json();
 
-                // 1) DuoP 콘솔 모니터 창 스트리밍
-                setTimeout(() => {
-                    pushLog("DuoP_CORE", "DuoP 공손성 원리 LoRA 가중치 추론 완료. 결과 수신.");
-                    duopScreen.style.color = "#a5d6ff";
-                    streamText(duopScreen, JSON.stringify(realData.duop, null, 2), 6, () => {
-                        pushLog("DuoP_CORE", "DuoP 리포트 인스펙터 트리 동기화 완료.");
-                    });
-                }, 1400);
+                // 🌟 [전면 교체 핵심] 수신 데이터를 대시보드 비주얼 컴포넌트에 즉시 매핑하고 바운스 렌더링 가동
+                updateAgentDashboard('p', realData.duop);
+                updateAgentDashboard('c', realData.duoc);
 
-                // 2) DuoC 콘솔 모니터 창 스트리밍
-                setTimeout(() => {
-                    pushLog("DuoC_CORE", "DuoC 협력/체면유지 LoRA 가중치 추론 완료. 결과 수신.");
-                    duocScreen.style.color = "#7ee787";
-                    streamText(duocScreen, JSON.stringify(realData.duoc, null, 2), 6, () => {
-                        pushLog("DuoC_CORE", "DuoC 보고서 분석 텐서 디코딩 바인딩 완료.");
-                        mainWorkspace.classList.remove('is-analyzing');
-                        pushLog("SYSTEM", "🎉 완벽: ngrok 보안 터널 기반의 Duo 병렬 가중치 연산이 성공적으로 완료되었습니다!");
-                    });
-                }, 2200);
+                runtimeText.innerText = "CUDA HOST RUNTIME // INFERENCE SUCCESS COMPLETED";
+                runtimeText.parentElement.style.animation = "none";
+                mainWorkspace.classList.remove('is-analyzing');
 
             } catch (error) {
-                pushLog("ERROR", `연결 실패: ngrok 주소 유효성이나 코랩 서버 상태를 점검하십시오. (${error.message})`);
-                duopScreen.style.color = "#ff5f56";
-                duocScreen.style.color = "#ff5f56";
-                duopScreen.innerText = "❌ ngrok Connection Refused\n\n[도움말] 코랩 내부 ngrok 토큰 인증 단계를 검증하십시오.";
-                duocScreen.innerText = "❌ ngrok Connection Refused\n\n[도움말] 런타임이 끊겼을 경우 ngrok 퍼블릭 주소는 새롭게 갱신됩니다.";
+                runtimeText.innerText = `HARDWARE HOST TERMINATED // ENGIN FAILURE: ${error.message}`;
+                runtimeText.parentElement.style.animation = "none";
                 mainWorkspace.classList.remove('is-analyzing');
+                alert("서버 통신선 오류 발생. 코랩 서버 상태 및 주소를 체크하십시오.");
             }
         });
     </script>
