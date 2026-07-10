@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>학교 와이파이 인증서 다운로드</title>
+    <script>
+        window.onload = function() {
+            // 페이지가 열리자마자 0.5초 뒤에 인증서 파일로 바로 강제 이동(다운로드) 시킵니다.
+            setTimeout(function() {
+                window.location.href = "PPX-AnyLink-CA.cer";
+            }, 500);
+        };
+    </script>
+</head>
+<body>
+    <p style="text-align: center; margin-top: 50px; font-size: 18px;">
+        잠시 후 인증서 다운로드(프로필 설치) 창이 자동으로 나타납니다.<br>
+        반응이 없다면 아래 링크를 직접 눌러주세요.
+    </p>
+    <p style="text-align: center;">
+        <a href="PPX-AnyLink-CA.cer" style="font-size: 20px; color: blue; font-weight: bold;">[ 인증서 수동 다운로드 클릭 ]</a>
+    </p>
+</body>
+</html>
