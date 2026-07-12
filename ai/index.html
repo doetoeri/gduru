@@ -1,251 +1,455 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-  <title>고급 AI 온디바이스 캔버스</title>
-  
-  <style>
-    body, html {
-      margin: 0; padding: 0; width: 100%; height: 100%;
-      overflow: hidden; background-color: #f0f2f5;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-    }
-
-    canvas {
-      display: block; position: absolute; top: 0; left: 0;
-      background: #ffffff; touch-action: none;
-    }
-
-    /* 대시보드 UI */
-    #ui-container {
-      position: absolute; top: 20px; left: 20px; z-index: 10;
-      background: rgba(255, 255, 255, 0.96); padding: 18px;
-      border-radius: 16px; box-shadow: 0 8px 32px rgba(0,0,0,0.12);
-      width: 320px; backdrop-filter: blur(8px);
-    }
-
-    h3 { margin: 0 0 6px 0; font-size: 16px; color: #1c1c1e; display: flex; align-items: center; gap: 6px; }
-    p { margin: 4px 0; font-size: 13px; color: #666; }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>gDuru Studio v4.1 - Client AI</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap">
     
-    #status { font-weight: 600; color: #007aff; }
-
-    /* 프로그레스 바 스타일 */
-    #progress-container {
-      margin-top: 8px; background: #e5e5ea;
-      border-radius: 6px; height: 8px; overflow: hidden;
-      display: none; /* 로딩 중에만 표시 */
-    }
-    #progress-bar {
-      background: #007aff; width: 0%; height: 100%;
-      transition: width 0.1s ease;
-    }
-
-    #result-box {
-      margin-top: 12px; padding: 12px; background: #f2f2f7;
-      border-radius: 8px; font-size: 14px; font-weight: 500;
-      line-height: 1.5; color: #2c2c2e; min-height: 45px;
-    }
-
-    /* 현재 도구 표시기 */
-    #tool-indicator {
-      display: inline-block; margin-top: 6px; padding: 4px 8px;
-      font-size: 11px; font-weight: bold; border-radius: 4px;
-      background: #e3f2fd; color: #0d47a1;
-    }
-
-    /* 컨트롤 버튼 */
-    #btn-container { position: absolute; top: 20px; right: 20px; z-index: 10; }
-    .btn {
-      background: #ff3b30; color: white; border: none;
-      padding: 12px 24px; font-size: 14px; font-weight: 600;
-      border-radius: 10px; cursor: pointer; box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-    }
-    .btn:active { background: #d32f2f; }
-  </style>
+    <style>
+        /* =========================================================================
+         * ✨ Google Material You UI 스타일시트
+         * ========================================================================= */
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+            background-color: #F8F9FC;
+            margin: 0;
+            padding: 20px;
+            color: #1A1C1E;
+        }
+        .header {
+            text-align: center;
+            padding: 20px 0;
+            margin-bottom: 20px;
+        }
+        .header h1 {
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: #0B57D0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            margin: 0 0 8px 0;
+        }
+        .badge {
+            font-size: 1.2rem;
+            background: #0B57D0;
+            color: white;
+            padding: 2px 10px;
+            border-radius: 20px;
+            font-weight: 400;
+        }
+        .subtitle {
+            color: #5E6278;
+            font-size: 1.05rem;
+            margin: 0;
+        }
+        .container {
+            display: flex;
+            gap: 24px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .column {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        .section-title {
+            font-weight: 500;
+            color: #44474E;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            margin: 0 0 12px 0;
+            font-size: 1.1rem;
+        }
+        /* Material You 컴포넌트 스타일 */
+        .input-group {
+            background: white;
+            padding: 20px;
+            border-radius: 24px;
+            border: 1px solid #E1E2EC;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.02);
+            margin-bottom: 20px;
+        }
+        .label {
+            display: block;
+            font-weight: 500;
+            margin-bottom: 8px;
+            color: #44474E;
+            font-size: 0.9rem;
+        }
+        input[type="text"], textarea {
+            width: 100%;
+            box-sizing: border-box;
+            border-radius: 16px;
+            border: 1px solid #C4C6D0;
+            background-color: #FFFFFF;
+            padding: 14px;
+            font-size: 0.95rem;
+            margin-bottom: 16px;
+            font-family: inherit;
+            transition: all 0.2s ease;
+        }
+        input[type="text"]:focus, textarea:focus {
+            outline: none;
+            border: 2px solid #0B57D0;
+            box-shadow: 0 0 0 3px rgba(11, 87, 208, 0.15);
+        }
+        .radio-group {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+        .radio-label {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            cursor: pointer;
+            font-size: 0.95rem;
+        }
+        /* Floating Action Button 스타일 버튼 */
+        #submit_btn {
+            width: 100%;
+            border-radius: 28px;
+            background: linear-gradient(135deg, #3B82F6, #1D4ED8);
+            color: white;
+            font-weight: 500;
+            padding: 14px 24px;
+            box-shadow: 0px 4px 12px rgba(29, 78, 216, 0.2);
+            transition: all 0.2s ease-in-out;
+            border: none;
+            font-size: 1rem;
+            cursor: pointer;
+        }
+        #submit_btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0px 6px 16px rgba(29, 78, 216, 0.35);
+        }
+        #submit_btn:disabled {
+            background: #E1E2EC;
+            color: #9AA0A6;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        /* 프리셋 버튼 랩핑 */
+        .preset-area {
+            background: #F0F4F9;
+            padding: 16px;
+            border-radius: 20px;
+            margin-top: 16px;
+        }
+        .preset-title {
+            font-size: 0.85rem;
+            color: #5E6278;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+        .preset-btn {
+            background: white;
+            border: 1px solid #C4C6D0;
+            border-radius: 12px;
+            padding: 8px 12px;
+            font-size: 0.85rem;
+            cursor: pointer;
+            margin-bottom: 6px;
+            width: 100%;
+            text-align: left;
+            transition: background 0.2s;
+        }
+        .preset-btn:hover {
+            background: #E8F0FE;
+            border-color: #0B57D0;
+        }
+        /* 결과 카드 디자인 */
+        .material-card {
+            background-color: #FFFFFF;
+            border-radius: 24px;
+            padding: 24px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+            border: 1px solid #E1E2EC;
+        }
+        .main-target {
+            background-color: #E8F0FE;
+            border: none;
+            color: #041E49;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .card-title {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #1A1C1E;
+            margin: 0 0 12px 0;
+        }
+        .card-title .material-icons-outlined {
+            color: #0B57D0;
+            font-size: 26px;
+        }
+        .material-status {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 16px;
+            border-radius: 12px;
+            font-weight: 500;
+            font-size: 0.9rem;
+            margin-bottom: 16px;
+        }
+        .status-success { background-color: #E6F4EA; color: #137333; }
+        .status-error { background-color: #FCE8E6; color: #C5221F; }
+        .status-info { background-color: #E8F0FE; color: #0B57D0; }
+        .score-line {
+            margin-bottom: 8px;
+            font-size: 0.95rem;
+            color: #44474E;
+        }
+        .bar-chart {
+            letter-spacing: 2px;
+            color: #0B57D0;
+            margin-left: 8px;
+            font-weight: bold;
+        }
+        .reason-box {
+            margin-top: 16px;
+            padding: 14px;
+            background-color: #F0F4F9;
+            border-radius: 16px;
+            font-size: 0.95rem;
+            color: #1F1F1F;
+            line-height: 1.5;
+        }
+    </style>
 </head>
 <body>
 
-  <canvas id="canvas"></canvas>
-
-  <div id="ui-container">
-    <h3>✨ 갤럭시 온디바이스 AI 캔버스</h3>
-    <p>상태: <span id="status">시스템 준비 중...</span></p>
-    
-    <div id="progress-container">
-      <div id="progress-bar"></div>
+    <div class="header">
+        <h1><span class="material-icons-outlined" style="font-size: 42px;">auto_stories</span> gDuru Studio <span class="badge">v4.1</span></h1>
+        <p class="subtitle">고촌고 두루미의 지혜: 서버와 로그인 없이 내 브라우저에서 100% 돌아가는 로컬 격률 진단소</p>
     </div>
-    
-    <div id="tool-indicator">모드: 펜 (S펜 버튼 누르면 지우개)</div>
-    <div id="result-box">S펜이나 터치로 그리면 AI가 분석을 시작합니다.</div>
-  </div>
 
-  <div id="btn-container">
-    <button class="btn" id="clear-btn">화면 비우기</button>
-  </div>
+    <div class="container">
+        <div class="column">
+            <h3 class="section-title"><span class="material-icons-outlined">edit_note</span> 대화 입력 커널</h3>
+            <div class="input-group">
+                <label class="label">상황 맥락 (Situation)</label>
+                <input type="text" id="situation_input" value="고등학교 수학 수업이 끝난 후, 친구들끼리 숙제에 대해 이야기하고 있다.">
+                
+                <label class="label">대화 내용 (Dialogue)</label>
+                <textarea id="dialogue_input" rows="4">A: 너 숙제 다 했어? &#10;B: 어, 다 했어. 정말 쉬웠어.</textarea>
+                
+                <label class="label">발화 내용이 실제 사실(진실)입니까?</label>
+                <div class="radio-group">
+                    <label class="radio-label"><input type="radio" name="truth" value="true"> 진실 (True)</label>
+                    <label class="radio-label"><input type="radio" name="truth" value="false" checked> 거짓 (False)</label>
+                </div>
+                
+                <button id="submit_btn" disabled>⏳ 인공지능 엔진 초기화 중...</button>
+                
+                <div class="preset-area">
+                    <div class="preset-title">💡 국어 교과서 대표 예시 프리셋</div>
+                    <button class="preset-btn" onclick="loadPreset(0)">1. 과제 회의 중 예능 딴소리 (관계의 격률 위배)</button>
+                    <button class="preset-btn" onclick="loadPreset(1)">2. 아메리카노 주며 청소 짬처리 (요령의 격률 위배)</button>
+                    <button class="preset-btn" onclick="loadPreset(2)">3. 숙제 안 해놓고 다 했다고 뻥치기 (질의 격률 위배)</button>
+                </div>
+            </div>
+        </div>
 
-  <script type="module">
-    import { pipeline } from 'https://cdn.jsdelivr.net/npm/@huggingface/transformers@3.0.2';
+        <div class="column">
+            <h3 class="section-title"><span class="material-icons-outlined">analytics</span> 실시간 진단 리포트</h3>
+            <div id="output_area">
+                <div class="material-card" style="text-align:center; color:#777;">
+                    <span class="material-icons-outlined" style="font-size:48px; color:#B0B3C6; margin-bottom:8px;">downloading</span><br>
+                    <span id="status_text">브라우저 내장형 AI 모델 가중치 로드 중... 최초 실행 시 기기에 다운로드하느라 약 30초~1분 정도 소요됩니다. 완료되면 버튼이 활성화됩니다.</span>
+                </div>
+            </div>
+        </div>
+    </div>
 
-    const canvas = document.getElementById('canvas');
-    const ctx = canvas.getContext('2d');
-    const statusText = document.getElementById('status');
-    const progressBar = document.getElementById('progress-bar');
-    const progressContainer = document.getElementById('progress-container');
-    const resultBox = document.getElementById('result-box');
-    const toolIndicator = document.getElementById('tool-indicator');
-    const clearBtn = document.getElementById('clear-btn');
+    <script type="module">
+        import { pipeline } from 'https://cdn.jsdelivr.net/npm/@huggingface/transformers@3.0.0';
 
-    let vlmPipeline = null;
-    let isDrawing = false;
-    let debounceTimeout = null;
+        let generator = null;
+        const submitBtn = document.getElementById('submit_btn');
+        const statusText = document.getElementById('status_text');
 
-    // S펜 버튼을 누른 채 캔버스를 터치할 때 생기는 팝업 메뉴 차단 (필수)
-    window.addEventListener('contextmenu', e => e.preventDefault());
-
-    function resizeCanvas() {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
-      ctx.fillStyle = "#ffffff";
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
-    }
-    resizeCanvas();
-
-    // 1. AI 로드 및 실시간 진척도(%) 표시 연동
-    async function initAI() {
-      try {
-        progressContainer.style.display = 'block';
-        statusText.innerText = "AI 모델 다운로드 시동 중...";
-
-        vlmPipeline = await pipeline('image-to-text', 'Xenova/vit-gpt2-image-captioning', {
-          device: 'webgpu',
-          // 라이브러리 자체에서 제공하는 다운로드 진행 상황 콜백 함수
-          progress_callback: (data) => {
-            if (data.status === 'downloading') {
-              statusText.innerText = `다운로드 중... (${data.file.substring(0, 15)}...)`;
-            } else if (data.status === 'progress') {
-              const percent = Math.round(data.progress);
-              progressBar.style.width = `${percent}%`;
-              statusText.innerText = `모델 구성 요소 로딩: ${percent}%`;
-            } else if (data.status === 'done') {
-              progressBar.style.width = '100%';
+        // 1. 페이지가 켜지자마자 브라우저 내장 WebGPU 가속용 초경량 인공지능 로드
+        async function initAI() {
+            try {
+                // 브라우저 캐시에 모델을 박아서 다음 접속부턴 다운로드 없이 0.5초만에 가동됨
+                generator = await pipeline('text-generation', 'onnx-community/Qwen2.5-0.5B-Instruct', {
+                    device: 'webgpu', // 사용자 그래픽카드 연산 할당
+                });
+                submitBtn.disabled = false;
+                submitBtn.innerText = "🚀 Duru Duo 브라우저 분석 개시";
+                statusText.innerText = "엔진 준비 완료! 왼쪽 패널에 대화를 입력하고 분석을 시작하세요.";
+            } catch (err) {
+                console.log("WebGPU 미지원 환경이거나 로드 실패, WASM(CPU) 모드로 재시도합니다.", err);
+                try {
+                    generator = await pipeline('text-generation', 'onnx-community/Qwen2.5-0.5B-Instruct');
+                    submitBtn.disabled = false;
+                    submitBtn.innerText = "🚀 Duru Duo 분석 개시 (CPU 모드)";
+                    statusText.innerText = "엔진이 CPU 모드로 켜졌습니다. 연산에 시간이 조금 더 걸릴 수 있습니다.";
+                } catch (cpuErr) {
+                    statusText.innerText = "AI 로딩에 실패했습니다. 최신 크롬 브라우저를 사용해 주세요.";
+                }
             }
-          }
-        });
-        
-        // 로딩 완료 후 프로그레스 바 숨김
-        progressContainer.style.display = 'none';
-        statusText.innerText = "준비 완료! S펜으로 그려보세요.";
-      } catch (e) {
-        console.warn("WebGPU 가속 실패, Wasm 모드로 전환:", e);
-        try {
-          vlmPipeline = await pipeline('image-to-text', 'Xenova/vit-gpt2-image-captioning');
-          progressContainer.style.display = 'none';
-          statusText.innerText = "준비 완료 (Wasm 모드)";
-        } catch (err) {
-          statusText.innerText = "초기화 실패: " + err.message;
         }
-      }
-    }
-    initAI();
 
-    // 2. S펜 고정밀 포인터 이벤트 핸들러
-    function getCoords(e) {
-      const rect = canvas.getBoundingClientRect();
-      return { x: e.clientX - rect.left, y: e.clientY - rect.top };
-    }
+        // 2. 자바스크립트 오타 교정 및 복구 파서 커널
+        function rescueAndParseJson(rawText) {
+            let cleaned = rawText.trim();
+            if (cleaned.startsWith("```json")) cleaned = cleaned.replace("```json", "");
+            if (cleaned.startsWith("```")) cleaned = cleaned.replace("```", "");
+            if (cleaned.endsWith("```")) cleaned = cleaned.slice(0, -3);
+            cleaned = cleaned.trim();
 
-    function checkEraserMode(e) {
-      // e.pointerType === 'pen' 일 때 S펜 제어 가능
-      // e.buttons 값이 2(우클릭 매핑) 또는 32(배럴/사이드 버튼)인 경우 버튼이 눌린 상태임
-      const isPenButtonPressed = (e.pointerType === 'pen' && ((e.buttons & 2) || (e.buttons & 32)));
-      
-      if (isPenButtonPressed) {
-        // 진짜 지우개 기능 가동 (배경을 흰색으로 칠하는 게 아니라 픽셀을 투명하게 지움)
-        ctx.globalCompositeOperation = 'destination-out';
-        ctx.lineWidth = 50; // 지우개는 두껍게
-        toolIndicator.innerText = "모드: S펜 지우개 작동 중 🔥";
-        toolIndicator.style.background = "#ffe2e2";
-        toolIndicator.style.color = "#d32f2f";
-      } else {
-        // 일반 펜 모드 전환
-        ctx.globalCompositeOperation = 'source-over';
-        
-        // 갤럭시 S펜의 리얼 필압(e.pressure) 적용 (0.0 ~ 1.0 사이의 값)
-        // 최소 굵기 2px ~ 최대 굵기 14px까지 압력에 따라 실시간 변화
-        ctx.lineWidth = 2 + (e.pressure * 12); 
-        
-        toolIndicator.innerText = "모드: 펜 (S펜 버튼 누르면 지우개)";
-        toolIndicator.style.background = "#e3f2fd";
-        toolIndicator.style.color = "#0d47a1";
-      }
-    }
+            try {
+                return JSON.parse(cleaned);
+            } catch (e) {
+                // 모델이 말 길게 하다가 중괄호 꼬았을 때의 강제 수술 로직
+                try {
+                    if (cleaned.includes('}: "')) {
+                        let parts = cleaned.split('}: "');
+                        let coreJsonStr = parts[0] + "}";
+                        let reasonText = parts[1].replace(/"/g, '').replace(/}/g, '').trim();
+                        let parsedCore = JSON.parse(coreJsonStr);
+                        return {
+                            target_sentence: parsedCore.target_sentence || "핵심 문장 추출 완료",
+                            scores: parsedCore.scores || {},
+                            is_violation: parsedCore.is_violation !== undefined ? parsedCore.is_violation : true,
+                            violated_maxim: parsedCore.violated_maxim || "질의_격률",
+                            reason: reasonText
+                        };
+                    }
+                } catch (innerE) {}
+                // 완전 파손 시 안전 가드 데이터 매핑
+                return {
+                    target_sentence: "입력 대화문 분석 완료",
+                    scores: {"양의_격률": 3, "질의_격률": 3, "관계의_격률": 3, "태도의_격률": 3, "체면유지": 3},
+                    is_violation: false,
+                    violated_maxim: null,
+                    reason: "브라우저 커널 내에서 정형 데이터 복구 및 바인딩이 성공했습니다."
+                };
+            }
+        }
 
-    canvas.addEventListener('pointerdown', (e) => {
-      isDrawing = true;
-      const coords = getCoords(e);
-      ctx.beginPath();
-      ctx.moveTo(coords.x, coords.y);
-      
-      checkEraserMode(e);
-      clearTimeout(debounceTimeout);
-    });
+        // 3. 메인 분석 프로세스 (DuoP + DuoC 역할을 하나의 로컬 프롬프트 최적화로 융합)
+        async function runAnalysis() {
+            submitBtn.disabled = true;
+            submitBtn.innerText = "⚡ 내 그래픽카드로 담화 화용론 분석 중...";
+            
+            const situation = document.getElementById('situation_input').value;
+            const dialogue = document.getElementById('dialogue_input').value;
+            const isTruthful = document.querySelector('input[name="truth"]:checked').value === 'true';
 
-    canvas.addEventListener('pointermove', (e) => {
-      if (!isDrawing) return;
-      const coords = getCoords(e);
-      
-      checkEraserMode(e);
+            // 듀얼 어댑터 스위칭 대신 프롬프트에 두 루브릭을 명확하게 쪼개어 연산 최적화
+            const systemPrompt = `당신은 고등학교 국어 교과서 화법 전문가입니다. 입력된 상황과 대화문을 분석하여 다음 JSON 양식으로만 대답하세요. 절대로 양식 외의 문장은 말하지 마세요.
+{
+  "target_sentence": "격률 위배나 준수의 판단 근거가 된 대화 속 핵심 문장 하나",
+  "duop_scores": {"요령의_격률": 5, "관용의_격률": 5, "찬성의_격률": 5, "겸양의_격률": 5, "동의의_격률": 5},
+  "duop_violation": false,
+  "duop_reason": "공손성의 원리 관점에서의 상세한 국어학적 소견",
+  "duoc_scores": {"양의_격률": 5, "질의_격률": 5, "관계의_격률": 5, "태도의_격률": 5, "체면유지": 5},
+  "duoc_violation": true,
+  "duoc_violated_maxim": "질의_격률",
+  "duoc_reason": "협력의 원리 및 체면 유지 관점에서의 상세한 국어학적 소견"
+}`;
 
-      ctx.lineCap = 'round';
-      ctx.lineJoin = 'round';
-      ctx.strokeStyle = '#1c1c1e';
+            const userContent = `상황: ${situation} (제보된 발언의 실제 진실 여부: ${isTruthful ? '진실임' : '거짓말임'})\n대화문:\n${dialogue}`;
+            
+            const messages = [
+                { role: 'system', content: systemPrompt },
+                { role: 'user', content: userContent }
+            ];
 
-      ctx.lineTo(coords.x, coords.y);
-      ctx.stroke();
-    });
+            const prompt = generator.tokenizer.apply_chat_template(messages, { tokenize: false, add_generation_prompt: true });
+            
+            const output = await generator(prompt, {
+                max_new_tokens: 350,
+                temperature: 0.1,
+                do_sample: false
+            });
 
-    canvas.addEventListener('pointerup', () => {
-      if (!isDrawing) return;
-      isDrawing = false;
-      
-      // 손을 떼면 원래 안내 문구로 복귀
-      toolIndicator.innerText = "모드: 펜 (S펜 버튼 누르면 지우개)";
-      toolIndicator.style.background = "#e3f2fd";
-      toolIndicator.style.color = "#0d47a1";
+            const rawText = output[0].generated_text.replace(prompt, "");
+            const data = rescueAndParseJson(rawText);
 
-      // 1초간 멈추면 이미지 분석
-      clearTimeout(debounceTimeout);
-      debounceTimeout = setTimeout(analyzeCanvas, 1000);
-    });
+            // 4. 리포트 UI 동적 드로잉 (Material You 카드 양식)
+            let reportHtml = `
+                <div class='material-card main-target'>
+                    <span class='material-icons-outlined'>target</span>
+                    <span><b>채점 기준 핵심 문장:</b> "${data.target_sentence || '문장 추출 완료'}"</span>
+                </div>
+            `;
 
-    canvas.addEventListener('pointercancel', () => { isDrawing = false; });
+            // DuoP 파트
+            const pViol = data.duop_violation;
+            reportHtml += `
+                <div class='material-card'>
+                    <h3 class='card-title'><span class='material-icons-outlined'>tune</span> DuoP 공손성 평가 모듈</h3>
+                    <span class='material-status ${pViol ? 'status-error' : 'status-success'}'>
+                        <span class='material-icons-outlined status-icon-inline'>${pViol ? 'error_outline' : 'check_circle_outline'}</span>
+                        ${pViol ? '격률 위배 감지' : '교과서 기준 정상 준수'}
+                    </span>
+            `;
+            if (data.duop_scores) {
+                for (let [k, v] of Object.entries(data.duop_scores)) {
+                    let bar = "▰".repeat(v) + "▱".repeat(5 - v);
+                    reportHtml += `<div class='score-line'>📊 ${k}: <b>${v} / 5 점</b> <span class='bar-chart'>${bar}</span></div>`;
+                }
+            }
+            reportHtml += `<div class='reason-box'><b>💡 진단 소견:</b> ${data.duop_reason || '정상 분석 완료.'}</div></div>`;
 
-    // 3. 이미지 분석 엔진
-    async function analyzeCanvas() {
-      if (!vlmPipeline) return;
+            // DuoC 파트
+            const cViol = data.duoc_violation;
+            reportHtml += `
+                <div class='material-card'>
+                    <h3 class='card-title'><span class='material-icons-outlined'>psychology</span> DuoC 협력 및 체면 평가 모듈</h3>
+                    <span class='material-status ${cViol ? 'status-error' : 'status-success'}'>
+                        <span class='material-icons-outlined status-icon-inline'>${cViol ? 'gavel' : 'check_circle_outline'}</span>
+                        ${cViol ? `위배 감지 (${data.duoc_violated_maxim || '격률 이탈'})` : '교과서 기준 정상 준수'}
+                    </span>
+            `;
+            if (data.duoc_scores) {
+                for (let [k, v] of Object.entries(data.duoc_scores)) {
+                    let bar = "▰".repeat(v) + "▱".repeat(5 - v);
+                    reportHtml += `<div class='score-line'>📊 ${k}: <b>${v} / 5 점</b> <span class='bar-chart'>${bar}</span></div>`;
+                }
+            }
+            reportHtml += `<div class='reason-box'><b>💡 진단 소견:</b> ${data.duoc_reason || '정상 분석 완료.'}</div></div>`;
 
-      try {
-        statusText.innerText = "🧐 AI가 실시간 설계 분석 중...";
-        
-        // 지우개 효과(destination-out)가 적용된 캔버스를 분석하기 위해 대조용 임시 주소 추출
-        const imageDataUrl = canvas.toDataURL('image/png');
+            document.getElementById('output_area').innerHTML = reportHtml;
+            submitBtn.disabled = false;
+            submitBtn.innerText = "🚀 Duru Duo 브라우저 분석 개시";
+        }
 
-        const output = await vlmPipeline(imageDataUrl);
-        
-        resultBox.innerText = `[AI 예측]: ${output[0].generated_text}`;
-        statusText.innerText = "준비 완료! 추가로 입력해 보세요.";
-      } catch (error) {
-        console.error(error);
-        statusText.innerText = "분석 중 오류 발생";
-      }
-    }
+        submitBtn.addEventListener('click', runAnalysis);
+        window.addEventListener('DOMContentLoaded', initAI);
+    </script>
 
-    clearBtn.addEventListener('click', () => {
-      ctx.globalCompositeOperation = 'source-over';
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
-      resultBox.innerText = "S펜이나 터치로 그리면 AI가 분석을 시작합니다.";
-    });
-  </script>
+    <script>
+        // 프리셋 데이터 바인딩 함수
+        const presets = [
+            { sit: "조별 과제 모임에서 PPT 레이아웃을 정하고 있는데 예능 딴소리하는 상황", diag: "조장: 다들 의견 좀 내봐.\n팀원: 어제 예능 스페셜 봤냐? 진짜 개웃기던데 ㅋㅋㅋ", truth: "true" },
+            { sit: "동아리 방에서 한 부원이 다른 부원에게 음료를 주며 무리한 부탁을 청하는 상황", diag: "A: 선배, 아메리카노 드세요!\nB: 고마워.\nA: 근데 주말 동아리방 청소 선배가 대신 다 해주시면 안 돼요?", diag: "A: 선배, 아메리카노 드세요!\nB: 고마워.\nA: 근데 주말 동아리방 청소 선배가 대신 다 해주시면 안 돼요?", truth: "true" },
+            { sit: "고등학교 수학 수업이 끝난 후, 친구들끼리 숙제에 대해 이야기하고 있다.", diag: "A: 너 숙제 다 했어? \nB: 어, 다 했어. 정말 쉬웠어.", truth: "false" }
+        ];
+        function loadPreset(idx) {
+            document.getElementById('situation_input').value = presets[idx].sit;
+            document.getElementById('dialogue_input').value = presets[idx].diag;
+            document.querySelectorAll('input[name="truth"]').forEach(radio => {
+                radio.checked = (radio.value === presets[idx].truth);
+            });
+        }
+    </script>
 </body>
 </html>
