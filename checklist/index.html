@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<title>문제 체크</title>
+<style>
+*{box-sizing:border-box;-webkit-tap-highlight-color:rgba(0,0,0,0)}
+html,body{margin:0;min-height:100%;font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif;background:#f7f2fa;color:#1d1b20}
+body{padding:20px 14px 90px}
+.app{max-width:900px;margin:0 auto}
+h1{font-size:29px;line-height:1.1;margin:12px 4px 5px;font-weight:700;letter-spacing:-1px}
+.sub{margin:0 4px 22px;color:#625b71;font-size:14px}
+.card{background:#fffbfe;border-radius:28px;padding:18px;margin-bottom:16px;box-shadow:0 2px 8px rgba(50,40,60,.08)}
+label{display:block;font-size:13px;color:#625b71;margin:0 0 7px 4px}
+.rangeRow{display:-webkit-flex;display:flex;-webkit-align-items:center;align-items:center;gap:8px}
+input{min-width:0;width:100%;height:54px;border:0;outline:0;background:#eaddff;border-radius:18px;padding:0 16px;font-size:20px;color:#21005d}
+.to{padding:0 2px;color:#625b71;font-weight:700}
+.primary,.add,.clear{border:0;outline:0;cursor:pointer;font-weight:700}
+.primary{width:100%;height:52px;margin-top:12px;border-radius:26px;background:#6750a4;color:white;font-size:16px;box-shadow:0 3px 8px rgba(103,80,164,.25);-webkit-transition:-webkit-transform .15s,opacity .15s;transition:transform .15s,opacity .15s}
+.primary:active,.add:active,.clear:active{-webkit-transform:scale(.95);transform:scale(.95)}
+.toolbar{display:-webkit-flex;display:flex;-webkit-align-items:center;align-items:center;-webkit-justify-content:space-between;justify-content:space-between;margin:25px 4px 12px}
+.toolbar h2{font-size:20px;margin:0}
+.progress{font-size:13px;color:#625b71;background:#e8def8;padding:8px 12px;border-radius:20px}
+.sets{white-space:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch;padding:2px 2px 14px}
+.set{display:inline-block;vertical-align:top;width:250px;margin-right:12px;white-space:normal;background:#fffbfe;border-radius:28px;padding:15px;box-shadow:0 2px 8px rgba(50,40,60,.08)}
+.setHead{display:-webkit-flex;display:flex;-webkit-align-items:center;align-items:center;-webkit-justify-content:space-between;justify-content:space-between;margin-bottom:13px}
+.setTitle{font-weight:700;font-size:15px}
+.deleteSet{border:0;background:#f3edf7;color:#625b71;border-radius:18px;width:34px;height:34px;font-size:18px}
+.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.q{position:relative;border:0;outline:0;background:#f3edf7;color:#1d1b20;border-radius:17px;height:52px;font-size:16px;font-weight:700;cursor:pointer;-webkit-transition:-webkit-transform .18s,background .25s,color .25s;transition:transform .18s,background .25s,color .25s}
+.q:active{-webkit-transform:scale(.87);transform:scale(.87)}
+.q.done{background:#6750a4;color:#fff}
+.q.done:after{content:"✓";position:absolute;right:7px;top:5px;font-size:10px;background:#fff;color:#6750a4;width:15px;height:15px;line-height:15px;border-radius:50%}
+.add{display:inline-block;vertical-align:top;width:72px;height:72px;margin:85px 14px 0 2px;border-radius:28px;background:#eaddff;color:#21005d;font-size:34px;box-shadow:0 3px 8px rgba(50,40,60,.1);-webkit-transition:-webkit-transform .15s;transition:transform .15s}
+.empty{text-align:center;color:#79747e;padding:48px 10px}
+.bottom{position:fixed;left:0;right:0;bottom:0;padding:10px 14px 16px;background:rgba(247,242,250,.94)}
+.bottomInner{max-width:900px;margin:auto;display:-webkit-flex;display:flex;gap:10px}
+.clear{height:48px;padding:0 18px;border-radius:24px;background:#f3edf7;color:#6750a4;font-size:14px}
+.legend{-webkit-flex:1;flex:1;background:#e8def8;border-radius:24px;padding:8px 15px;font-size:13px;display:-webkit-flex;display:flex;-webkit-align-items:center;align-items:center;-webkit-justify-content:center;justify-content:center;color:#49454f}
+@media(max-width:500px){body{padding-top:12px}.set{width:238px}.card{border-radius:24px}.grid{gap:7px}.q{height:50px}}
+</style>
+</head>
+<body>
+<div class="app">
+  <h1>문제 체크</h1>
+  <p class="sub">풀었는지 기억 못 하는 인간의 뇌를 localStorage로 보조합니다.</p>
+
+  <div class="card">
+    <label>문제 번호 범위</label>
+    <div class="rangeRow">
+      <input id="start" type="number" pattern="[0-9]*" value="1">
+      <span class="to">~</span>
+      <input id="end" type="number" pattern="[0-9]*" value="20">
+    </div>
+    <button class="primary" id="make">범위 만들기</button>
+  </div>
+
+  <div class="toolbar">
+    <h2>문제 목록</h2>
+    <div class="progress" id="progress">0 / 0 완료</div>
+  </div>
+
+  <div class="sets" id="sets"></div>
+</div>
+
+<div class="bottom">
+ <div class="bottomInner">
+   <div class="legend">문제 버튼을 누르면 완료 / 미완료가 바뀝니다</div>
+   <button class="clear" id="clear">초기화</button>
+ </div>
+</div>
+
+<script>
+(function(){
+  var KEY='problem-checker-ios9-v1';
+  var state={sets:[]};
+  var setsEl=document.getElementById('sets');
+  var progressEl=document.getElementById('progress');
+
+  function load(){
+    try{
+      var raw=localStorage.getItem(KEY);
+      if(raw) state=JSON.parse(raw);
+    }catch(e){}
+  }
+  function save(){
+    try{localStorage.setItem(KEY,JSON.stringify(state));}catch(e){}
+  }
+  function esc(s){
+    return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/"/g,'&quot;');
+  }
+  function render(){
+    var html='', total=0, done=0, i,j,set,p;
+    if(!state.sets.length){
+      setsEl.innerHTML='<div class="empty">아직 범위가 없습니다.<br>위에서 문제 번호를 정해주세요.</div>';
+      progressEl.innerHTML='0 / 0 완료';
+      return;
+    }
+    for(i=0;i<state.sets.length;i++){
+      set=state.sets[i];
+      html+='<div class="set"><div class="setHead"><div class="setTitle">'+esc(set.start)+' ~ '+esc(set.end)+'</div><button class="deleteSet" data-del="'+i+'">×</button></div><div class="grid">';
+      for(j=set.start;j<=set.end;j++){
+        p=set.done[String(j)]===true;
+        total++; if(p)done++;
+        html+='<button class="q'+(p?' done':'')+'" data-set="'+i+'" data-num="'+j+'">'+j+'</button>';
+      }
+      html+='</div></div>';
+    }
+    html+='<button class="add" id="addSet" title="적용 문제 추가">+</button>';
+    setsEl.innerHTML=html;
+    progressEl.innerHTML=done+' / '+total+' 완료';
+    bindDynamic();
+  }
+  function addRange(){
+    var a=parseInt(document.getElementById('start').value,10);
+    var b=parseInt(document.getElementById('end').value,10);
+    if(isNaN(a)||isNaN(b)||a<0||b<a||b-a>499){
+      alert('범위를 확인해주세요. 한 묶음은 최대 500문제입니다.');
+      return;
+    }
+    state.sets.push({start:a,end:b,done:{}});
+    save(); render();
+    setTimeout(function(){setsEl.scrollLeft=setsEl.scrollWidth;},30);
+  }
+  function bindDynamic(){
+    var qs=setsEl.getElementsByClassName('q'), i;
+    for(i=0;i<qs.length;i++){
+      qs[i].onclick=function(){
+        var si=parseInt(this.getAttribute('data-set'),10);
+        var n=this.getAttribute('data-num');
+        state.sets[si].done[n]=!state.sets[si].done[n];
+        save(); render();
+      };
+    }
+    var ds=setsEl.getElementsByClassName('deleteSet');
+    for(i=0;i<ds.length;i++){
+      ds[i].onclick=function(){
+        var idx=parseInt(this.getAttribute('data-del'),10);
+        state.sets.splice(idx,1); save(); render();
+      };
+    }
+    var add=document.getElementById('addSet');
+    if(add) add.onclick=function(){
+      var last=state.sets[state.sets.length-1];
+      document.getElementById('start').value=last.end+1;
+      document.getElementById('end').value=last.end+20;
+      window.scrollTo(0,0);
+      document.getElementById('start').focus();
+    };
+  }
+  document.getElementById('make').onclick=addRange;
+  document.getElementById('clear').onclick=function(){
+    if(confirm('모든 체크 기록과 범위를 지울까요?')){
+      state={sets:[]}; save(); render();
+    }
+  };
+  load(); render();
+})();
+</script>
+</body>
+</html>
