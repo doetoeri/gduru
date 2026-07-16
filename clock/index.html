@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
+  <title>Kindle Analog Clock</title>
+  <style type="text/css">
+    html, body {
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+      background: #c9c9c9;
+      color: #111;
+    }
+
+    body {
+      font-family: Georgia, "Times New Roman", serif;
+      -webkit-text-size-adjust: none;
+      -webkit-user-select: none;
+    }
+
+    #page {
+      position: absolute;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      overflow: hidden;
+      background: #d6d6d6;
+      background: -webkit-gradient(linear, left top, right top,
+        from(#bcbcbc), color-stop(0.12, #e3e3e3), color-stop(0.5, #cfcfcf),
+        color-stop(0.88, #e3e3e3), to(#bcbcbc));
+    }
+
+    #clock-case {
+      position: absolute;
+      overflow: hidden;
+      border: 3px solid #111;
+      background: #555;
+      background: -webkit-gradient(linear, left top, right bottom,
+        from(#161616), color-stop(0.18, #8f8f8f), color-stop(0.38, #333),
+        color-stop(0.65, #aaa), color-stop(0.84, #363636), to(#0c0c0c));
+      -webkit-border-radius: 1000px;
+      border-radius: 1000px;
+      -webkit-box-shadow: 0 9px 15px rgba(0,0,0,0.55), inset 0 0 0 3px #dedede;
+      box-shadow: 0 9px 15px rgba(0,0,0,0.55), inset 0 0 0 3px #dedede;
+    }
+
+    #dial {
+      position: absolute;
+      overflow: hidden;
+      background: #f0eee6;
+      background: -webkit-gradient(radial, 45% 38%, 20, 45% 42%, 330,
+        from(#fff), color-stop(0.64, #efede5), to(#b9b7b0));
+      border: 2px solid #111;
+      -webkit-border-radius: 1000px;
+      border-radius: 1000px;
+      -webkit-box-shadow: inset 0 5px 14px rgba(0,0,0,0.62), 0 0 0 2px #eee;
+      box-shadow: inset 0 5px 14px rgba(0,0,0,0.62), 0 0 0 2px #eee;
+    }
+
+    #ticks, #numbers {
+      position: absolute;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      left: 0;
+    }
+
+    .tick {
+      position: absolute;
+      z-index: 2;
+      background: #222;
+    }
+
+    .tick.major {
+      background: #000;
+      -webkit-box-shadow: 1px 1px 0 #aaa;
+      box-shadow: 1px 1px 0 #aaa;
+    }
+
+    .number {
+      position: absolute;
+      z-index: 3;
+      color: #111;
+      font-weight: bold;
+      line-height: 1;
+      text-align: center;
+      text-shadow: 1px 1px 0 #fff;
+    }
+
+    #maker {
+      position: absolute;
+      z-index: 3;
+      left: 0;
+      width: 100%;
+      color: #222;
+      font-family: Arial, Helvetica, sans-serif;
+      font-weight: bold;
+      line-height: 1;
+      text-align: center;
+      letter-spacing: 2px;
+    }
+
+    #maker-sub {
+      position: absolute;
+      z-index: 3;
+      left: 0;
+      width: 100%;
+      color: #444;
+      font-family: Arial, Helvetica, sans-serif;
+      line-height: 1;
+      text-align: center;
+      letter-spacing: 1px;
+    }
+
+    #date-window {
+      position: absolute;
+      z-index: 4;
+      background: #ddd;
+      border: 2px solid #222;
+      color: #111;
+      font-family: Arial, Helvetica, sans-serif;
+      font-weight: bold;
+      line-height: 1;
+      text-align: center;
+      -webkit-box-shadow: inset 2px 3px 4px rgba(0,0,0,0.45), 1px 1px 0 #fff;
+      box-shadow: inset 2px 3px 4px rgba(0,0,0,0.45), 1px 1px 0 #fff;
+    }
+
+    #zone-label {
+      position: absolute;
+      z-index: 3;
+      left: 0;
+      width: 100%;
+      color: #444;
+      font-family: Arial, Helvetica, sans-serif;
+      line-height: 1;
+      text-align: center;
+      letter-spacing: 1px;
+    }
+
+    .hand {
+      position: absolute;
+      z-index: 8;
+      -webkit-transform-origin: 50% 100%;
+      transform-origin: 50% 100%;
+      -webkit-border-radius: 8px 8px 3px 3px;
+      border-radius: 8px 8px 3px 3px;
+    }
+
+    #hour-hand {
+      background: #222;
+      background: -webkit-gradient(linear, left top, right top,
+        from(#050505), color-stop(0.45, #777), color-stop(0.55, #aaa), to(#050505));
+      border: 1px solid #000;
+      -webkit-box-shadow: 3px 4px 4px rgba(0,0,0,0.4);
+      box-shadow: 3px 4px 4px rgba(0,0,0,0.4);
+    }
+
+    #minute-hand {
+      background: #111;
+      background: -webkit-gradient(linear, left top, right top,
+        from(#000), color-stop(0.48, #777), color-stop(0.55, #aaa), to(#000));
+      border: 1px solid #000;
+      -webkit-box-shadow: 3px 4px 4px rgba(0,0,0,0.4);
+      box-shadow: 3px 4px 4px rgba(0,0,0,0.4);
+    }
+
+    #second-hand, #second-tail {
+      z-index: 10;
+      background: #050505;
+      -webkit-border-radius: 4px;
+      border-radius: 4px;
+      -webkit-box-shadow: 1px 2px 2px rgba(0,0,0,0.38);
+      box-shadow: 1px 2px 2px rgba(0,0,0,0.38);
+    }
+
+    #second-tail {
+      position: absolute;
+      -webkit-transform-origin: 50% 0%;
+      transform-origin: 50% 0%;
+    }
+
+    #pin-outer, #pin-inner {
+      position: absolute;
+      z-index: 12;
+      -webkit-border-radius: 100px;
+      border-radius: 100px;
+    }
+
+    #pin-outer {
+      background: #111;
+      background: -webkit-gradient(linear, left top, right bottom,
+        from(#eee), color-stop(0.35, #555), color-stop(0.7, #050505), to(#999));
+      border: 1px solid #000;
+      -webkit-box-shadow: 2px 3px 3px rgba(0,0,0,0.55);
+      box-shadow: 2px 3px 3px rgba(0,0,0,0.55);
+    }
+
+    #pin-inner {
+      z-index: 13;
+      background: #111;
+      border: 1px solid #aaa;
+    }
+
+    #glass {
+      position: absolute;
+      z-index: 20;
+      border-top: 2px solid rgba(255,255,255,0.62);
+      -webkit-border-radius: 1000px;
+      border-radius: 1000px;
+      background: -webkit-gradient(linear, left top, left bottom,
+        from(rgba(255,255,255,0.24)), to(rgba(255,255,255,0.02)));
+    }
+
+    #caption {
+      position: absolute;
+      left: 5%;
+      width: 90%;
+      color: #111;
+      text-align: center;
+      text-shadow: 1px 1px 0 #eee;
+    }
+
+    #weekday {
+      font-size: 24px;
+      font-weight: bold;
+      line-height: 1.15;
+    }
+
+    #full-date {
+      margin-top: 7px;
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: 13px;
+      line-height: 1.2;
+      letter-spacing: 1px;
+    }
+
+    #cleaner {
+      display: none;
+      position: absolute;
+      z-index: 999;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      background: #000;
+    }
+
+    #no-script {
+      margin: 30px;
+      padding: 20px;
+      background: #fff;
+      border: 2px solid #000;
+      font-size: 20px;
+      line-height: 1.5;
+    }
+  </style>
+</head>
+<body>
+  <div id="page">
+    <div id="clock-case">
+      <div id="dial">
+        <div id="ticks"></div>
+        <div id="numbers"></div>
+        <div id="maker">SEOUL</div>
+        <div id="maker-sub">CLASSIC</div>
+        <div id="date-window">17</div>
+        <div id="zone-label">KST &middot; UTC+09</div>
+        <div id="hour-hand" class="hand"></div>
+        <div id="minute-hand" class="hand"></div>
+        <div id="second-hand" class="hand"></div>
+        <div id="second-tail"></div>
+        <div id="pin-outer"></div>
+        <div id="pin-inner"></div>
+        <div id="glass"></div>
+      </div>
+    </div>
+
+    <div id="caption">
+      <div id="weekday">금요일</div>
+      <div id="full-date">2026년 7월 17일 &middot; KOREA STANDARD TIME</div>
+    </div>
+    <div id="cleaner"></div>
+  </div>
+
+  <noscript>
+    <div id="no-script">이 시계는 JavaScript가 필요합니다. Kindle 브라우저 설정에서 JavaScript를 켜 주세요.</div>
+  </noscript>
+
+  <script type="text/javascript">
+    /* Kindle 4용 설정 */
+    var USE_SEOUL_TIME = true;
+    var SHOW_SECOND_HAND = true;
+    var HOURLY_CLEAN_FLASH = true;
+    var WEEKDAYS = ["일요일", "월요일", "화요일", "수요일", "목요일", "금요일", "토요일"];
+    var dialSize = 440;
+    var lastDateKey = "";
+    var lastFlashKey = "";
+
+    function byId(id) {
+      return document.getElementById(id);
+    }
+
+    function getClockParts() {
+      var now = new Date();
+      var korea;
+
+      if (USE_SEOUL_TIME) {
+        korea = new Date(now.getTime() + 9 * 60 * 60 * 1000);
+        return {
+          year: korea.getUTCFullYear(),
+          month: korea.getUTCMonth() + 1,
+          date: korea.getUTCDate(),
+          day: korea.getUTCDay(),
+          hour: korea.getUTCHours(),
+          minute: korea.getUTCMinutes(),
+          second: korea.getUTCSeconds(),
+          millisecond: korea.getUTCMilliseconds()
+        };
+      }
+
+      return {
+        year: now.getFullYear(),
+        month: now.getMonth() + 1,
+        date: now.getDate(),
+        day: now.getDay(),
+        hour: now.getHours(),
+        minute: now.getMinutes(),
+        second: now.getSeconds(),
+        millisecond: now.getMilliseconds()
+      };
+    }
+
+    function rotate(element, degrees) {
+      var value = "rotate(" + degrees + "deg)";
+      element.style.webkitTransform = value;
+      element.style.transform = value;
+    }
+
+    function positionHand(element, width, length, center) {
+      element.style.width = width + "px";
+      element.style.height = length + "px";
+      element.style.left = Math.round(center - width / 2) + "px";
+      element.style.top = Math.round(center - length) + "px";
+    }
+
+    function buildFace() {
+      var ticks = byId("ticks");
+      var numbers = byId("numbers");
+      var center = dialSize / 2;
+      var i, tick, width, height, top, angle, number, radius, x, y, fontSize;
+
+      ticks.innerHTML = "";
+      numbers.innerHTML = "";
+
+      for (i = 0; i < 60; i++) {
+        tick = document.createElement("div");
+        tick.className = i % 5 === 0 ? "tick major" : "tick";
+        width = i % 5 === 0 ? Math.max(3, Math.round(dialSize * 0.012)) : Math.max(1, Math.round(dialSize * 0.004));
+        height = i % 5 === 0 ? Math.round(dialSize * 0.055) : Math.round(dialSize * 0.027);
+        top = i % 5 === 0 ? Math.round(dialSize * 0.052) : Math.round(dialSize * 0.065);
+        tick.style.width = width + "px";
+        tick.style.height = height + "px";
+        tick.style.left = Math.round(center - width / 2) + "px";
+        tick.style.top = top + "px";
+        tick.style.webkitTransformOrigin = "50% " + Math.round(center - top) + "px";
+        tick.style.transformOrigin = "50% " + Math.round(center - top) + "px";
+        rotate(tick, i * 6);
+        ticks.appendChild(tick);
+      }
+
+      fontSize = Math.round(dialSize * 0.078);
+      radius = dialSize * 0.355;
+      for (i = 1; i <= 12; i++) {
+        angle = (i * 30 - 90) * Math.PI / 180;
+        x = center + Math.cos(angle) * radius;
+        y = center + Math.sin(angle) * radius;
+        number = document.createElement("div");
+        number.className = "number";
+        number.innerHTML = i;
+        number.style.width = Math.round(dialSize * 0.13) + "px";
+        number.style.height = fontSize + "px";
+        number.style.left = Math.round(x - dialSize * 0.065) + "px";
+        number.style.top = Math.round(y - fontSize * 0.5) + "px";
+        number.style.fontSize = fontSize + "px";
+        numbers.appendChild(number);
+      }
+    }
+
+    function fitLayout() {
+      var width = window.innerWidth || document.documentElement.clientWidth || 600;
+      var height = window.innerHeight || document.documentElement.clientHeight || 800;
+      var clockSize = Math.floor(Math.min(width * 0.88, height - 132));
+      var clockTop = Math.max(18, Math.floor((height - clockSize - 92) / 2));
+      var clockLeft = Math.floor((width - clockSize) / 2);
+      var inset = Math.max(20, Math.round(clockSize * 0.055));
+      var center, hourWidth, minuteWidth, secondWidth, pinOuter, pinInner;
+
+      if (clockSize < 300) {
+        clockSize = 300;
+      }
+
+      byId("clock-case").style.width = clockSize + "px";
+      byId("clock-case").style.height = clockSize + "px";
+      byId("clock-case").style.left = clockLeft + "px";
+      byId("clock-case").style.top = clockTop + "px";
+
+      dialSize = clockSize - inset * 2;
+      byId("dial").style.width = dialSize + "px";
+      byId("dial").style.height = dialSize + "px";
+      byId("dial").style.left = inset + "px";
+      byId("dial").style.top = inset + "px";
+
+      buildFace();
+      center = dialSize / 2;
+
+      byId("maker").style.top = Math.round(dialSize * 0.235) + "px";
+      byId("maker").style.fontSize = Math.round(dialSize * 0.035) + "px";
+      byId("maker-sub").style.top = Math.round(dialSize * 0.278) + "px";
+      byId("maker-sub").style.fontSize = Math.round(dialSize * 0.019) + "px";
+      byId("zone-label").style.top = Math.round(dialSize * 0.705) + "px";
+      byId("zone-label").style.fontSize = Math.round(dialSize * 0.02) + "px";
+
+      byId("date-window").style.width = Math.round(dialSize * 0.105) + "px";
+      byId("date-window").style.height = Math.round(dialSize * 0.068) + "px";
+      byId("date-window").style.left = Math.round(dialSize * 0.665) + "px";
+      byId("date-window").style.top = Math.round(center - dialSize * 0.034) + "px";
+      byId("date-window").style.fontSize = Math.round(dialSize * 0.047) + "px";
+      byId("date-window").style.lineHeight = Math.round(dialSize * 0.068) + "px";
+
+      hourWidth = Math.max(10, Math.round(dialSize * 0.03));
+      minuteWidth = Math.max(7, Math.round(dialSize * 0.019));
+      secondWidth = Math.max(2, Math.round(dialSize * 0.006));
+      positionHand(byId("hour-hand"), hourWidth, Math.round(dialSize * 0.225), center);
+      positionHand(byId("minute-hand"), minuteWidth, Math.round(dialSize * 0.325), center);
+      positionHand(byId("second-hand"), secondWidth, Math.round(dialSize * 0.385), center);
+
+      byId("second-tail").style.width = secondWidth + "px";
+      byId("second-tail").style.height = Math.round(dialSize * 0.105) + "px";
+      byId("second-tail").style.left = Math.round(center - secondWidth / 2) + "px";
+      byId("second-tail").style.top = Math.round(center) + "px";
+
+      pinOuter = Math.round(dialSize * 0.055);
+      pinInner = Math.round(dialSize * 0.023);
+      byId("pin-outer").style.width = pinOuter + "px";
+      byId("pin-outer").style.height = pinOuter + "px";
+      byId("pin-outer").style.left = Math.round(center - pinOuter / 2) + "px";
+      byId("pin-outer").style.top = Math.round(center - pinOuter / 2) + "px";
+      byId("pin-inner").style.width = pinInner + "px";
+      byId("pin-inner").style.height = pinInner + "px";
+      byId("pin-inner").style.left = Math.round(center - pinInner / 2) + "px";
+      byId("pin-inner").style.top = Math.round(center - pinInner / 2) + "px";
+
+      byId("glass").style.left = Math.round(dialSize * 0.105) + "px";
+      byId("glass").style.top = Math.round(dialSize * 0.07) + "px";
+      byId("glass").style.width = Math.round(dialSize * 0.79) + "px";
+      byId("glass").style.height = Math.round(dialSize * 0.38) + "px";
+
+      byId("caption").style.top = Math.round(clockTop + clockSize + 18) + "px";
+    }
+
+    function cleanFlash(parts) {
+      var key = parts.year + "-" + parts.month + "-" + parts.date + "-" + parts.hour;
+
+      if (HOURLY_CLEAN_FLASH && parts.minute === 0 && parts.second === 0 && key !== lastFlashKey) {
+        lastFlashKey = key;
+        byId("cleaner").style.display = "block";
+        window.setTimeout(function () {
+          byId("cleaner").style.display = "none";
+        }, 900);
+      }
+    }
+
+    function drawClock() {
+      var parts = getClockParts();
+      var hourAngle = (parts.hour % 12) * 30 + parts.minute * 0.5 + parts.second / 120;
+      var minuteAngle = parts.minute * 6 + parts.second * 0.1;
+      var secondAngle = parts.second * 6;
+      var dateKey = parts.year + "-" + parts.month + "-" + parts.date;
+
+      rotate(byId("hour-hand"), hourAngle);
+      rotate(byId("minute-hand"), minuteAngle);
+
+      if (SHOW_SECOND_HAND) {
+        byId("second-hand").style.display = "block";
+        byId("second-tail").style.display = "block";
+        rotate(byId("second-hand"), secondAngle);
+        rotate(byId("second-tail"), secondAngle);
+      } else {
+        byId("second-hand").style.display = "none";
+        byId("second-tail").style.display = "none";
+      }
+
+      if (dateKey !== lastDateKey) {
+        byId("date-window").innerHTML = parts.date;
+        byId("weekday").innerHTML = WEEKDAYS[parts.day];
+        byId("full-date").innerHTML = parts.year + "년 " + parts.month + "월 " + parts.date + "일 &middot; KOREA STANDARD TIME";
+        lastDateKey = dateKey;
+      }
+
+      cleanFlash(parts);
+    }
+
+    function scheduleNextSecond() {
+      var now = new Date();
+      var wait = 1020 - now.getMilliseconds();
+
+      window.setTimeout(function () {
+        drawClock();
+        scheduleNextSecond();
+      }, wait);
+    }
+
+    window.onload = function () {
+      fitLayout();
+      drawClock();
+      scheduleNextSecond();
+    };
+
+    window.onresize = function () {
+      fitLayout();
+      drawClock();
+    };
+  </script>
+</body>
+</html>
