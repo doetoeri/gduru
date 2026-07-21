@@ -1,462 +1,830 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ko">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>gGuru Intelligence Dashboard v4.1</title>
-    
-    <link href="https://fonts.googleapis.com/css2?family=SF+Pro+Display:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <meta name="theme-color" content="#2855d9">
+  <title>Duru Duo · 화법 격률 진단</title>
+  <style>
+    :root {
+      --ink: #172033;
+      --muted: #667085;
+      --line: #dce3f0;
+      --surface: rgba(255, 255, 255, .88);
+      --surface-solid: #ffffff;
+      --canvas: #f4f7fc;
+      --primary: #2855d9;
+      --primary-dark: #183baf;
+      --primary-soft: #e8eeff;
+      --teal: #078783;
+      --teal-soft: #dcf7f3;
+      --danger: #b42318;
+      --danger-soft: #fee9e7;
+      --success: #067647;
+      --success-soft: #dcfae6;
+      --shadow: 0 18px 55px rgba(34, 55, 98, .10);
+      --radius-xl: 28px;
+      --radius-lg: 20px;
+      --radius-md: 14px;
+    }
 
-    <style>
-        /* ==========================================
-           1. Apple 프리미엄 대시보드 테마 토큰
-           ========================================== */
-        :root {
-            --apple-bg: #f5f5f7;
-            --apple-card: #ffffff;
-            --apple-text-main: #1d1d1f;
-            --apple-text-sub: #86868b;
-            --apple-border: rgba(0, 0, 0, 0.08);
-            
-            --color-blue: #0071e3;    /* DuoP 테마 */
-            --color-green: #34c759;   /* DuoC 테마 */
-            --color-red: #ff3b30;     /* 위배 경고 상태 */
-            --color-gray-bg: #f5f5f7;
-            
-            --apple-spring: cubic-bezier(0.25, 1.4, 0.35, 1.05);
-            --apple-fluid: cubic-bezier(0.16, 1, 0.3, 1);
-            --dock-position: calc(100vh - 96px);
-        }
+    * { box-sizing: border-box; }
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Noto Sans KR', sans-serif;
-            letter-spacing: -0.3px;
-            -webkit-font-smoothing: antialiased;
-        }
+    html { min-width: 320px; background: var(--canvas); }
 
-        body {
-            background-color: var(--apple-bg);
-            color: var(--apple-text-main);
-            min-height: 100vh;
-            padding: 40px 24px 140px 24px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      color: var(--ink);
+      font-family: Inter, Pretendard, "Noto Sans KR", "Apple SD Gothic Neo", system-ui, sans-serif;
+      background:
+        radial-gradient(circle at 10% -4%, rgba(40, 85, 217, .16), transparent 31rem),
+        radial-gradient(circle at 92% 12%, rgba(7, 135, 131, .13), transparent 27rem),
+        linear-gradient(180deg, #f8faff 0, #f3f6fb 100%);
+    }
 
-        .apple-header {
-            text-align: center;
-            margin-bottom: 32px;
-        }
-        .apple-header h1 { font-size: 2.2rem; font-weight: 600; color: var(--apple-text-main); }
-        .apple-header p { font-size: 0.95rem; color: var(--apple-text-sub); margin-top: 6px; }
+    button, textarea, input { font: inherit; }
+    button { -webkit-tap-highlight-color: transparent; }
 
-        .workspace {
-            width: 100%;
-            max-width: 1300px;
-            display: grid;
-            grid-template-columns: 380px 1fr;
-            gap: 28px;
-        }
+    .shell {
+      width: min(1180px, calc(100% - 32px));
+      margin: 0 auto;
+      padding: 32px 0 52px;
+    }
 
-        @media (max-width: 1100px) {
-            .workspace { grid-template-columns: 1fr; }
-        }
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      margin-bottom: 26px;
+    }
 
-        .apple-card {
-            background: var(--apple-card);
-            border-radius: 24px;
-            padding: 26px;
-            border: 1px solid var(--apple-border);
-            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.01);
-            transition: all 0.4s var(--apple-fluid);
-        }
+    .brand { display: flex; align-items: center; gap: 13px; }
 
-        .control-panel { display: flex; flex-direction: column; gap: 20px; height: fit-content; }
-        .field-group { display: flex; flex-direction: column; gap: 8px; }
-        .field-group label { font-size: 0.8rem; font-weight: 600; color: var(--apple-text-sub); text-transform: uppercase; letter-spacing: 0.5px; }
-        .apple-input, .apple-textarea {
-            width: 100%; background: #f5f5f7; border: 1px solid transparent; border-radius: 14px;
-            padding: 14px; font-size: 0.9rem; color: var(--apple-text-main); outline: none; transition: all 0.3s var(--apple-fluid);
-        }
-        .apple-textarea { resize: none; height: 160px; line-height: 1.5; }
-        .apple-input:focus, .apple-textarea:focus { background: #fff; border-color: var(--apple-text-main); box-shadow: 0 0 0 4px rgba(0,0,0,0.03); }
-        
-        .apple-btn {
-            background: var(--apple-text-main); color: #fff; border: none; padding: 16px; border-radius: 14px;
-            font-size: 0.95rem; font-weight: 500; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; transition: all 0.2s var(--apple-fluid);
-        }
-        .apple-btn:hover { background: #333336; }
-        .apple-btn:active { transform: scale(0.97); }
+    .brand-mark {
+      display: grid;
+      place-items: center;
+      width: 48px;
+      height: 48px;
+      color: white;
+      border-radius: 16px;
+      background: linear-gradient(145deg, #3468ed, #173da8);
+      box-shadow: 0 10px 28px rgba(40, 85, 217, .28);
+    }
 
-        .dashboard-view { display: flex; flex-direction: column; gap: 24px; }
+    .brand-mark svg { width: 27px; height: 27px; }
+    .brand-copy strong { display: block; font-size: 18px; letter-spacing: -.02em; }
+    .brand-copy span { color: var(--muted); font-size: 12px; }
 
-        .mini-status-bar {
-            background: #1d1d1f; color: #fff; border-radius: 14px; padding: 12px 18px;
-            font-family: 'JetBrains Mono', monospace; font-size: 0.78rem; display: flex; align-items: center; justify-content: space-between;
-        }
-        .status-left { display: flex; align-items: center; gap: 8px; color: #a5d6ff; }
-        .status-right { color: var(--apple-text-sub); }
+    .connection {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      min-height: 38px;
+      padding: 0 13px;
+      border: 1px solid rgba(7, 135, 131, .18);
+      border-radius: 999px;
+      color: #075e5b;
+      background: rgba(220, 247, 243, .78);
+      font-size: 12px;
+      font-weight: 750;
+    }
 
-        .agent-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
-        @media (max-width: 768px) { .agent-grid { grid-template-columns: 1fr; } }
+    .connection-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #14a7a2;
+      box-shadow: 0 0 0 4px rgba(20, 167, 162, .12);
+    }
 
-        .agent-board { display: flex; flex-direction: column; gap: 20px; position: relative; }
-        .agent-board-header { display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--apple-border); padding-bottom: 14px; }
-        .agent-info { display: flex; align-items: center; gap: 10px; }
-        .agent-info i { font-size: 24px; }
-        .agent-info.p-color i { color: var(--color-blue); }
-        .agent-info.c-color i { color: var(--color-green); }
-        .agent-title { font-size: 1.05rem; font-weight: 600; }
+    .hero {
+      position: relative;
+      overflow: hidden;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      align-items: end;
+      gap: 28px;
+      margin-bottom: 22px;
+      padding: clamp(28px, 5vw, 52px);
+      color: white;
+      border-radius: 32px;
+      background:
+        radial-gradient(circle at 92% 0%, rgba(82, 214, 204, .35), transparent 20rem),
+        linear-gradient(130deg, #122b75 0%, #2855d9 52%, #087b87 112%);
+      box-shadow: 0 24px 70px rgba(24, 59, 175, .22);
+    }
 
-        .status-badge {
-            font-size: 0.75rem; font-weight: 700; padding: 6px 14px; border-radius: 100px; text-transform: uppercase;
-            display: flex; align-items: center; gap: 4px; transition: all 0.3s var(--apple-fluid);
-        }
-        .status-badge.pass { background: rgba(52, 199, 89, 0.1); color: var(--color-green); }
-        .status-badge.violation { background: rgba(255, 59, 48, 0.1); color: var(--color-red); }
+    .hero::after {
+      content: "";
+      position: absolute;
+      right: -70px;
+      bottom: -120px;
+      width: 330px;
+      height: 330px;
+      border: 1px solid rgba(255, 255, 255, .13);
+      border-radius: 50%;
+      box-shadow: 0 0 0 42px rgba(255, 255, 255, .045), 0 0 0 92px rgba(255, 255, 255, .025);
+    }
 
-        .target-box { background: var(--color-gray-bg); border-radius: 16px; padding: 16px; min-height: 68px; display: flex; flex-direction: column; gap: 4px; }
-        .target-box .box-label { font-size: 0.72rem; font-weight: 700; color: var(--apple-text-sub); text-transform: uppercase; }
-        .target-box .quote-text { font-size: 0.92rem; font-weight: 500; line-height: 1.5; color: var(--apple-text-main); }
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 14px;
+      color: #b9fff8;
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: .11em;
+      text-transform: uppercase;
+    }
 
-        .metric-container { display: flex; flex-direction: column; gap: 14px; }
-        .metric-row { display: flex; flex-direction: column; gap: 6px; }
-        .metric-meta { display: flex; align-items: center; justify-content: space-between; font-size: 0.82rem; font-weight: 500; }
-        .metric-name { color: var(--apple-text-main); display: flex; align-items: center; gap: 4px; }
-        .metric-score { font-weight: 600; }
-        
-        .gauge-track { width: 100%; height: 8px; background: #e5e5ea; border-radius: 100px; overflow: hidden; position: relative; }
-        .gauge-fill { height: 100%; width: 0%; border-radius: 100px; transition: width 1.2s cubic-bezier(0.1, 1, 0.1, 1); }
-        .p-side .gauge-fill { background: var(--color-blue); }
-        .c-side .gauge-fill { background: var(--color-green); }
-        
-        .metric-row.violated .gauge-fill { background: var(--color-red) !important; }
-        .metric-row.violated .metric-name { color: var(--color-red); font-weight: 600; }
+    .hero h1 {
+      max-width: 720px;
+      margin: 0;
+      font-size: clamp(34px, 6vw, 65px);
+      line-height: .99;
+      letter-spacing: -.055em;
+    }
 
-        .reason-card { background: #fafafa; border: 1px solid var(--apple-border); border-radius: 16px; padding: 16px; font-size: 0.88rem; line-height: 1.6; color: #424245; }
-        .reason-card strong { color: var(--apple-text-main); display: block; margin-bottom: 4px; font-size: 0.82rem; }
+    .hero p {
+      max-width: 670px;
+      margin: 20px 0 0;
+      color: rgba(255, 255, 255, .78);
+      font-size: clamp(14px, 2vw, 17px);
+      line-height: 1.75;
+    }
 
-        .workspace.is-analyzing .apple-card { opacity: 0.6; pointer-events: none; }
-        @keyframes console-pulse { from { opacity: 0.5; } to { opacity: 1; } }
-    </style>
+    .hero-badge {
+      position: relative;
+      z-index: 1;
+      width: 152px;
+      padding: 18px;
+      border: 1px solid rgba(255, 255, 255, .17);
+      border-radius: 22px;
+      background: rgba(255, 255, 255, .1);
+      backdrop-filter: blur(12px);
+    }
+
+    .hero-badge span { display: block; color: rgba(255, 255, 255, .68); font-size: 11px; }
+    .hero-badge strong { display: block; margin-top: 5px; font-size: 15px; }
+
+    .model-strip {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 9px;
+      margin-top: 24px;
+    }
+
+    .model-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 8px 11px;
+      color: rgba(255,255,255,.88);
+      border: 1px solid rgba(255,255,255,.15);
+      border-radius: 999px;
+      background: rgba(8, 23, 63, .22);
+      font-size: 11px;
+      text-decoration: none;
+    }
+
+    .model-chip:hover { background: rgba(8, 23, 63, .38); }
+    .model-chip b { color: #b9fff8; }
+
+    .workspace {
+      display: grid;
+      grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr);
+      gap: 22px;
+      align-items: start;
+    }
+
+    .panel {
+      border: 1px solid rgba(211, 220, 235, .92);
+      border-radius: var(--radius-xl);
+      background: var(--surface);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(20px);
+    }
+
+    .panel-head {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 24px 24px 19px;
+      border-bottom: 1px solid #e8edf5;
+    }
+
+    .panel-title { display: flex; gap: 12px; }
+
+    .panel-icon {
+      display: grid;
+      place-items: center;
+      flex: 0 0 auto;
+      width: 38px;
+      height: 38px;
+      color: var(--primary);
+      border-radius: 12px;
+      background: var(--primary-soft);
+    }
+
+    .panel-icon svg { width: 20px; height: 20px; }
+    .panel-head h2 { margin: 0; font-size: 17px; letter-spacing: -.02em; }
+    .panel-head p { margin: 4px 0 0; color: var(--muted); font-size: 12px; line-height: 1.55; }
+
+    .panel-body { padding: 23px 24px 25px; }
+
+    .field { display: block; margin-bottom: 18px; }
+    .field-label { display: flex; justify-content: space-between; gap: 12px; margin: 0 1px 8px; }
+    .field-label strong { font-size: 13px; }
+    .field-label span { color: #98a2b3; font-size: 11px; }
+
+    textarea {
+      display: block;
+      width: 100%;
+      resize: vertical;
+      padding: 14px 15px;
+      color: var(--ink);
+      border: 1px solid #ccd5e4;
+      border-radius: var(--radius-md);
+      outline: none;
+      background: rgba(255,255,255,.9);
+      line-height: 1.65;
+      transition: border-color .18s, box-shadow .18s, background .18s;
+    }
+
+    textarea:hover { border-color: #aebbd0; }
+    textarea:focus { border-color: var(--primary); background: #fff; box-shadow: 0 0 0 4px rgba(40,85,217,.11); }
+    #situation { min-height: 88px; }
+    #dialogue { min-height: 158px; }
+
+    .truth-group { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .truth-option { position: relative; }
+    .truth-option input { position: absolute; opacity: 0; pointer-events: none; }
+
+    .truth-option label {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      min-height: 48px;
+      padding: 0 12px;
+      color: #526075;
+      border: 1px solid #ccd5e4;
+      border-radius: 14px;
+      background: rgba(255,255,255,.76);
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 720;
+      transition: .18s ease;
+    }
+
+    .truth-option input:checked + label {
+      color: var(--primary-dark);
+      border-color: rgba(40,85,217,.46);
+      background: var(--primary-soft);
+      box-shadow: inset 0 0 0 1px rgba(40,85,217,.14);
+    }
+
+    .truth-option input:focus-visible + label { outline: 3px solid rgba(40,85,217,.2); outline-offset: 2px; }
+
+    .presets { display: grid; gap: 8px; margin: 20px 0; }
+    .presets-label { color: var(--muted); font-size: 11px; font-weight: 780; letter-spacing: .04em; }
+
+    .preset {
+      width: 100%;
+      padding: 11px 13px;
+      overflow: hidden;
+      color: #465166;
+      border: 1px solid #e0e6f0;
+      border-radius: 12px;
+      background: #f8faff;
+      cursor: pointer;
+      text-align: left;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      font-size: 12px;
+      transition: .18s ease;
+    }
+
+    .preset:hover { color: var(--primary); border-color: #b9c7e5; background: #f0f4ff; transform: translateX(2px); }
+
+    .submit {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      width: 100%;
+      min-height: 54px;
+      padding: 0 18px;
+      color: white;
+      border: 0;
+      border-radius: 16px;
+      background: linear-gradient(135deg, #3566e8, #2147c4);
+      box-shadow: 0 12px 28px rgba(40, 85, 217, .25);
+      cursor: pointer;
+      font-weight: 800;
+      letter-spacing: -.01em;
+      transition: transform .18s, box-shadow .18s, filter .18s;
+    }
+
+    .submit:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 16px 34px rgba(40,85,217,.31); filter: saturate(1.08); }
+    .submit:active:not(:disabled) { transform: translateY(0); }
+    .submit:disabled { cursor: wait; opacity: .78; }
+
+    .submit svg { width: 19px; height: 19px; }
+    .submit .spinner { display: none; }
+    .submit.loading .rocket { display: none; }
+    .submit.loading .spinner { display: block; animation: spin .8s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .result-panel { min-height: 602px; }
+    .result-body { position: relative; min-height: 510px; padding: 23px 24px 25px; }
+
+    .result-state {
+      min-height: 452px;
+      display: grid;
+      place-items: center;
+      padding: 34px;
+      color: var(--muted);
+      border: 1px dashed #cfd8e7;
+      border-radius: 20px;
+      background: rgba(247,249,253,.72);
+      text-align: center;
+    }
+
+    .state-inner { max-width: 360px; }
+    .state-orb {
+      display: grid;
+      place-items: center;
+      width: 76px;
+      height: 76px;
+      margin: 0 auto 18px;
+      color: var(--primary);
+      border-radius: 26px;
+      background: linear-gradient(145deg, #edf2ff, #dfe8ff);
+      box-shadow: inset 0 0 0 1px rgba(40,85,217,.08);
+    }
+
+    .state-orb svg { width: 34px; height: 34px; }
+    .result-state h3 { margin: 0 0 9px; color: #344054; font-size: 17px; }
+    .result-state p { margin: 0; font-size: 13px; line-height: 1.75; }
+
+    .loading-steps { display: none; width: min(330px, 100%); margin: 24px auto 0; text-align: left; }
+    .result-state.loading .loading-steps { display: grid; gap: 9px; }
+    .result-state.loading .state-orb { animation: breathe 1.7s ease-in-out infinite; }
+    @keyframes breathe { 50% { transform: translateY(-4px) scale(1.035); box-shadow: 0 12px 30px rgba(40,85,217,.15); } }
+
+    .loading-step {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 12px;
+      color: #7b8495;
+      border-radius: 11px;
+      background: rgba(255,255,255,.8);
+      font-size: 12px;
+    }
+
+    .loading-step.active { color: var(--primary-dark); background: var(--primary-soft); font-weight: 750; }
+    .mini-dot { width: 7px; height: 7px; border-radius: 50%; background: #b8c2d2; }
+    .loading-step.active .mini-dot { background: var(--primary); box-shadow: 0 0 0 4px rgba(40,85,217,.11); }
+
+    #report { display: none; }
+    #report.visible { display: block; animation: rise .35s ease both; }
+    @keyframes rise { from { opacity: 0; transform: translateY(8px); } }
+
+    .material-card {
+      padding: 20px;
+      margin-bottom: 14px;
+      color: #344054;
+      border: 1px solid #e0e6ef;
+      border-radius: 19px;
+      background: #fff;
+      box-shadow: 0 5px 18px rgba(28, 45, 78, .05);
+    }
+
+    .material-card:last-child { margin-bottom: 0; }
+    .material-card.main-target { color: #183153; border-color: #c8d6ff; background: linear-gradient(145deg, #eef3ff, #e5edff); }
+    .material-icons-outlined { display: none; }
+    .card-icon { margin-right: 5px; }
+    .card-title { display: flex; align-items: center; gap: 8px; margin: 0 0 13px; color: #1f2937; font-size: 16px; }
+    .card-title .material-icons-outlined { color: var(--primary); }
+
+    .material-status {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 800;
+    }
+
+    .status-success { color: var(--success); background: var(--success-soft); }
+    .status-error { color: var(--danger); background: var(--danger-soft); }
+    .score-line { padding: 7px 0; color: #475467; border-bottom: 1px solid #f0f2f6; font-size: 13px; }
+    .bar-chart { display: inline-block; margin-left: 6px; color: var(--primary); letter-spacing: 1px; }
+    .reason-box { margin-top: 14px; padding: 13px 14px; color: #344054; border-radius: 13px; background: #f5f7fb; font-size: 13px; line-height: 1.68; }
+
+    .error-box { color: #912018; border-color: #f5b8b3; background: #fff4f3; }
+
+    .status-note {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 14px;
+      color: #7b8495;
+      font-size: 11px;
+      line-height: 1.55;
+    }
+
+    .status-note svg { flex: 0 0 auto; width: 15px; height: 15px; }
+
+    footer {
+      display: flex;
+      justify-content: space-between;
+      gap: 18px;
+      margin-top: 22px;
+      padding: 0 8px;
+      color: #8791a3;
+      font-size: 11px;
+      line-height: 1.6;
+    }
+
+    footer a { color: #6476aa; text-decoration: none; }
+    footer a:hover { text-decoration: underline; }
+
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
+
+    @media (max-width: 860px) {
+      .hero { grid-template-columns: 1fr; }
+      .hero-badge { display: none; }
+      .workspace { grid-template-columns: 1fr; }
+      .result-panel { min-height: 0; }
+      .result-body, .result-state { min-height: 380px; }
+    }
+
+    @media (max-width: 560px) {
+      .shell { width: min(100% - 20px, 1180px); padding-top: 18px; }
+      .topbar { align-items: flex-start; }
+      .brand-copy span { display: none; }
+      .connection { padding: 0 10px; }
+      .connection .connection-label { display: none; }
+      .hero { padding: 28px 23px; border-radius: 25px; }
+      .hero h1 { font-size: 38px; }
+      .panel { border-radius: 22px; }
+      .panel-head, .panel-body, .result-body { padding-left: 18px; padding-right: 18px; }
+      footer { flex-direction: column; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+    }
+  </style>
 </head>
 <body>
-
-    <div class="apple-header">
-        <h1>gGuru Intelligence Studio</h1>
-        <p>Linguistic Maxim Dashboard & Analytics Framework</p>
-    </div>
-
-    <div class="workspace" id="mainWorkspace">
-        
-        <div class="apple-card control-panel">
-            <div class="field-group">
-                <label>Context Situation</label>
-                <input type="text" class="apple-input" id="sitInput" value="조별 과제 모임에서 PPT 레이아웃을 정하고 있는데, 주제와 전혀 상관없는 예능 프로그램 이야기를 꺼내며 흐름을 끊는 상황">
-            </div>
-
-            <div class="field-group">
-                <label>Dialogue Script</label>
-                <textarea class="apple-textarea" id="diagInput">조장: 우리 이제 PPT 레이아웃 정해야 하니까 다들 의견 좀 내봐.
-팀원: 아 맞다, 어제 예능 스페셜 봤냐? 진짜 역대급으로 웃기던데 ㅋㅋㅋ</textarea>
-            </div>
-
-            <button class="apple-btn" id="runParallelBtn">
-                <i class="material-icons-round">bolt</i>
-                <span>Duo 통합 데이터 추론 가동</span>
-            </button>
+  <main class="shell">
+    <header class="topbar">
+      <div class="brand">
+        <div class="brand-mark" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H11v16H6.5A2.5 2.5 0 0 0 4 21.5z"/><path d="M20 5.5A2.5 2.5 0 0 0 17.5 3H13v16h4.5a2.5 2.5 0 0 1 2.5 2.5z"/></svg>
         </div>
+        <div class="brand-copy"><strong>Duru Duo</strong><span>말을 읽고, 관계를 해석합니다</span></div>
+      </div>
+      <div class="connection" id="connectionBadge" title="Hugging Face Space 연결 방식">
+        <span class="connection-dot"></span><span class="connection-label">Hugging Face 연결형</span><span>LIVE</span>
+      </div>
+    </header>
 
-        <div class="dashboard-view">
-            
-            <div class="mini-status-bar">
-                <div class="status-left" id="runtimeStatus">
-                    <i class="material-icons-round" style="font-size:16px;">terminal</i>
-                    <span id="runtimeText">SYSTEM STANDBY // READY TO INFERENCE</span>
-                </div>
-                <div class="status-right" id="runtimeTime">00:00:00</div>
-            </div>
-
-            <div class="agent-grid">
-                
-                <div class="apple-card agent-board p-side">
-                    <div class="agent-board-header">
-                        <div class="agent-info p-color">
-                            <i class="material-icons-round">psychology</i>
-                            <div class="agent-title">DuoP 공손성 분석기</div>
-                        </div>
-                        <div class="status-badge pass" id="p_badge">
-                            <i class="material-icons-round" style="font-size:14px;">check_circle</i><span>STANDBY</span>
-                        </div>
-                    </div>
-
-                    <div class="target-box">
-                        <div class="box-label">Core Target Sentence</div>
-                        <div class="quote-text" id="p_target">—</div>
-                    </div>
-
-                    <div class="metric-container" id="p_metrics">
-                        <div class="metric-row" id="row_요령의_격률">
-                            <div class="metric-meta"><span class="metric-name"><i class="material-icons-round" style="font-size:14px;">ads_click</i> 요령의 격률</span><span class="metric-score" id="v_요령의_격률">0 / 5</span></div>
-                            <div class="gauge-track"><div class="gauge-fill" id="g_요령의_격률"></div></div>
-                        </div>
-                        <div class="metric-row" id="row_관용의_격률">
-                            <div class="metric-meta"><span class="metric-name"><i class="material-icons-round" style="font-size:14px;">favorite</i> 관용의 격률</span><span class="metric-score" id="v_관용의_격률">0 / 5</span></div>
-                            <div class="gauge-track"><div class="gauge-fill" id="g_관용의_격률"></div></div>
-                        </div>
-                        <div class="metric-row" id="row_찬성의_격률">
-                            <div class="metric-meta"><span class="metric-name"><i class="material-icons-round" style="font-size:14px;">thumb_up</i> 찬성의 격률</span><span class="metric-score" id="v_찬성의_격률">0 / 5</span></div>
-                            <div class="gauge-track"><div class="gauge-fill" id="g_찬성의_격률"></div></div>
-                        </div>
-                        <div class="metric-row" id="row_겸양의_격률">
-                            <div class="metric-meta"><span class="metric-name"><i class="material-icons-round" style="font-size:14px;">workspace_premium</i> 겸양의 격률</span><span class="metric-score" id="v_겸양의_격률">0 / 5</span></div>
-                            <div class="gauge-track"><div class="gauge-fill" id="g_겸양의_격률"></div></div>
-                        </div>
-                        <div class="metric-row" id="row_동의의_격률">
-                            <div class="metric-meta"><span class="metric-name"><i class="material-icons-round" style="font-size:14px;">handshake</i> 동의의 격률</span><span class="metric-score" id="v_동의의_격률">0 / 5</span></div>
-                            <div class="gauge-track"><div class="gauge-fill" id="g_동의의_격률"></div></div>
-                        </div>
-                    </div>
-
-                    <div class="reason-card">
-                        <strong>Linguistic Diagnostic Report</strong>
-                        <span id="p_reason">대화 스크립트를 주입한 후 가동 버튼을 누르면 추론 분석표가 출력됩니다.</span>
-                    </div>
-                </div>
-
-                <div class="apple-card agent-board c-side">
-                    <div class="agent-board-header">
-                        <div class="agent-info c-color">
-                            <i class="material-icons-round">forum</i>
-                            <div class="agent-title">DuoC 협력·체면 분석기</div>
-                        </div>
-                        <div class="status-badge pass" id="c_badge">
-                            <i class="material-icons-round" style="font-size:14px;">check_circle</i><span>STANDBY</span>
-                        </div>
-                    </div>
-
-                    <div class="target-box">
-                        <div class="box-label">Core Target Sentence</div>
-                        <div class="quote-text" id="c_target">—</div>
-                    </div>
-
-                    <div class="metric-container" id="c_metrics">
-                        <div class="metric-row" id="row_양의_격률">
-                            <div class="metric-meta"><span class="metric-name"><i class="material-icons-round" style="font-size:14px;">segment</i> 양의 격률</span><span class="metric-score" id="v_양의_격률">0 / 5</span></div>
-                            <div class="gauge-track"><div class="gauge-fill" id="g_양의_격률"></div></div>
-                        </div>
-                        <div class="metric-row" id="row_질의_격률">
-                            <div class="metric-meta"><span class="metric-name"><i class="material-icons-round" style="font-size:14px;">help_outline</i> 질의 격률</span><span class="metric-score" id="v_질의_격률">0 / 5</span></div>
-                            <div class="gauge-track"><div class="gauge-fill" id="g_질의_격률"></div></div>
-                        </div>
-                        <div class="metric-row" id="row_관련성의_격률">
-                            <div class="metric-meta"><span class="metric-name"><i class="material-icons-round" style="font-size:14px;">link</i> 관계(관련성)의 격률</span><span class="metric-score" id="v_관련성의_격률">0 / 5</span></div>
-                            <div class="gauge-track"><div class="gauge-fill" id="g_관련성의_격률"></div></div>
-                        </div>
-                        <div class="metric-row" id="row_태도의_격률">
-                            <div class="metric-meta"><span class="metric-name"><i class="material-icons-round" style="font-size:14px;">gavel</i> 태도의 격률</span><span class="metric-score" id="v_태도의_격률">0 / 5</span></div>
-                            <div class="gauge-track"><div class="gauge-fill" id="g_태도의_격률"></div></div>
-                        </div>
-                        <div class="metric-row" id="row_체면_유지">
-                            <div class="metric-meta"><span class="metric-name"><i class="material-icons-round" style="font-size:14px;">face</i> 체면 유지 원리</span><span class="metric-score" id="v_체면_유지">0 / 5</span></div>
-                            <div class="gauge-track"><div class="gauge-fill" id="g_체면_유지"></div></div>
-                        </div>
-                    </div>
-
-                    <div class="reason-card">
-                        <strong>Linguistic Diagnostic Report</strong>
-                        <span id="c_reason">대화 참여자들 간의 협력 격률 분석 데이터가 이곳에 맵핑됩니다.</span>
-                    </div>
-                </div>
-
-            </div>
+    <section class="hero" aria-labelledby="heroTitle">
+      <div>
+        <div class="eyebrow">Korean discourse intelligence · v4.1</div>
+        <h1 id="heroTitle">대화 속 원칙을<br>두 시선으로 봅니다.</h1>
+        <p>DuoP는 공손성의 원리를, DuoC는 협력의 원리와 체면 유지를 분석합니다. 상황과 대화를 입력하면 두 전문 모델이 하나의 진단 리포트로 답합니다.</p>
+        <div class="model-strip" aria-label="사용 모델">
+          <a class="model-chip" href="https://huggingface.co/doetoeri/duru-duop-unsloth" target="_blank" rel="noreferrer"><b>DuoP</b> 공손성 어댑터</a>
+          <a class="model-chip" href="https://huggingface.co/doetoeri/duru-duoc-unsloth" target="_blank" rel="noreferrer"><b>DuoC</b> 협력·체면 어댑터</a>
+          <span class="model-chip"><b>Base</b> Qwen2.5-3B-Instruct</span>
         </div>
-    </div>
+      </div>
+      <div class="hero-badge" aria-hidden="true"><span>분석 엔진</span><strong>2 adapters</strong><span style="margin-top:14px">출력 척도</span><strong>1 — 5점</strong></div>
+    </section>
 
-    <script>
-        const runParallelBtn = document.getElementById('runParallelBtn');
-        const mainWorkspace = document.getElementById('mainWorkspace');
-        const runtimeText = document.getElementById('runtimeText');
-        const runtimeTime = document.getElementById('runtimeTime');
+    <section class="workspace">
+      <form class="panel" id="analysisForm">
+        <div class="panel-head">
+          <div class="panel-title">
+            <div class="panel-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L8 18l-4 1 1-4z"/></svg></div>
+            <div><h2>대화 입력</h2><p>상황 맥락이 구체적일수록 진단이 선명해집니다.</p></div>
+          </div>
+        </div>
+        <div class="panel-body">
+          <label class="field" for="situation">
+            <span class="field-label"><strong>상황 맥락</strong><span>Situation</span></span>
+            <textarea id="situation" maxlength="1200" required>고등학교 수학 수업이 끝난 후, 친구들끼리 숙제에 대해 이야기하고 있다.</textarea>
+          </label>
 
-        setInterval(() => { runtimeTime.innerText = new Date().toLocaleTimeString(); }, 1000);
+          <label class="field" for="dialogue">
+            <span class="field-label"><strong>대화 내용</strong><span>Dialogue</span></span>
+            <textarea id="dialogue" maxlength="4000" required>A: 너 숙제 다 했어?
+B: 어, 다 했어. 정말 쉬웠어.</textarea>
+          </label>
 
-        // 💡 깨진 JSON을 수술하여 맑고 깨끗한 데이터 객체로 환원하는 프론트엔드 인터셉터
-        function superRescueParser(rawInput, side) {
-            if (!rawInput) return null;
-            
-            // 만약 스트링이 아니라 이미 객체라면 그대로 활용
-            if (typeof rawInput === 'object') return rawInput;
+          <fieldset class="field" style="border:0;padding:0;margin-left:0;margin-right:0">
+            <legend class="field-label" style="width:100%"><strong>발화는 실제 사실입니까?</strong><span>is_truthful</span></legend>
+            <div class="truth-group">
+              <div class="truth-option"><input type="radio" name="truth" id="truthTrue" value="true"><label for="truthTrue">✓ 사실입니다</label></div>
+              <div class="truth-option"><input type="radio" name="truth" id="truthFalse" value="false" checked><label for="truthFalse">× 사실이 아닙니다</label></div>
+            </div>
+          </fieldset>
 
-            let txt = rawInput.trim();
-            let resultObj = {
-                target_sentence: "추출 실패",
-                scores: {},
-                is_violation: false,
-                violated_maxim: null,
-                reason: "분석 완료"
-            };
+          <div class="presets">
+            <div class="presets-label">교과서형 예시 불러오기</div>
+            <button class="preset" type="button" data-preset="0">01 · 조별 과제 중 관련 없는 예능 이야기</button>
+            <button class="preset" type="button" data-preset="1">02 · 음료를 건넨 뒤 무리한 부탁</button>
+            <button class="preset" type="button" data-preset="2">03 · 숙제를 했다고 거짓말한 상황</button>
+          </div>
 
-            try {
-                // 1단계: 모델이 중괄호 꼬리 부근을 파괴했을 때를 대비한 텍스트 기반 하이재킹 수술
-                // 괄호가 닫히고 뜬금없이 나타나는 ': "팀원은..."' 형태에서 이유 문장을 강제로 적출
-                if (txt.includes('}: "')) {
-                    let parts = txt.split('}: "');
-                    if (parts.length > 1) {
-                        resultObj.reason = parts[1].replace(/"/g, '').replace(/}/g, '').trim();
-                    }
-                    // 수술을 위해 뒷부분의 오염 영역 제거
-                    txt = parts[0] + "}";
-                }
+          <button class="submit" id="submitButton" type="submit">
+            <svg class="rocket" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"/><path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.4 12.4 0 0 1 22 2c0 2.72-.78 7.5-6.05 11a22.35 22.35 0 0 1-3.95 2z"/><path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0"/><path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5"/></svg>
+            <svg class="spinner" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12a9 9 0 1 1-6.22-8.56"/></svg>
+            <span id="submitLabel">Duru Duo 분석 시작</span>
+          </button>
+          <div class="status-note"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/></svg><span>첫 실행은 Space가 깨어나는 시간 때문에 수 분 걸릴 수 있습니다. 이 파일은 인터넷 연결이 필요합니다.</span></div>
+        </div>
+      </form>
 
-                // 2단계: 유연한 표준 파싱 시도
-                let parsed = JSON.parse(txt);
-                
-                resultObj.target_sentence = parsed.target_sentence || "핵심 타깃 문장 추출";
-                resultObj.scores = parsed.scores || {};
-                
-                // 3단계: DuoC 모델 특유의 가변 키 매핑 교정 작업
-                if (side === 'c') {
-                    // "관계의_격률"을 대시보드가 이해할 수 있는 "관련성의_격률"로 스왑
-                    if (resultObj.scores["관계의_격률"] !== undefined) {
-                        resultObj.scores["관련성의_격률"] = resultObj.scores["관계의_격률"];
-                    }
-                    if (resultObj.scores["체면 유지"] !== undefined) {
-                        resultObj.scores["체면_유지"] = resultObj.scores["체면 유지"];
-                    }
-                }
+      <section class="panel result-panel" aria-labelledby="resultTitle">
+        <div class="panel-head">
+          <div class="panel-title">
+            <div class="panel-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="m7 16 4-5 4 3 5-7"/></svg></div>
+            <div><h2 id="resultTitle">진단 리포트</h2><p id="resultSubtitle">DuoP와 DuoC의 분석 결과가 여기에 표시됩니다.</p></div>
+          </div>
+        </div>
+        <div class="result-body" aria-live="polite">
+          <div class="result-state" id="resultState">
+            <div class="state-inner">
+              <div class="state-orb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3M8 21H5a2 2 0 0 1-2-2v-3m18 0v3a2 2 0 0 1-2 2h-3"/><circle cx="12" cy="12" r="3"/><path d="M12 5v2m0 10v2M5 12h2m10 0h2"/></svg></div>
+              <h3 id="stateTitle">분석할 대화를 기다리고 있어요</h3>
+              <p id="stateMessage">왼쪽에서 상황과 대화를 입력한 뒤 분석 버튼을 눌러 주세요.</p>
+              <div class="loading-steps" id="loadingSteps">
+                <div class="loading-step active"><span class="mini-dot"></span>Hugging Face 분석 엔진 연결</div>
+                <div class="loading-step"><span class="mini-dot"></span>DuoP 공손성 분석</div>
+                <div class="loading-step"><span class="mini-dot"></span>DuoC 협력·체면 분석</div>
+                <div class="loading-step"><span class="mini-dot"></span>통합 리포트 구성</div>
+              </div>
+            </div>
+          </div>
+          <div id="report"></div>
+        </div>
+      </section>
+    </section>
 
-                // 4단계: 감점된 내역(1점 혹은 2점)을 기반으로 위배(Violation) 상태 자동 판정
-                let lowestScore = 5;
-                let worstMaxim = null;
-                for (let k in resultObj.scores) {
-                    if (resultObj.scores[k] < lowestScore) {
-                        lowestScore = resultObj.scores[k];
-                        worstMaxim = k;
-                    }
-                }
+    <footer>
+      <span>로그인·API 키 없이 공개 Hugging Face Space를 통해 분석합니다. 입력 내용은 분석을 위해 Space 서버로 전송됩니다.</span>
+      <span><a href="https://huggingface.co/spaces/doetoeri/Duru_Duo" target="_blank" rel="noreferrer">원본 Space</a> · <a href="https://huggingface.co/Qwen/Qwen2.5-3B-Instruct" target="_blank" rel="noreferrer">Base model</a></span>
+    </footer>
+  </main>
 
-                if (lowestScore <= 2) {
-                    resultObj.is_violation = true;
-                    resultObj.violated_maxim = worstMaxim.replace('_', ' ');
-                }
+  <script>
+    "use strict";
 
-                return resultObj;
+    const SPACE_ROOT = "https://doetoeri-duru-duo.hf.space";
+    const presets = [
+      {
+        situation: "조별 과제 모임에서 PPT 레이아웃을 정하고 있는데 한 팀원이 예능 이야기를 꺼내는 상황",
+        dialogue: "조장: 다들 의견 좀 내봐.\n팀원: 어제 예능 스페셜 봤냐? 진짜 개웃기던데 ㅋㅋㅋ",
+        truthful: true
+      },
+      {
+        situation: "동아리 방에서 한 부원이 다른 부원에게 음료를 주며 무리한 부탁을 청하는 상황",
+        dialogue: "A: 선배, 아메리카노 드세요!\nB: 고마워.\nA: 근데 주말 동아리방 청소 선배가 대신 다 해주시면 안 돼요?",
+        truthful: true
+      },
+      {
+        situation: "고등학교 수학 수업이 끝난 후, 친구들끼리 숙제에 대해 이야기하고 있다.",
+        dialogue: "A: 너 숙제 다 했어?\nB: 어, 다 했어. 정말 쉬웠어.",
+        truthful: false
+      }
+    ];
 
-            } catch (e) {
-                console.error("정밀 파서 내부 2차 예외 발생, 하드코어 정규식 스캔 실행", e);
-                
-                // 정형 파싱조차 실패한 완전 붕괴 상태일 때 정규식 힐러 가동
-                let targetMatch = txt.match(/"target_sentence"\s*:\s*"([^"]+)"/);
-                if (targetMatch) resultObj.target_sentence = targetMatch[1];
-                
-                let reasonMatch = rawInput.match(/\}:\s*"([^"]+)"/) || txt.match(/"reason"\s*:\s*"([^"]+)"/);
-                if (reasonMatch) resultObj.reason = reasonMatch[1];
+    const form = document.getElementById("analysisForm");
+    const situationInput = document.getElementById("situation");
+    const dialogueInput = document.getElementById("dialogue");
+    const submitButton = document.getElementById("submitButton");
+    const submitLabel = document.getElementById("submitLabel");
+    const resultState = document.getElementById("resultState");
+    const stateTitle = document.getElementById("stateTitle");
+    const stateMessage = document.getElementById("stateMessage");
+    const report = document.getElementById("report");
+    const resultSubtitle = document.getElementById("resultSubtitle");
+    let progressTimer = null;
 
-                // 스코어 강제 획득
-                const keys = ["양의_격률", "질의_격률", "관계의_격률", "관련성의_격률", "태도의_격률", "체면 유지", "체면_유지", "요령의_격률", "관용의_격률", "찬성의_격률", "겸양의_격률", "동의의_격률"];
-                keys.forEach(k => {
-                    let m = txt.match(new RegExp(`"${k}"\\s*:\\s*(\\d)`));
-                    if (m) {
-                        let finalKey = (k === "관계의_격률") ? "관련성의_격률" : (k === "체면 유지") ? "체면_유지" : k;
-                        resultObj.scores[finalKey] = parseInt(m[1]);
-                        if (parseInt(m[1]) <= 2) {
-                            resultObj.is_violation = true;
-                            resultObj.violated_maxim = finalKey.replace('_', ' ');
-                        }
-                    }
-                });
+    document.querySelectorAll(".preset").forEach((button) => {
+      button.addEventListener("click", () => {
+        const item = presets[Number(button.dataset.preset)];
+        situationInput.value = item.situation;
+        dialogueInput.value = item.dialogue;
+        document.getElementById(item.truthful ? "truthTrue" : "truthFalse").checked = true;
+        situationInput.focus();
+      });
+    });
 
-                return resultObj;
-            }
+    function setBusy(busy) {
+      submitButton.disabled = busy;
+      submitButton.classList.toggle("loading", busy);
+      submitLabel.textContent = busy ? "두 모델이 분석하고 있습니다" : "Duru Duo 분석 시작";
+    }
+
+    function startProgress() {
+      const steps = [...document.querySelectorAll(".loading-step")];
+      let index = 0;
+      steps.forEach((step, i) => step.classList.toggle("active", i === 0));
+      clearInterval(progressTimer);
+      progressTimer = setInterval(() => {
+        index = Math.min(index + 1, steps.length - 1);
+        steps.forEach((step, i) => step.classList.toggle("active", i === index));
+      }, 14000);
+    }
+
+    function showLoading() {
+      report.classList.remove("visible");
+      report.style.display = "none";
+      resultState.style.display = "grid";
+      resultState.classList.add("loading");
+      stateTitle.textContent = "두 전문 모델이 대화를 읽고 있어요";
+      stateMessage.textContent = "첫 실행은 모델 준비 때문에 시간이 더 걸릴 수 있습니다. 창을 닫지 말고 잠시 기다려 주세요.";
+      resultSubtitle.textContent = "분석 엔진에 요청을 전달했습니다.";
+      startProgress();
+    }
+
+    function showError(error) {
+      clearInterval(progressTimer);
+      resultState.style.display = "none";
+      report.style.display = "block";
+      report.className = "visible";
+      report.replaceChildren();
+      const box = document.createElement("div");
+      box.className = "material-card error-box";
+      const title = document.createElement("h3");
+      title.className = "card-title";
+      title.textContent = "분석을 완료하지 못했습니다";
+      const message = document.createElement("div");
+      message.className = "reason-box";
+      message.textContent = humanizeError(error);
+      box.append(title, message);
+      report.append(box);
+      resultSubtitle.textContent = "연결 상태를 확인한 뒤 다시 시도해 주세요.";
+    }
+
+    function humanizeError(error) {
+      const text = String(error && error.message ? error.message : error || "알 수 없는 오류");
+      if (/Failed to fetch|NetworkError|Load failed/i.test(text)) {
+        return "Space 서버에 연결할 수 없습니다. 인터넷 연결을 확인하거나, Space가 준비될 때까지 1~2분 뒤 다시 시도해 주세요.";
+      }
+      if (/timeout/i.test(text)) return "분석 시간이 길어 요청이 만료되었습니다. 잠시 후 다시 시도해 주세요.";
+      return text.length > 240 ? text.slice(0, 240) + "…" : text;
+    }
+
+    function sanitizeReport(rawHtml) {
+      const parsed = new DOMParser().parseFromString(String(rawHtml), "text/html");
+      const allowedTags = new Set(["DIV", "SPAN", "B", "STRONG", "H3", "BR"]);
+      const allowedClasses = new Set([
+        "material-card", "main-target", "material-icons-outlined", "card-icon",
+        "card-title", "material-status", "status-error", "status-success",
+        "status-icon-inline", "score-line", "bar-chart", "reason-box"
+      ]);
+
+      [...parsed.body.querySelectorAll("*")].reverse().forEach((element) => {
+        if (!allowedTags.has(element.tagName)) {
+          element.replaceWith(document.createTextNode(element.textContent || ""));
+          return;
         }
+        const safeClasses = [...element.classList].filter((name) => allowedClasses.has(name));
+        [...element.attributes].forEach((attribute) => element.removeAttribute(attribute.name));
+        if (safeClasses.length) element.className = safeClasses.join(" ");
+      });
 
-        // 📊 UI 컴포넌트 렌더링 엔진
-        function updateAgentDashboard(sidePrefix, rawData) {
-            const safeData = superRescueParser(rawData, sidePrefix);
-            
-            document.getElementById(`${sidePrefix}_target`).innerText = safeData.target_sentence;
+      const fragment = document.createDocumentFragment();
+      [...parsed.body.childNodes].forEach((node) => fragment.append(node.cloneNode(true)));
+      return fragment;
+    }
 
-            const badge = document.getElementById(`${sidePrefix}_badge`);
-            if (safeData.is_violation) {
-                badge.className = "status-badge violation";
-                badge.innerHTML = `<i class="material-icons-round" style="font-size:14px;">error</i><span>VIOLATION: ${safeData.violated_maxim}</span>`;
-            } else {
-                badge.className = "status-badge pass";
-                badge.innerHTML = `<i class="material-icons-round" style="font-size:14px;">check_circle</i><span>MAXIM PASSED</span>`;
-            }
-
-            const standardKeys = sidePrefix === 'p' 
-                ? ["요령의_격률", "관용의_격률", "찬성의_격률", "겸양의_격률", "동의의_격률"]
-                : ["양의_격률", "질의_격률", "관련성의_격률", "태도의_격률", "체면_유지"];
-
-            standardKeys.forEach(key => {
-                let score = safeData.scores[key] !== undefined ? safeData.scores[key] : 5;
-
-                const textElem = document.getElementById(`v_${key}`);
-                const gaugeElem = document.getElementById(`g_${key}`);
-                const rowElem = document.getElementById(`row_${key}`);
-
-                if (textElem && gaugeElem) {
-                    textElem.innerText = `${score} / 5`;
-                    gaugeElem.style.width = `${(score / 5) * 100}%`;
-
-                    if (score <= 2) {
-                        rowElem.classList.add('violated');
-                    } else {
-                        rowElem.classList.remove('violated');
-                    }
-                }
-            });
-
-            document.getElementById(`${sidePrefix}_reason`).innerText = safeData.reason;
-        }
-
-        // 🚀 비동기 통신 코어
-        runParallelBtn.addEventListener('click', async () => {
-            const COLAB_URL = "https://pectin-angled-parsnip.ngrok-free.dev"; 
-            
-            mainWorkspace.classList.add('is-analyzing');
-            runtimeText.innerText = "CUDA HOST RUNTIME // INFERENCE RUNNING...";
-            runtimeText.parentElement.style.animation = "console-pulse 0.5s infinite alternate";
-
-            try {
-                const response = await fetch(`${COLAB_URL}/analyze`, {
-                    method: 'POST',
-                    headers: { 
-                        'Content-Type': 'application/json',
-                        'ngrok-skip-browser-warning': 'true'
-                    },
-                    body: JSON.stringify({
-                        situation: document.getElementById('sitInput').value,
-                        dialogue: document.getElementById('diagInput').value
-                    })
-                });
-
-                if (!response.ok) throw new Error("서버 연산 실패");
-                
-                const realData = await response.json();
-
-                // 🌟 수신 즉시 하이재킹 수술 및 대시보드 맵핑 가동
-                updateAgentDashboard('p', realData.duop);
-                updateAgentDashboard('c', realData.duoc);
-
-                runtimeText.innerText = "CUDA HOST RUNTIME // INFERENCE SUCCESS COMPLETED";
-                runtimeText.parentElement.style.animation = "none";
-                mainWorkspace.classList.remove('is-analyzing');
-
-            } catch (error) {
-                runtimeText.innerText = `ENGINE FAILURE: ${error.message}`;
-                runtimeText.parentElement.style.animation = "none";
-                mainWorkspace.classList.remove('is-analyzing');
-                alert("서버 통신선 연결 오류. 코랩 상태를 확인하세요.");
-            }
+    async function submitAnalysis(situation, dialogue, truthful) {
+      const controller = new AbortController();
+      const timeout = setTimeout(() => controller.abort(), 12 * 60 * 1000);
+      try {
+        const createResponse = await fetch(`${SPACE_ROOT}/gradio_api/call/v2/duru_process`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ situation, dialogue, is_truthful: truthful }),
+          signal: controller.signal
         });
-    </script>
+        if (!createResponse.ok) throw new Error(`Space 요청 실패 (${createResponse.status})`);
+        const created = await createResponse.json();
+        if (!created.event_id) throw new Error("Space가 작업 번호를 반환하지 않았습니다.");
+        return await waitForResult(created.event_id, controller.signal);
+      } catch (error) {
+        if (error && error.name === "AbortError") throw new Error("분석 요청 timeout");
+        throw error;
+      } finally {
+        clearTimeout(timeout);
+      }
+    }
+
+    async function waitForResult(eventId, signal) {
+      const response = await fetch(`${SPACE_ROOT}/gradio_api/call/duru_process/${encodeURIComponent(eventId)}`, {
+        headers: { "Accept": "text/event-stream" },
+        signal
+      });
+      if (!response.ok || !response.body) throw new Error(`결과 스트림 연결 실패 (${response.status})`);
+
+      const reader = response.body.getReader();
+      const decoder = new TextDecoder();
+      let buffer = "";
+      let eventName = "message";
+      let dataLines = [];
+
+      function consumeEvent() {
+        if (!dataLines.length) return null;
+        const dataText = dataLines.join("\n");
+        const name = eventName;
+        eventName = "message";
+        dataLines = [];
+        if (name === "error") {
+          let detail = dataText;
+          try { detail = JSON.parse(dataText); } catch (_) {}
+          throw new Error(typeof detail === "string" ? detail : "Space 분석 오류");
+        }
+        if (name === "complete") {
+          const payload = JSON.parse(dataText);
+          if (!Array.isArray(payload) || typeof payload[0] !== "string") throw new Error("예상하지 못한 결과 형식입니다.");
+          return payload[0];
+        }
+        return null;
+      }
+
+      while (true) {
+        const { value, done } = await reader.read();
+        buffer += decoder.decode(value || new Uint8Array(), { stream: !done });
+        const lines = buffer.split(/\r?\n/);
+        buffer = lines.pop() || "";
+        for (const line of lines) {
+          if (line.startsWith("event:")) eventName = line.slice(6).trim();
+          else if (line.startsWith("data:")) dataLines.push(line.slice(5).trimStart());
+          else if (line === "") {
+            const result = consumeEvent();
+            if (result !== null) return result;
+          }
+        }
+        if (done) {
+          const result = consumeEvent();
+          if (result !== null) return result;
+          throw new Error("결과를 받기 전에 연결이 종료되었습니다.");
+        }
+      }
+    }
+
+    form.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      const situation = situationInput.value.trim();
+      const dialogue = dialogueInput.value.trim();
+      const truthful = document.querySelector('input[name="truth"]:checked').value === "true";
+      if (!situation || !dialogue) return;
+
+      setBusy(true);
+      showLoading();
+      try {
+        const rawResult = await submitAnalysis(situation, dialogue, truthful);
+        clearInterval(progressTimer);
+        report.replaceChildren(sanitizeReport(rawResult));
+        resultState.classList.remove("loading");
+        resultState.style.display = "none";
+        report.style.display = "block";
+        report.className = "visible";
+        resultSubtitle.textContent = "DuoP와 DuoC 분석을 완료했습니다.";
+        if (window.matchMedia("(max-width: 860px)").matches) document.querySelector(".result-panel").scrollIntoView({ behavior: "smooth", block: "start" });
+      } catch (error) {
+        showError(error);
+      } finally {
+        setBusy(false);
+      }
+    });
+  </script>
 </body>
 </html>
