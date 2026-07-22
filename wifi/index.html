@@ -1,24 +1,1595 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="ko" manifest="./offline.appcache">
 <head>
-    <meta charset="UTF-8">
-    <title>학교 와이파이 인증서 다운로드</title>
-    <script>
-        window.onload = function() {
-            // 페이지가 열리자마자 0.5초 뒤에 인증서 파일로 바로 강제 이동(다운로드) 시킵니다.
-            setTimeout(function() {
-                window.location.href = "PPX-AnyLink-CA.cer";
-            }, 500);
-        };
-    </script>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="방학 완주">
+  <meta name="format-detection" content="telephone=no">
+  <link rel="manifest" href="./manifest.webmanifest">
+  <meta name="theme-color" content="#172033">
+  <title>2026 여름방학 완주 플래너</title>
+  <style>
+    * { box-sizing: border-box; }
+    html { font-size: 16px; -webkit-text-size-adjust: 100%; }
+    body {
+      margin: 0;
+      color: #172033;
+      background: #eef2f7;
+      font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo",
+        "Noto Sans KR", "Malgun Gothic", Arial, sans-serif;
+      line-height: 1.55;
+    }
+    button, input, select, textarea { font: inherit; }
+    button, select { min-height: 44px; }
+    button { cursor: pointer; }
+    a { color: #174ea6; }
+    .skip {
+      position: absolute;
+      left: -9999px;
+      top: 0;
+      padding: 10px;
+      background: #fff;
+      z-index: 999;
+    }
+    .skip:focus { left: 8px; }
+    .shell { max-width: 1060px; margin: 0 auto; padding: 0 16px; }
+    .topbar {
+      background: #172033;
+      color: #fff;
+      padding: 18px 0 16px;
+      border-bottom: 5px solid #5fa6ff;
+    }
+    .brand-table { display: table; width: 100%; }
+    .brand-main, .brand-side { display: table-cell; vertical-align: middle; }
+    .brand-side { width: 120px; text-align: right; }
+    .eyebrow {
+      margin: 0 0 3px;
+      color: #b9d8ff;
+      font-size: 0.76rem;
+      font-weight: bold;
+      letter-spacing: 0.08em;
+    }
+    .brand-title { margin: 0; font-size: 1.5rem; line-height: 1.2; }
+    .brand-sub { margin: 5px 0 0; color: #d8e6f7; font-size: 0.86rem; }
+    .top-today {
+      width: 104px;
+      color: #172033;
+      background: #fff;
+      border: 0;
+      border-radius: 10px;
+      font-weight: bold;
+    }
+    .mainnav {
+      padding: 10px 0 7px;
+      background: #fff;
+      border-bottom: 1px solid #cbd4df;
+      text-align: center;
+    }
+    .navbtn {
+      display: inline-block;
+      min-height: 42px;
+      margin: 0 2px 4px;
+      padding: 8px 13px;
+      color: #344054;
+      background: #fff;
+      border: 1px solid transparent;
+      border-radius: 9px;
+      font-weight: bold;
+    }
+    .navbtn.active {
+      color: #123e73;
+      background: #e8f2ff;
+      border-color: #91bff2;
+    }
+    .notice {
+      margin: 14px 0;
+      padding: 10px 13px;
+      background: #fff6cf;
+      border-left: 5px solid #d49b00;
+    }
+    .is-hidden { display: none !important; }
+    #app { padding-top: 16px; padding-bottom: 40px; }
+    .view { display: none; }
+    .view.active { display: block; }
+    .panel {
+      margin: 0 0 14px;
+      padding: 17px;
+      background: #fff;
+      border: 1px solid #d4dde8;
+      border-radius: 14px;
+      box-shadow: 0 3px 12px rgba(27, 48, 78, 0.06);
+    }
+    .panel h2, .panel h3 { margin-top: 0; }
+    .hero {
+      color: #fff;
+      background: #235d9f;
+      border-color: #235d9f;
+      box-shadow: none;
+    }
+    .hero-grid { display: table; width: 100%; }
+    .hero-main, .hero-side { display: table-cell; vertical-align: middle; }
+    .hero-side { width: 250px; padding-left: 20px; }
+    .hero-kicker {
+      margin: 0 0 5px;
+      color: #d3e8ff;
+      font-size: 0.83rem;
+      font-weight: bold;
+    }
+    .hero h1 { margin: 0; font-size: 1.85rem; line-height: 1.2; }
+    .hero-meta { margin: 7px 0 0; color: #e5f1ff; }
+    .progress-label {
+      margin: 0 0 5px;
+      font-size: 0.83rem;
+      font-weight: bold;
+    }
+    .progress-track {
+      height: 16px;
+      overflow: hidden;
+      background: #153e6c;
+      border: 1px solid #8cc4ff;
+      border-radius: 10px;
+    }
+    .progress-fill {
+      width: 0;
+      height: 100%;
+      background: #fff;
+    }
+    .progress-text { margin: 5px 0 0; text-align: right; font-weight: bold; }
+    .sync-panel { border-left: 7px solid #2e7b52; }
+    .sync-grid { display: table; width: 100%; }
+    .sync-code-cell, .sync-input-cell { display: table-cell; width: 50%; vertical-align: top; }
+    .sync-code-cell { padding-right: 15px; }
+    .sync-code {
+      display: block;
+      margin: 6px 0 8px;
+      padding: 10px 8px;
+      color: #102f20;
+      background: #edf9f1;
+      border: 2px solid #63a77d;
+      border-radius: 8px;
+      font-family: Consolas, "Courier New", monospace;
+      font-size: 1.65rem;
+      font-weight: bold;
+      letter-spacing: 0.08em;
+      text-align: center;
+      white-space: nowrap;
+    }
+    .sync-help { margin: 5px 0 0; color: #5c697d; font-size: 0.8rem; }
+    .sync-input-row { display: table; width: 100%; }
+    .sync-input-wrap, .sync-button-wrap { display: table-cell; vertical-align: top; }
+    .sync-button-wrap { width: 92px; padding-left: 7px; }
+    .sync-button-wrap .action-btn { width: 100%; margin: 0; }
+    .daynav {
+      display: table;
+      width: 100%;
+      margin-bottom: 14px;
+      table-layout: fixed;
+    }
+    .daynav-cell { display: table-cell; vertical-align: middle; }
+    .daynav-cell.side { width: 80px; }
+    .daynav-cell.center { padding: 0 8px; }
+    .daynav button, .daynav select {
+      width: 100%;
+      color: #24344c;
+      background: #fff;
+      border: 1px solid #aebccc;
+      border-radius: 9px;
+    }
+    .section-title { margin: 22px 0 9px; font-size: 1.18rem; }
+    .fixed-label, .deadline-label {
+      display: inline-block;
+      margin: 0 0 6px;
+      padding: 2px 7px;
+      border-radius: 4px;
+      font-size: 0.75rem;
+      font-weight: bold;
+    }
+    .fixed-label { color: #174a82; background: #dfedff; }
+    .deadline-label { color: #6b3e00; background: #fff0b8; }
+    .fixed-text, .deadline-text { margin: 0; white-space: pre-line; }
+    .task-grid { margin-right: -10px; }
+    .task-card {
+      display: inline-table;
+      width: 49%;
+      min-height: 145px;
+      margin: 0 0 10px;
+      margin-right: 0.6%;
+      vertical-align: top;
+      background: #fff;
+      border: 1px solid #ccd7e3;
+      border-radius: 12px;
+    }
+    .task-state-cell {
+      display: table-cell;
+      width: 64px;
+      padding: 12px 0 12px 12px;
+      vertical-align: top;
+    }
+    .task-body {
+      display: table-cell;
+      padding: 12px 13px 12px 10px;
+      vertical-align: top;
+    }
+    .state-btn {
+      width: 48px;
+      height: 48px;
+      min-height: 48px;
+      padding: 0;
+      color: #334155;
+      background: #f4f7fa;
+      border: 2px solid #a8b4c2;
+      border-radius: 50%;
+      font-size: 1.35rem;
+      font-weight: bold;
+      line-height: 1;
+    }
+    .state-1 { color: #fff; background: #176b43; border-color: #176b43; }
+    .state-2 { color: #4d3500; background: #ffe49a; border-color: #c59100; }
+    .state-3 { color: #7a271a; background: #ffe2dd; border-color: #d35b49; }
+    .task-name { margin: 0 0 5px; font-size: 1rem; }
+    .tag {
+      display: inline-block;
+      margin-left: 5px;
+      padding: 1px 5px;
+      color: #585f6c;
+      background: #eef1f4;
+      border: 1px solid #d5dbe2;
+      border-radius: 4px;
+      font-size: 0.68rem;
+      font-weight: normal;
+      vertical-align: middle;
+    }
+    .task-detail { margin: 0 0 7px; color: #334155; font-size: 0.9rem; white-space: pre-line; }
+    .task-min { margin: 0; color: #667085; font-size: 0.76rem; }
+    .task-min strong { color: #405269; }
+    .daily-record { display: table; width: 100%; }
+    .record-cell { display: table-cell; width: 50%; padding-right: 12px; vertical-align: top; }
+    .record-cell:last-child { padding-right: 0; }
+    .field-label { display: block; margin: 0 0 5px; font-size: 0.82rem; font-weight: bold; }
+    .text-field {
+      width: 100%;
+      min-height: 44px;
+      padding: 9px 10px;
+      color: #172033;
+      background: #fff;
+      border: 1px solid #aebccc;
+      border-radius: 7px;
+    }
+    textarea.text-field { min-height: 76px; resize: vertical; }
+    .button-row { margin-top: 12px; }
+    .action-btn {
+      min-height: 44px;
+      margin: 0 5px 6px 0;
+      padding: 8px 13px;
+      color: #18324f;
+      background: #edf4fc;
+      border: 1px solid #9ebad9;
+      border-radius: 8px;
+      font-weight: bold;
+    }
+    .action-btn.primary { color: #fff; background: #225f9f; border-color: #225f9f; }
+    .action-btn.warn { color: #772c21; background: #fff2ef; border-color: #e4a397; }
+    .status-key { margin: 8px 0 0; color: #657287; font-size: 0.78rem; }
+    .timer-box { text-align: center; }
+    .timer-time { margin: 5px 0 10px; font-size: 2.2rem; font-weight: bold; letter-spacing: 0.05em; }
+    .empty {
+      padding: 30px 14px;
+      color: #5d697c;
+      background: #fff;
+      border: 1px dashed #aebccc;
+      border-radius: 12px;
+      text-align: center;
+    }
+    .overdue-item {
+      display: table;
+      width: 100%;
+      margin-bottom: 8px;
+      padding: 10px;
+      background: #fff;
+      border: 1px solid #d3dce6;
+      border-radius: 9px;
+    }
+    .overdue-body, .overdue-action { display: table-cell; vertical-align: middle; }
+    .overdue-action { width: 86px; padding-left: 8px; text-align: right; }
+    .overdue-title { margin: 0; font-weight: bold; }
+    .overdue-detail { margin: 3px 0 0; color: #58667a; font-size: 0.85rem; }
+    .mini-btn {
+      min-height: 38px;
+      padding: 6px 10px;
+      color: #1b4f32;
+      background: #eef9f2;
+      border: 1px solid #8cb89c;
+      border-radius: 7px;
+      font-weight: bold;
+    }
+    .day-card {
+      display: inline-block;
+      width: 31.9%;
+      min-height: 165px;
+      margin: 0 0.8% 11px 0;
+      padding: 13px;
+      vertical-align: top;
+      color: #172033;
+      background: #fff;
+      border: 1px solid #cad5e1;
+      border-radius: 10px;
+      text-align: left;
+    }
+    .day-card.today-card { border: 3px solid #3478bd; padding: 11px; }
+    .day-card-date { display: block; font-weight: bold; }
+    .day-card-period { display: block; margin: 2px 0 10px; color: #637087; font-size: 0.78rem; }
+    .mini-track { display: block; height: 9px; overflow: hidden; background: #e4eaf0; border-radius: 5px; }
+    .mini-fill { display: block; height: 100%; background: #2e7b52; }
+    .day-card-score { display: block; margin-top: 5px; font-size: 0.8rem; }
+    .deadline-card { border-top: 6px solid #d9a300; }
+    .deadline-date { color: #765300; font-weight: bold; }
+    .deadline-row {
+      display: table;
+      width: 100%;
+      padding: 9px 0;
+      border-top: 1px solid #e0e5eb;
+    }
+    .deadline-check, .deadline-main { display: table-cell; vertical-align: top; }
+    .deadline-check { width: 55px; }
+    .check-btn {
+      width: 42px;
+      height: 42px;
+      min-height: 42px;
+      padding: 0;
+      background: #fff;
+      border: 2px solid #a5b0bd;
+      border-radius: 8px;
+      font-weight: bold;
+    }
+    .check-btn.checked { color: #fff; background: #176b43; border-color: #176b43; }
+    .deadline-name { margin: 0 0 3px; font-weight: bold; }
+    .deadline-target, .deadline-evidence { margin: 2px 0; font-size: 0.85rem; }
+    .deadline-evidence { color: #627086; }
+    .steps { margin: 8px 0 0; padding-left: 24px; }
+    .steps li { margin-bottom: 6px; }
+    .weekday-tabs { margin-bottom: 10px; }
+    .weekday-btn {
+      min-width: 46px;
+      margin: 0 3px 5px 0;
+      padding: 7px;
+      color: #3c485a;
+      background: #fff;
+      border: 1px solid #aebccc;
+      border-radius: 7px;
+    }
+    .weekday-btn.active { color: #fff; background: #225f9f; border-color: #225f9f; }
+    .schedule-row, .workout-row {
+      display: table;
+      width: 100%;
+      padding: 10px 0;
+      border-top: 1px solid #dde3ea;
+    }
+    .schedule-time, .schedule-main, .schedule-note { display: table-cell; vertical-align: top; }
+    .schedule-time { width: 110px; font-weight: bold; }
+    .schedule-note { width: 180px; color: #68758a; font-size: 0.82rem; }
+    .schedule-main strong { display: block; }
+    .schedule-main span { color: #5e6c80; font-size: 0.82rem; }
+    .workout-title { margin-bottom: 2px; font-weight: bold; }
+    .workout-detail { color: #526076; font-size: 0.88rem; }
+    .settings-grid { display: table; width: 100%; }
+    .settings-cell { display: table-cell; width: 50%; padding-right: 12px; vertical-align: top; }
+    .settings-cell:last-child { padding-right: 0; }
+    .codebox {
+      width: 100%;
+      min-height: 110px;
+      padding: 9px;
+      color: #172033;
+      background: #f8fafc;
+      border: 1px solid #aebccc;
+      border-radius: 7px;
+      font-family: Consolas, "Courier New", monospace;
+      font-size: 0.76rem;
+      word-break: break-all;
+    }
+    .help-list { padding-left: 22px; }
+    .help-list li { margin-bottom: 7px; }
+    .footer { padding: 24px 12px 35px; color: #667085; text-align: center; font-size: 0.78rem; }
+    .toast {
+      position: fixed;
+      left: 50%;
+      bottom: 22px;
+      width: 280px;
+      margin-left: -140px;
+      padding: 11px 14px;
+      color: #fff;
+      background: #172033;
+      border: 2px solid #fff;
+      border-radius: 9px;
+      text-align: center;
+      z-index: 1000;
+    }
+    #legacyFallback { padding: 15px 0 40px; }
+    body.app-ready #legacyFallback { display: none; }
+    .fallback-day { margin-bottom: 18px; padding: 14px; background: #fff; border: 1px solid #8895a5; }
+    .fallback-day h2 { margin-top: 0; }
+    .fatal { padding: 14px; color: #6e2117; background: #fff0ed; border: 2px solid #b84837; }
+
+    @media screen and (max-width: 720px) {
+      .shell { padding-left: 10px; padding-right: 10px; }
+      .brand-side { width: 90px; }
+      .top-today { width: 84px; }
+      .brand-title { font-size: 1.22rem; }
+      .brand-sub { display: none; }
+      .navbtn { padding-left: 9px; padding-right: 9px; font-size: 0.86rem; }
+      .panel { padding: 13px; border-radius: 10px; }
+      .hero-main, .hero-side { display: block; width: auto; padding-left: 0; }
+      .hero-side { margin-top: 14px; }
+      .hero h1 { font-size: 1.5rem; }
+      .task-grid { margin-right: 0; }
+      .task-card { display: table; width: 100%; margin-right: 0; min-height: 0; }
+      .day-card { width: 48.5%; }
+      .daily-record, .record-cell, .settings-grid, .settings-cell { display: block; width: 100%; }
+      .record-cell, .settings-cell { padding: 0; margin-bottom: 10px; }
+      .sync-grid, .sync-code-cell, .sync-input-cell { display: block; width: 100%; }
+      .sync-code-cell { padding: 0 0 12px; }
+      .schedule-note { display: none; }
+    }
+    @media screen and (max-width: 390px) {
+      .eyebrow { display: none; }
+      .brand-title { font-size: 1.08rem; }
+      .mainnav { text-align: left; white-space: normal; }
+      .navbtn { min-height: 38px; padding: 6px 8px; }
+      .day-card { width: 100%; min-height: 0; margin-right: 0; }
+      .schedule-time { width: 92px; font-size: 0.83rem; }
+    }
+    body.compact .task-card { display: table; width: 100%; min-height: 0; }
+    body.compact .task-detail { font-size: 0.84rem; }
+    body.compact .panel { padding: 12px; }
+
+    body.kindle {
+      color: #000;
+      background: #fff;
+      font-family: Arial, sans-serif;
+      font-size: 17px;
+    }
+    body.kindle .shell { max-width: none; padding-left: 8px; padding-right: 8px; }
+    body.kindle .topbar {
+      color: #000;
+      background: #fff;
+      border-top: 4px solid #000;
+      border-bottom: 4px solid #000;
+      padding: 10px 0;
+    }
+    body.kindle .eyebrow, body.kindle .brand-sub { display: none; }
+    body.kindle .brand-title { font-size: 1.25rem; }
+    body.kindle .top-today {
+      color: #000;
+      background: #fff;
+      border: 2px solid #000;
+      border-radius: 0;
+    }
+    body.kindle .mainnav { padding: 5px 0; border-bottom: 3px solid #000; text-align: left; }
+    body.kindle .navbtn {
+      min-height: 42px;
+      margin: 2px 1px;
+      padding: 6px 8px;
+      color: #000;
+      background: #fff;
+      border: 2px solid #000;
+      border-radius: 0;
+    }
+    body.kindle .navbtn.active { color: #fff; background: #000; }
+    body.kindle #app { padding-top: 8px; }
+    body.kindle .panel, body.kindle .task-card, body.kindle .empty,
+    body.kindle .overdue-item, body.kindle .day-card {
+      color: #000;
+      background: #fff;
+      border: 2px solid #000;
+      border-radius: 0;
+      box-shadow: none;
+    }
+    body.kindle .hero {
+      color: #000;
+      background: #fff;
+      border: 4px double #000;
+    }
+    body.kindle .hero-kicker, body.kindle .hero-meta { color: #000; }
+    body.kindle .hero-main, body.kindle .hero-side { display: block; width: auto; padding: 0; }
+    body.kindle .hero-side { margin-top: 10px; }
+    body.kindle .progress-track { height: 18px; background: #fff; border: 2px solid #000; border-radius: 0; }
+    body.kindle .progress-fill { background: #000; }
+    body.kindle .sync-panel { border-left: 4px solid #000; }
+    body.kindle .sync-grid, body.kindle .sync-code-cell, body.kindle .sync-input-cell { display: block; width: 100%; }
+    body.kindle .sync-code-cell { padding: 0 0 12px; }
+    body.kindle .sync-code {
+      color: #000;
+      background: #fff;
+      border: 4px double #000;
+      border-radius: 0;
+      font-size: 1.5rem;
+      letter-spacing: 0.04em;
+    }
+    body.kindle .sync-help { color: #000; }
+    body.kindle .daynav button, body.kindle .daynav select,
+    body.kindle .action-btn, body.kindle .mini-btn, body.kindle .weekday-btn {
+      color: #000;
+      background: #fff;
+      border: 2px solid #000;
+      border-radius: 0;
+    }
+    body.kindle .task-card { display: table; width: 100%; min-height: 0; margin-right: 0; }
+    body.kindle .state-btn, body.kindle .check-btn {
+      color: #000;
+      background: #fff;
+      border: 3px solid #000;
+      border-radius: 0;
+    }
+    body.kindle .state-1, body.kindle .check-btn.checked { color: #fff; background: #000; }
+    body.kindle .state-2 { color: #000; background: #ddd; }
+    body.kindle .state-3 { color: #000; background: #fff; border-style: dashed; }
+    body.kindle .tag, body.kindle .fixed-label, body.kindle .deadline-label {
+      color: #000;
+      background: #fff;
+      border: 1px solid #000;
+      border-radius: 0;
+    }
+    body.kindle .task-detail, body.kindle .task-min, body.kindle .status-key,
+    body.kindle .overdue-detail, body.kindle .schedule-main span,
+    body.kindle .workout-detail, body.kindle .deadline-evidence { color: #000; }
+    body.kindle .day-card { width: 100%; min-height: 0; margin-right: 0; }
+    body.kindle .mini-track { background: #fff; border: 1px solid #000; border-radius: 0; }
+    body.kindle .mini-fill { background: #000; }
+    body.kindle .timer-panel { display: none; }
+    body.kindle .toast { position: static; width: auto; margin: 8px; color: #000; background: #fff; border: 3px double #000; border-radius: 0; }
+    body.kindle .schedule-note { display: none; }
+    body.kindle .text-field, body.kindle .codebox {
+      color: #000;
+      background: #fff;
+      border: 2px solid #000;
+      border-radius: 0;
+    }
+
+    @media print {
+      body { color: #000; background: #fff; font-size: 11pt; }
+      .topbar, .mainnav, .daynav, .button-row, .timer-panel, .toast, #storageNotice { display: none !important; }
+      .shell { max-width: none; padding: 0; }
+      .view { display: block !important; page-break-after: always; }
+      .panel, .task-card, .day-card { box-shadow: none; border-color: #777; }
+      .task-card { width: 49%; page-break-inside: avoid; }
+      #legacyFallback { display: none !important; }
+    }
+  </style>
 </head>
 <body>
-    <p style="text-align: center; margin-top: 50px; font-size: 18px;">
-        잠시 후 인증서 다운로드(프로필 설치) 창이 자동으로 나타납니다.<br>
-        반응이 없다면 아래 링크를 직접 눌러주세요.
-    </p>
-    <p style="text-align: center;">
-        <a href="PPX-AnyLink-CA.cer" style="font-size: 20px; color: blue; font-weight: bold;">[ 인증서 수동 다운로드 클릭 ]</a>
-    </p>
+  <a class="skip" href="#main">본문으로 바로가기</a>
+  <header class="topbar">
+    <div class="shell brand-table">
+      <div class="brand-main">
+        <p class="eyebrow">2026 SUMMER COMPLETION SYSTEM</p>
+        <h1 class="brand-title">여름방학 완주 플래너</h1>
+        <p class="brand-sub">7월 22일 D1 · 8월 11일 D21 · 8월 12–13일 복구·검사 · 8월 14일 전환</p>
+      </div>
+      <div class="brand-side">
+        <button type="button" class="top-today" data-action="go-today">오늘</button>
+      </div>
+    </div>
+  </header>
+
+  <nav class="mainnav" aria-label="주요 화면">
+    <div class="shell">
+      <button type="button" class="navbtn active" data-view="today">오늘</button>
+      <button type="button" class="navbtn" data-view="overdue">밀린 일</button>
+      <button type="button" class="navbtn" data-view="plan">전체 일정</button>
+      <button type="button" class="navbtn" data-view="inspection">목요일 검사</button>
+      <button type="button" class="navbtn" data-view="timetable">시간표</button>
+      <button type="button" class="navbtn" data-view="workout">운동</button>
+      <button type="button" class="navbtn" data-view="settings">저장·설정</button>
+    </div>
+  </nav>
+
+  <div class="shell">
+    <div id="storageNotice" class="notice is-hidden"></div>
+    <div id="fatalNotice" class="fatal is-hidden"></div>
+  </div>
+
+  <main id="main">
+    <div id="app" class="shell is-hidden">
+      <section id="view-today" class="view active" aria-label="오늘 계획">
+        <div class="daynav">
+          <div class="daynav-cell side"><button type="button" data-action="prev-day">이전</button></div>
+          <div class="daynav-cell center"><select id="daySelect" aria-label="날짜 선택"></select></div>
+          <div class="daynav-cell side"><button type="button" data-action="next-day">다음</button></div>
+        </div>
+        <div class="panel hero">
+          <div class="hero-grid">
+            <div class="hero-main">
+              <p id="heroKicker" class="hero-kicker"></p>
+              <h1 id="heroDate"></h1>
+              <p id="heroMeta" class="hero-meta"></p>
+            </div>
+            <div class="hero-side">
+              <p class="progress-label">오늘의 전 과목 접촉</p>
+              <div class="progress-track"><div id="dayProgressFill" class="progress-fill"></div></div>
+              <p id="dayProgressText" class="progress-text"></p>
+            </div>
+          </div>
+        </div>
+        <div class="panel sync-panel">
+          <h2>오늘 상태 오프라인 동기화</h2>
+          <div class="sync-grid">
+            <div class="sync-code-cell">
+              <span class="field-label">이 기기의 오늘 코드</span>
+              <strong id="dailySyncCode" class="sync-code">01-0000000-00</strong>
+              <p class="sync-help">다른 기기에 이 숫자만 입력하면 오늘의 10과목 상태가 그대로 옮겨집니다.</p>
+            </div>
+            <div class="sync-input-cell">
+              <label class="field-label" for="dailySyncInput">다른 기기의 코드 입력</label>
+              <div class="sync-input-row">
+                <div class="sync-input-wrap">
+                  <input id="dailySyncInput" class="text-field" type="text" inputmode="numeric" maxlength="13" placeholder="01-0123456-34">
+                </div>
+                <div class="sync-button-wrap">
+                  <button type="button" class="action-btn primary" data-action="import-daily-code">가져오기</button>
+                </div>
+              </div>
+              <p class="sync-help">인터넷·블루투스 없이 양방향으로 사용할 수 있습니다. 날짜의 체크 상태만 바꾸며 메모와 공부시간은 건드리지 않습니다.</p>
+            </div>
+          </div>
+        </div>
+        <div class="panel">
+          <span class="fixed-label">고정 일정</span>
+          <p id="fixedText" class="fixed-text"></p>
+        </div>
+        <div id="deadlineToday" class="panel is-hidden">
+          <span class="deadline-label">오늘의 마감</span>
+          <p id="deadlineText" class="deadline-text"></p>
+        </div>
+        <h2 class="section-title">과목별 할 일</h2>
+        <div id="taskGrid" class="task-grid"></div>
+        <div class="panel">
+          <h2>공부 기록</h2>
+          <div class="daily-record">
+            <div class="record-cell">
+              <label class="field-label" for="actualMinutes">실제 공부시간(분)</label>
+              <input id="actualMinutes" class="text-field" type="text" inputmode="numeric" maxlength="4" placeholder="예: 320">
+            </div>
+            <div class="record-cell">
+              <label class="field-label" for="dayNote">오늘 메모(최대 80자)</label>
+              <textarea id="dayNote" class="text-field" maxlength="80" placeholder="막힌 단원, 내일 먼저 복구할 것"></textarea>
+            </div>
+          </div>
+          <div class="button-row">
+            <button type="button" class="action-btn primary" data-action="complete-day">전 과목 완료</button>
+            <button type="button" class="action-btn warn" data-action="clear-day">오늘 기록 비우기</button>
+          </div>
+          <p class="status-key">상태 버튼을 누르면 ○ 미시작 → ✓ 완료 → △ 긴급 최소량 → ↗ 이월 순서로 바뀝니다.</p>
+        </div>
+        <div class="panel timer-panel">
+          <div class="timer-box">
+            <h2>25분 집중 타이머</h2>
+            <div id="timerTime" class="timer-time">25:00</div>
+            <button type="button" class="action-btn primary" data-action="timer-focus">25분 시작</button>
+            <button type="button" class="action-btn" data-action="timer-break">5분 휴식</button>
+            <button type="button" class="action-btn" data-action="timer-stop">정지</button>
+          </div>
+        </div>
+      </section>
+
+      <section id="view-overdue" class="view" aria-label="밀린 일">
+        <div class="panel">
+          <h1>밀린 일 복구함</h1>
+          <p>오늘 이전 계획 중 아직 ‘완료’가 아닌 항목만 모읍니다. 최소량만 한 항목도 주간 마감선 전에는 완주해야 합니다.</p>
+          <div id="overdueSummary"></div>
+        </div>
+        <div id="overdueList"></div>
+      </section>
+
+      <section id="view-plan" class="view" aria-label="전체 계획">
+        <div class="panel">
+          <h1>7월 22일–8월 14일 전체 일정</h1>
+          <p>D1~D21은 8월 11일에 끝나고, 8월 12일은 복구일, 8월 13일은 최종 검사일입니다. 날짜를 누르면 세부 계획으로 이동합니다.</p>
+        </div>
+        <div id="dayCards"></div>
+      </section>
+
+      <section id="view-inspection" class="view" aria-label="목요일 검사">
+        <div class="panel">
+          <h1>목요일 친구 검사</h1>
+          <p>푼 페이지와 채점 흔적을 먼저 확인하고, 무작위 질문과 오답 설명으로 통과 여부를 정합니다.</p>
+          <ol class="steps">
+            <li>5분: 서로 푼 페이지·문항 수 확인</li>
+            <li>15분: 각 과목 무작위 2문항·개념 질문</li>
+            <li>15분: 오답 3개씩 근거와 함께 설명</li>
+            <li>10분: 다음 목요일 마감선을 구체적으로 적기</li>
+            <li>5분: 사진 또는 체크표로 완주 증거 남기기</li>
+          </ol>
+        </div>
+        <div id="deadlineCards"></div>
+      </section>
+
+      <section id="view-timetable" class="view" aria-label="요일별 시간표">
+        <div class="panel">
+          <h1>요일별 시간표</h1>
+          <p>같은 시간표를 쓰되, 실제 분량은 날짜별 계획에서 확인합니다.</p>
+          <div id="weekdayTabs" class="weekday-tabs"></div>
+          <div id="scheduleList"></div>
+        </div>
+      </section>
+
+      <section id="view-workout" class="view" aria-label="운동 계획">
+        <div class="panel">
+          <h1>홈트·회복 계획</h1>
+          <p>목표는 건강, 자세, 기초 근력입니다. 편안한 무게로 정확한 자세를 우선하고 관절 통증이나 어지러움이 있으면 즉시 중단합니다.</p>
+          <div id="workoutList"></div>
+        </div>
+      </section>
+
+      <section id="view-settings" class="view" aria-label="저장 및 설정">
+        <div class="panel">
+          <h1>기기 모드</h1>
+          <label class="field-label" for="modeSelect">화면 모드</label>
+          <select id="modeSelect" class="text-field">
+            <option value="auto">자동 감지</option>
+            <option value="standard">표준</option>
+            <option value="compact">압축</option>
+            <option value="kindle">Kindle 4 흑백</option>
+          </select>
+          <p id="deviceInfo"></p>
+        </div>
+        <div class="panel">
+          <h1>기기 간 옮기기</h1>
+          <p>매일은 ‘오늘 상태 오프라인 동기화’의 짧은 숫자 코드를 사용하세요. 아래 전체 백업 코드는 메모·공부시간·모든 날짜를 한꺼번에 옮길 때만 사용합니다.</p>
+          <div class="settings-grid">
+            <div class="settings-cell">
+              <label class="field-label" for="backupCode">전체 백업 코드</label>
+              <textarea id="backupCode" class="codebox" readonly></textarea>
+              <button type="button" class="action-btn" data-action="select-backup">코드 전체 선택</button>
+            </div>
+            <div class="settings-cell">
+              <label class="field-label" for="importCode">백업 코드 불러오기</label>
+              <textarea id="importCode" class="codebox" placeholder="다른 기기에서 복사한 코드를 붙여넣기"></textarea>
+              <button type="button" class="action-btn primary" data-action="import-backup">불러오기</button>
+            </div>
+          </div>
+        </div>
+        <div class="panel">
+          <h2>Kindle용 빠른 링크</h2>
+          <p>아래 링크에는 체크 상태만 짧게 담깁니다. 프로그램을 웹에 올린 뒤 휴대폰에서 만든 링크를 Kindle 브라우저로 열면 상태를 한 번 옮길 수 있습니다.</p>
+          <textarea id="kindleLink" class="codebox" readonly></textarea>
+          <button type="button" class="action-btn" data-action="select-kindle-link">링크 전체 선택</button>
+        </div>
+        <div class="panel">
+          <h2>인쇄·초기화</h2>
+          <button type="button" class="action-btn" data-action="print">전체 계획 인쇄</button>
+          <button type="button" class="action-btn warn" data-action="reset-all">모든 기록 초기화</button>
+          <p class="status-key">초기화는 이 기기의 체크·시간·메모·검사 기록을 지웁니다. 다른 기기의 데이터는 지워지지 않습니다.</p>
+        </div>
+        <div class="panel">
+          <h2>기기별 권장 사용</h2>
+          <ul class="help-list">
+            <li><strong>iPad mini 1:</strong> Safari에서 연 뒤 홈 화면에 추가. 표준 또는 압축 모드.</li>
+            <li><strong>Galaxy Tab·S24·노트북:</strong> 주 기록 기기로 사용하고 목요일마다 백업 코드 보관.</li>
+            <li><strong>Kindle 4:</strong> 실험용 브라우저에서 Kindle 모드로 계획 확인·체크. 하루를 마치면 짧은 숫자 코드를 휴대폰에 입력.</li>
+            <li><strong>오프라인:</strong> 배포판은 최초 한 번 온라인으로 연 뒤 캐시합니다. 짧은 날짜 코드는 두 기기가 모두 오프라인이어도 작동합니다.</li>
+          </ul>
+        </div>
+      </section>
+    </div>
+
+    <div id="legacyFallback" class="shell">
+      <div class="notice">
+        이 아래는 구형 브라우저용 읽기 전용 계획입니다. 체크 기능이 보이지 않으면 이 목록을 사용하세요.
+      </div>
+      <article class="fallback-day"><h2>7월 22일 (수) · 1주차 D1</h2><p><strong>고정 일정:</strong><br>D1 시작 · 학교 일정 우선<br>09:00–12:00 대수 특강(방학 전 수업일: 실시 여부 확인)</p><ul><li><strong>국어 문학:</strong> 22문항 (누적 22); 연결 지문은 끝까지</li><li><strong>통합사회2:</strong> Ⅰ-01 인권의 의미와 현대 사회의 인권: 개념완성 전 범위 + 기출 같은 소단원</li><li><strong>통합과학2:</strong> Ⅰ-1-01 지구 환경 변화: 개념·탐구·문제</li><li><strong>한문:</strong> DAY 01 한자·한자어·한문, 무엇이 다를까?</li><li><strong>물리학:</strong> 주력 30분: 평형과 안정성</li><li><strong>화학:</strong> 회상 5분: 화학의 언어 목차 말하기</li><li><strong>사회와 문화:</strong> 회상 5분: 사회현상과 자연현상 구별 예 2개</li><li><strong>수학·학원숙제:</strong> 대수 특강 복습 + 숙제 착수 60분</li><li><strong>영어:</strong> 영어 단어 10분</li><li><strong>운동·회복:</strong> 회복: 목·어깨 가동성 / 흉추 회전 / 햄스트링 가볍게 / 산책 가능 (12분)</li></ul><p><strong>계획시간:</strong> 350분</p></article>
+<article class="fallback-day"><h2>7월 23일 (목) · 1주차 D2</h2><p><strong>고정 일정:</strong><br>방학식</p><ul><li><strong>국어 문학:</strong> 18문항 (누적 40); 틀린 선지는 틀린 단어에 밑줄</li><li><strong>통합사회2:</strong> Ⅰ-02 헌법의 역할과 시민 참여: 개념 + 같은 소단원 기출</li><li><strong>통합과학2:</strong> Ⅰ-1-02 진화와 생물다양성: 개념·자료·문제</li><li><strong>한문:</strong> DAY 02 한자의 변천과 만들어진 원리</li><li><strong>물리학:</strong> 회상 5분: 힘의 평형 조건 말하기</li><li><strong>화학:</strong> 주력 30분: 생활 속 화학과 몰 개념 입문</li><li><strong>사회와 문화:</strong> 회상 5분: 사회현상 특징 2개</li><li><strong>수학·학원숙제:</strong> 수요일 대수 숙제 마감 90분; 미완료 0</li><li><strong>영어:</strong> 영어 단어 10분</li><li><strong>운동·회복:</strong> 근력 B: 지지 스플릿 스쿼트 2×8/쪽 / 덤벨 루마니안 데드리프트 3×10 / 가벼운 숄더 프레스 2×8 / 사이드 플랭크 2×15~25초 (25분)</li></ul><p><strong>계획시간:</strong> 320분</p></article>
+<article class="fallback-day"><h2>7월 24일 (금) · 1주차 D3</h2><p><strong>고정 일정:</strong><br>09:00–12:00 대수 특강<br>18:00–21:00 공수2</p><ul><li><strong>국어 문학:</strong> 18문항 (누적 58); 작품 1문장 요약을 여백에 기록</li><li><strong>통합사회2:</strong> Ⅰ-03 인권 문제의 양상과 해결 방안: 개념 + 기출</li><li><strong>통합과학2:</strong> 지구 환경 변화·생물다양성 중단원 문제와 오답</li><li><strong>한문:</strong> DAY 03 필순과 숫자 한자</li><li><strong>물리학:</strong> 회상 5분: 평형·안정성 핵심 카드 3개</li><li><strong>화학:</strong> 회상 5분: 몰의 뜻을 말로 설명</li><li><strong>사회와 문화:</strong> 주력 40분: 사회현상의 이해</li><li><strong>수학·학원숙제:</strong> 대수·공수2 수업이 오늘의 수학 접촉; 대수 숙제 착수 30분</li><li><strong>영어:</strong> 영어 단어 10분</li><li><strong>운동·회복:</strong> 회복: 손목·전완 풀기 / 등·가슴 스트레칭 / 고관절 가동성 / 느린 호흡 (8분)</li></ul><p><strong>계획시간:</strong> 250분</p></article>
+<article class="fallback-day"><h2>7월 25일 (토) · 1주차 D4</h2><p><strong>고정 일정:</strong><br>11:00–14:00 영어<br>14:30–17:30 국어</p><ul><li><strong>국어 문학:</strong> 18문항 (누적 76); 정답 근거 한 줄만 확인
+국어 수업 참여·숙제 범위 기록</li><li><strong>통합사회2:</strong> Ⅰ 단원 마무리·기출 단원 문제·오답 5개</li><li><strong>통합과학2:</strong> Ⅰ-2-01 산화와 환원</li><li><strong>한문:</strong> DAY 04 요일·날짜·시간을 한자로</li><li><strong>물리학:</strong> 주력 30분: 가속도 법칙과 등가속도 운동 입문</li><li><strong>화학:</strong> 회상 5분: 몰·질량·입자 관계</li><li><strong>사회와 문화:</strong> 회상 5분: 자연현상과 비교</li><li><strong>수학·학원숙제:</strong> 공수2(금) 숙제 45분; 수업 오답 표시</li><li><strong>영어:</strong> 영어 수업 참여 + 숙제 범위 기록 + 단어 10분</li><li><strong>운동·회복:</strong> 가벼운 활동: 편한 속도 산책 / 어깨 돌리기 / 종아리 풀기 / 피로하면 산책만 (10~20분)</li></ul><p><strong>계획시간:</strong> 235분</p></article>
+<article class="fallback-day"><h2>7월 26일 (일) · 1주차 D5</h2><p><strong>고정 일정:</strong><br>학원 없음 / 자율학습일</p><ul><li><strong>국어 문학:</strong> 38문항 (누적 114); 헷갈린 문학 개념어 3개 카드화
+국어 숙제 60분</li><li><strong>통합사회2:</strong> Ⅱ-01 정의의 의미와 실질적 기준: 개념 + 기출</li><li><strong>통합과학2:</strong> Ⅰ-2-02 산·염기와 중화 반응</li><li><strong>한문:</strong> DAY 05 누적평가 ① — 기초 개념·필순·숫자</li><li><strong>물리학:</strong> 회상 5분: 가속도 단위·방향</li><li><strong>화학:</strong> 주력 40분: 물질의 양 계산 기초</li><li><strong>사회와 문화:</strong> 회상 5분: 사회현상 사례 판별</li><li><strong>수학·학원숙제:</strong> 금요일 수학 잔여 60분 + 주간 오답 복구</li><li><strong>영어:</strong> 영어 숙제 60분 + 단어 10분</li><li><strong>운동·회복:</strong> 근력 C: 고블릿 스쿼트 3×10 / 덤벨 플로어 프레스 3×8~12 / 원암 로우 3×10 / 버드독 2×8/쪽 (25~30분)</li></ul><p><strong>계획시간:</strong> 450분</p></article>
+<article class="fallback-day"><h2>7월 27일 (월) · 1주차 D6</h2><p><strong>고정 일정:</strong><br>09:00–12:00 대수 특강<br>18:00–22:00 공수2</p><ul><li><strong>국어 문학:</strong> 18문항 (누적 132); 오답 3문항 재풀이</li><li><strong>통합사회2:</strong> Ⅱ-02 다양한 정의관의 특징과 적용: 개념 + 기출</li><li><strong>통합과학2:</strong> Ⅰ-2-03 물질 변화에서의 에너지 출입</li><li><strong>한문:</strong> DAY 06 방향 한자와 한양도성의 문</li><li><strong>물리학:</strong> 회상 5분: 등가속도 그래프 1개 읽기</li><li><strong>화학:</strong> 회상 5분: mol 계산 1문제</li><li><strong>사회와 문화:</strong> 주력 40분: 사회현상 연구 방법</li><li><strong>수학·학원숙제:</strong> 수업이 오늘의 수학 접촉; 대수 숙제 착수·오답 분류 20분</li><li><strong>영어:</strong> 영어 단어 10분</li><li><strong>운동·회복:</strong> 회복: 고양이-소 자세 / 가슴 열기 / 고관절 스트레칭 / 느린 호흡 (8분)</li></ul><p><strong>계획시간:</strong> 230분</p></article>
+<article class="fallback-day"><h2>7월 28일 (화) · 1주차 D7</h2><p><strong>고정 일정:</strong><br>학원 없음 / 자율학습일</p><ul><li><strong>국어 문학:</strong> 32문항 (누적 164); 이번 주 오답 중 5개를 말로 설명</li><li><strong>통합사회2:</strong> Ⅱ-03 불평등과 정의로운 사회 + Ⅰ~Ⅱ 미완료 기출 마감</li><li><strong>통합과학2:</strong> Ⅰ 변화와 다양성 종합 문제·오답 마감</li><li><strong>한문:</strong> DAY 07 몸과 자연을 나타내는 한자</li><li><strong>물리학:</strong> 주력 40분: 작용·반작용과 운동량 보존</li><li><strong>화학:</strong> 회상 5분: 몰 계산 1문제</li><li><strong>사회와 문화:</strong> 회상 5분: 양적/질적 연구 비교</li><li><strong>수학·학원숙제:</strong> 월요일 대수+공수2 숙제 100분; 모르는 문제 별표</li><li><strong>영어:</strong> 영어 단어 10분</li><li><strong>운동·회복:</strong> 근력 A: 의자 스쿼트 3×10 / 푸시업/인클라인 3×6~10 / 원암 덤벨 로우 3×10 / 데드버그 2×8/쪽 (25분)</li></ul><p><strong>계획시간:</strong> 450분</p></article>
+<article class="fallback-day"><h2>7월 29일 (수) · 2주차 D8</h2><p><strong>고정 일정:</strong><br>09:00–12:00 대수 특강</p><p><strong>마감:</strong> 내일 검사① 자료 모으기: D1~D8 페이지·채점·오답</p><ul><li><strong>국어 문학:</strong> 22문항 (누적 186); 검사에서 나온 오답 1개 먼저 복구</li><li><strong>통합사회2:</strong> Ⅲ-01 자본주의 전개 과정과 경제 체제: 개념 + 기출</li><li><strong>통합과학2:</strong> Ⅱ-1-01 생물과 환경</li><li><strong>한문:</strong> DAY 08 가족 한자와 축하 표현</li><li><strong>물리학:</strong> 회상 5분: 운동량 보존 조건</li><li><strong>화학:</strong> 주력 30분: 화학 반응식 작성</li><li><strong>사회와 문화:</strong> 회상 5분: 연구 방법 선택 기준</li><li><strong>수학·학원숙제:</strong> 대수 특강 복습 + 숙제 착수 60분</li><li><strong>영어:</strong> 영어 단어 10분</li><li><strong>운동·회복:</strong> 회복: 목·어깨 가동성 / 흉추 회전 / 햄스트링 가볍게 / 산책 가능 (12분)</li></ul><p><strong>계획시간:</strong> 350분</p></article>
+<article class="fallback-day"><h2>7월 30일 (목) · 2주차 D9</h2><p><strong>고정 일정:</strong><br>19:30 친구 검사 ①</p><p><strong>마감:</strong> 검사①: 국어210 / 사회Ⅲ-02까지 / 과학Ⅱ-1-02까지 / 한문D1~9</p><ul><li><strong>국어 문학:</strong> 24문항 (누적 210); 소설이면 인물관계 3줄</li><li><strong>통합사회2:</strong> Ⅲ-02 합리적 선택과 경제 주체의 역할: 개념 + 기출</li><li><strong>통합과학2:</strong> Ⅱ-1-02 생태계 평형</li><li><strong>한문:</strong> DAY 09 학교·이름·인성 가치 한자</li><li><strong>물리학:</strong> 회상 5분: 운동량 문제 조건 확인</li><li><strong>화학:</strong> 회상 5분: 반응식 계수 맞추기 1개</li><li><strong>사회와 문화:</strong> 주력 30분: 자료 수집 방법</li><li><strong>수학·학원숙제:</strong> 수요일 대수 숙제 마감 90분; 미완료 0</li><li><strong>영어:</strong> 영어 단어 10분</li><li><strong>운동·회복:</strong> 근력 B: 지지 스플릿 스쿼트 2×8/쪽 / 덤벨 루마니안 데드리프트 3×10 / 가벼운 숄더 프레스 2×8 / 사이드 플랭크 2×15~25초 (25분)</li></ul><p><strong>계획시간:</strong> 455분</p></article>
+<article class="fallback-day"><h2>7월 31일 (금) · 2주차 D10</h2><p><strong>고정 일정:</strong><br>09:00–12:00 대수 특강<br>18:00–21:00 공수2</p><ul><li><strong>국어 문학:</strong> 18문항 (누적 228); 작품별 핵심 갈등/정서 표시</li><li><strong>통합사회2:</strong> Ⅲ-03 자산 관리와 금융 생활 설계: 개념 + 기출</li><li><strong>통합과학2:</strong> Ⅱ-1-03 지구 환경 변화와 인간 생활</li><li><strong>한문:</strong> DAY 10 누적평가 ② — 생활 한자</li><li><strong>물리학:</strong> 주력 40분: 역학적 에너지 보존</li><li><strong>화학:</strong> 회상 5분: 반응식 양적 관계</li><li><strong>사회와 문화:</strong> 회상 5분: 표본·질문지 주의점</li><li><strong>수학·학원숙제:</strong> 대수·공수2 수업이 오늘의 수학 접촉; 대수 숙제 착수 30분</li><li><strong>영어:</strong> 영어 단어 10분</li><li><strong>운동·회복:</strong> 회복: 손목·전완 풀기 / 등·가슴 스트레칭 / 고관절 가동성 / 느린 호흡 (8분)</li></ul><p><strong>계획시간:</strong> 250분</p></article>
+<article class="fallback-day"><h2>8월 1일 (토) · 2주차 D11</h2><p><strong>고정 일정:</strong><br>11:00–14:00 영어<br>14:30–17:30 국어</p><ul><li><strong>국어 문학:</strong> 18문항 (누적 246); 정답 근거 한 줄
+국어 수업 참여·숙제 범위 기록</li><li><strong>통합사회2:</strong> Ⅲ-04 국제 분업과 무역: 개념 + 기출</li><li><strong>통합과학2:</strong> 생태계와 환경 변화 중단원 문제·오답</li><li><strong>한문:</strong> DAY 11 생활 속 성어 — 방향과 많고 적음</li><li><strong>물리학:</strong> 회상 5분: 역학적 에너지 식 의미</li><li><strong>화학:</strong> 주력 30분: 반응식의 양적 관계</li><li><strong>사회와 문화:</strong> 회상 5분: 자료 수집법 장단점</li><li><strong>수학·학원숙제:</strong> 공수2(금) 숙제 45분; 수업 오답 표시</li><li><strong>영어:</strong> 영어 수업 참여 + 숙제 범위 기록 + 단어 10분</li><li><strong>운동·회복:</strong> 가벼운 활동: 편한 속도 산책 / 어깨 돌리기 / 종아리 풀기 / 피로하면 산책만 (10~20분)</li></ul><p><strong>계획시간:</strong> 235분</p></article>
+<article class="fallback-day"><h2>8월 2일 (일) · 2주차 D12</h2><p><strong>고정 일정:</strong><br>학원 없음 / 자율학습일</p><ul><li><strong>국어 문학:</strong> 38문항 (누적 284); 오답 선지 고쳐 쓰기 3개
+국어 숙제 60분</li><li><strong>통합사회2:</strong> Ⅳ-01 세계화의 양상과 문제 해결 방안: 개념 + 기출</li><li><strong>통합과학2:</strong> Ⅱ-2-01 태양 에너지의 생성과 전환</li><li><strong>한문:</strong> DAY 12 동물 성어 ① — 말과 새</li><li><strong>물리학:</strong> 회상 5분: 에너지 보존 문제 1개</li><li><strong>화학:</strong> 회상 5분: 반응량 비례식 1개</li><li><strong>사회와 문화:</strong> 주력 40분: 가치 중립과 연구 윤리</li><li><strong>수학·학원숙제:</strong> 금요일 수학 잔여 60분 + 주간 오답 복구</li><li><strong>영어:</strong> 영어 숙제 60분 + 단어 10분</li><li><strong>운동·회복:</strong> 근력 C: 고블릿 스쿼트 3×10 / 덤벨 플로어 프레스 3×8~12 / 원암 로우 3×10 / 버드독 2×8/쪽 (25~30분)</li></ul><p><strong>계획시간:</strong> 450분</p></article>
+<article class="fallback-day"><h2>8월 3일 (월) · 2주차 D13</h2><p><strong>고정 일정:</strong><br>09:00–12:00 대수 특강<br>18:00–22:00 공수2</p><ul><li><strong>국어 문학:</strong> 18문항 (누적 302); 오답 3문항 재풀이</li><li><strong>통합사회2:</strong> Ⅳ-02 평화의 의미와 국제 사회의 역할: 개념 + 기출</li><li><strong>통합과학2:</strong> Ⅱ-2-02 발전과 에너지원</li><li><strong>한문:</strong> DAY 13 동물 성어 ② — 까마귀와 닭</li><li><strong>물리학:</strong> 주력 40분: 도르래와 물체의 운동</li><li><strong>화학:</strong> 회상 5분: 반응식 계산 1문제</li><li><strong>사회와 문화:</strong> 회상 5분: 연구 윤리 사례 판별</li><li><strong>수학·학원숙제:</strong> 수업이 오늘의 수학 접촉; 대수 숙제 착수·오답 분류 20분</li><li><strong>영어:</strong> 영어 단어 10분</li><li><strong>운동·회복:</strong> 회복: 고양이-소 자세 / 가슴 열기 / 고관절 스트레칭 / 느린 호흡 (8분)</li></ul><p><strong>계획시간:</strong> 230분</p></article>
+<article class="fallback-day"><h2>8월 4일 (화) · 2주차 D14</h2><p><strong>고정 일정:</strong><br>학원 없음 / 자율학습일</p><ul><li><strong>국어 문학:</strong> 32문항 (누적 334); 이번 주 오답 5개 설명</li><li><strong>통합사회2:</strong> Ⅳ-03 분단·동아시아 역사 갈등과 평화 + Ⅲ~Ⅳ 미완료 기출 마감</li><li><strong>통합과학2:</strong> Ⅱ-2-03 에너지 효율과 신재생 에너지 + Ⅱ 오답 마감</li><li><strong>한문:</strong> DAY 14 동물 성어 ③ — 소와 물고기</li><li><strong>물리학:</strong> 회상 5분: 도르래 조건 정리</li><li><strong>화학:</strong> 주력 40분: 화학 결합과 결합의 극성</li><li><strong>사회와 문화:</strong> 회상 5분: 연구 윤리 3원칙</li><li><strong>수학·학원숙제:</strong> 월요일 대수+공수2 숙제 100분; 모르는 문제 별표</li><li><strong>영어:</strong> 영어 단어 10분</li><li><strong>운동·회복:</strong> 근력 A: 의자 스쿼트 3×10 / 푸시업/인클라인 3×6~10 / 원암 덤벨 로우 3×10 / 데드버그 2×8/쪽 (25분)</li></ul><p><strong>계획시간:</strong> 450분</p></article>
+<article class="fallback-day"><h2>8월 5일 (수) · 3주차 D15</h2><p><strong>고정 일정:</strong><br>09:00–12:00 대수 특강</p><p><strong>마감:</strong> 내일 검사② 자료 모으기: D10~D15 페이지·채점·오답</p><ul><li><strong>국어 문학:</strong> 22문항 (누적 356); 길었던 지문 1개 구조화</li><li><strong>통합사회2:</strong> Ⅴ-01 세계의 인구 문제와 해결 방안: 개념 + 기출</li><li><strong>통합과학2:</strong> Ⅱ 환경과 에너지 종합 문제·오답</li><li><strong>한문:</strong> DAY 15 누적평가 ③ — 동물 성어 12개</li><li><strong>물리학:</strong> 회상 5분: 역학 단원 공식 카드</li><li><strong>화학:</strong> 회상 5분: 결합과 극성 구별</li><li><strong>사회와 문화:</strong> 주력 30분: 개인과 사회 + 사회 집단·조직 개관</li><li><strong>수학·학원숙제:</strong> 대수 특강 복습 + 숙제 착수 60분</li><li><strong>영어:</strong> 영어 단어 10분</li><li><strong>운동·회복:</strong> 회복: 목·어깨 가동성 / 흉추 회전 / 햄스트링 가볍게 / 산책 가능 (12분)</li></ul><p><strong>계획시간:</strong> 350분</p></article>
+<article class="fallback-day"><h2>8월 6일 (목) · 3주차 D16</h2><p><strong>고정 일정:</strong><br>19:30 친구 검사 ②</p><p><strong>마감:</strong> 검사②: 국어380 / 사회Ⅴ-02까지 / 과학Ⅲ-01까지 / 한문D10~16</p><ul><li><strong>국어 문학:</strong> 24문항 (누적 380); 작품 1문장 요약</li><li><strong>통합사회2:</strong> Ⅴ-02 에너지 자원과 지속가능한 발전: 개념 + 기출</li><li><strong>통합과학2:</strong> Ⅲ-01 과학 기술의 활용</li><li><strong>한문:</strong> DAY 16 동물 성어 ④ — 용·뱀·개·양</li><li><strong>물리학:</strong> 주력 30분: 열과 에너지</li><li><strong>화학:</strong> 회상 5분: 분자 결합 극성 예 2개</li><li><strong>사회와 문화:</strong> 회상 5분: 사회 집단 유형</li><li><strong>수학·학원숙제:</strong> 수요일 대수 숙제 마감 90분; 미완료 0</li><li><strong>영어:</strong> 영어 단어 10분</li><li><strong>운동·회복:</strong> 근력 B: 지지 스플릿 스쿼트 2×8/쪽 / 덤벨 루마니안 데드리프트 3×10 / 가벼운 숄더 프레스 2×8 / 사이드 플랭크 2×15~25초 (25분)</li></ul><p><strong>계획시간:</strong> 455분</p></article>
+<article class="fallback-day"><h2>8월 7일 (금) · 3주차 D17</h2><p><strong>고정 일정:</strong><br>09:00–12:00 대수 특강<br>18:00–21:00 공수2</p><ul><li><strong>국어 문학:</strong> 18문항 (누적 398); 남은 본문 범위 계산</li><li><strong>통합사회2:</strong> Ⅴ-03 미래 사회의 모습과 나의 삶: 개념 + 기출</li><li><strong>통합과학2:</strong> Ⅲ-02 과학 기술의 발전과 쟁점</li><li><strong>한문:</strong> DAY 17 동물 성어 ⑤와 고사성어</li><li><strong>물리학:</strong> 회상 5분: 열의 이동·에너지</li><li><strong>화학:</strong> 주력 40분: 분자의 구조</li><li><strong>사회와 문화:</strong> 회상 5분: 개인과 사회 관계</li><li><strong>수학·학원숙제:</strong> 대수·공수2 수업이 오늘의 수학 접촉; 대수 숙제 착수 30분</li><li><strong>영어:</strong> 영어 단어 10분</li><li><strong>운동·회복:</strong> 회복: 손목·전완 풀기 / 등·가슴 스트레칭 / 고관절 가동성 / 느린 호흡 (8분)</li></ul><p><strong>계획시간:</strong> 250분</p></article>
+<article class="fallback-day"><h2>8월 8일 (토) · 3주차 D18</h2><p><strong>고정 일정:</strong><br>11:00–14:00 영어<br>14:30–17:30 국어</p><ul><li><strong>국어 문학:</strong> 32문항 (누적 430) — 본문 전 문항 완주
+국어 수업 참여·숙제 범위 기록</li><li><strong>통합사회2:</strong> Ⅰ~Ⅱ 백지 개념 지도 + 틀린 기출만 재풀이</li><li><strong>통합과학2:</strong> Ⅲ 단원 문제 + 본책의 남은 문제 전부 마감</li><li><strong>한문:</strong> DAY 18 한문 해석의 열쇠와 《논어》 첫 문장</li><li><strong>물리학:</strong> 회상 5분: 열·역학 연결</li><li><strong>화학:</strong> 회상 5분: 분자 구조 예 1개</li><li><strong>사회와 문화:</strong> 주력 30분: 일탈 행동과 사회 통제</li><li><strong>수학·학원숙제:</strong> 공수2(금) 숙제 45분; 수업 오답 표시</li><li><strong>영어:</strong> 영어 수업 참여 + 숙제 범위 기록 + 단어 10분</li><li><strong>운동·회복:</strong> 가벼운 활동: 편한 속도 산책 / 어깨 돌리기 / 종아리 풀기 / 피로하면 산책만 (10~20분)</li></ul><p><strong>계획시간:</strong> 235분</p></article>
+<article class="fallback-day"><h2>8월 9일 (일) · 3주차 D19</h2><p><strong>고정 일정:</strong><br>학원 없음 / 자율학습일</p><ul><li><strong>국어 문학:</strong> 미니모의고사 1회 — 시간 측정, 전 선지 근거 확인
+국어 숙제 60분</li><li><strong>통합사회2:</strong> Ⅲ 백지 개념 지도 + 경제 계산/자료 오답</li><li><strong>통합과학2:</strong> Ⅰ 변화와 다양성 누적 오답 재시험</li><li><strong>한문:</strong> DAY 19 《논어》에 담긴 효</li><li><strong>물리학:</strong> 주력 45분: 열효율 + Ⅰ 힘과 에너지 단원 테스트</li><li><strong>화학:</strong> 회상 5분: 분자 구조 1개 그리기</li><li><strong>사회와 문화:</strong> 회상 5분: 일탈 이론 핵심어</li><li><strong>수학·학원숙제:</strong> 금요일 수학 잔여 60분 + 주간 오답 복구</li><li><strong>영어:</strong> 영어 숙제 60분 + 단어 10분</li><li><strong>운동·회복:</strong> 근력 C: 고블릿 스쿼트 3×10 / 덤벨 플로어 프레스 3×8~12 / 원암 로우 3×10 / 버드독 2×8/쪽 (25~30분)</li></ul><p><strong>계획시간:</strong> 450분</p></article>
+<article class="fallback-day"><h2>8월 10일 (월) · 3주차 D20</h2><p><strong>고정 일정:</strong><br>09:00–12:00 대수 특강<br>18:00–22:00 공수2</p><ul><li><strong>국어 문학:</strong> 미니모의고사 2회 — 1회보다 시간·근거 정확도 비교</li><li><strong>통합사회2:</strong> Ⅳ~Ⅴ 백지 개념 지도 + 남은 단원 문제</li><li><strong>통합과학2:</strong> Ⅱ 누적 오답 + 수능 미리보기 앞부분</li><li><strong>한문:</strong> DAY 20 최종 종합평가 — 2학기 준비 완료</li><li><strong>물리학:</strong> 회상 5분: Ⅰ단원 틀린 공식 1개</li><li><strong>화학:</strong> 주력 45분: 분자의 성질 + Ⅰ~Ⅱ 종합 정리</li><li><strong>사회와 문화:</strong> 회상 5분: 사회 통제 방식</li><li><strong>수학·학원숙제:</strong> 수업이 오늘의 수학 접촉; 대수 숙제 착수·오답 분류 20분</li><li><strong>영어:</strong> 영어 단어 10분</li><li><strong>운동·회복:</strong> 회복: 고양이-소 자세 / 가슴 열기 / 고관절 스트레칭 / 느린 호흡 (8분)</li></ul><p><strong>계획시간:</strong> 230분</p></article>
+<article class="fallback-day"><h2>8월 11일 (화) · 3주차 D21</h2><p><strong>고정 일정:</strong><br>학원 없음 / 자율학습일</p><p><strong>마감:</strong> 본 계획 D21 완료 — 내일부터 오답과 누락만 복구</p><ul><li><strong>국어 문학:</strong> 2028 수능 예시문항 + 최빈 오답 선지 10개 재판단</li><li><strong>통합사회2:</strong> 2학기 전 범위 혼합 테스트; 개념서·기출서 빈 페이지 0 확인</li><li><strong>통합과학2:</strong> 수능 미리보기 마감 + 전 범위 오답 10문항 재시험</li><li><strong>한문:</strong> 워크북 오답 5개 다시 시험; 92자·25성어 확인</li><li><strong>물리학:</strong> 회상 5분: Ⅰ 힘과 에너지 전체 지도</li><li><strong>화학:</strong> 회상 5분: Ⅰ~Ⅱ 전체 지도</li><li><strong>사회와 문화:</strong> 주력 45분: 사회 변동·사회 운동 + Ⅰ~Ⅱ 전체 지도</li><li><strong>수학·학원숙제:</strong> 월요일 대수+공수2 숙제 100분; 모르는 문제 별표</li><li><strong>영어:</strong> 영어 단어 10분</li><li><strong>운동·회복:</strong> 근력 A: 의자 스쿼트 3×10 / 푸시업/인클라인 3×6~10 / 원암 덤벨 로우 3×10 / 데드버그 2×8/쪽 (25분)</li></ul><p><strong>계획시간:</strong> 450분</p></article>
+<article class="fallback-day"><h2>8월 12일 (수) · 완충일</h2><p><strong>고정 일정:</strong><br>09:00–12:00 대수 특강</p><p><strong>마감:</strong> 내일 최종 검사 자료 한곳에 모으기</p><ul><li><strong>국어 문학:</strong> 최빈 오답 5문항 재풀이 + 작품 10개 1문장 요약</li><li><strong>통합사회2:</strong> Ⅰ~Ⅴ 백지 개념 지도에서 빈칸만 복구</li><li><strong>통합과학2:</strong> 전 범위 누적 오답 중 자료형 문제 10개 재시험</li><li><strong>한문:</strong> 92자·25성어 중 헷갈린 것만 가리고 쓰기</li><li><strong>물리학:</strong> Ⅰ 힘과 에너지 전체 지도 10분</li><li><strong>화학:</strong> Ⅰ~Ⅱ 전체 지도 + 계산 오답 2문제</li><li><strong>사회와 문화:</strong> Ⅰ~Ⅱ 전체 지도 + 사례 판별 3개</li><li><strong>수학·학원숙제:</strong> 대수 특강 복습 + 숙제 착수 60분</li><li><strong>영어:</strong> 영어 단어 10분</li><li><strong>운동·회복:</strong> 회복: 목·어깨 가동성 / 흉추 회전 / 햄스트링 가볍게 / 산책 가능 (12분)</li></ul><p><strong>계획시간:</strong> 260분</p></article>
+<article class="fallback-day"><h2>8월 13일 (목) · 최종 검사일</h2><p><strong>고정 일정:</strong><br>19:30 친구 최종 검사</p><p><strong>마감:</strong> 최종: 국어 전부+실전 / 사회 전부 / 과학 전부 / 한문 완주 / 숙제 0</p><ul><li><strong>국어 문학:</strong> 본문 430문항·미니 2회·예시문항 완료 증거 정리</li><li><strong>통합사회2:</strong> 개념서·기출서 빈 문제 0 확인 + 무작위 개념 2개 설명</li><li><strong>통합과학2:</strong> 본책·부록 계획 범위 완료 확인 + 오답 10문항 재시험</li><li><strong>한문:</strong> 워크북 오답 5개 재시험 + 92자·25성어 확인</li><li><strong>물리학:</strong> Ⅰ 힘과 에너지 핵심 개념 무자료 설명</li><li><strong>화학:</strong> Ⅰ~Ⅱ 핵심 구조 무자료 설명</li><li><strong>사회와 문화:</strong> Ⅰ~Ⅱ 핵심 구조 무자료 설명</li><li><strong>수학·학원숙제:</strong> 수요일 대수 숙제 마감 90분; 미완료 0</li><li><strong>영어:</strong> 영어 단어 10분</li><li><strong>운동·회복:</strong> 근력 B: 지지 스플릿 스쿼트 2×8/쪽 / 덤벨 루마니안 데드리프트 3×10 / 가벼운 숄더 프레스 2×8 / 사이드 플랭크 2×15~25초 (25분)</li></ul><p><strong>계획시간:</strong> 300분</p></article>
+<article class="fallback-day"><h2>8월 14일 (금) · 개학일</h2><p><strong>고정 일정:</strong><br>개학식<br>09:00–12:00 대수 특강(학교와 충돌 여부 확인)<br>18:00–21:00 공수2</p><p><strong>마감:</strong> 방학 성과를 학교 주간 계획으로 이관</p><ul><li><strong>국어 문학:</strong> 문학 오답 노트 10분</li><li><strong>통합사회2:</strong> 전 범위 개념 지도 5분</li><li><strong>통합과학2:</strong> 오답 5문항 제목만 훑기</li><li><strong>한문:</strong> 가장 헷갈린 한자 5개</li><li><strong>물리학:</strong> 핵심 카드 3분</li><li><strong>화학:</strong> 핵심 카드 3분</li><li><strong>사회와 문화:</strong> 핵심 카드 3분</li><li><strong>수학·학원숙제:</strong> 학교 시간표 확인 + 공수2 수업 여부 확인 + 수학 오답 1문제</li><li><strong>영어:</strong> 영어 단어 10분</li><li><strong>운동·회복:</strong> 회복: 손목·전완 풀기 / 등·가슴 스트레칭 / 고관절 가동성 / 느린 호흡 (8분)</li></ul><p><strong>계획시간:</strong> 70분</p></article>
+    </div>
+  </main>
+
+  <div id="toast" class="toast is-hidden" role="status" aria-live="polite"></div>
+  <footer class="footer">2026 여름방학 완주 플래너 · 오프라인 지원판</footer>
+
+  <script>
+    var PLAN = {"version":4,"title":"2026 여름방학 완주 플래너","startDate":"2026-07-22","coreEndDate":"2026-08-11","endDate":"2026-08-14","subjects":[{"id":"korean","name":"국어 문학","optional":false,"minimum":"1지문 또는 5문항"},{"id":"social","name":"통합사회2","optional":false,"minimum":"개념 10분 + 기출 3문항"},{"id":"science","name":"통합과학2","optional":false,"minimum":"개념 2쪽 또는 5문항"},{"id":"hanja","name":"한문","optional":false,"minimum":"워크북 1쪽"},{"id":"physics","name":"물리학","optional":true,"minimum":"카드 1장 또는 기본 1문제"},{"id":"chemistry","name":"화학","optional":true,"minimum":"카드 1장 또는 계산 1문제"},{"id":"sociology","name":"사회와 문화","optional":true,"minimum":"카드 1장 또는 사례 1개"},{"id":"math","name":"수학·학원숙제","optional":false,"minimum":"수학 오답 1문제"},{"id":"english","name":"영어","optional":false,"minimum":"영어 단어 10분"},{"id":"exercise","name":"운동·회복","optional":false,"minimum":"가벼운 전신 스트레칭 5분"}],"days":[{"date":"2026-07-22","weekday":"수","period":"1주차 D1","fixed":"D1 시작 · 학교 일정 우선\n09:00–12:00 대수 특강(방학 전 수업일: 실시 여부 확인)","planMinutes":350,"deadline":"","tasks":{"korean":"22문항 (누적 22); 연결 지문은 끝까지","social":"Ⅰ-01 인권의 의미와 현대 사회의 인권: 개념완성 전 범위 + 기출 같은 소단원","science":"Ⅰ-1-01 지구 환경 변화: 개념·탐구·문제","hanja":"DAY 01 한자·한자어·한문, 무엇이 다를까?","physics":"주력 30분: 평형과 안정성","chemistry":"회상 5분: 화학의 언어 목차 말하기","sociology":"회상 5분: 사회현상과 자연현상 구별 예 2개","math":"대수 특강 복습 + 숙제 착수 60분","english":"영어 단어 10분","exercise":"회복: 목·어깨 가동성 / 흉추 회전 / 햄스트링 가볍게 / 산책 가능 (12분)"}},{"date":"2026-07-23","weekday":"목","period":"1주차 D2","fixed":"방학식","planMinutes":320,"deadline":"","tasks":{"korean":"18문항 (누적 40); 틀린 선지는 틀린 단어에 밑줄","social":"Ⅰ-02 헌법의 역할과 시민 참여: 개념 + 같은 소단원 기출","science":"Ⅰ-1-02 진화와 생물다양성: 개념·자료·문제","hanja":"DAY 02 한자의 변천과 만들어진 원리","physics":"회상 5분: 힘의 평형 조건 말하기","chemistry":"주력 30분: 생활 속 화학과 몰 개념 입문","sociology":"회상 5분: 사회현상 특징 2개","math":"수요일 대수 숙제 마감 90분; 미완료 0","english":"영어 단어 10분","exercise":"근력 B: 지지 스플릿 스쿼트 2×8/쪽 / 덤벨 루마니안 데드리프트 3×10 / 가벼운 숄더 프레스 2×8 / 사이드 플랭크 2×15~25초 (25분)"}},{"date":"2026-07-24","weekday":"금","period":"1주차 D3","fixed":"09:00–12:00 대수 특강\n18:00–21:00 공수2","planMinutes":250,"deadline":"","tasks":{"korean":"18문항 (누적 58); 작품 1문장 요약을 여백에 기록","social":"Ⅰ-03 인권 문제의 양상과 해결 방안: 개념 + 기출","science":"지구 환경 변화·생물다양성 중단원 문제와 오답","hanja":"DAY 03 필순과 숫자 한자","physics":"회상 5분: 평형·안정성 핵심 카드 3개","chemistry":"회상 5분: 몰의 뜻을 말로 설명","sociology":"주력 40분: 사회현상의 이해","math":"대수·공수2 수업이 오늘의 수학 접촉; 대수 숙제 착수 30분","english":"영어 단어 10분","exercise":"회복: 손목·전완 풀기 / 등·가슴 스트레칭 / 고관절 가동성 / 느린 호흡 (8분)"}},{"date":"2026-07-25","weekday":"토","period":"1주차 D4","fixed":"11:00–14:00 영어\n14:30–17:30 국어","planMinutes":235,"deadline":"","tasks":{"korean":"18문항 (누적 76); 정답 근거 한 줄만 확인\n국어 수업 참여·숙제 범위 기록","social":"Ⅰ 단원 마무리·기출 단원 문제·오답 5개","science":"Ⅰ-2-01 산화와 환원","hanja":"DAY 04 요일·날짜·시간을 한자로","physics":"주력 30분: 가속도 법칙과 등가속도 운동 입문","chemistry":"회상 5분: 몰·질량·입자 관계","sociology":"회상 5분: 자연현상과 비교","math":"공수2(금) 숙제 45분; 수업 오답 표시","english":"영어 수업 참여 + 숙제 범위 기록 + 단어 10분","exercise":"가벼운 활동: 편한 속도 산책 / 어깨 돌리기 / 종아리 풀기 / 피로하면 산책만 (10~20분)"}},{"date":"2026-07-26","weekday":"일","period":"1주차 D5","fixed":"학원 없음 / 자율학습일","planMinutes":450,"deadline":"","tasks":{"korean":"38문항 (누적 114); 헷갈린 문학 개념어 3개 카드화\n국어 숙제 60분","social":"Ⅱ-01 정의의 의미와 실질적 기준: 개념 + 기출","science":"Ⅰ-2-02 산·염기와 중화 반응","hanja":"DAY 05 누적평가 ① — 기초 개념·필순·숫자","physics":"회상 5분: 가속도 단위·방향","chemistry":"주력 40분: 물질의 양 계산 기초","sociology":"회상 5분: 사회현상 사례 판별","math":"금요일 수학 잔여 60분 + 주간 오답 복구","english":"영어 숙제 60분 + 단어 10분","exercise":"근력 C: 고블릿 스쿼트 3×10 / 덤벨 플로어 프레스 3×8~12 / 원암 로우 3×10 / 버드독 2×8/쪽 (25~30분)"}},{"date":"2026-07-27","weekday":"월","period":"1주차 D6","fixed":"09:00–12:00 대수 특강\n18:00–22:00 공수2","planMinutes":230,"deadline":"","tasks":{"korean":"18문항 (누적 132); 오답 3문항 재풀이","social":"Ⅱ-02 다양한 정의관의 특징과 적용: 개념 + 기출","science":"Ⅰ-2-03 물질 변화에서의 에너지 출입","hanja":"DAY 06 방향 한자와 한양도성의 문","physics":"회상 5분: 등가속도 그래프 1개 읽기","chemistry":"회상 5분: mol 계산 1문제","sociology":"주력 40분: 사회현상 연구 방법","math":"수업이 오늘의 수학 접촉; 대수 숙제 착수·오답 분류 20분","english":"영어 단어 10분","exercise":"회복: 고양이-소 자세 / 가슴 열기 / 고관절 스트레칭 / 느린 호흡 (8분)"}},{"date":"2026-07-28","weekday":"화","period":"1주차 D7","fixed":"학원 없음 / 자율학습일","planMinutes":450,"deadline":"","tasks":{"korean":"32문항 (누적 164); 이번 주 오답 중 5개를 말로 설명","social":"Ⅱ-03 불평등과 정의로운 사회 + Ⅰ~Ⅱ 미완료 기출 마감","science":"Ⅰ 변화와 다양성 종합 문제·오답 마감","hanja":"DAY 07 몸과 자연을 나타내는 한자","physics":"주력 40분: 작용·반작용과 운동량 보존","chemistry":"회상 5분: 몰 계산 1문제","sociology":"회상 5분: 양적/질적 연구 비교","math":"월요일 대수+공수2 숙제 100분; 모르는 문제 별표","english":"영어 단어 10분","exercise":"근력 A: 의자 스쿼트 3×10 / 푸시업/인클라인 3×6~10 / 원암 덤벨 로우 3×10 / 데드버그 2×8/쪽 (25분)"}},{"date":"2026-07-29","weekday":"수","period":"2주차 D8","fixed":"09:00–12:00 대수 특강","planMinutes":350,"deadline":"내일 검사① 자료 모으기: D1~D8 페이지·채점·오답","tasks":{"korean":"22문항 (누적 186); 검사에서 나온 오답 1개 먼저 복구","social":"Ⅲ-01 자본주의 전개 과정과 경제 체제: 개념 + 기출","science":"Ⅱ-1-01 생물과 환경","hanja":"DAY 08 가족 한자와 축하 표현","physics":"회상 5분: 운동량 보존 조건","chemistry":"주력 30분: 화학 반응식 작성","sociology":"회상 5분: 연구 방법 선택 기준","math":"대수 특강 복습 + 숙제 착수 60분","english":"영어 단어 10분","exercise":"회복: 목·어깨 가동성 / 흉추 회전 / 햄스트링 가볍게 / 산책 가능 (12분)"}},{"date":"2026-07-30","weekday":"목","period":"2주차 D9","fixed":"19:30 친구 검사 ①","planMinutes":455,"deadline":"검사①: 국어210 / 사회Ⅲ-02까지 / 과학Ⅱ-1-02까지 / 한문D1~9","tasks":{"korean":"24문항 (누적 210); 소설이면 인물관계 3줄","social":"Ⅲ-02 합리적 선택과 경제 주체의 역할: 개념 + 기출","science":"Ⅱ-1-02 생태계 평형","hanja":"DAY 09 학교·이름·인성 가치 한자","physics":"회상 5분: 운동량 문제 조건 확인","chemistry":"회상 5분: 반응식 계수 맞추기 1개","sociology":"주력 30분: 자료 수집 방법","math":"수요일 대수 숙제 마감 90분; 미완료 0","english":"영어 단어 10분","exercise":"근력 B: 지지 스플릿 스쿼트 2×8/쪽 / 덤벨 루마니안 데드리프트 3×10 / 가벼운 숄더 프레스 2×8 / 사이드 플랭크 2×15~25초 (25분)"}},{"date":"2026-07-31","weekday":"금","period":"2주차 D10","fixed":"09:00–12:00 대수 특강\n18:00–21:00 공수2","planMinutes":250,"deadline":"","tasks":{"korean":"18문항 (누적 228); 작품별 핵심 갈등/정서 표시","social":"Ⅲ-03 자산 관리와 금융 생활 설계: 개념 + 기출","science":"Ⅱ-1-03 지구 환경 변화와 인간 생활","hanja":"DAY 10 누적평가 ② — 생활 한자","physics":"주력 40분: 역학적 에너지 보존","chemistry":"회상 5분: 반응식 양적 관계","sociology":"회상 5분: 표본·질문지 주의점","math":"대수·공수2 수업이 오늘의 수학 접촉; 대수 숙제 착수 30분","english":"영어 단어 10분","exercise":"회복: 손목·전완 풀기 / 등·가슴 스트레칭 / 고관절 가동성 / 느린 호흡 (8분)"}},{"date":"2026-08-01","weekday":"토","period":"2주차 D11","fixed":"11:00–14:00 영어\n14:30–17:30 국어","planMinutes":235,"deadline":"","tasks":{"korean":"18문항 (누적 246); 정답 근거 한 줄\n국어 수업 참여·숙제 범위 기록","social":"Ⅲ-04 국제 분업과 무역: 개념 + 기출","science":"생태계와 환경 변화 중단원 문제·오답","hanja":"DAY 11 생활 속 성어 — 방향과 많고 적음","physics":"회상 5분: 역학적 에너지 식 의미","chemistry":"주력 30분: 반응식의 양적 관계","sociology":"회상 5분: 자료 수집법 장단점","math":"공수2(금) 숙제 45분; 수업 오답 표시","english":"영어 수업 참여 + 숙제 범위 기록 + 단어 10분","exercise":"가벼운 활동: 편한 속도 산책 / 어깨 돌리기 / 종아리 풀기 / 피로하면 산책만 (10~20분)"}},{"date":"2026-08-02","weekday":"일","period":"2주차 D12","fixed":"학원 없음 / 자율학습일","planMinutes":450,"deadline":"","tasks":{"korean":"38문항 (누적 284); 오답 선지 고쳐 쓰기 3개\n국어 숙제 60분","social":"Ⅳ-01 세계화의 양상과 문제 해결 방안: 개념 + 기출","science":"Ⅱ-2-01 태양 에너지의 생성과 전환","hanja":"DAY 12 동물 성어 ① — 말과 새","physics":"회상 5분: 에너지 보존 문제 1개","chemistry":"회상 5분: 반응량 비례식 1개","sociology":"주력 40분: 가치 중립과 연구 윤리","math":"금요일 수학 잔여 60분 + 주간 오답 복구","english":"영어 숙제 60분 + 단어 10분","exercise":"근력 C: 고블릿 스쿼트 3×10 / 덤벨 플로어 프레스 3×8~12 / 원암 로우 3×10 / 버드독 2×8/쪽 (25~30분)"}},{"date":"2026-08-03","weekday":"월","period":"2주차 D13","fixed":"09:00–12:00 대수 특강\n18:00–22:00 공수2","planMinutes":230,"deadline":"","tasks":{"korean":"18문항 (누적 302); 오답 3문항 재풀이","social":"Ⅳ-02 평화의 의미와 국제 사회의 역할: 개념 + 기출","science":"Ⅱ-2-02 발전과 에너지원","hanja":"DAY 13 동물 성어 ② — 까마귀와 닭","physics":"주력 40분: 도르래와 물체의 운동","chemistry":"회상 5분: 반응식 계산 1문제","sociology":"회상 5분: 연구 윤리 사례 판별","math":"수업이 오늘의 수학 접촉; 대수 숙제 착수·오답 분류 20분","english":"영어 단어 10분","exercise":"회복: 고양이-소 자세 / 가슴 열기 / 고관절 스트레칭 / 느린 호흡 (8분)"}},{"date":"2026-08-04","weekday":"화","period":"2주차 D14","fixed":"학원 없음 / 자율학습일","planMinutes":450,"deadline":"","tasks":{"korean":"32문항 (누적 334); 이번 주 오답 5개 설명","social":"Ⅳ-03 분단·동아시아 역사 갈등과 평화 + Ⅲ~Ⅳ 미완료 기출 마감","science":"Ⅱ-2-03 에너지 효율과 신재생 에너지 + Ⅱ 오답 마감","hanja":"DAY 14 동물 성어 ③ — 소와 물고기","physics":"회상 5분: 도르래 조건 정리","chemistry":"주력 40분: 화학 결합과 결합의 극성","sociology":"회상 5분: 연구 윤리 3원칙","math":"월요일 대수+공수2 숙제 100분; 모르는 문제 별표","english":"영어 단어 10분","exercise":"근력 A: 의자 스쿼트 3×10 / 푸시업/인클라인 3×6~10 / 원암 덤벨 로우 3×10 / 데드버그 2×8/쪽 (25분)"}},{"date":"2026-08-05","weekday":"수","period":"3주차 D15","fixed":"09:00–12:00 대수 특강","planMinutes":350,"deadline":"내일 검사② 자료 모으기: D10~D15 페이지·채점·오답","tasks":{"korean":"22문항 (누적 356); 길었던 지문 1개 구조화","social":"Ⅴ-01 세계의 인구 문제와 해결 방안: 개념 + 기출","science":"Ⅱ 환경과 에너지 종합 문제·오답","hanja":"DAY 15 누적평가 ③ — 동물 성어 12개","physics":"회상 5분: 역학 단원 공식 카드","chemistry":"회상 5분: 결합과 극성 구별","sociology":"주력 30분: 개인과 사회 + 사회 집단·조직 개관","math":"대수 특강 복습 + 숙제 착수 60분","english":"영어 단어 10분","exercise":"회복: 목·어깨 가동성 / 흉추 회전 / 햄스트링 가볍게 / 산책 가능 (12분)"}},{"date":"2026-08-06","weekday":"목","period":"3주차 D16","fixed":"19:30 친구 검사 ②","planMinutes":455,"deadline":"검사②: 국어380 / 사회Ⅴ-02까지 / 과학Ⅲ-01까지 / 한문D10~16","tasks":{"korean":"24문항 (누적 380); 작품 1문장 요약","social":"Ⅴ-02 에너지 자원과 지속가능한 발전: 개념 + 기출","science":"Ⅲ-01 과학 기술의 활용","hanja":"DAY 16 동물 성어 ④ — 용·뱀·개·양","physics":"주력 30분: 열과 에너지","chemistry":"회상 5분: 분자 결합 극성 예 2개","sociology":"회상 5분: 사회 집단 유형","math":"수요일 대수 숙제 마감 90분; 미완료 0","english":"영어 단어 10분","exercise":"근력 B: 지지 스플릿 스쿼트 2×8/쪽 / 덤벨 루마니안 데드리프트 3×10 / 가벼운 숄더 프레스 2×8 / 사이드 플랭크 2×15~25초 (25분)"}},{"date":"2026-08-07","weekday":"금","period":"3주차 D17","fixed":"09:00–12:00 대수 특강\n18:00–21:00 공수2","planMinutes":250,"deadline":"","tasks":{"korean":"18문항 (누적 398); 남은 본문 범위 계산","social":"Ⅴ-03 미래 사회의 모습과 나의 삶: 개념 + 기출","science":"Ⅲ-02 과학 기술의 발전과 쟁점","hanja":"DAY 17 동물 성어 ⑤와 고사성어","physics":"회상 5분: 열의 이동·에너지","chemistry":"주력 40분: 분자의 구조","sociology":"회상 5분: 개인과 사회 관계","math":"대수·공수2 수업이 오늘의 수학 접촉; 대수 숙제 착수 30분","english":"영어 단어 10분","exercise":"회복: 손목·전완 풀기 / 등·가슴 스트레칭 / 고관절 가동성 / 느린 호흡 (8분)"}},{"date":"2026-08-08","weekday":"토","period":"3주차 D18","fixed":"11:00–14:00 영어\n14:30–17:30 국어","planMinutes":235,"deadline":"","tasks":{"korean":"32문항 (누적 430) — 본문 전 문항 완주\n국어 수업 참여·숙제 범위 기록","social":"Ⅰ~Ⅱ 백지 개념 지도 + 틀린 기출만 재풀이","science":"Ⅲ 단원 문제 + 본책의 남은 문제 전부 마감","hanja":"DAY 18 한문 해석의 열쇠와 《논어》 첫 문장","physics":"회상 5분: 열·역학 연결","chemistry":"회상 5분: 분자 구조 예 1개","sociology":"주력 30분: 일탈 행동과 사회 통제","math":"공수2(금) 숙제 45분; 수업 오답 표시","english":"영어 수업 참여 + 숙제 범위 기록 + 단어 10분","exercise":"가벼운 활동: 편한 속도 산책 / 어깨 돌리기 / 종아리 풀기 / 피로하면 산책만 (10~20분)"}},{"date":"2026-08-09","weekday":"일","period":"3주차 D19","fixed":"학원 없음 / 자율학습일","planMinutes":450,"deadline":"","tasks":{"korean":"미니모의고사 1회 — 시간 측정, 전 선지 근거 확인\n국어 숙제 60분","social":"Ⅲ 백지 개념 지도 + 경제 계산/자료 오답","science":"Ⅰ 변화와 다양성 누적 오답 재시험","hanja":"DAY 19 《논어》에 담긴 효","physics":"주력 45분: 열효율 + Ⅰ 힘과 에너지 단원 테스트","chemistry":"회상 5분: 분자 구조 1개 그리기","sociology":"회상 5분: 일탈 이론 핵심어","math":"금요일 수학 잔여 60분 + 주간 오답 복구","english":"영어 숙제 60분 + 단어 10분","exercise":"근력 C: 고블릿 스쿼트 3×10 / 덤벨 플로어 프레스 3×8~12 / 원암 로우 3×10 / 버드독 2×8/쪽 (25~30분)"}},{"date":"2026-08-10","weekday":"월","period":"3주차 D20","fixed":"09:00–12:00 대수 특강\n18:00–22:00 공수2","planMinutes":230,"deadline":"","tasks":{"korean":"미니모의고사 2회 — 1회보다 시간·근거 정확도 비교","social":"Ⅳ~Ⅴ 백지 개념 지도 + 남은 단원 문제","science":"Ⅱ 누적 오답 + 수능 미리보기 앞부분","hanja":"DAY 20 최종 종합평가 — 2학기 준비 완료","physics":"회상 5분: Ⅰ단원 틀린 공식 1개","chemistry":"주력 45분: 분자의 성질 + Ⅰ~Ⅱ 종합 정리","sociology":"회상 5분: 사회 통제 방식","math":"수업이 오늘의 수학 접촉; 대수 숙제 착수·오답 분류 20분","english":"영어 단어 10분","exercise":"회복: 고양이-소 자세 / 가슴 열기 / 고관절 스트레칭 / 느린 호흡 (8분)"}},{"date":"2026-08-11","weekday":"화","period":"3주차 D21","fixed":"학원 없음 / 자율학습일","planMinutes":450,"deadline":"본 계획 D21 완료 — 내일부터 오답과 누락만 복구","tasks":{"korean":"2028 수능 예시문항 + 최빈 오답 선지 10개 재판단","social":"2학기 전 범위 혼합 테스트; 개념서·기출서 빈 페이지 0 확인","science":"수능 미리보기 마감 + 전 범위 오답 10문항 재시험","hanja":"워크북 오답 5개 다시 시험; 92자·25성어 확인","physics":"회상 5분: Ⅰ 힘과 에너지 전체 지도","chemistry":"회상 5분: Ⅰ~Ⅱ 전체 지도","sociology":"주력 45분: 사회 변동·사회 운동 + Ⅰ~Ⅱ 전체 지도","math":"월요일 대수+공수2 숙제 100분; 모르는 문제 별표","english":"영어 단어 10분","exercise":"근력 A: 의자 스쿼트 3×10 / 푸시업/인클라인 3×6~10 / 원암 덤벨 로우 3×10 / 데드버그 2×8/쪽 (25분)"}},{"date":"2026-08-12","weekday":"수","period":"완충일","fixed":"09:00–12:00 대수 특강","planMinutes":260,"deadline":"내일 최종 검사 자료 한곳에 모으기","tasks":{"korean":"최빈 오답 5문항 재풀이 + 작품 10개 1문장 요약","social":"Ⅰ~Ⅴ 백지 개념 지도에서 빈칸만 복구","science":"전 범위 누적 오답 중 자료형 문제 10개 재시험","hanja":"92자·25성어 중 헷갈린 것만 가리고 쓰기","physics":"Ⅰ 힘과 에너지 전체 지도 10분","chemistry":"Ⅰ~Ⅱ 전체 지도 + 계산 오답 2문제","sociology":"Ⅰ~Ⅱ 전체 지도 + 사례 판별 3개","math":"대수 특강 복습 + 숙제 착수 60분","english":"영어 단어 10분","exercise":"회복: 목·어깨 가동성 / 흉추 회전 / 햄스트링 가볍게 / 산책 가능 (12분)"}},{"date":"2026-08-13","weekday":"목","period":"최종 검사일","fixed":"19:30 친구 최종 검사","planMinutes":300,"deadline":"최종: 국어 전부+실전 / 사회 전부 / 과학 전부 / 한문 완주 / 숙제 0","tasks":{"korean":"본문 430문항·미니 2회·예시문항 완료 증거 정리","social":"개념서·기출서 빈 문제 0 확인 + 무작위 개념 2개 설명","science":"본책·부록 계획 범위 완료 확인 + 오답 10문항 재시험","hanja":"워크북 오답 5개 재시험 + 92자·25성어 확인","physics":"Ⅰ 힘과 에너지 핵심 개념 무자료 설명","chemistry":"Ⅰ~Ⅱ 핵심 구조 무자료 설명","sociology":"Ⅰ~Ⅱ 핵심 구조 무자료 설명","math":"수요일 대수 숙제 마감 90분; 미완료 0","english":"영어 단어 10분","exercise":"근력 B: 지지 스플릿 스쿼트 2×8/쪽 / 덤벨 루마니안 데드리프트 3×10 / 가벼운 숄더 프레스 2×8 / 사이드 플랭크 2×15~25초 (25분)"}},{"date":"2026-08-14","weekday":"금","period":"개학일","fixed":"개학식\n09:00–12:00 대수 특강(학교와 충돌 여부 확인)\n18:00–21:00 공수2","planMinutes":70,"deadline":"방학 성과를 학교 주간 계획으로 이관","tasks":{"korean":"문학 오답 노트 10분","social":"전 범위 개념 지도 5분","science":"오답 5문항 제목만 훑기","hanja":"가장 헷갈린 한자 5개","physics":"핵심 카드 3분","chemistry":"핵심 카드 3분","sociology":"핵심 카드 3분","math":"학교 시간표 확인 + 공수2 수업 여부 확인 + 수학 오답 1문제","english":"영어 단어 10분","exercise":"회복: 손목·전완 풀기 / 등·가슴 스트레칭 / 고관절 가동성 / 느린 호흡 (8분)"}}],"deadlines":[{"date":"2026-07-30","label":"검사 ① · D1~D9","items":[{"name":"국어 문학","target":"누적 210문항","evidence":"푼 페이지, OMR/채점, 오답 5개 설명","minimum":"1지문 또는 5문항","method":"문제→근거 표시→전 선지 첨삭→작품 1문장","completion":"연결 지문을 끊지 않고 전부 채점"},{"name":"통합사회2","target":"Ⅰ~Ⅱ + Ⅲ-01~02 개념·기출","evidence":"각 소단원 마지막 페이지, 백지 지도","minimum":"개념 10분+기출 3문항","method":"개념완성 소단원 직후 같은 소단원 기출","completion":"2학기 범위의 빈 문제 0, 오답 이유 말하기"},{"name":"통합과학2","target":"Ⅰ 전부 + Ⅱ-1-01~02","evidence":"완자 단원 문제, 틀린 자료형 문제","minimum":"개념 2쪽 또는 5문항","method":"개념→자료 읽기→문제→틀린 자료 다시 그리기","completion":"본책·부록의 계획 범위 전부 채점"},{"name":"한문","target":"워크북 DAY 1~9","evidence":"작성 페이지, 가리고 쓰기, 누적평가 점수","minimum":"워크북 1쪽","method":"형·음·의→가리고 쓰기→상황 예→다음날 인출","completion":"92자·25성어·문장 핵심을 자료 없이 인출"},{"name":"물리학","target":"평형~운동량","evidence":"개념 카드, 기본 문제","minimum":"카드 1장 또는 1문제","method":"주력일 30~45분, 나머지 날 5분 회상","completion":"Ⅰ 힘과 에너지 기본 개념을 설명"},{"name":"화학","target":"화학의 언어·몰·화학 반응식","evidence":"몰/반응식 계산, 분자 구조","minimum":"카드 1장 또는 계산 1문제","method":"주력일 계산·구조, 나머지 날 5분 회상","completion":"Ⅰ 화학의 언어·Ⅱ 구조와 성질 개관"},{"name":"사회와 문화","target":"사회현상·연구 방법·자료 수집","evidence":"개념 비교표, 사례 판별","minimum":"카드 1장 또는 사례 1개","method":"사례를 개념에 분류하고 이유 말하기","completion":"Ⅰ~Ⅱ 핵심 구조를 백지에 작성"},{"name":"학원 숙제","target":"48시간 내 처리","evidence":"숙제 범위·완료 날짜","minimum":"수학 오답 1문제, 영어 단어 10분","method":"수업 당일 착수→다음날 완성→목요일 마감","completion":"밀린 숙제 0"}]},{"date":"2026-08-06","label":"검사 ② · D10~D16","items":[{"name":"국어 문학","target":"누적 380문항","evidence":"푼 페이지, OMR/채점, 오답 5개 설명","minimum":"1지문 또는 5문항","method":"문제→근거 표시→전 선지 첨삭→작품 1문장","completion":"연결 지문을 끊지 않고 전부 채점"},{"name":"통합사회2","target":"Ⅲ 나머지~Ⅴ-02 개념·기출","evidence":"각 소단원 마지막 페이지, 백지 지도","minimum":"개념 10분+기출 3문항","method":"개념완성 소단원 직후 같은 소단원 기출","completion":"2학기 범위의 빈 문제 0, 오답 이유 말하기"},{"name":"통합과학2","target":"Ⅱ 나머지 + Ⅲ-01","evidence":"완자 단원 문제, 틀린 자료형 문제","minimum":"개념 2쪽 또는 5문항","method":"개념→자료 읽기→문제→틀린 자료 다시 그리기","completion":"본책·부록의 계획 범위 전부 채점"},{"name":"한문","target":"워크북 DAY 10~16","evidence":"작성 페이지, 가리고 쓰기, 누적평가 점수","minimum":"워크북 1쪽","method":"형·음·의→가리고 쓰기→상황 예→다음날 인출","completion":"92자·25성어·문장 핵심을 자료 없이 인출"},{"name":"물리학","target":"에너지~열과 에너지","evidence":"개념 카드, 기본 문제","minimum":"카드 1장 또는 1문제","method":"주력일 30~45분, 나머지 날 5분 회상","completion":"Ⅰ 힘과 에너지 기본 개념을 설명"},{"name":"화학","target":"반응식~결합의 극성","evidence":"몰/반응식 계산, 분자 구조","minimum":"카드 1장 또는 계산 1문제","method":"주력일 계산·구조, 나머지 날 5분 회상","completion":"Ⅰ 화학의 언어·Ⅱ 구조와 성질 개관"},{"name":"사회와 문화","target":"자료 수집~사회 집단·조직","evidence":"개념 비교표, 사례 판별","minimum":"카드 1장 또는 사례 1개","method":"사례를 개념에 분류하고 이유 말하기","completion":"Ⅰ~Ⅱ 핵심 구조를 백지에 작성"},{"name":"학원 숙제","target":"48시간 내 처리","evidence":"숙제 범위·완료 날짜","minimum":"수학 오답 1문제, 영어 단어 10분","method":"수업 당일 착수→다음날 완성→목요일 마감","completion":"밀린 숙제 0"}]},{"date":"2026-08-13","label":"최종 검사","items":[{"name":"국어 문학","target":"본문 430문항 + 미니 2회 + 예시문항","evidence":"푼 페이지, OMR/채점, 오답 5개 설명","minimum":"1지문 또는 5문항","method":"문제→근거 표시→전 선지 첨삭→작품 1문장","completion":"연결 지문을 끊지 않고 전부 채점"},{"name":"통합사회2","target":"Ⅴ 마감 + 전 범위 오답","evidence":"각 소단원 마지막 페이지, 백지 지도","minimum":"개념 10분+기출 3문항","method":"개념완성 소단원 직후 같은 소단원 기출","completion":"2학기 범위의 빈 문제 0, 오답 이유 말하기"},{"name":"통합과학2","target":"Ⅲ + 수능 미리보기 + 전 오답","evidence":"완자 단원 문제, 틀린 자료형 문제","minimum":"개념 2쪽 또는 5문항","method":"개념→자료 읽기→문제→틀린 자료 다시 그리기","completion":"본책·부록의 계획 범위 전부 채점"},{"name":"한문","target":"DAY 17~20 + 오답 5개","evidence":"작성 페이지, 가리고 쓰기, 누적평가 점수","minimum":"워크북 1쪽","method":"형·음·의→가리고 쓰기→상황 예→다음날 인출","completion":"92자·25성어·문장 핵심을 자료 없이 인출"},{"name":"물리학","target":"열·열효율 + Ⅰ단원 테스트","evidence":"개념 카드, 기본 문제","minimum":"카드 1장 또는 1문제","method":"주력일 30~45분, 나머지 날 5분 회상","completion":"Ⅰ 힘과 에너지 기본 개념을 설명"},{"name":"화학","target":"분자 구조·성질 + Ⅰ~Ⅱ 지도","evidence":"몰/반응식 계산, 분자 구조","minimum":"카드 1장 또는 계산 1문제","method":"주력일 계산·구조, 나머지 날 5분 회상","completion":"Ⅰ 화학의 언어·Ⅱ 구조와 성질 개관"},{"name":"사회와 문화","target":"개인과 사회~사회 변동","evidence":"개념 비교표, 사례 판별","minimum":"카드 1장 또는 사례 1개","method":"사례를 개념에 분류하고 이유 말하기","completion":"Ⅰ~Ⅱ 핵심 구조를 백지에 작성"},{"name":"학원 숙제","target":"개학 전 미완료 0","evidence":"숙제 범위·완료 날짜","minimum":"수학 오답 1문제, 영어 단어 10분","method":"수업 당일 착수→다음날 완성→목요일 마감","completion":"밀린 숙제 0"}]}],"deadlineSubjects":8,"timetable":[{"day":"매일","time":"기상 후 20분","activity":"영어 단어 10분 + 수학 오답 1문제","type":"매일 접촉","amount":"시간보다 완료 기준","note":"휴대폰 보기 전에 먼저"},{"day":"월","time":"09:00–12:00","activity":"대수 특강","type":"수업","amount":"수업 참여·표시","note":"이동·점심 포함"},{"day":"월","time":"13:20–17:10","activity":"국어→사회→과학→한문→선행 3과목","type":"짧고 밀도 있게","amount":"40+40+40+30+35분","note":"17:10부터 저녁·이동"},{"day":"월","time":"18:00–22:00","activity":"공수2 수업","type":"수업","amount":"오답 표시만","note":"귀가 후 공부 금지, 수면 우선"},{"day":"화","time":"09:00–10:40","activity":"월 대수·공수2 숙제","type":"숙제 핵심일","amount":"100분","note":"모르는 문제 별표"},{"day":"화","time":"10:50–12:10","activity":"국어 문학","type":"주력","amount":"32문항 안팎","note":"연결 지문은 끊지 않기"},{"day":"화","time":"13:20–17:30","activity":"사회·과학·한문·선행 3과목","type":"깊은 공부","amount":"각 계획 단원 마감","note":"25/5 반복"},{"day":"화","time":"17:40–18:10","activity":"근력 A","type":"운동","amount":"25분","note":"통증 시 중단"},{"day":"화","time":"19:30–20:30","activity":"영어/국어 숙제 또는 밀린 분량","type":"완충 블록","amount":"60분","note":"밀린 것 없으면 자유시간"},{"day":"수","time":"09:00–12:00","activity":"대수 특강","type":"수업","amount":"수업 참여·표시","note":""},{"day":"수","time":"13:30–14:30","activity":"대수 숙제 착수","type":"숙제","amount":"60분","note":"목요일 전 완성"},{"day":"수","time":"14:40–20:20","activity":"국어·사회·과학·한문·선행","type":"균형일","amount":"날짜별 분량","note":"저녁 사이 40분"},{"day":"목","time":"09:00–10:30","activity":"수요일 대수 숙제 마감","type":"숙제 마감","amount":"90분","note":"미완료 0"},{"day":"목","time":"10:40–18:10","activity":"국어·사회·과학·한문·선행 + 근력 B","type":"주간 마감","amount":"날짜별 분량","note":"검사 전에 채점"},{"day":"목","time":"19:30–20:30","activity":"친구 검사","type":"검사","amount":"증거+설명","note":"검사 없는 주는 누적 복습"},{"day":"목","time":"20:30–21:30","activity":"검사에서 나온 누락 즉시 복구","type":"완충","amount":"60분","note":"다음 주로 넘기지 않기"},{"day":"금","time":"09:00–12:00","activity":"대수 특강","type":"수업","amount":"수업 참여","note":""},{"day":"금","time":"13:20–17:20","activity":"국어·사회·과학·한문·선행 + 대수 착수","type":"압축일","amount":"각 30~45분","note":"저녁 수업 전 마감"},{"day":"금","time":"18:00–21:00","activity":"공수2 수업","type":"수업","amount":"오답 표시","note":"귀가 후 스트레칭만"},{"day":"토","time":"08:30–10:10","activity":"공수2 숙제 + 국어 문학","type":"아침 핵심","amount":"45+40분","note":"10:10 출발"},{"day":"토","time":"11:00–17:30","activity":"영어·국어 수업","type":"수업","amount":"숙제 범위 기록","note":"14:00–14:30 이동/간식"},{"day":"토","time":"19:00–22:00","activity":"사회·과학·한문·선행 + 산책","type":"저녁 압축","amount":"각 30~40분","note":"너무 늦게 새 진도 금지"},{"day":"일","time":"09:00–12:00","activity":"국어·과학","type":"주력","amount":"32~38문항/계획 단원","note":"가장 어려운 것부터"},{"day":"일","time":"13:00–17:40","activity":"사회 + 영어/국어/수학 숙제","type":"복구일","amount":"각 60분","note":"주간 밀림 0"},{"day":"일","time":"18:00–21:20","activity":"한문·선행·근력 C·주간 정리","type":"완성일","amount":"30+50+30+40분","note":"21:20 이후 휴식"}],"workouts":[{"day":"월","type":"회복","moves":["고양이-소 자세","가슴 열기","고관절 스트레칭","느린 호흡"],"duration":"8분"},{"day":"화","type":"근력 A","moves":["의자 스쿼트 3×10","푸시업/인클라인 3×6~10","원암 덤벨 로우 3×10","데드버그 2×8/쪽"],"duration":"25분"},{"day":"수","type":"회복","moves":["목·어깨 가동성","흉추 회전","햄스트링 가볍게","산책 가능"],"duration":"12분"},{"day":"목","type":"근력 B","moves":["지지 스플릿 스쿼트 2×8/쪽","덤벨 루마니안 데드리프트 3×10","가벼운 숄더 프레스 2×8","사이드 플랭크 2×15~25초"],"duration":"25분"},{"day":"금","type":"회복","moves":["손목·전완 풀기","등·가슴 스트레칭","고관절 가동성","느린 호흡"],"duration":"8분"},{"day":"토","type":"가벼운 활동","moves":["편한 속도 산책","어깨 돌리기","종아리 풀기","피로하면 산책만"],"duration":"10~20분"},{"day":"일","type":"근력 C","moves":["고블릿 스쿼트 3×10","덤벨 플로어 프레스 3×8~12","원암 로우 3×10","버드독 2×8/쪽"],"duration":"25~30분"}]};
+  </script>
+  <script>
+    (function () {
+      "use strict";
+
+      var STORAGE_KEY = "doyoung_summer_2026_v4";
+      var COOKIE_KEY = "dys26v4";
+      var STATE_SYMBOL = ["○", "✓", "△", "↗"];
+      var STATE_LABEL = ["미시작", "완료", "긴급 최소량", "이월"];
+      var state;
+      var selectedDay = 0;
+      var currentView = "today";
+      var selectedWeekday = "월";
+      var storageMethod = "memory";
+      var timerEnd = 0;
+      var timerHandle = null;
+      var timerDefault = 25 * 60;
+      var toastHandle = null;
+
+      function byId(id) { return document.getElementById(id); }
+      function on(node, eventName, handler) {
+        if (node.addEventListener) { node.addEventListener(eventName, handler, false); }
+        else if (node.attachEvent) { node.attachEvent("on" + eventName, handler); }
+      }
+      function hasClass(node, name) {
+        return (" " + node.className + " ").indexOf(" " + name + " ") >= 0;
+      }
+      function addClass(node, name) {
+        if (!hasClass(node, name)) { node.className += (node.className ? " " : "") + name; }
+      }
+      function removeClass(node, name) {
+        var re = new RegExp("(^|\\s)" + name + "(?=\\s|$)", "g");
+        node.className = node.className.replace(re, " ").replace(/^\s+|\s+$/g, "");
+      }
+      function text(value) {
+        return String(value === null || typeof value === "undefined" ? "" : value)
+          .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
+          .replace(/"/g, "&quot;").replace(/'/g, "&#39;");
+      }
+      function clamp(value, low, high) {
+        value = Number(value);
+        if (isNaN(value)) { value = low; }
+        return Math.max(low, Math.min(high, value));
+      }
+      function pad2(n) { return n < 10 ? "0" + n : String(n); }
+      function padNumber(value, width) {
+        var output = String(value);
+        while (output.length < width) { output = "0" + output; }
+        return output;
+      }
+      function isoToday() {
+        var d = new Date();
+        return d.getFullYear() + "-" + pad2(d.getMonth() + 1) + "-" + pad2(d.getDate());
+      }
+      function shortDate(iso) {
+        var p = iso.split("-");
+        return Number(p[1]) + "월 " + Number(p[2]) + "일";
+      }
+      function repeatChar(ch, count) {
+        var s = "";
+        var i;
+        for (i = 0; i < count; i += 1) { s += ch; }
+        return s;
+      }
+      function setCharAt(str, index, chr) {
+        return str.substr(0, index) + chr + str.substr(index + 1);
+      }
+      function defaultState() {
+        return {
+          version: 4,
+          statuses: repeatChar("0", PLAN.days.length * PLAN.subjects.length),
+          inspections: repeatChar("0", PLAN.deadlines.length * PLAN.deadlineSubjects),
+          minutes: [],
+          notes: [],
+          mode: "auto"
+        };
+      }
+      function normalizeState(raw) {
+        var fresh = defaultState();
+        var i;
+        if (!raw || typeof raw !== "object") { return fresh; }
+        if (typeof raw.statuses === "string") {
+          fresh.statuses = (raw.statuses + repeatChar("0", fresh.statuses.length)).substr(0, fresh.statuses.length);
+        }
+        if (typeof raw.inspections === "string") {
+          fresh.inspections = (raw.inspections + repeatChar("0", fresh.inspections.length)).substr(0, fresh.inspections.length);
+        }
+        if (raw.minutes && typeof raw.minutes.length !== "undefined") {
+          for (i = 0; i < PLAN.days.length; i += 1) { fresh.minutes[i] = raw.minutes[i] || ""; }
+        }
+        if (raw.notes && typeof raw.notes.length !== "undefined") {
+          for (i = 0; i < PLAN.days.length; i += 1) { fresh.notes[i] = String(raw.notes[i] || "").substr(0, 80); }
+        }
+        if (raw.mode === "standard" || raw.mode === "compact" || raw.mode === "kindle" || raw.mode === "auto") {
+          fresh.mode = raw.mode;
+        }
+        return fresh;
+      }
+      function readCookie(name) {
+        var parts = document.cookie ? document.cookie.split(";") : [];
+        var i;
+        var p;
+        for (i = 0; i < parts.length; i += 1) {
+          p = parts[i].replace(/^\s+/, "");
+          if (p.indexOf(name + "=") === 0) { return decodeURIComponent(p.substr(name.length + 1)); }
+        }
+        return "";
+      }
+      function writeCookie(name, value) {
+        var expires = new Date();
+        expires.setFullYear(expires.getFullYear() + 2);
+        document.cookie = name + "=" + encodeURIComponent(value) + "; expires=" + expires.toUTCString() + "; path=/";
+      }
+      function loadState() {
+        var raw = "";
+        var parsed = null;
+        try {
+          raw = window.localStorage ? window.localStorage.getItem(STORAGE_KEY) : "";
+          if (raw) { parsed = JSON.parse(raw); storageMethod = "localStorage"; }
+        } catch (ignoreLocal) {}
+        if (!parsed) {
+          try {
+            raw = readCookie(COOKIE_KEY);
+            if (raw) { parsed = JSON.parse(raw); storageMethod = "cookie"; }
+          } catch (ignoreCookie) {}
+        }
+        state = normalizeState(parsed);
+      }
+      function saveState(quiet) {
+        var raw;
+        var cookieRaw;
+        var saved = false;
+        try { raw = JSON.stringify(state); } catch (jsonError) { raw = ""; }
+        if (raw) {
+          try {
+            if (window.localStorage) {
+              window.localStorage.setItem(STORAGE_KEY, raw);
+              storageMethod = "localStorage";
+              saved = true;
+            }
+          } catch (ignoreLocal) {}
+          if (!saved) {
+            try {
+              cookieRaw = JSON.stringify({
+                version: 4,
+                statuses: state.statuses,
+                inspections: state.inspections,
+                minutes: state.minutes,
+                mode: state.mode
+              });
+              writeCookie(COOKIE_KEY, cookieRaw);
+              storageMethod = "cookie";
+              saved = true;
+            } catch (ignoreCookie) {}
+          }
+        }
+        if (!saved) {
+          storageMethod = "memory";
+          showStorageNotice("이 브라우저에서는 자동 저장을 사용할 수 없습니다. ‘저장·설정’의 백업 코드를 자주 보관하세요.");
+        }
+        if (!quiet) { refreshBackup(); }
+      }
+      function showStorageNotice(message) {
+        var node = byId("storageNotice");
+        node.innerHTML = text(message);
+        removeClass(node, "is-hidden");
+      }
+      function getStatus(dayIndex, subjectIndex) {
+        var idx = dayIndex * PLAN.subjects.length + subjectIndex;
+        var n = parseInt(state.statuses.charAt(idx), 10);
+        return isNaN(n) ? 0 : clamp(n, 0, 3);
+      }
+      function setStatus(dayIndex, subjectIndex, value) {
+        var idx = dayIndex * PLAN.subjects.length + subjectIndex;
+        state.statuses = setCharAt(state.statuses, idx, String(clamp(value, 0, 3)));
+      }
+      function getDayScore(dayIndex) {
+        var total = 0;
+        var full = 0;
+        var partial = 0;
+        var i;
+        var s;
+        for (i = 0; i < PLAN.subjects.length; i += 1) {
+          s = getStatus(dayIndex, i);
+          if (s === 1) { total += 1; full += 1; }
+          else if (s === 2) { total += 0.5; partial += 1; }
+        }
+        return { score: total, full: full, partial: partial, percent: Math.round(total / PLAN.subjects.length * 100) };
+      }
+      function dailyCodeChecksum(dayNumber, value) {
+        return (dayNumber * 17 + value * 31) % 97;
+      }
+      function makeDailySyncCode(dayIndex) {
+        var value = 0;
+        var factor = 1;
+        var i;
+        var dayNumber = dayIndex + 1;
+        for (i = 0; i < PLAN.subjects.length; i += 1) {
+          value += getStatus(dayIndex, i) * factor;
+          factor *= 4;
+        }
+        return padNumber(dayNumber, 2) + "-" + padNumber(value, 7) + "-" +
+          padNumber(dailyCodeChecksum(dayNumber, value), 2);
+      }
+      function applyDailySyncCode(code) {
+        var digits = String(code || "").replace(/[^0-9]/g, "");
+        var dayNumber;
+        var dayIndex;
+        var value;
+        var checksum;
+        var working;
+        var i;
+        if (digits.length !== 11) { throw new Error("daily code length"); }
+        dayNumber = parseInt(digits.substr(0, 2), 10);
+        value = parseInt(digits.substr(2, 7), 10);
+        checksum = parseInt(digits.substr(9, 2), 10);
+        dayIndex = dayNumber - 1;
+        if (dayIndex < 0 || dayIndex >= PLAN.days.length || value < 0 || value >= 1048576) {
+          throw new Error("daily code range");
+        }
+        if (checksum !== dailyCodeChecksum(dayNumber, value)) { throw new Error("daily code checksum"); }
+        working = value;
+        for (i = 0; i < PLAN.subjects.length; i += 1) {
+          setStatus(dayIndex, i, working % 4);
+          working = Math.floor(working / 4);
+        }
+        return dayIndex;
+      }
+      function getTodayIndex() {
+        var now = isoToday();
+        var i;
+        if (now < PLAN.days[0].date) { return 0; }
+        for (i = 0; i < PLAN.days.length; i += 1) {
+          if (PLAN.days[i].date === now) { return i; }
+        }
+        return PLAN.days.length - 1;
+      }
+      function queryParam(name) {
+        var query = window.location.search ? window.location.search.substr(1).split("&") : [];
+        var i;
+        var p;
+        for (i = 0; i < query.length; i += 1) {
+          p = query[i].split("=");
+          if (decodeURIComponent(p[0]) === name) { return decodeURIComponent((p[1] || "").replace(/\+/g, " ")); }
+        }
+        return "";
+      }
+      function detectedMode() {
+        var ua = navigator.userAgent || "";
+        var width = window.innerWidth || document.documentElement.clientWidth || 800;
+        if (/Kindle|NetFront|K4HT|K4NT/i.test(ua)) { return "kindle"; }
+        if (width <= 520) { return "compact"; }
+        return "standard";
+      }
+      function applyMode() {
+        var forced = queryParam("mode");
+        var mode = forced || state.mode;
+        var actual = mode === "auto" ? detectedMode() : mode;
+        removeClass(document.body, "standard");
+        removeClass(document.body, "compact");
+        removeClass(document.body, "kindle");
+        addClass(document.body, actual);
+        byId("modeSelect").value = state.mode;
+        byId("deviceInfo").innerHTML = "현재 적용: <strong>" + text(actual === "kindle" ? "Kindle 4 흑백" : actual === "compact" ? "압축" : "표준") +
+          "</strong> · 저장 방식: <strong>" + text(storageMethod === "localStorage" ? "기기 자동 저장" : storageMethod === "cookie" ? "쿠키 보조 저장" : "현재 창만") + "</strong>";
+      }
+      function toast(message) {
+        var node = byId("toast");
+        node.innerHTML = text(message);
+        removeClass(node, "is-hidden");
+        if (toastHandle) { window.clearTimeout(toastHandle); }
+        toastHandle = window.setTimeout(function () { addClass(node, "is-hidden"); }, hasClass(document.body, "kindle") ? 5000 : 2200);
+      }
+      function renderDaySelect() {
+        var html = "";
+        var i;
+        var d;
+        for (i = 0; i < PLAN.days.length; i += 1) {
+          d = PLAN.days[i];
+          html += '<option value="' + i + '">' + text(shortDate(d.date) + " (" + d.weekday + ") · " + d.period) + "</option>";
+        }
+        byId("daySelect").innerHTML = html;
+        byId("daySelect").value = String(selectedDay);
+      }
+      function taskDetail(day, subject) {
+        return day.tasks[subject.id] || subject.minimum;
+      }
+      function renderToday() {
+        var day = PLAN.days[selectedDay];
+        var score = getDayScore(selectedDay);
+        var html = "";
+        var i;
+        var subject;
+        var status;
+        var detail;
+        byId("daySelect").value = String(selectedDay);
+        byId("heroKicker").innerHTML = text(day.period + " · " + day.weekday + "요일");
+        byId("heroDate").innerHTML = text(shortDate(day.date));
+        byId("heroMeta").innerHTML = text("계획 " + day.planMinutes + "분 · " + (day.date === isoToday() ? "오늘" : day.date < isoToday() ? "지난 계획" : "예정"));
+        byId("dayProgressFill").style.width = score.percent + "%";
+        byId("dayProgressText").innerHTML = text(score.full + "개 완료" + (score.partial ? " · 최소 " + score.partial + "개" : "") + " · " + score.percent + "%");
+        byId("dailySyncCode").innerHTML = text(makeDailySyncCode(selectedDay));
+        byId("fixedText").innerHTML = text(day.fixed).replace(/\n/g, "<br>");
+        if (day.deadline) {
+          byId("deadlineText").innerHTML = text(day.deadline);
+          removeClass(byId("deadlineToday"), "is-hidden");
+        } else { addClass(byId("deadlineToday"), "is-hidden"); }
+        for (i = 0; i < PLAN.subjects.length; i += 1) {
+          subject = PLAN.subjects[i];
+          status = getStatus(selectedDay, i);
+          detail = taskDetail(day, subject);
+          html += '<div class="task-card">' +
+            '<div class="task-state-cell"><button type="button" class="state-btn state-' + status +
+            '" data-action="cycle-status" data-day="' + selectedDay + '" data-subject="' + i +
+            '" aria-label="' + text(subject.name + " 상태: " + STATE_LABEL[status]) + '" title="' + text(STATE_LABEL[status]) + '">' +
+            STATE_SYMBOL[status] + "</button></div>" +
+            '<div class="task-body"><h3 class="task-name">' + text(subject.name) +
+            (subject.optional ? '<span class="tag">선택 선행</span>' : "") + "</h3>" +
+            '<p class="task-detail">' + text(detail).replace(/\n/g, "<br>") + "</p>" +
+            '<p class="task-min"><strong>긴급 최소:</strong> ' + text(subject.minimum) + "</p></div></div>";
+        }
+        byId("taskGrid").innerHTML = html;
+        byId("actualMinutes").value = state.minutes[selectedDay] || "";
+        byId("dayNote").value = state.notes[selectedDay] || "";
+      }
+      function renderOverdue() {
+        var now = isoToday();
+        var cutoff = -1;
+        var total = 0;
+        var html = "";
+        var i;
+        var j;
+        var s;
+        var day;
+        var subject;
+        if (now >= PLAN.days[0].date) {
+          cutoff = getTodayIndex();
+          if (PLAN.days[cutoff].date === now) { cutoff -= 1; }
+        }
+        for (i = 0; i <= cutoff; i += 1) {
+          day = PLAN.days[i];
+          for (j = 0; j < PLAN.subjects.length; j += 1) {
+            s = getStatus(i, j);
+            if (s !== 1) {
+              total += 1;
+              subject = PLAN.subjects[j];
+              html += '<div class="overdue-item"><div class="overdue-body">' +
+                '<p class="overdue-title">' + text(shortDate(day.date) + " · " + subject.name + " · " + STATE_LABEL[s]) + "</p>" +
+                '<p class="overdue-detail">' + text(taskDetail(day, subject)) + "</p></div>" +
+                '<div class="overdue-action"><button type="button" class="mini-btn" data-action="finish-overdue" data-day="' + i + '" data-subject="' + j + '">완료</button></div></div>';
+            }
+          }
+        }
+        if (cutoff < 0) {
+          byId("overdueSummary").innerHTML = '<p><strong>아직 계획 시작 전입니다.</strong> 7월 22일 D1부터 기록이 시작됩니다.</p>';
+          byId("overdueList").innerHTML = '<div class="empty">지금은 복구할 밀린 계획이 없습니다.</div>';
+        } else if (!total) {
+          byId("overdueSummary").innerHTML = "<p><strong>밀린 일 0개.</strong> 이전 날짜를 모두 완주했습니다.</p>";
+          byId("overdueList").innerHTML = '<div class="empty">좋습니다. 오늘 계획에 집중하세요.</div>';
+        } else {
+          byId("overdueSummary").innerHTML = "<p><strong>" + total + "개</strong>가 아직 완전 완료되지 않았습니다.</p>";
+          byId("overdueList").innerHTML = html;
+        }
+      }
+      function renderPlan() {
+        var html = "";
+        var i;
+        var d;
+        var score;
+        var today = isoToday();
+        for (i = 0; i < PLAN.days.length; i += 1) {
+          d = PLAN.days[i];
+          score = getDayScore(i);
+          html += '<button type="button" class="day-card' + (d.date === today ? " today-card" : "") +
+            '" data-action="open-day" data-day="' + i + '">' +
+            '<span class="day-card-date">' + text(shortDate(d.date) + " (" + d.weekday + ")") + "</span>" +
+            '<span class="day-card-period">' + text(d.period) + "</span>" +
+            '<span class="mini-track"><span class="mini-fill" style="width:' + score.percent + '%"></span></span>' +
+            '<span class="day-card-score">' + text(score.full + "/10 완료 · " + score.percent + "%") + "</span></button>";
+        }
+        byId("dayCards").innerHTML = html;
+      }
+      function inspectionChecked(deadlineIndex, subjectIndex) {
+        var idx = deadlineIndex * PLAN.deadlineSubjects + subjectIndex;
+        return state.inspections.charAt(idx) === "1";
+      }
+      function setInspection(deadlineIndex, subjectIndex, checked) {
+        var idx = deadlineIndex * PLAN.deadlineSubjects + subjectIndex;
+        state.inspections = setCharAt(state.inspections, idx, checked ? "1" : "0");
+      }
+      function renderInspections() {
+        var html = "";
+        var i;
+        var j;
+        var dl;
+        var item;
+        var checked;
+        for (i = 0; i < PLAN.deadlines.length; i += 1) {
+          dl = PLAN.deadlines[i];
+          html += '<div class="panel deadline-card"><p class="deadline-date">' + text(shortDate(dl.date) + " · " + dl.label) + "</p>";
+          for (j = 0; j < dl.items.length; j += 1) {
+            item = dl.items[j];
+            checked = inspectionChecked(i, j);
+            html += '<div class="deadline-row"><div class="deadline-check"><button type="button" class="check-btn' +
+              (checked ? " checked" : "") + '" data-action="inspection-check" data-deadline="' + i + '" data-subject="' + j +
+              '" aria-label="' + text(item.name + " 검사 " + (checked ? "통과" : "미통과")) + '">' + (checked ? "✓" : "○") +
+              '</button></div><div class="deadline-main"><p class="deadline-name">' + text(item.name) + "</p>" +
+              '<p class="deadline-target"><strong>마감:</strong> ' + text(item.target) + "</p>" +
+              '<p class="deadline-evidence"><strong>증거:</strong> ' + text(item.evidence) + "</p></div></div>";
+          }
+          html += "</div>";
+        }
+        byId("deadlineCards").innerHTML = html;
+      }
+      function renderWeekdayTabs() {
+        var days = ["월", "화", "수", "목", "금", "토", "일"];
+        var html = "";
+        var i;
+        for (i = 0; i < days.length; i += 1) {
+          html += '<button type="button" class="weekday-btn' + (days[i] === selectedWeekday ? " active" : "") +
+            '" data-action="weekday" data-weekday="' + days[i] + '">' + days[i] + "</button>";
+        }
+        byId("weekdayTabs").innerHTML = html;
+      }
+      function renderTimetable() {
+        var html = "";
+        var i;
+        var row;
+        renderWeekdayTabs();
+        for (i = 0; i < PLAN.timetable.length; i += 1) {
+          row = PLAN.timetable[i];
+          if (row.day === "매일" || row.day === selectedWeekday) {
+            html += '<div class="schedule-row"><div class="schedule-time">' + text(row.time) + '</div>' +
+              '<div class="schedule-main"><strong>' + text(row.activity) + '</strong><span>' +
+              text(row.type + " · " + row.amount) + '</span></div><div class="schedule-note">' + text(row.note) + "</div></div>";
+          }
+        }
+        byId("scheduleList").innerHTML = html || '<div class="empty">시간표가 없습니다.</div>';
+      }
+      function renderWorkouts() {
+        var html = "";
+        var i;
+        var w;
+        for (i = 0; i < PLAN.workouts.length; i += 1) {
+          w = PLAN.workouts[i];
+          html += '<div class="workout-row"><div class="workout-title">' + text(w.day + " · " + w.type + " · " + w.duration) +
+            '</div><div class="workout-detail">' + text(w.moves.join(" / ")) + "</div></div>";
+        }
+        byId("workoutList").innerHTML = html;
+      }
+      function base64Encode(binary) {
+        var chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_";
+        var out = "";
+        var i;
+        var c1;
+        var c2;
+        var c3;
+        for (i = 0; i < binary.length; i += 3) {
+          c1 = binary.charCodeAt(i);
+          c2 = i + 1 < binary.length ? binary.charCodeAt(i + 1) : NaN;
+          c3 = i + 2 < binary.length ? binary.charCodeAt(i + 2) : NaN;
+          out += chars.charAt(c1 >> 2);
+          out += chars.charAt(((c1 & 3) << 4) | (isNaN(c2) ? 0 : c2 >> 4));
+          if (!isNaN(c2)) { out += chars.charAt(((c2 & 15) << 2) | (isNaN(c3) ? 0 : c3 >> 6)); }
+          if (!isNaN(c3)) { out += chars.charAt(c3 & 63); }
+        }
+        return out;
+      }
+      function base64Decode(encoded) {
+        var chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_";
+        var clean = encoded.replace(/[^A-Za-z0-9_-]/g, "");
+        var out = "";
+        var i;
+        var a;
+        var b;
+        var c;
+        var d;
+        for (i = 0; i < clean.length; i += 4) {
+          a = chars.indexOf(clean.charAt(i));
+          b = chars.indexOf(clean.charAt(i + 1));
+          c = chars.indexOf(clean.charAt(i + 2));
+          d = chars.indexOf(clean.charAt(i + 3));
+          if (a < 0 || b < 0) { break; }
+          out += String.fromCharCode((a << 2) | (b >> 4));
+          if (c >= 0) { out += String.fromCharCode(((b & 15) << 4) | (c >> 2)); }
+          if (d >= 0) { out += String.fromCharCode(((c & 3) << 6) | d); }
+        }
+        return out;
+      }
+      function utf8Encode(value) { return unescape(encodeURIComponent(value)); }
+      function utf8Decode(value) { return decodeURIComponent(escape(value)); }
+      function fullBackupCode() {
+        try { return "DY26F4." + base64Encode(utf8Encode(JSON.stringify(state))); }
+        catch (error) { return ""; }
+      }
+      function quickProgressCode() {
+        var binary = "";
+        var i;
+        var j;
+        var n;
+        for (i = 0; i < state.statuses.length; i += 4) {
+          n = 0;
+          for (j = 0; j < 4; j += 1) {
+            n = n | ((parseInt(state.statuses.charAt(i + j), 10) || 0) << (j * 2));
+          }
+          binary += String.fromCharCode(n);
+        }
+        return "DY26Q4." + base64Encode(binary);
+      }
+      function importQuick(code) {
+        var binary = base64Decode(code.substr(7));
+        var statuses = "";
+        var i;
+        var j;
+        var n;
+        for (i = 0; i < binary.length; i += 1) {
+          n = binary.charCodeAt(i);
+          for (j = 0; j < 4; j += 1) { statuses += String((n >> (j * 2)) & 3); }
+        }
+        if (statuses.length < state.statuses.length) { throw new Error("short quick code"); }
+        state.statuses = statuses.substr(0, state.statuses.length);
+      }
+      function importAnyCode(code) {
+        code = String(code || "").replace(/^\s+|\s+$/g, "");
+        if (code.indexOf("DY26F4.") === 0) {
+          state = normalizeState(JSON.parse(utf8Decode(base64Decode(code.substr(7)))));
+          return "전체 백업";
+        }
+        if (code.indexOf("DY26Q4.") === 0) {
+          importQuick(code);
+          return "체크 상태";
+        }
+        throw new Error("unknown code");
+      }
+      function refreshBackup() {
+        var quick = quickProgressCode();
+        var base = window.location.href.split("#")[0].split("?")[0];
+        byId("backupCode").value = fullBackupCode();
+        byId("kindleLink").value = base + "?mode=kindle&p=" + encodeURIComponent(quick);
+        applyMode();
+      }
+      function selectField(id) {
+        var field = byId(id);
+        field.focus();
+        field.select();
+        try { field.setSelectionRange(0, field.value.length); } catch (ignore) {}
+        toast("전체 선택했습니다. 복사하세요.");
+      }
+      function showView(viewName) {
+        var views = ["today", "overdue", "plan", "inspection", "timetable", "workout", "settings"];
+        var navs = document.getElementsByTagName("button");
+        var i;
+        var node;
+        currentView = viewName;
+        for (i = 0; i < views.length; i += 1) {
+          node = byId("view-" + views[i]);
+          if (views[i] === viewName) { addClass(node, "active"); }
+          else { removeClass(node, "active"); }
+        }
+        for (i = 0; i < navs.length; i += 1) {
+          if (navs[i].getAttribute("data-view")) {
+            if (navs[i].getAttribute("data-view") === viewName) { addClass(navs[i], "active"); }
+            else { removeClass(navs[i], "active"); }
+          }
+        }
+        if (viewName === "today") { renderToday(); }
+        if (viewName === "overdue") { renderOverdue(); }
+        if (viewName === "plan") { renderPlan(); }
+        if (viewName === "inspection") { renderInspections(); }
+        if (viewName === "timetable") { renderTimetable(); }
+        if (viewName === "workout") { renderWorkouts(); }
+        if (viewName === "settings") { refreshBackup(); }
+        window.scrollTo(0, 0);
+      }
+      function updateTimer() {
+        var remain;
+        var min;
+        var sec;
+        if (!timerEnd) {
+          remain = timerDefault;
+        } else {
+          remain = Math.max(0, Math.ceil((timerEnd - new Date().getTime()) / 1000));
+          if (remain <= 0) {
+            timerEnd = 0;
+            if (timerHandle) { window.clearInterval(timerHandle); timerHandle = null; }
+            toast("타이머가 끝났습니다.");
+          }
+        }
+        min = Math.floor(remain / 60);
+        sec = remain % 60;
+        byId("timerTime").innerHTML = pad2(min) + ":" + pad2(sec);
+      }
+      function startTimer(minutes) {
+        timerDefault = minutes * 60;
+        timerEnd = new Date().getTime() + timerDefault * 1000;
+        if (timerHandle) { window.clearInterval(timerHandle); }
+        timerHandle = window.setInterval(updateTimer, hasClass(document.body, "kindle") ? 15000 : 1000);
+        updateTimer();
+      }
+      function stopTimer() {
+        timerEnd = 0;
+        if (timerHandle) { window.clearInterval(timerHandle); timerHandle = null; }
+        updateTimer();
+      }
+      function persistDayFields() {
+        var mins = byId("actualMinutes").value.replace(/[^0-9]/g, "").substr(0, 4);
+        var note = byId("dayNote").value.substr(0, 80);
+        state.minutes[selectedDay] = mins;
+        state.notes[selectedDay] = note;
+        byId("actualMinutes").value = mins;
+        byId("dayNote").value = note;
+        saveState(true);
+      }
+      function handleAction(actionNode) {
+        var action = actionNode.getAttribute("data-action");
+        var d;
+        var s;
+        var value;
+        var code;
+        var kind;
+        if (action === "prev-day") { selectedDay = Math.max(0, selectedDay - 1); renderToday(); }
+        else if (action === "next-day") { selectedDay = Math.min(PLAN.days.length - 1, selectedDay + 1); renderToday(); }
+        else if (action === "go-today") { selectedDay = getTodayIndex(); showView("today"); }
+        else if (action === "cycle-status") {
+          d = Number(actionNode.getAttribute("data-day"));
+          s = Number(actionNode.getAttribute("data-subject"));
+          value = (getStatus(d, s) + 1) % 4;
+          setStatus(d, s, value);
+          saveState(true);
+          renderToday();
+        }
+        else if (action === "import-daily-code") {
+          code = byId("dailySyncInput").value;
+          if (!code) { toast("다른 기기의 숫자 코드를 입력하세요."); return; }
+          try {
+            selectedDay = applyDailySyncCode(code);
+            byId("dailySyncInput").value = "";
+            saveState(true);
+            renderToday();
+            toast(shortDate(PLAN.days[selectedDay].date) + " 체크 상태를 가져왔습니다.");
+          } catch (dailyCodeError) {
+            toast("코드가 맞지 않습니다. 숫자와 마지막 두 자리를 확인하세요.");
+          }
+        }
+        else if (action === "finish-overdue") {
+          d = Number(actionNode.getAttribute("data-day"));
+          s = Number(actionNode.getAttribute("data-subject"));
+          setStatus(d, s, 1);
+          saveState(true);
+          renderOverdue();
+        }
+        else if (action === "open-day") {
+          selectedDay = Number(actionNode.getAttribute("data-day"));
+          showView("today");
+        }
+        else if (action === "complete-day") {
+          if (window.confirm("선택한 날짜의 10개 항목을 모두 완료로 표시할까요?")) {
+            for (s = 0; s < PLAN.subjects.length; s += 1) { setStatus(selectedDay, s, 1); }
+            saveState(true);
+            renderToday();
+          }
+        }
+        else if (action === "clear-day") {
+          if (window.confirm("선택한 날짜의 체크, 공부시간, 메모를 비울까요?")) {
+            for (s = 0; s < PLAN.subjects.length; s += 1) { setStatus(selectedDay, s, 0); }
+            state.minutes[selectedDay] = "";
+            state.notes[selectedDay] = "";
+            saveState(true);
+            renderToday();
+          }
+        }
+        else if (action === "inspection-check") {
+          d = Number(actionNode.getAttribute("data-deadline"));
+          s = Number(actionNode.getAttribute("data-subject"));
+          setInspection(d, s, !inspectionChecked(d, s));
+          saveState(true);
+          renderInspections();
+        }
+        else if (action === "weekday") {
+          selectedWeekday = actionNode.getAttribute("data-weekday");
+          renderTimetable();
+        }
+        else if (action === "timer-focus") { startTimer(25); }
+        else if (action === "timer-break") { startTimer(5); }
+        else if (action === "timer-stop") { stopTimer(); }
+        else if (action === "select-backup") { refreshBackup(); selectField("backupCode"); }
+        else if (action === "select-kindle-link") { refreshBackup(); selectField("kindleLink"); }
+        else if (action === "import-backup") {
+          code = byId("importCode").value;
+          if (!code) { toast("먼저 백업 코드를 붙여넣으세요."); return; }
+          if (window.confirm("이 기기의 현재 기록을 불러온 코드로 바꿀까요?")) {
+            try {
+              kind = importAnyCode(code);
+              saveState(false);
+              renderToday();
+              byId("importCode").value = "";
+              toast(kind + "를 불러왔습니다.");
+            } catch (importError) { toast("코드를 확인해 주세요."); }
+          }
+        }
+        else if (action === "print") { window.print(); }
+        else if (action === "reset-all") {
+          if (window.confirm("정말 이 기기의 모든 기록을 초기화할까요? 이 작업은 되돌릴 수 없습니다.")) {
+            state = defaultState();
+            saveState(false);
+            renderToday();
+            toast("이 기기의 기록을 초기화했습니다.");
+          }
+        }
+      }
+      function handleDocumentClick(event) {
+        var target = event.target || event.srcElement;
+        var view;
+        while (target && target !== document) {
+          view = target.getAttribute ? target.getAttribute("data-view") : "";
+          if (view) { showView(view); return; }
+          if (target.getAttribute && target.getAttribute("data-action")) { handleAction(target); return; }
+          target = target.parentNode;
+        }
+      }
+      function importFromUrlIfPresent() {
+        var code = queryParam("p");
+        if (code && code.indexOf("DY26Q4.") === 0) {
+          try {
+            importQuick(code);
+            saveState(true);
+            showStorageNotice("링크에 담긴 체크 상태를 이 기기로 가져왔습니다.");
+          } catch (ignore) {
+            showStorageNotice("링크의 체크 상태를 읽지 못했습니다. 링크를 다시 만들어 주세요.");
+          }
+        }
+      }
+      function init() {
+        loadState();
+        if (storageMethod === "cookie") {
+          showStorageNotice("쿠키 보조 저장 모드입니다. 체크와 공부시간은 저장되지만 긴 메모는 백업 코드로 보관하세요.");
+        }
+        selectedDay = getTodayIndex();
+        selectedWeekday = PLAN.days[selectedDay].weekday;
+        renderDaySelect();
+        renderWorkouts();
+        importFromUrlIfPresent();
+        applyMode();
+        renderToday();
+        refreshBackup();
+        on(document, "click", handleDocumentClick);
+        on(byId("daySelect"), "change", function () {
+          persistDayFields();
+          selectedDay = Number(this.value);
+          renderToday();
+        });
+        on(byId("actualMinutes"), "change", persistDayFields);
+        on(byId("dayNote"), "change", persistDayFields);
+        on(byId("modeSelect"), "change", function () {
+          state.mode = this.value;
+          saveState(false);
+          applyMode();
+          toast("화면 모드를 바꿨습니다.");
+        });
+        if ("serviceWorker" in navigator && window.location.protocol.indexOf("http") === 0) {
+        on(window, "load", function () {
+          navigator.serviceWorker.register("./sw.js").catch(function () {});
+        });
+      }
+        removeClass(byId("app"), "is-hidden");
+        addClass(document.body, "app-ready");
+      }
+
+      try { init(); }
+      catch (error) {
+        byId("fatalNotice").innerHTML = "대시보드 기능을 시작하지 못했습니다. 아래 읽기 전용 전체 계획은 계속 사용할 수 있습니다.";
+        removeClass(byId("fatalNotice"), "is-hidden");
+      }
+    }());
+  </script>
 </body>
 </html>

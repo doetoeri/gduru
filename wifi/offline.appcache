@@ -1,0 +1,10 @@
+CACHE MANIFEST
+# doyoung-summer-2026-v4-20260722
+
+CACHE:
+./
+./index.html
+./manifest.webmanifest
+
+NETWORK:
+*
