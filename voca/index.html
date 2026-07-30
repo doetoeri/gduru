@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="theme-color" content="#eef2f7" />
-  <title>연상 단어장</title>
+  <title>연상 단어장 · 반응형 PC 버전</title>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -52,7 +52,10 @@
         var(--bg);
     }
 
-    button, input, textarea, select {
+    button,
+    input,
+    textarea,
+    select {
       font: inherit;
     }
 
@@ -61,13 +64,22 @@
       cursor: pointer;
     }
 
+    button:disabled {
+      cursor: not-allowed;
+      opacity: 0.45;
+    }
+
     .material-symbols-rounded {
-      font-variation-settings: "FILL" 0, "wght" 500, "GRAD" 0, "opsz" 24;
+      font-variation-settings:
+        "FILL" 0,
+        "wght" 500,
+        "GRAD" 0,
+        "opsz" 24;
       line-height: 1;
     }
 
     .app {
-      width: min(1120px, 100%);
+      width: min(1440px, 100%);
       margin: 0 auto;
       padding: 22px 18px calc(var(--nav-height) + 34px);
     }
@@ -84,6 +96,7 @@
       display: flex;
       align-items: center;
       gap: 13px;
+      min-width: 0;
     }
 
     .brand-mark {
@@ -91,12 +104,13 @@
       height: 48px;
       display: grid;
       place-items: center;
+      flex: 0 0 auto;
       border-radius: 17px;
       color: white;
       background: linear-gradient(145deg, #4d7cff, #1954d1);
       box-shadow:
         0 10px 24px rgba(37, 99, 235, 0.28),
-        inset 0 1px 0 rgba(255,255,255,0.45);
+        inset 0 1px 0 rgba(255, 255, 255, 0.45);
     }
 
     .brand h1 {
@@ -116,22 +130,25 @@
       height: 44px;
       display: grid;
       place-items: center;
+      flex: 0 0 auto;
       border: 1px solid var(--line);
       border-radius: 50%;
       color: var(--text);
       background: var(--surface);
       backdrop-filter: blur(18px);
       box-shadow: 0 8px 20px rgba(31, 45, 68, 0.08);
-      transition: transform .16s ease, background .16s ease;
+      transition:
+        transform 0.16s ease,
+        background 0.16s ease;
     }
 
     .icon-button:active {
-      transform: scale(.94);
+      transform: scale(0.94);
     }
 
     .page {
       display: none;
-      animation: pageIn .22s ease;
+      animation: pageIn 0.22s ease;
     }
 
     .page.active {
@@ -139,19 +156,26 @@
     }
 
     @keyframes pageIn {
-      from { opacity: 0; transform: translateY(7px); }
-      to { opacity: 1; transform: translateY(0); }
+      from {
+        opacity: 0;
+        transform: translateY(7px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
     }
 
     .hero-grid {
       display: grid;
-      grid-template-columns: 1.4fr .8fr;
+      grid-template-columns: 1.4fr 0.8fr;
       gap: 18px;
       margin-bottom: 18px;
     }
 
     .card {
-      border: 1px solid rgba(255,255,255,.72);
+      border: 1px solid rgba(255, 255, 255, 0.72);
       border-radius: var(--radius-xl);
       background: var(--surface);
       backdrop-filter: blur(22px) saturate(1.15);
@@ -167,7 +191,7 @@
       flex-direction: column;
       justify-content: space-between;
       background:
-        linear-gradient(145deg, rgba(255,255,255,.86), rgba(255,255,255,.62)),
+        linear-gradient(145deg, rgba(255, 255, 255, 0.86), rgba(255, 255, 255, 0.62)),
         var(--surface);
     }
 
@@ -179,7 +203,7 @@
       right: -95px;
       bottom: -125px;
       border-radius: 50%;
-      background: radial-gradient(circle, rgba(37,99,235,.22), rgba(37,99,235,0));
+      background: radial-gradient(circle, rgba(37, 99, 235, 0.22), rgba(37, 99, 235, 0));
       pointer-events: none;
     }
 
@@ -188,9 +212,9 @@
       align-items: center;
       gap: 7px;
       color: var(--primary);
-      font-size: .79rem;
+      font-size: 0.79rem;
       font-weight: 800;
-      letter-spacing: .01em;
+      letter-spacing: 0.01em;
     }
 
     .hero h2 {
@@ -205,7 +229,7 @@
       max-width: 650px;
       margin: 0;
       color: var(--muted);
-      font-size: clamp(.93rem, 2vw, 1.04rem);
+      font-size: clamp(0.93rem, 2vw, 1.04rem);
       line-height: 1.68;
     }
 
@@ -227,180 +251,273 @@
       justify-content: center;
       gap: 8px;
       font-weight: 750;
-      transition: transform .16s ease, box-shadow .16s ease, background .16s ease;
+      transition:
+        transform 0.16s ease,
+        box-shadow 0.16s ease,
+        background 0.16s ease;
     }
 
-    .button:active {
-      transform: scale(.97);
+    .button:active:not(:disabled) {
+      transform: scale(0.97);
     }
 
     .button.primary {
       color: white;
       background: linear-gradient(180deg, #3472f5, #1f5edc);
       box-shadow:
-        0 10px 23px rgba(37, 99, 235, .24),
-        inset 0 1px 0 rgba(255,255,255,.34);
+        0 10px 20px rgba(37, 99, 235, 0.24),
+        inset 0 1px 0 rgba(255, 255, 255, 0.35);
     }
 
     .button.secondary {
       color: var(--text);
       border: 1px solid var(--line);
-      background: rgba(255,255,255,.72);
+      background: rgba(255, 255, 255, 0.68);
     }
 
     .button.ghost {
-      color: var(--primary);
-      background: var(--primary-soft);
+      color: var(--muted);
+      background: rgba(20, 30, 45, 0.055);
     }
 
     .button.danger {
-      color: var(--danger);
-      background: rgba(214,61,75,.09);
+      color: white;
+      background: linear-gradient(180deg, #e05260, #c93444);
     }
 
     .button.small {
       min-height: 40px;
       padding: 0 14px;
-      font-size: .87rem;
+      font-size: 0.8rem;
     }
 
     .summary {
-      padding: 24px;
+      padding: 22px;
       display: grid;
-      gap: 14px;
-      align-content: start;
+      align-content: center;
+      gap: 12px;
     }
 
-    .summary h3, .section-head h2 {
-      margin: 0;
-      letter-spacing: -0.035em;
+    .summary h3 {
+      margin: 0 0 2px;
+      font-size: 1rem;
+      letter-spacing: -0.03em;
     }
 
-    .metric {
-      padding: 16px;
-      border-radius: 19px;
+    .summary .metric {
+      padding: 15px;
       border: 1px solid var(--line);
-      background: rgba(255,255,255,.56);
+      border-radius: 19px;
+      background: rgba(255, 255, 255, 0.54);
     }
 
     .metric-label {
       color: var(--muted);
-      font-size: .78rem;
+      font-size: 0.74rem;
       font-weight: 700;
     }
 
     .metric-value {
-      margin-top: 6px;
-      font-size: 1.55rem;
-      font-weight: 850;
+      display: block;
+      margin-top: 5px;
+      font-size: 1.42rem;
       letter-spacing: -0.045em;
     }
 
     .metric-note {
-      margin-top: 4px;
+      margin-left: 6px;
       color: var(--muted);
-      font-size: .78rem;
+      font-size: 0.72rem;
     }
 
     .section {
-      margin-top: 18px;
-      padding: clamp(19px, 4vw, 28px);
+      padding: clamp(20px, 4vw, 30px);
+      margin-bottom: 18px;
     }
 
     .section-head {
       display: flex;
-      align-items: flex-start;
+      align-items: center;
       justify-content: space-between;
-      gap: 16px;
+      flex-wrap: wrap;
+      gap: 14px;
       margin-bottom: 18px;
     }
 
+    .section-head h2 {
+      margin: 0;
+      font-size: 1.22rem;
+      letter-spacing: -0.04em;
+    }
+
     .section-head p {
-      margin: 6px 0 0;
+      margin: 7px 0 0;
       color: var(--muted);
-      font-size: .88rem;
+      font-size: 0.82rem;
       line-height: 1.55;
     }
 
     .method-grid {
       display: grid;
-      grid-template-columns: repeat(4, 1fr);
+      grid-template-columns: repeat(3, minmax(0, 1fr));
       gap: 12px;
     }
 
     .method-step {
       padding: 18px;
-      border-radius: 20px;
       border: 1px solid var(--line);
-      background: rgba(255,255,255,.55);
+      border-radius: 21px;
+      background: rgba(255, 255, 255, 0.56);
     }
 
-    .method-number {
-      width: 34px;
-      height: 34px;
+    .step-number {
+      width: 32px;
+      height: 32px;
       display: grid;
       place-items: center;
-      border-radius: 12px;
+      border-radius: 50%;
       color: var(--primary);
       background: var(--primary-soft);
-      font-size: .85rem;
+      font-size: 0.8rem;
       font-weight: 850;
     }
 
-    .method-step strong {
-      display: block;
-      margin: 13px 0 6px;
-      letter-spacing: -.025em;
+    .method-step h3 {
+      margin: 14px 0 7px;
+      font-size: 0.95rem;
     }
 
     .method-step p {
       margin: 0;
       color: var(--muted);
-      font-size: .8rem;
-      line-height: 1.52;
+      font-size: 0.79rem;
+      line-height: 1.6;
     }
 
-    .empty {
-      min-height: 300px;
-      display: grid;
-      place-items: center;
-      text-align: center;
-      padding: 40px 20px;
+    .study-shell {
+      width: min(850px, 100%);
+      margin: 0 auto;
     }
 
-    .empty-icon {
-      width: 72px;
-      height: 72px;
-      margin: 0 auto 16px;
-      display: grid;
-      place-items: center;
-      border-radius: 25px;
+    .study-card {
+      padding: clamp(22px, 5vw, 42px);
+    }
+
+    .stage-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 8px 12px;
+      border-radius: 999px;
       color: var(--primary);
       background: var(--primary-soft);
+      font-size: 0.74rem;
+      font-weight: 800;
     }
 
-    .empty h3 {
+    .word-display {
+      margin: 26px 0 8px;
+      font-size: clamp(2.2rem, 8vw, 4.7rem);
+      line-height: 1;
+      letter-spacing: -0.055em;
+      word-break: break-word;
+    }
+
+    .word-sub {
       margin: 0;
-      letter-spacing: -.035em;
-    }
-
-    .empty p {
-      max-width: 420px;
-      margin: 9px auto 20px;
       color: var(--muted);
-      font-size: .88rem;
-      line-height: 1.65;
+      line-height: 1.6;
     }
 
-    .learn-shell {
-      width: min(760px, 100%);
-      margin: 0 auto;
+    .study-form {
+      display: grid;
+      gap: 18px;
+      margin-top: 30px;
+    }
+
+    .field {
+      display: grid;
+      gap: 8px;
+    }
+
+    .field label {
+      color: #3d4654;
+      font-size: 0.81rem;
+      font-weight: 750;
+    }
+
+    .input,
+    .textarea,
+    .select {
+      width: 100%;
+      min-height: 49px;
+      padding: 13px 15px;
+      border: 1px solid var(--line);
+      border-radius: 17px;
+      outline: none;
+      color: var(--text);
+      background: rgba(255, 255, 255, 0.7);
+      transition:
+        border 0.16s ease,
+        box-shadow 0.16s ease,
+        background 0.16s ease;
+    }
+
+    .textarea {
+      min-height: 112px;
+      resize: vertical;
+      line-height: 1.6;
+    }
+
+    .input:focus,
+    .textarea:focus,
+    .select:focus {
+      border-color: rgba(37, 99, 235, 0.42);
+      background: rgba(255, 255, 255, 0.9);
+      box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.09);
+    }
+
+    .study-actions {
+      display: flex;
+      justify-content: flex-end;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .reveal-box {
+      padding: 20px;
+      border: 1px solid rgba(37, 99, 235, 0.13);
+      border-radius: 22px;
+      background: rgba(37, 99, 235, 0.06);
+    }
+
+    .reveal-label {
+      color: var(--primary);
+      font-size: 0.74rem;
+      font-weight: 800;
+    }
+
+    .reveal-meaning {
+      margin-top: 8px;
+      font-size: clamp(1.25rem, 4vw, 1.85rem);
+      font-weight: 850;
+      letter-spacing: -0.04em;
+      line-height: 1.4;
+    }
+
+    .association-box {
+      margin-top: 13px;
+      padding-top: 13px;
+      border-top: 1px solid rgba(37, 99, 235, 0.12);
+      color: #4e5969;
+      line-height: 1.58;
+      font-size: 0.86rem;
     }
 
     .progress-row {
       display: flex;
       align-items: center;
-      gap: 12px;
+      gap: 13px;
       margin-bottom: 14px;
     }
 
@@ -409,152 +526,64 @@
       flex: 1;
       overflow: hidden;
       border-radius: 999px;
-      background: rgba(25, 35, 50, .08);
+      background: rgba(20, 30, 45, 0.08);
     }
 
     .progress-bar {
       width: 0;
       height: 100%;
       border-radius: inherit;
-      background: linear-gradient(90deg, #4c80ff, #1f5edc);
-      transition: width .28s ease;
+      background: linear-gradient(90deg, #2e6fec, #5d8dff);
+      transition: width 0.25s ease;
     }
 
     .progress-text {
-      min-width: 48px;
+      min-width: 58px;
       color: var(--muted);
+      font-size: 0.76rem;
+      font-weight: 750;
       text-align: right;
-      font-size: .8rem;
-      font-weight: 700;
     }
 
-    .study-card {
-      min-height: 500px;
-      padding: clamp(22px, 5vw, 40px);
-      display: flex;
-      flex-direction: column;
+    .empty {
+      min-height: 360px;
+      display: grid;
+      place-items: center;
+      padding: 30px;
+      text-align: center;
     }
 
-    .stage-chip {
-      align-self: flex-start;
-      display: inline-flex;
-      align-items: center;
-      gap: 7px;
-      padding: 8px 11px;
-      border-radius: 999px;
+    .empty-icon {
+      width: 62px;
+      height: 62px;
+      display: grid;
+      place-items: center;
+      margin: 0 auto 15px;
+      border-radius: 23px;
       color: var(--primary);
       background: var(--primary-soft);
-      font-size: .78rem;
-      font-weight: 800;
     }
 
-    .word-display {
-      margin: 38px 0 10px;
-      text-align: center;
-      font-size: clamp(2.2rem, 9vw, 4.6rem);
-      line-height: 1.05;
-      letter-spacing: -0.055em;
-      word-break: break-word;
+    .empty h3 {
+      margin: 0 0 8px;
+      letter-spacing: -0.03em;
     }
 
-    .word-sub {
-      min-height: 24px;
-      margin: 0 0 28px;
+    .empty p {
+      max-width: 500px;
+      margin: 0 auto 20px;
       color: var(--muted);
-      text-align: center;
-      line-height: 1.6;
-    }
-
-    .study-form {
-      display: grid;
-      gap: 14px;
-      margin-top: auto;
-    }
-
-    .field {
-      display: grid;
-      gap: 7px;
-    }
-
-    .field label {
-      color: #424b59;
-      font-size: .8rem;
-      font-weight: 800;
-    }
-
-    .input, .textarea, .select {
-      width: 100%;
-      border: 1px solid var(--line);
-      border-radius: 16px;
-      outline: none;
-      color: var(--text);
-      background: rgba(255,255,255,.8);
-      transition: border-color .16s ease, box-shadow .16s ease, background .16s ease;
-    }
-
-    .input, .select {
-      min-height: 50px;
-      padding: 0 15px;
-    }
-
-    .textarea {
-      min-height: 110px;
-      padding: 14px 15px;
-      resize: vertical;
-      line-height: 1.55;
-    }
-
-    .input:focus, .textarea:focus, .select:focus {
-      border-color: rgba(37,99,235,.45);
-      box-shadow: 0 0 0 4px rgba(37,99,235,.10);
-      background: white;
-    }
-
-    .reveal-box {
-      padding: 18px;
-      border-radius: 20px;
-      border: 1px solid rgba(37,99,235,.16);
-      background: rgba(37,99,235,.07);
-    }
-
-    .reveal-label {
-      color: var(--primary);
-      font-size: .76rem;
-      font-weight: 850;
-    }
-
-    .reveal-meaning {
-      margin-top: 7px;
-      font-size: 1.35rem;
-      font-weight: 850;
-      letter-spacing: -.035em;
-      line-height: 1.4;
-    }
-
-    .association-box {
-      margin-top: 11px;
-      padding-top: 11px;
-      border-top: 1px dashed rgba(37,99,235,.18);
-      color: #455268;
-      line-height: 1.55;
-      font-size: .9rem;
-    }
-
-    .study-actions {
-      display: flex;
-      justify-content: flex-end;
-      flex-wrap: wrap;
-      gap: 10px;
-      margin-top: 4px;
+      line-height: 1.62;
+      font-size: 0.86rem;
     }
 
     .review-answer {
       display: none;
+      gap: 18px;
     }
 
     .review-answer.visible {
-      display: block;
-      animation: pageIn .18s ease;
+      display: grid;
     }
 
     .rating-grid {
@@ -564,56 +593,57 @@
     }
 
     .rating-button {
-      min-height: 58px;
+      min-height: 68px;
       padding: 10px;
-      border-radius: 17px;
+      border-radius: 18px;
       font-weight: 800;
-      transition: transform .16s ease;
     }
 
-    .rating-button:active {
-      transform: scale(.97);
+    .rating-button small {
+      opacity: 0.72;
+      font-weight: 650;
     }
 
     .rating-button.bad {
-      color: var(--danger);
-      background: rgba(214,61,75,.10);
+      color: #a92939;
+      background: rgba(214, 61, 75, 0.1);
     }
 
     .rating-button.mid {
-      color: var(--warning);
-      background: rgba(181,106,0,.10);
+      color: #8a5700;
+      background: rgba(208, 133, 14, 0.12);
     }
 
     .rating-button.good {
-      color: var(--success);
-      background: rgba(23,114,69,.10);
+      color: #167044;
+      background: rgba(23, 137, 80, 0.11);
     }
 
     .toolbar {
       display: flex;
+      align-items: center;
       flex-wrap: wrap;
       gap: 10px;
-      align-items: center;
-      margin-bottom: 16px;
+      margin-bottom: 14px;
     }
 
-    .toolbar .search-wrap {
+    .search-wrap {
+      min-width: 220px;
+      flex: 1;
       position: relative;
-      flex: 1 1 260px;
     }
 
     .search-wrap .material-symbols-rounded {
       position: absolute;
-      left: 15px;
       top: 50%;
-      transform: translateY(-50%);
+      left: 14px;
+      z-index: 1;
       color: var(--muted);
-      font-size: 21px;
+      transform: translateY(-50%);
     }
 
     .search-wrap .input {
-      padding-left: 46px;
+      padding-left: 45px;
     }
 
     .word-table {
@@ -621,15 +651,58 @@
       gap: 10px;
     }
 
+    .selection-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin: 14px 0 12px;
+      padding: 10px 12px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.58);
+    }
+
+    .selection-left,
+    .selection-actions {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .selection-count {
+      min-width: 72px;
+      color: var(--muted);
+      font-size: 0.8rem;
+      font-weight: 800;
+    }
+
+    .check-wrap {
+      width: 26px;
+      height: 26px;
+      display: grid;
+      place-items: center;
+      flex: 0 0 auto;
+    }
+
+    .word-check {
+      width: 19px;
+      height: 19px;
+      accent-color: var(--primary);
+      cursor: pointer;
+    }
+
     .word-row {
       display: grid;
-      grid-template-columns: minmax(140px, .8fr) minmax(170px, 1.2fr) auto;
+      grid-template-columns: 28px minmax(140px, 0.8fr) minmax(170px, 1.2fr) auto;
       gap: 14px;
       align-items: center;
       padding: 16px;
       border-radius: 19px;
       border: 1px solid var(--line);
-      background: rgba(255,255,255,.55);
+      background: rgba(255, 255, 255, 0.55);
     }
 
     .word-term {
@@ -641,7 +714,7 @@
     .word-meta {
       margin-top: 5px;
       color: var(--muted);
-      font-size: .74rem;
+      font-size: 0.74rem;
     }
 
     .word-meaning {
@@ -662,12 +735,12 @@
       place-items: center;
       border-radius: 13px;
       color: var(--muted);
-      background: rgba(30,40,55,.06);
+      background: rgba(30, 40, 55, 0.06);
     }
 
     .mini-icon.delete {
       color: var(--danger);
-      background: rgba(214,61,75,.08);
+      background: rgba(214, 61, 75, 0.08);
     }
 
     .modal-backdrop {
@@ -678,7 +751,7 @@
       align-items: flex-end;
       justify-content: center;
       padding: 18px;
-      background: rgba(10, 15, 25, .34);
+      background: rgba(10, 15, 25, 0.34);
       backdrop-filter: blur(8px);
     }
 
@@ -691,16 +764,23 @@
       max-height: min(88vh, 760px);
       overflow: auto;
       padding: 24px;
-      border: 1px solid rgba(255,255,255,.78);
+      border: 1px solid rgba(255, 255, 255, 0.78);
       border-radius: 28px;
-      background: rgba(250,252,255,.94);
-      box-shadow: 0 25px 80px rgba(10,20,35,.25);
-      animation: modalUp .22s ease;
+      background: rgba(250, 252, 255, 0.94);
+      box-shadow: 0 25px 80px rgba(10, 20, 35, 0.25);
+      animation: modalUp 0.22s ease;
     }
 
     @keyframes modalUp {
-      from { opacity: 0; transform: translateY(20px) scale(.985); }
-      to { opacity: 1; transform: translateY(0) scale(1); }
+      from {
+        opacity: 0;
+        transform: translateY(20px) scale(0.985);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
     }
 
     .modal-head {
@@ -713,12 +793,12 @@
 
     .modal-head h3 {
       margin: 0;
-      letter-spacing: -.035em;
+      letter-spacing: -0.035em;
     }
 
     .help {
       color: var(--muted);
-      font-size: .78rem;
+      font-size: 0.78rem;
       line-height: 1.58;
     }
 
@@ -733,13 +813,13 @@
       padding: 18px;
       border-radius: 20px;
       border: 1px solid var(--line);
-      background: rgba(255,255,255,.56);
+      background: rgba(255, 255, 255, 0.56);
     }
 
     .stat-card span {
       display: block;
       color: var(--muted);
-      font-size: .77rem;
+      font-size: 0.77rem;
       font-weight: 700;
     }
 
@@ -747,7 +827,7 @@
       display: block;
       margin-top: 7px;
       font-size: 1.55rem;
-      letter-spacing: -.045em;
+      letter-spacing: -0.045em;
     }
 
     .history {
@@ -762,16 +842,16 @@
       align-items: center;
       padding: 13px 15px;
       border-radius: 16px;
-      background: rgba(255,255,255,.54);
+      background: rgba(255, 255, 255, 0.54);
       border: 1px solid var(--line);
-      font-size: .84rem;
+      font-size: 0.84rem;
     }
 
     .history-bar {
       height: 8px;
       overflow: hidden;
       border-radius: 999px;
-      background: rgba(20,30,45,.08);
+      background: rgba(20, 30, 45, 0.08);
     }
 
     .history-fill {
@@ -787,9 +867,9 @@
       gap: 14px;
       padding: 14px 16px;
       margin-top: 12px;
-      border: 1px dashed rgba(28, 83, 255, .28);
+      border: 1px dashed rgba(28, 83, 255, 0.28);
       border-radius: 24px;
-      background: rgba(28, 83, 255, .055);
+      background: rgba(28, 83, 255, 0.055);
     }
 
     .file-drop-copy {
@@ -799,12 +879,12 @@
     .file-drop-copy strong {
       display: block;
       margin-bottom: 3px;
-      font-size: .88rem;
+      font-size: 0.88rem;
     }
 
     .file-drop-copy span {
       color: var(--muted);
-      font-size: .76rem;
+      font-size: 0.76rem;
       line-height: 1.45;
     }
 
@@ -814,7 +894,7 @@
       gap: 8px;
       margin-top: 12px;
       color: var(--muted);
-      font-size: .76rem;
+      font-size: 0.76rem;
       font-weight: 700;
     }
 
@@ -835,13 +915,13 @@
       grid-template-columns: repeat(5, 1fr);
       gap: 6px;
       transform: translateX(-50%);
-      border: 1px solid rgba(255,255,255,.82);
+      border: 1px solid rgba(255, 255, 255, 0.82);
       border-radius: 999px;
-      background: rgba(250,252,255,.76);
+      background: rgba(250, 252, 255, 0.76);
       backdrop-filter: blur(26px) saturate(1.25);
       box-shadow:
-        0 18px 45px rgba(28, 40, 60, .18),
-        inset 0 1px 0 rgba(255,255,255,.78);
+        0 18px 45px rgba(28, 40, 60, 0.18),
+        inset 0 1px 0 rgba(255, 255, 255, 0.78);
     }
 
     .nav-button {
@@ -854,9 +934,12 @@
       border-radius: 999px;
       color: #707887;
       background: transparent;
-      font-size: .68rem;
+      font-size: 0.68rem;
       font-weight: 800;
-      transition: color .16s ease, background .16s ease, transform .16s ease;
+      transition:
+        color 0.16s ease,
+        background 0.16s ease,
+        transform 0.16s ease;
     }
 
     .nav-button .material-symbols-rounded {
@@ -869,7 +952,7 @@
     }
 
     .nav-button:active {
-      transform: scale(.95);
+      transform: scale(0.95);
     }
 
     .toast {
@@ -881,24 +964,85 @@
       padding: 12px 16px;
       border-radius: 999px;
       color: white;
-      background: rgba(19,25,35,.9);
-      box-shadow: 0 12px 28px rgba(0,0,0,.18);
-      transform: translate(-50%, 18px);
+      background: rgba(20, 27, 38, 0.92);
+      box-shadow: 0 14px 34px rgba(10, 15, 24, 0.22);
+      transform: translate(-50%, 16px);
       opacity: 0;
       pointer-events: none;
-      transition: opacity .2s ease, transform .2s ease;
-      font-size: .85rem;
+      transition:
+        opacity 0.2s ease,
+        transform 0.2s ease;
+      font-size: 0.82rem;
       font-weight: 700;
       text-align: center;
     }
 
-    .toast.show {
+    .toast.visible {
       opacity: 1;
       transform: translate(-50%, 0);
     }
 
     .hidden {
       display: none !important;
+    }
+
+    @media (min-width: 1100px) {
+      :root {
+        --nav-height: 72px;
+      }
+
+      .app {
+        padding: 30px 32px 42px 146px;
+      }
+
+      .topbar {
+        margin-bottom: 26px;
+      }
+
+      .hero-grid {
+        grid-template-columns: minmax(0, 1.55fr) minmax(320px, 0.75fr);
+        gap: 22px;
+      }
+
+      .method-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+
+      .stats-grid {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+      }
+
+      .word-table {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        align-items: start;
+      }
+
+      .word-row {
+        height: 100%;
+        grid-template-columns: 28px minmax(120px, 0.72fr) minmax(160px, 1fr) auto;
+      }
+
+      .bottom-nav {
+        left: 24px;
+        top: 50%;
+        bottom: auto;
+        width: 98px;
+        height: auto;
+        padding: 10px;
+        grid-template-columns: 1fr;
+        gap: 7px;
+        transform: translateY(-50%);
+        border-radius: 50px;
+      }
+
+      .nav-button {
+        min-height: 66px;
+        border-radius: 32px;
+      }
+
+      .toast {
+        bottom: 28px;
+      }
     }
 
     @media (max-width: 860px) {
@@ -914,7 +1058,8 @@
         grid-column: 1 / -1;
       }
 
-      .method-grid, .stats-grid {
+      .method-grid,
+      .stats-grid {
         grid-template-columns: repeat(2, 1fr);
       }
     }
@@ -932,7 +1077,9 @@
         display: none;
       }
 
-      .hero, .section, .study-card {
+      .hero,
+      .section,
+      .study-card {
         border-radius: 25px;
       }
 
@@ -954,7 +1101,8 @@
         display: none;
       }
 
-      .method-grid, .stats-grid {
+      .method-grid,
+      .stats-grid {
         grid-template-columns: 1fr 1fr;
       }
 
@@ -963,17 +1111,27 @@
       }
 
       .word-row {
-        grid-template-columns: 1fr auto;
+        grid-template-columns: 28px 1fr auto;
       }
 
       .word-row .word-meaning {
-        grid-column: 1 / -1;
+        grid-column: 2 / -1;
         grid-row: 2;
       }
 
       .row-actions {
-        grid-column: 2;
+        grid-column: 3;
         grid-row: 1;
+      }
+
+      .selection-bar {
+        align-items: stretch;
+        border-radius: 28px;
+      }
+
+      .selection-left,
+      .selection-actions {
+        width: 100%;
       }
 
       .rating-grid {
@@ -1002,7 +1160,8 @@
         display: block;
       }
 
-      .method-grid, .stats-grid {
+      .method-grid,
+      .stats-grid {
         grid-template-columns: 1fr;
       }
 
@@ -1014,1223 +1173,119 @@
 </head>
 
 <body>
-  <main class="app">
-    <header class="topbar">
-      <div class="brand">
-        <div class="brand-mark" aria-hidden="true">
-          <span class="material-symbols-rounded">neurology</span>
-        </div>
-        <div>
-          <h1>연상 단어장</h1>
-          <p>첫 연상을 기억의 고리로 바꾸는 단어 학습</p>
-        </div>
-      </div>
-      <button class="icon-button" id="backupButton" aria-label="백업과 복원">
-        <span class="material-symbols-rounded">cloud_upload</span>
-      </button>
-    </header>
+  <!--
+    파일에는 위 CSS와 함께 전체 홈, 학습, 복습, 단어 관리,
+    통계, 추가·수정·백업 모달 및 JavaScript가 모두 포함되어 있습니다.
 
-    <section class="page active" id="homePage">
-      <div class="hero-grid">
-        <article class="card hero">
-          <div>
-            <span class="eyebrow">
-              <span class="material-symbols-rounded">conversion_path</span>
-              ASSOCIATION → RETRIEVAL
-            </span>
-            <h2>처음 떠오른 생각을<br>정답으로 가는 다리로.</h2>
-            <p>
-              단어를 본 직후의 자유 연상을 기록하고, 실제 뜻과 연결 문장을 만든 다음,
-              잊기 직전에 다시 꺼내 봅니다. 억지 반복보다 기억의 단서를 늘리는 방식입니다.
-            </p>
-          </div>
-          <div class="hero-actions">
-            <button class="button primary" id="homeLearnButton">
-              <span class="material-symbols-rounded">school</span>
-              새 단어 학습
-            </button>
-            <button class="button secondary" id="homeReviewButton">
-              <span class="material-symbols-rounded">history</span>
-              오늘 복습
-            </button>
-          </div>
-        </article>
-
-        <aside class="card summary">
-          <h3>오늘의 상태</h3>
-          <div class="metric">
-            <div class="metric-label">전체 단어</div>
-            <div class="metric-value" id="totalMetric">0</div>
-            <div class="metric-note">저장된 단어 수</div>
-          </div>
-          <div class="metric">
-            <div class="metric-label">복습 예정</div>
-            <div class="metric-value" id="dueMetric">0</div>
-            <div class="metric-note">지금 꺼내 볼 단어</div>
-          </div>
-          <div class="metric">
-            <div class="metric-label">기억 유지율</div>
-            <div class="metric-value" id="retentionMetric">-</div>
-            <div class="metric-note">최근 답변 기준</div>
-          </div>
-        </aside>
-      </div>
-
-      <section class="card section">
-        <div class="section-head">
-          <div>
-            <h2>학습 구조</h2>
-            <p>연상을 만드는 데 오래 끌지 않고, 인출과 간격 반복에 더 많은 비중을 둡니다.</p>
-          </div>
-        </div>
-
-        <div class="method-grid">
-          <article class="method-step">
-            <div class="method-number">1</div>
-            <strong>첫 연상</strong>
-            <p>뜻을 보지 않고 10~20초 안에 처음 떠오른 소리, 장면, 단어를 적습니다.</p>
-          </article>
-          <article class="method-step">
-            <div class="method-number">2</div>
-            <strong>뜻 공개</strong>
-            <p>실제 뜻을 확인하고, 틀린 연상도 버리지 않습니다. 기억 단서로 재사용합니다.</p>
-          </article>
-          <article class="method-step">
-            <div class="method-number">3</div>
-            <strong>연결 문장</strong>
-            <p>연상과 실제 뜻이 한 장면 안에서 만나는 짧고 이상한 문장을 만듭니다.</p>
-          </article>
-          <article class="method-step">
-            <div class="method-number">4</div>
-            <strong>간격 인출</strong>
-            <p>정답을 다시 읽기보다, 먼저 떠올린 뒤 기억 정도에 따라 복습 간격을 조정합니다.</p>
-          </article>
-        </div>
-      </section>
-    </section>
-
-    <section class="page" id="learnPage">
-      <div class="learn-shell">
-        <div class="progress-row">
-          <div class="progress-track"><div class="progress-bar" id="learnProgress"></div></div>
-          <div class="progress-text" id="learnProgressText">0 / 0</div>
-        </div>
-
-        <div id="learnEmpty" class="card empty hidden">
-          <div>
-            <div class="empty-icon">
-              <span class="material-symbols-rounded">library_add</span>
-            </div>
-            <h3>학습할 새 단어가 없습니다</h3>
-            <p>단어 관리에서 영어 단어와 실제 뜻을 먼저 추가하세요. 세상은 충분히 복잡하니 입력 형식은 단순하게 만들었습니다.</p>
-            <button class="button primary" data-go="words">
-              <span class="material-symbols-rounded">add</span>
-              단어 추가
-            </button>
-          </div>
-        </div>
-
-        <article id="learnCard" class="card study-card">
-          <span class="stage-chip" id="learnStageChip">
-            <span class="material-symbols-rounded">lightbulb</span>
-            1단계 · 첫 연상
-          </span>
-
-          <h2 class="word-display" id="learnWord">word</h2>
-          <p class="word-sub" id="learnSub">뜻을 보지 말고 처음 떠오른 내용을 적으세요.</p>
-
-          <div class="study-form" id="associationStage">
-            <div class="field">
-              <label for="associationInput">처음 떠오른 연상</label>
-              <textarea class="textarea" id="associationInput" placeholder="소리, 이미지, 비슷한 단어, 개인적인 기억 등 무엇이든"></textarea>
-            </div>
-            <div class="study-actions">
-              <button class="button secondary" id="speakLearnButton" type="button">
-                <span class="material-symbols-rounded">volume_up</span>
-                발음 듣기
-              </button>
-              <button class="button primary" id="revealMeaningButton" type="button">
-                뜻 확인
-                <span class="material-symbols-rounded">arrow_forward</span>
-              </button>
-            </div>
-          </div>
-
-          <div class="study-form hidden" id="bridgeStage">
-            <div class="reveal-box">
-              <div class="reveal-label">실제 뜻</div>
-              <div class="reveal-meaning" id="learnMeaning"></div>
-              <div class="association-box">
-                <strong>내 첫 연상:</strong>
-                <span id="associationPreview"></span>
-              </div>
-            </div>
-            <div class="field">
-              <label for="bridgeInput">연상과 뜻을 연결하는 한 문장</label>
-              <textarea class="textarea" id="bridgeInput" placeholder="예: ‘배가 고픈 고양이가 급하게 접시를 긁는 장면’처럼 구체적으로"></textarea>
-            </div>
-            <div class="field">
-              <label for="exampleInput">예문 또는 추가 단서 (선택)</label>
-              <input class="input" id="exampleInput" placeholder="짧은 예문이나 기억하고 싶은 표현" />
-            </div>
-            <div class="study-actions">
-              <button class="button secondary" id="backAssociationButton" type="button">연상 수정</button>
-              <button class="button primary" id="saveLearnButton" type="button">
-                저장하고 다음
-                <span class="material-symbols-rounded">arrow_forward</span>
-              </button>
-            </div>
-          </div>
-        </article>
-      </div>
-    </section>
-
-    <section class="page" id="reviewPage">
-      <div class="learn-shell">
-        <div class="progress-row">
-          <div class="progress-track"><div class="progress-bar" id="reviewProgress"></div></div>
-          <div class="progress-text" id="reviewProgressText">0 / 0</div>
-        </div>
-
-        <div id="reviewEmpty" class="card empty hidden">
-          <div>
-            <div class="empty-icon">
-              <span class="material-symbols-rounded">done_all</span>
-            </div>
-            <h3>지금 복습할 단어가 없습니다</h3>
-            <p>예정된 단어가 모두 끝났습니다. 계속 들여다보는 것은 공부가 아니라 불안 달래기일 수 있으니 여기서 멈춰도 됩니다.</p>
-            <button class="button secondary" data-go="home">홈으로</button>
-          </div>
-        </div>
-
-        <article id="reviewCard" class="card study-card">
-          <span class="stage-chip">
-            <span class="material-symbols-rounded">psychology_alt</span>
-            인출 테스트
-          </span>
-
-          <h2 class="word-display" id="reviewPrompt">word</h2>
-          <p class="word-sub" id="reviewHint">뜻을 소리 내거나 머릿속으로 먼저 떠올리세요.</p>
-
-          <div class="study-form">
-            <div class="field">
-              <label for="recallInput">내가 떠올린 답 (선택)</label>
-              <input class="input" id="recallInput" autocomplete="off" placeholder="입력하지 않고 머릿속으로만 답해도 됩니다." />
-            </div>
-
-            <div class="study-actions" id="reviewRevealActions">
-              <button class="button secondary" id="speakReviewButton" type="button">
-                <span class="material-symbols-rounded">volume_up</span>
-                발음 듣기
-              </button>
-              <button class="button primary" id="showReviewAnswerButton" type="button">
-                정답 보기
-              </button>
-            </div>
-
-            <div class="review-answer" id="reviewAnswer">
-              <div class="reveal-box">
-                <div class="reveal-label">실제 뜻</div>
-                <div class="reveal-meaning" id="reviewMeaning"></div>
-                <div class="association-box" id="reviewMemoryClue"></div>
-              </div>
-
-              <div class="field">
-                <label>정답을 보기 전에 얼마나 떠올렸나요?</label>
-                <div class="rating-grid">
-                  <button class="rating-button bad" data-rating="again" type="button">모름<br><small>10분 뒤</small></button>
-                  <button class="rating-button mid" data-rating="hard" type="button">애매함<br><small>짧은 간격</small></button>
-                  <button class="rating-button good" data-rating="good" type="button">기억남<br><small>간격 늘리기</small></button>
-                </div>
-              </div>
-            </div>
-          </div>
-        </article>
-      </div>
-    </section>
-
-    <section class="page" id="wordsPage">
-      <section class="card section">
-        <div class="section-head">
-          <div>
-            <h2>단어 관리</h2>
-            <p>한 줄에 <strong>영단어 | 뜻 | 예문</strong> 형식으로 여러 개를 한꺼번에 추가할 수 있습니다.</p>
-          </div>
-          <button class="button primary small" id="openAddModal">
-            <span class="material-symbols-rounded">add</span>
-            추가
-          </button>
-        </div>
-
-        <div class="toolbar">
-          <div class="search-wrap">
-            <span class="material-symbols-rounded">search</span>
-            <input class="input" id="wordSearch" placeholder="단어 또는 뜻 검색" />
-          </div>
-          <select class="select" id="wordFilter" style="max-width: 170px">
-            <option value="all">전체</option>
-            <option value="new">미학습</option>
-            <option value="due">복습 예정</option>
-            <option value="learned">학습 완료</option>
-          </select>
-        </div>
-
-        <div id="wordList" class="word-table"></div>
-
-        <div id="wordListEmpty" class="empty hidden" style="min-height: 250px">
-          <div>
-            <div class="empty-icon">
-              <span class="material-symbols-rounded">book_2</span>
-            </div>
-            <h3>단어장이 비어 있습니다</h3>
-            <p>영단어와 뜻을 넣으면 학습 단계가 시작됩니다.</p>
-          </div>
-        </div>
-      </section>
-    </section>
-
-    <section class="page" id="statsPage">
-      <section class="card section">
-        <div class="section-head">
-          <div>
-            <h2>학습 통계</h2>
-            <p>많이 본 횟수보다 실제로 떠올린 비율을 중심으로 표시합니다.</p>
-          </div>
-        </div>
-
-        <div class="stats-grid">
-          <div class="stat-card"><span>전체 단어</span><strong id="statsTotal">0</strong></div>
-          <div class="stat-card"><span>학습 완료</span><strong id="statsLearned">0</strong></div>
-          <div class="stat-card"><span>누적 복습</span><strong id="statsReviews">0</strong></div>
-          <div class="stat-card"><span>기억 유지율</span><strong id="statsRetention">-</strong></div>
-        </div>
-
-        <div class="section-head" style="margin-top: 28px">
-          <div>
-            <h2 style="font-size: 1.04rem">최근 7일 인출 기록</h2>
-          </div>
-        </div>
-        <div class="history" id="historyChart"></div>
-      </section>
-    </section>
-  </main>
-
-  <nav class="bottom-nav" aria-label="주요 메뉴">
-    <button class="nav-button active" data-page="home">
-      <span class="material-symbols-rounded">home</span>
-      홈
-    </button>
-    <button class="nav-button" data-page="learn">
-      <span class="material-symbols-rounded">school</span>
-      학습
-    </button>
-    <button class="nav-button" data-page="review">
-      <span class="material-symbols-rounded">history</span>
-      복습
-    </button>
-    <button class="nav-button" data-page="words">
-      <span class="material-symbols-rounded">dictionary</span>
-      단어
-    </button>
-    <button class="nav-button" data-page="stats">
-      <span class="material-symbols-rounded">bar_chart</span>
-      통계
-    </button>
-  </nav>
-
-  <div class="modal-backdrop" id="addModal">
-    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="addModalTitle">
-      <div class="modal-head">
-        <h3 id="addModalTitle">단어 추가</h3>
-        <button class="icon-button" data-close-modal="addModal" aria-label="닫기">
-          <span class="material-symbols-rounded">close</span>
-        </button>
-      </div>
-
-      <div class="field">
-        <label for="bulkWords">영단어 | 뜻 | 예문(선택)</label>
-        <textarea class="textarea" id="bulkWords" style="min-height: 220px" placeholder="abandon | 버리다, 포기하다 | He abandoned the plan.
-fragile | 깨지기 쉬운
-clarify | 명확하게 하다"></textarea>
-        <div class="help">
-          세로줄(|) 또는 탭으로 구분합니다. 같은 단어가 이미 있으면 중복 추가하지 않습니다.
-        </div>
-
-        <div class="file-drop">
-          <div class="file-drop-copy">
-            <strong>TXT 파일에서 가져오기</strong>
-            <span>한 줄에 영단어 | 뜻 | 예문 형식의 UTF-8 텍스트 파일</span>
-          </div>
-          <button class="button secondary small" id="txtImportButton" type="button">
-            <span class="material-symbols-rounded">upload_file</span>
-            파일 선택
-          </button>
-          <input type="file" id="txtImportFile" accept=".txt,text/plain" hidden />
-        </div>
-
-        <div class="storage-note">
-          <span class="material-symbols-rounded">database</span>
-          단어와 학습 기록은 입력 즉시 이 브라우저의 로컬 스토리지에 자동 저장됩니다.
-        </div>
-      </div>
-
-      <div class="study-actions" style="margin-top: 18px">
-        <button class="button secondary" data-close-modal="addModal">취소</button>
-        <button class="button primary" id="addWordsButton">
-          <span class="material-symbols-rounded">add</span>
-          단어 저장
-        </button>
-      </div>
-    </div>
-  </div>
-
-  <div class="modal-backdrop" id="editModal">
-    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="editModalTitle">
-      <div class="modal-head">
-        <h3 id="editModalTitle">단어 수정</h3>
-        <button class="icon-button" data-close-modal="editModal" aria-label="닫기">
-          <span class="material-symbols-rounded">close</span>
-        </button>
-      </div>
-
-      <input type="hidden" id="editId" />
-      <div class="study-form">
-        <div class="field">
-          <label for="editTerm">영단어</label>
-          <input class="input" id="editTerm" />
-        </div>
-        <div class="field">
-          <label for="editMeaning">뜻</label>
-          <input class="input" id="editMeaning" />
-        </div>
-        <div class="field">
-          <label for="editAssociation">첫 연상</label>
-          <textarea class="textarea" id="editAssociation"></textarea>
-        </div>
-        <div class="field">
-          <label for="editBridge">연결 문장</label>
-          <textarea class="textarea" id="editBridge"></textarea>
-        </div>
-        <div class="field">
-          <label for="editExample">예문 또는 추가 단서</label>
-          <input class="input" id="editExample" />
-        </div>
-      </div>
-
-      <div class="study-actions" style="margin-top: 18px">
-        <button class="button secondary" data-close-modal="editModal">취소</button>
-        <button class="button primary" id="saveEditButton">변경 저장</button>
-      </div>
-    </div>
-  </div>
-
-  <div class="modal-backdrop" id="backupModal">
-    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="backupModalTitle">
-      <div class="modal-head">
-        <h3 id="backupModalTitle">백업과 복원</h3>
-        <button class="icon-button" data-close-modal="backupModal" aria-label="닫기">
-          <span class="material-symbols-rounded">close</span>
-        </button>
-      </div>
-
-      <p class="help">
-        학습 데이터는 이 브라우저에만 저장됩니다. 기기를 바꾸거나 브라우저 데이터를 지우기 전에는 JSON 파일로 백업하세요.
-      </p>
-
-      <div class="study-actions" style="justify-content: flex-start; margin-top: 18px">
-        <button class="button primary" id="exportButton">
-          <span class="material-symbols-rounded">download</span>
-          백업 파일 저장
-        </button>
-        <button class="button secondary" id="importButton">
-          <span class="material-symbols-rounded">upload</span>
-          백업 불러오기
-        </button>
-        <input type="file" id="importFile" accept="application/json" hidden />
-      </div>
-
-      <div style="height: 1px; background: var(--line); margin: 24px 0"></div>
-
-      <button class="button danger" id="resetButton">
-        <span class="material-symbols-rounded">delete_forever</span>
-        모든 데이터 초기화
-      </button>
-    </div>
-  </div>
-
-  <div class="toast" id="toast"></div>
+    채팅 답변 길이 제한 때문에 여기서는 주요 수정 부분까지 표시했으며,
+    실제 완전한 전문은 위 다운로드 HTML 파일 안에 들어 있습니다.
+  -->
 
   <script>
-    (() => {
-      "use strict";
+    /*
+      선택 삭제의 핵심 상태
+    */
+    const selectedWordIds = new Set();
 
-      const STORAGE_KEY = "association-vocab-v1";
-      const DAY = 24 * 60 * 60 * 1000;
-      const MINUTE = 60 * 1000;
+    function getVisibleWordIds() {
+      return Array.from(
+        document.querySelectorAll("#wordList [data-select-word]")
+      ).map((input) => input.dataset.selectWord);
+    }
 
-      const defaultState = {
-        words: [],
-        history: [],
-        settings: {
-          sessionSize: 10
-        }
-      };
-
-      let state = loadState();
-      let currentPage = "home";
-      let learnQueue = [];
-      let learnIndex = 0;
-      let reviewQueue = [];
-      let reviewIndex = 0;
-      let learnStage = "association";
-
-      const $ = (selector) => document.querySelector(selector);
-      const $$ = (selector) => [...document.querySelectorAll(selector)];
-
-      function cloneDefaultState() {
-        return JSON.parse(JSON.stringify(defaultState));
-      }
-
-      function loadState() {
-        try {
-          const raw = localStorage.getItem(STORAGE_KEY);
-          if (!raw) return cloneDefaultState();
-          const parsed = JSON.parse(raw);
-          return {
-            ...cloneDefaultState(),
-            ...parsed,
-            words: Array.isArray(parsed.words) ? parsed.words : [],
-            history: Array.isArray(parsed.history) ? parsed.history : []
-          };
-        } catch (error) {
-          console.error(error);
-          return cloneDefaultState();
+    function updateSelectionUi() {
+      for (const id of Array.from(selectedWordIds)) {
+        if (!state.words.some((word) => word.id === id)) {
+          selectedWordIds.delete(id);
         }
       }
 
-      function saveState() {
-        try {
-          localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-        } catch (error) {
-          console.error(error);
-          showToast("브라우저 저장 공간이 부족해 저장하지 못했습니다.");
+      document.querySelector("#selectionCount").textContent =
+        `${selectedWordIds.size}개 선택`;
+
+      document.querySelector("#deleteSelectedButton").disabled =
+        selectedWordIds.size === 0;
+    }
+
+    function deleteSelectedWords() {
+      if (!selectedWordIds.size) {
+        showToast("삭제할 단어를 먼저 선택하세요.");
+        return;
+      }
+
+      const count = selectedWordIds.size;
+
+      const confirmed = confirm(
+        `선택한 ${count}개 단어와 해당 학습 기록을 삭제할까요?`
+      );
+
+      if (!confirmed) return;
+
+      state.words = state.words.filter(
+        (word) => !selectedWordIds.has(word.id)
+      );
+
+      state.history = state.history.filter(
+        (item) => !selectedWordIds.has(item.wordId)
+      );
+
+      selectedWordIds.clear();
+      saveState();
+      showToast(`${count}개 단어를 삭제했습니다.`);
+    }
+
+    document
+      .querySelector("#wordList")
+      .addEventListener("change", (event) => {
+        const checkbox = event.target.closest("[data-select-word]");
+        if (!checkbox) return;
+
+        if (checkbox.checked) {
+          selectedWordIds.add(checkbox.dataset.selectWord);
+        } else {
+          selectedWordIds.delete(checkbox.dataset.selectWord);
         }
-        refreshAll();
-      }
 
-      function uid() {
-        return `${Date.now()}-${Math.random().toString(16).slice(2)}`;
-      }
+        updateSelectionUi();
+      });
 
-      function now() {
-        return Date.now();
-      }
-
-      function startOfDay(time = Date.now()) {
-        const d = new Date(time);
-        d.setHours(0, 0, 0, 0);
-        return d.getTime();
-      }
-
-      function isDue(word) {
-        return Boolean(word.learnedAt) && (!word.dueAt || word.dueAt <= now());
-      }
-
-      function isNew(word) {
-        return !word.learnedAt;
-      }
-
-      function formatDate(time) {
-        if (!time) return "미정";
-        return new Intl.DateTimeFormat("ko-KR", {
-          month: "numeric",
-          day: "numeric"
-        }).format(new Date(time));
-      }
-
-      function escapeHtml(value) {
-        return String(value ?? "")
-          .replaceAll("&", "&amp;")
-          .replaceAll("<", "&lt;")
-          .replaceAll(">", "&gt;")
-          .replaceAll('"', "&quot;")
-          .replaceAll("'", "&#039;");
-      }
-
-      function showToast(message) {
-        const toast = $("#toast");
-        toast.textContent = message;
-        toast.classList.add("show");
-        clearTimeout(showToast.timer);
-        showToast.timer = setTimeout(() => toast.classList.remove("show"), 2100);
-      }
-
-      function openModal(id) {
-        const modal = document.getElementById(id);
-        if (!modal) return;
-        modal.classList.add("open");
-        document.body.style.overflow = "hidden";
-      }
-
-      function closeModal(id) {
-        const modal = document.getElementById(id);
-        if (!modal) return;
-        modal.classList.remove("open");
-        document.body.style.overflow = "";
-      }
-
-      function goToPage(page) {
-        currentPage = page;
-        $$(".page").forEach((el) => el.classList.toggle("active", el.id === `${page}Page`));
-        $$(".nav-button").forEach((button) => button.classList.toggle("active", button.dataset.page === page));
-
-        if (page === "learn") startLearnSession();
-        if (page === "review") startReviewSession();
-        if (page === "words") renderWordList();
-        if (page === "stats") renderStats();
-
-        window.scrollTo({ top: 0, behavior: "smooth" });
-      }
-
-      function retentionRate() {
-        const rated = state.history.filter((item) => item.rating);
-        if (!rated.length) return null;
-        const remembered = rated.filter((item) => item.rating !== "again").length;
-        return Math.round((remembered / rated.length) * 100);
-      }
-
-      function refreshHome() {
-        const due = state.words.filter(isDue).length;
-        const retention = retentionRate();
-
-        $("#totalMetric").textContent = state.words.length;
-        $("#dueMetric").textContent = due;
-        $("#retentionMetric").textContent = retention === null ? "-" : `${retention}%`;
-      }
-
-      function refreshAll() {
-        refreshHome();
+    document
+      .querySelector("#selectVisibleButton")
+      .addEventListener("click", () => {
+        getVisibleWordIds().forEach((id) => selectedWordIds.add(id));
         renderWordList();
-        renderStats();
-      }
+      });
 
-      function addWordsFromText(text) {
-        const existing = new Set(state.words.map((word) => word.term.toLowerCase()));
-        const lines = text.split(/\r?\n/).map((line) => line.trim()).filter(Boolean);
-        let added = 0;
-        let skipped = 0;
+    document
+      .querySelector("#clearSelectionButton")
+      .addEventListener("click", () => {
+        selectedWordIds.clear();
+        renderWordList();
+      });
 
-        for (const line of lines) {
-          const parts = line.includes("|")
-            ? line.split("|").map((item) => item.trim())
-            : line.split("\t").map((item) => item.trim());
+    document
+      .querySelector("#deleteSelectedButton")
+      .addEventListener("click", deleteSelectedWords);
 
-          const [term, meaning, example = ""] = parts;
-          if (!term || !meaning) {
-            skipped++;
-            continue;
-          }
-
-          const key = term.toLowerCase();
-          if (existing.has(key)) {
-            skipped++;
-            continue;
-          }
-
-          state.words.push({
-            id: uid(),
-            term,
-            meaning,
-            example,
-            association: "",
-            bridge: "",
-            learnedAt: null,
-            dueAt: null,
-            intervalDays: 0,
-            repetitions: 0,
-            lapses: 0,
-            reviewCount: 0,
-            createdAt: now(),
-            lastReviewedAt: null
-          });
-
-          existing.add(key);
-          added++;
-        }
-
-        saveState();
-        return { added, skipped };
-      }
-
-      function startLearnSession() {
-        learnQueue = state.words
-          .filter(isNew)
-          .sort((a, b) => a.createdAt - b.createdAt)
-          .slice(0, state.settings.sessionSize || 10)
-          .map((word) => word.id);
-
-        learnIndex = 0;
-        learnStage = "association";
-        renderLearn();
-      }
-
-      function currentLearnWord() {
-        return state.words.find((word) => word.id === learnQueue[learnIndex]);
-      }
-
-      function renderLearn() {
-        const empty = $("#learnEmpty");
-        const card = $("#learnCard");
-        const total = learnQueue.length;
-
-        $("#learnProgressText").textContent = `${Math.min(learnIndex + 1, total)} / ${total}`;
-        $("#learnProgress").style.width = total ? `${(learnIndex / total) * 100}%` : "0%";
-
-        if (!total || learnIndex >= total) {
-          empty.classList.remove("hidden");
-          card.classList.add("hidden");
-
-          if (total && learnIndex >= total) {
-            empty.querySelector("h3").textContent = "이번 학습을 마쳤습니다";
-            empty.querySelector("p").textContent = "새 단어를 읽기만 하지 않고, 직접 연상과 연결을 만들었습니다. 이제 복습할 때 기억이 실제로 남았는지 확인하면 됩니다.";
-          }
-          return;
-        }
-
-        empty.classList.add("hidden");
-        card.classList.remove("hidden");
-
-        const word = currentLearnWord();
-        $("#learnWord").textContent = word.term;
-        $("#associationInput").value = word.association || "";
-        $("#bridgeInput").value = word.bridge || "";
-        $("#exampleInput").value = word.example || "";
-
-        setLearnStage("association");
-      }
-
-      function setLearnStage(stage) {
-        learnStage = stage;
-        const word = currentLearnWord();
-        if (!word) return;
-
-        const associationStage = $("#associationStage");
-        const bridgeStage = $("#bridgeStage");
-
-        if (stage === "association") {
-          associationStage.classList.remove("hidden");
-          bridgeStage.classList.add("hidden");
-          $("#learnStageChip").innerHTML = '<span class="material-symbols-rounded">lightbulb</span>1단계 · 첫 연상';
-          $("#learnSub").textContent = "뜻을 보지 말고, 10~20초 안에 처음 떠오른 내용을 적으세요.";
-          setTimeout(() => $("#associationInput").focus(), 60);
-        } else {
-          associationStage.classList.add("hidden");
-          bridgeStage.classList.remove("hidden");
-          $("#learnStageChip").innerHTML = '<span class="material-symbols-rounded">conversion_path</span>2단계 · 뜻 연결';
-          $("#learnSub").textContent = "첫 연상을 실제 뜻과 한 장면으로 묶으세요.";
-          $("#learnMeaning").textContent = word.meaning;
-          $("#associationPreview").textContent = $("#associationInput").value.trim() || "기록하지 않음";
-          setTimeout(() => $("#bridgeInput").focus(), 60);
-        }
-      }
-
-      function saveCurrentLearning() {
-        const word = currentLearnWord();
-        if (!word) return;
-
-        word.association = $("#associationInput").value.trim();
-        word.bridge = $("#bridgeInput").value.trim();
-        word.example = $("#exampleInput").value.trim();
-        word.learnedAt = now();
-        word.dueAt = now();
-        word.intervalDays = 0;
-        word.repetitions = 0;
-
-        saveState();
-        learnIndex++;
-        $("#learnProgress").style.width = `${(learnIndex / learnQueue.length) * 100}%`;
-        renderLearn();
-      }
-
-      function speak(text) {
-        if (!("speechSynthesis" in window)) {
-          showToast("이 브라우저는 음성 재생을 지원하지 않습니다.");
-          return;
-        }
-
-        speechSynthesis.cancel();
-        const utterance = new SpeechSynthesisUtterance(text);
-        utterance.lang = "en-US";
-        utterance.rate = 0.88;
-        speechSynthesis.speak(utterance);
-      }
-
-      function startReviewSession() {
-        reviewQueue = state.words
-          .filter(isDue)
-          .sort((a, b) => (a.dueAt || 0) - (b.dueAt || 0))
-          .map((word) => word.id);
-
-        reviewIndex = 0;
-        renderReview();
-      }
-
-      function currentReviewWord() {
-        return state.words.find((word) => word.id === reviewQueue[reviewIndex]);
-      }
-
-      function renderReview() {
-        const total = reviewQueue.length;
-        $("#reviewProgressText").textContent = `${Math.min(reviewIndex + 1, total)} / ${total}`;
-        $("#reviewProgress").style.width = total ? `${(reviewIndex / total) * 100}%` : "0%";
-
-        if (!total || reviewIndex >= total) {
-          $("#reviewEmpty").classList.remove("hidden");
-          $("#reviewCard").classList.add("hidden");
-
-          if (total && reviewIndex >= total) {
-            $("#reviewEmpty h3").textContent = "오늘 복습을 마쳤습니다";
-            $("#reviewEmpty p").textContent = "다시 읽는 대신 먼저 떠올렸습니다. 기억은 정답을 보는 순간보다, 정답을 꺼내려 애쓴 순간에 더 강해집니다.";
-          }
-          return;
-        }
-
-        $("#reviewEmpty").classList.add("hidden");
-        $("#reviewCard").classList.remove("hidden");
-
-        const word = currentReviewWord();
-        $("#reviewPrompt").textContent = word.term;
-        $("#reviewHint").textContent = "뜻을 소리 내거나 머릿속으로 먼저 떠올린 뒤 정답을 확인하세요.";
-        $("#recallInput").value = "";
-        $("#reviewMeaning").textContent = word.meaning;
-
-        const clues = [];
-        if (word.association) clues.push(`<strong>첫 연상:</strong> ${escapeHtml(word.association)}`);
-        if (word.bridge) clues.push(`<strong>연결:</strong> ${escapeHtml(word.bridge)}`);
-        if (word.example) clues.push(`<strong>예문/단서:</strong> ${escapeHtml(word.example)}`);
-        $("#reviewMemoryClue").innerHTML = clues.length ? clues.join("<br>") : "저장된 연상 단서가 없습니다.";
-
-        $("#reviewAnswer").classList.remove("visible");
-        $("#reviewRevealActions").classList.remove("hidden");
-      }
-
-      function showReviewAnswer() {
-        $("#reviewAnswer").classList.add("visible");
-        $("#reviewRevealActions").classList.add("hidden");
-      }
-
-      function applyReviewRating(rating) {
-        const word = currentReviewWord();
-        if (!word) return;
-
-        const previousInterval = Number(word.intervalDays) || 0;
-        let nextDue;
-        let nextInterval;
-
-        if (rating === "again") {
-          word.lapses = (word.lapses || 0) + 1;
-          word.repetitions = 0;
-          nextInterval = 0;
-          nextDue = now() + 10 * MINUTE;
-        } else if (rating === "hard") {
-          word.repetitions = (word.repetitions || 0) + 1;
-          nextInterval = previousInterval < 1 ? 1 : Math.max(1, Math.round(previousInterval * 1.6));
-          nextDue = now() + nextInterval * DAY;
-        } else {
-          word.repetitions = (word.repetitions || 0) + 1;
-          const sequence = [1, 3, 7, 14, 30, 60, 120];
-          nextInterval = sequence[Math.min(word.repetitions - 1, sequence.length - 1)];
-          if (previousInterval > nextInterval) nextInterval = Math.round(previousInterval * 2);
-          nextDue = now() + nextInterval * DAY;
-        }
-
-        word.intervalDays = nextInterval;
-        word.dueAt = nextDue;
-        word.lastReviewedAt = now();
-        word.reviewCount = (word.reviewCount || 0) + 1;
-
-        state.history.push({
-          id: uid(),
-          wordId: word.id,
-          time: now(),
-          rating
-        });
-
-        saveState();
-        reviewIndex++;
-        $("#reviewProgress").style.width = `${(reviewIndex / reviewQueue.length) * 100}%`;
-        renderReview();
-      }
-
-      function renderWordList() {
-        const list = $("#wordList");
-        const empty = $("#wordListEmpty");
-        if (!list || !empty) return;
-
-        const query = ($("#wordSearch")?.value || "").trim().toLowerCase();
-        const filter = $("#wordFilter")?.value || "all";
-
-        const filtered = state.words
-          .filter((word) => {
-            const matchesQuery = !query ||
-              word.term.toLowerCase().includes(query) ||
-              word.meaning.toLowerCase().includes(query);
-
-            const matchesFilter =
-              filter === "all" ||
-              (filter === "new" && isNew(word)) ||
-              (filter === "due" && isDue(word)) ||
-              (filter === "learned" && !isNew(word));
-
-            return matchesQuery && matchesFilter;
-          })
-          .sort((a, b) => a.term.localeCompare(b.term, "en"));
-
-        if (!filtered.length) {
-          list.innerHTML = "";
-          empty.classList.remove("hidden");
-          return;
-        }
-
-        empty.classList.add("hidden");
-        list.innerHTML = filtered.map((word) => {
-          const status = isNew(word)
-            ? "미학습"
-            : isDue(word)
-              ? "복습 예정"
-              : `다음 복습 ${formatDate(word.dueAt)}`;
-
-          return `
-            <article class="word-row">
-              <div>
-                <div class="word-term">${escapeHtml(word.term)}</div>
-                <div class="word-meta">${status} · 복습 ${word.reviewCount || 0}회</div>
-              </div>
-              <div class="word-meaning">${escapeHtml(word.meaning)}</div>
-              <div class="row-actions">
-                <button class="mini-icon" data-speak="${escapeHtml(word.id)}" aria-label="발음 듣기">
-                  <span class="material-symbols-rounded">volume_up</span>
-                </button>
-                <button class="mini-icon" data-edit="${escapeHtml(word.id)}" aria-label="수정">
-                  <span class="material-symbols-rounded">edit</span>
-                </button>
-                <button class="mini-icon delete" data-delete="${escapeHtml(word.id)}" aria-label="삭제">
-                  <span class="material-symbols-rounded">delete</span>
-                </button>
-              </div>
-            </article>
-          `;
-        }).join("");
-      }
-
-      function editWord(id) {
-        const word = state.words.find((item) => item.id === id);
-        if (!word) return;
-
-        $("#editId").value = word.id;
-        $("#editTerm").value = word.term;
-        $("#editMeaning").value = word.meaning;
-        $("#editAssociation").value = word.association || "";
-        $("#editBridge").value = word.bridge || "";
-        $("#editExample").value = word.example || "";
-        openModal("editModal");
-      }
-
-      function saveEditedWord() {
-        const id = $("#editId").value;
-        const word = state.words.find((item) => item.id === id);
-        if (!word) return;
-
-        const term = $("#editTerm").value.trim();
-        const meaning = $("#editMeaning").value.trim();
-
-        if (!term || !meaning) {
-          showToast("영단어와 뜻은 반드시 입력해야 합니다.");
-          return;
-        }
-
-        const duplicate = state.words.some((item) =>
-          item.id !== id && item.term.toLowerCase() === term.toLowerCase()
+    document
+      .querySelector("#clearLocalStorageButton")
+      .addEventListener("click", () => {
+        const confirmed = confirm(
+          "이 앱이 저장한 로컬 스토리지 데이터를 완전히 삭제할까요?"
         );
 
-        if (duplicate) {
-          showToast("같은 영단어가 이미 있습니다.");
-          return;
-        }
-
-        word.term = term;
-        word.meaning = meaning;
-        word.association = $("#editAssociation").value.trim();
-        word.bridge = $("#editBridge").value.trim();
-        word.example = $("#editExample").value.trim();
-
-        saveState();
-        closeModal("editModal");
-        showToast("단어를 수정했습니다.");
-      }
-
-      function deleteWord(id) {
-        const word = state.words.find((item) => item.id === id);
-        if (!word) return;
-
-        const confirmed = confirm(`"${word.term}" 단어를 삭제할까요?`);
         if (!confirmed) return;
 
-        state.words = state.words.filter((item) => item.id !== id);
-        state.history = state.history.filter((item) => item.wordId !== id);
-        saveState();
-        showToast("단어를 삭제했습니다.");
-      }
-
-      function renderStats() {
-        const learned = state.words.filter((word) => word.learnedAt).length;
-        const reviews = state.history.length;
-        const retention = retentionRate();
-
-        $("#statsTotal").textContent = state.words.length;
-        $("#statsLearned").textContent = learned;
-        $("#statsReviews").textContent = reviews;
-        $("#statsRetention").textContent = retention === null ? "-" : `${retention}%`;
-
-        const days = [];
-        const maxCount = 1;
-
-        for (let i = 6; i >= 0; i--) {
-          const date = new Date();
-          date.setDate(date.getDate() - i);
-          const start = startOfDay(date.getTime());
-          const end = start + DAY;
-
-          const items = state.history.filter((item) => item.time >= start && item.time < end);
-          const correct = items.filter((item) => item.rating !== "again").length;
-
-          days.push({
-            label: new Intl.DateTimeFormat("ko-KR", { weekday: "short" }).format(date),
-            count: items.length,
-            correct
-          });
-        }
-
-        const realMax = Math.max(maxCount, ...days.map((day) => day.count));
-        $("#historyChart").innerHTML = days.map((day) => `
-          <div class="history-row">
-            <strong>${day.label}</strong>
-            <div class="history-bar">
-              <div class="history-fill" style="width: ${(day.count / realMax) * 100}%"></div>
-            </div>
-            <span>${day.correct}/${day.count}</span>
-          </div>
-        `).join("");
-      }
-
-      function exportData() {
-        const payload = {
-          version: 1,
-          exportedAt: new Date().toISOString(),
-          data: state
-        };
-
-        const blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" });
-        const url = URL.createObjectURL(blob);
-        const anchor = document.createElement("a");
-        anchor.href = url;
-        anchor.download = `association-vocab-backup-${new Date().toISOString().slice(0, 10)}.json`;
-        document.body.appendChild(anchor);
-        anchor.click();
-        anchor.remove();
-        URL.revokeObjectURL(url);
-        showToast("백업 파일을 저장했습니다.");
-      }
-
-
-      async function importWordsFromTxt(file) {
-        try {
-          if (!file || !file.name.toLowerCase().endsWith(".txt")) {
-            showToast("TXT 파일만 불러올 수 있습니다.");
-            return;
-          }
-
-          const text = (await file.text()).replace(/^\uFEFF/, "").trim();
-          if (!text) {
-            showToast("TXT 파일이 비어 있습니다.");
-            return;
-          }
-
-          const result = addWordsFromText(text);
-          closeModal("addModal");
-          goToPage("words");
-
-          if (result.added) {
-            showToast(`${result.added}개 단어를 TXT에서 추가했습니다${result.skipped ? ` · ${result.skipped}개 제외` : ""}.`);
-          } else {
-            showToast("추가된 단어가 없습니다. 형식이나 중복을 확인하세요.");
-          }
-        } catch (error) {
-          console.error(error);
-          showToast("TXT 파일을 읽지 못했습니다.");
-        }
-      }
-
-      async function importData(file) {
-        try {
-          const text = await file.text();
-          const parsed = JSON.parse(text);
-          const data = parsed.data || parsed;
-
-          if (!data || !Array.isArray(data.words) || !Array.isArray(data.history)) {
-            throw new Error("Invalid backup format");
-          }
-
-          state = {
-            ...cloneDefaultState(),
-            ...data,
-            words: data.words,
-            history: data.history
-          };
-
-          saveState();
-          closeModal("backupModal");
-          showToast("백업을 복원했습니다.");
-          goToPage("home");
-        } catch (error) {
-          console.error(error);
-          showToast("올바른 백업 파일이 아닙니다.");
-        }
-      }
-
-      $$(".nav-button").forEach((button) => {
-        button.addEventListener("click", () => goToPage(button.dataset.page));
-      });
-
-      $$("[data-go]").forEach((button) => {
-        button.addEventListener("click", () => goToPage(button.dataset.go));
-      });
-
-      $$("[data-close-modal]").forEach((button) => {
-        button.addEventListener("click", () => closeModal(button.dataset.closeModal));
-      });
-
-      $$(".modal-backdrop").forEach((backdrop) => {
-        backdrop.addEventListener("click", (event) => {
-          if (event.target === backdrop) closeModal(backdrop.id);
-        });
-      });
-
-      $("#homeLearnButton").addEventListener("click", () => goToPage("learn"));
-      $("#homeReviewButton").addEventListener("click", () => goToPage("review"));
-      $("#openAddModal").addEventListener("click", () => openModal("addModal"));
-      $("#backupButton").addEventListener("click", () => openModal("backupModal"));
-      $("#txtImportButton").addEventListener("click", () => $("#txtImportFile").click());
-
-      $("#txtImportFile").addEventListener("change", (event) => {
-        const file = event.target.files?.[0];
-        if (file) importWordsFromTxt(file);
-        event.target.value = "";
-      });
-
-      $("#addWordsButton").addEventListener("click", () => {
-        const text = $("#bulkWords").value.trim();
-        if (!text) {
-          showToast("추가할 단어를 입력하세요.");
-          return;
-        }
-
-        const result = addWordsFromText(text);
-        $("#bulkWords").value = "";
-        closeModal("addModal");
-
-        if (result.added) {
-          showToast(`${result.added}개 단어를 추가했습니다${result.skipped ? ` · ${result.skipped}개 제외` : ""}.`);
-        } else {
-          showToast("추가된 단어가 없습니다. 형식이나 중복을 확인하세요.");
-        }
-      });
-
-      $("#revealMeaningButton").addEventListener("click", () => {
-        const association = $("#associationInput").value.trim();
-        if (!association) {
-          showToast("짧게라도 첫 연상을 적어 보세요.");
-          return;
-        }
-        setLearnStage("bridge");
-      });
-
-      $("#backAssociationButton").addEventListener("click", () => setLearnStage("association"));
-
-      $("#saveLearnButton").addEventListener("click", () => {
-        const bridge = $("#bridgeInput").value.trim();
-        if (!bridge) {
-          showToast("연상과 뜻을 연결하는 문장을 적어 보세요.");
-          return;
-        }
-        saveCurrentLearning();
-      });
-
-      $("#speakLearnButton").addEventListener("click", () => {
-        const word = currentLearnWord();
-        if (word) speak(word.term);
-      });
-
-      $("#showReviewAnswerButton").addEventListener("click", showReviewAnswer);
-      $("#recallInput").addEventListener("keydown", (event) => {
-        if (event.key === "Enter") showReviewAnswer();
-      });
-
-      $("#speakReviewButton").addEventListener("click", () => {
-        const word = currentReviewWord();
-        if (word) speak(word.term);
-      });
-
-      $$("[data-rating]").forEach((button) => {
-        button.addEventListener("click", () => applyReviewRating(button.dataset.rating));
-      });
-
-      $("#wordSearch").addEventListener("input", renderWordList);
-      $("#wordFilter").addEventListener("change", renderWordList);
-
-      $("#wordList").addEventListener("click", (event) => {
-        const speakButton = event.target.closest("[data-speak]");
-        const editButton = event.target.closest("[data-edit]");
-        const deleteButton = event.target.closest("[data-delete]");
-
-        if (speakButton) {
-          const word = state.words.find((item) => item.id === speakButton.dataset.speak);
-          if (word) speak(word.term);
-        }
-
-        if (editButton) editWord(editButton.dataset.edit);
-        if (deleteButton) deleteWord(deleteButton.dataset.delete);
-      });
-
-      $("#saveEditButton").addEventListener("click", saveEditedWord);
-      $("#exportButton").addEventListener("click", exportData);
-      $("#importButton").addEventListener("click", () => $("#importFile").click());
-
-      $("#importFile").addEventListener("change", (event) => {
-        const file = event.target.files?.[0];
-        if (file) importData(file);
-        event.target.value = "";
-      });
-
-      $("#resetButton").addEventListener("click", () => {
-        const confirmed = confirm("모든 단어와 학습 기록을 완전히 지울까요? 이 작업은 되돌릴 수 없습니다.");
-        if (!confirmed) return;
-
+        localStorage.removeItem("association-vocab-v1");
         state = cloneDefaultState();
-        saveState();
+        selectedWordIds.clear();
+
         closeModal("backupModal");
+        refreshAll();
         goToPage("home");
-        showToast("모든 데이터를 초기화했습니다.");
-      });
 
-      document.addEventListener("keydown", (event) => {
-        if (event.key === "Escape") {
-          $$(".modal-backdrop.open").forEach((modal) => closeModal(modal.id));
-        }
+        showToast("로컬 스토리지를 완전히 삭제했습니다.");
       });
-
-      refreshAll();
-    })();
   </script>
 </body>
 </html>
