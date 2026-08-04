@@ -1,0 +1,1693 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#edf1f6">
+  <title>토요일 완전회상 · 여러 Day 주관식 단어장</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,400..700,0..1,-50..200&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --bg:#edf1f6;
+      --surface:rgba(255,255,255,.80);
+      --surface-strong:rgba(255,255,255,.97);
+      --text:#151922;
+      --muted:#6d7583;
+      --line:rgba(21,25,34,.10);
+      --primary:#2563eb;
+      --primary-strong:#194fc0;
+      --primary-soft:rgba(37,99,235,.105);
+      --danger:#cf3346;
+      --danger-soft:rgba(207,51,70,.09);
+      --success:#16845b;
+      --success-soft:rgba(22,132,91,.10);
+      --warning:#a56a06;
+      --warning-soft:rgba(181,117,10,.11);
+      --violet:#7657d7;
+      --violet-soft:rgba(118,87,215,.11);
+      --shadow:0 20px 52px rgba(34,46,68,.12);
+      --radius-xl:34px;
+      --radius-lg:25px;
+      --radius-md:18px;
+      --nav-size:80px;
+    }
+
+    *{box-sizing:border-box}
+    .material-symbols-rounded{
+      font-family:"Material Symbols Rounded";
+      font-weight:normal;
+      font-style:normal;
+      font-size:24px;
+      line-height:1;
+      letter-spacing:normal;
+      text-transform:none;
+      display:inline-block;
+      white-space:nowrap;
+      word-wrap:normal;
+      direction:ltr;
+      -webkit-font-feature-settings:"liga";
+      -webkit-font-smoothing:antialiased;
+      font-feature-settings:"liga";
+      font-variation-settings:"FILL" 0,"wght" 560,"GRAD" 0,"opsz" 24;
+    }
+    html{min-height:100%;background:var(--bg);scroll-behavior:smooth}
+    body{
+      margin:0;
+      min-height:100vh;
+      color:var(--text);
+      font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans KR",sans-serif;
+      background:
+        radial-gradient(circle at 10% -10%,rgba(52,110,255,.18),transparent 34rem),
+        radial-gradient(circle at 100% 15%,rgba(52,211,153,.10),transparent 30rem),
+        var(--bg);
+    }
+
+    button,input,textarea,select{font:inherit}
+    button{border:0;cursor:pointer}
+    button:disabled{cursor:not-allowed;opacity:.45}
+    .hidden{display:none!important}
+
+    .app{
+      width:min(1540px,100%);
+      margin:0 auto;
+      padding:18px 14px calc(var(--nav-size) + 34px);
+    }
+
+    .topbar{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:14px;
+      margin-bottom:18px;
+    }
+
+    .brand{display:flex;align-items:center;gap:12px;min-width:0}
+    .brand-mark{
+      width:50px;height:50px;display:grid;place-items:center;flex:0 0 auto;
+      border-radius:20px;color:white;font-size:23px;font-weight:900;
+      background:linear-gradient(145deg,#4f7fff,#1d56cf);
+      box-shadow:0 11px 24px rgba(37,99,235,.26),inset 0 1px 0 rgba(255,255,255,.45);
+    }
+    .brand h1{margin:0;font-size:clamp(1.2rem,4vw,1.68rem);letter-spacing:-.052em}
+    .brand p{margin:4px 0 0;color:var(--muted);font-size:.82rem}
+    .top-actions{display:flex;align-items:center;gap:8px}
+    .icon-btn{
+      width:45px;height:45px;display:grid;place-items:center;border-radius:999px;
+      color:var(--text);background:var(--surface);border:1px solid rgba(255,255,255,.82);
+      box-shadow:0 8px 20px rgba(31,45,68,.08);backdrop-filter:blur(18px);
+      font-size:1.12rem;transition:transform 320ms cubic-bezier(.22,1,.36,1),background 220ms ease;
+    }
+
+    .page{display:none;animation:pageIn .2s ease}
+    .page.active{display:block}
+    @keyframes pageIn{from{opacity:0;transform:translateY(7px)}to{opacity:1;transform:none}}
+
+    .card{
+      border:1px solid rgba(255,255,255,.82);
+      border-radius:var(--radius-xl);
+      background:var(--surface);
+      backdrop-filter:blur(22px) saturate(1.12);
+      box-shadow:var(--shadow);
+    }
+
+    .hero-grid{display:grid;gap:16px;margin-bottom:16px}
+    .hero{
+      min-height:300px;padding:clamp(24px,5vw,46px);position:relative;overflow:hidden;
+      display:flex;flex-direction:column;justify-content:space-between;
+    }
+    .hero:after{
+      content:"";position:absolute;width:330px;height:330px;right:-130px;bottom:-160px;
+      border-radius:50%;background:radial-gradient(circle,rgba(37,99,235,.25),transparent 66%);
+    }
+    .eyebrow{color:var(--primary);font-size:.77rem;font-weight:850;letter-spacing:.025em}
+    .hero h2{
+      max-width:820px;margin:12px 0 10px;font-size:clamp(1.9rem,6vw,3.8rem);
+      line-height:1.04;letter-spacing:-.072em;
+    }
+    .hero p{max-width:730px;margin:0;color:var(--muted);line-height:1.72}
+    .hero-actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:28px;position:relative;z-index:1}
+
+    .button{
+      min-height:47px;padding:0 17px;border-radius:999px;display:inline-flex;align-items:center;
+      justify-content:center;gap:8px;font-weight:780;transition:transform .15s ease,filter .15s ease;
+    }
+    .button:active:not(:disabled){transform:scale(.97)}
+    .button.primary{color:#fff;background:linear-gradient(180deg,#3675f5,#1f5bd6);box-shadow:0 10px 22px rgba(37,99,235,.25)}
+    .button.secondary{color:var(--text);background:rgba(255,255,255,.74);border:1px solid var(--line)}
+    .button.ghost{color:var(--muted);background:rgba(21,25,34,.055)}
+    .button.danger{color:#fff;background:linear-gradient(180deg,#df4a5c,#c72f41)}
+    .button.success{color:#fff;background:linear-gradient(180deg,#22a06b,#167a51)}
+    .button.small{min-height:39px;padding:0 13px;font-size:.8rem}
+    .button.block{width:100%}
+
+    .summary{padding:20px;display:grid;gap:11px;align-content:center}
+    .summary h3{margin:0 0 2px;font-size:1rem}
+    .countdown{
+      padding:18px;border-radius:24px;background:linear-gradient(145deg,rgba(37,99,235,.10),rgba(255,255,255,.62));
+      border:1px solid rgba(37,99,235,.13)
+    }
+    .countdown span{color:var(--muted);font-size:.74rem;font-weight:750}
+    .countdown strong{display:block;margin-top:4px;font-size:2rem;letter-spacing:-.055em}
+    .metric-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}
+    .metric{padding:13px 10px;border-radius:20px;background:rgba(255,255,255,.58);border:1px solid var(--line)}
+    .metric span{display:block;color:var(--muted);font-size:.7rem;font-weight:750}
+    .metric strong{display:block;margin-top:5px;font-size:1.24rem;letter-spacing:-.04em}
+
+    .section{padding:clamp(20px,4vw,30px);margin-bottom:16px}
+    .section-head{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:17px}
+    .section-head h2{margin:0;font-size:1.25rem;letter-spacing:-.045em}
+    .section-head p{margin:6px 0 0;color:var(--muted);font-size:.82rem;line-height:1.5}
+    .head-actions{display:flex;flex-wrap:wrap;gap:8px}
+
+    .plan-grid,.stage-grid,.folder-grid,.setup-grid,.stats-grid{display:grid;gap:11px}
+    .plan-card,.stage-card,.folder-card,.setup-card,.stat-card{
+      padding:18px;border-radius:23px;border:1px solid var(--line);background:rgba(255,255,255,.56)
+    }
+    .plan-card{display:grid;grid-template-columns:auto 1fr;gap:14px;align-items:start}
+    .plan-index{
+      width:38px;height:38px;display:grid;place-items:center;border-radius:999px;
+      color:var(--primary);background:var(--primary-soft);font-weight:900
+    }
+    .plan-card h3,.stage-card h3,.folder-card h3,.setup-card h3{margin:0 0 7px;font-size:.98rem}
+    .plan-card p,.stage-card p,.folder-card p,.setup-card p{margin:0;color:var(--muted);font-size:.8rem;line-height:1.6}
+    .plan-card.current{border-color:rgba(37,99,235,.28);background:rgba(37,99,235,.07)}
+    .plan-card.done .plan-index{color:var(--success);background:var(--success-soft)}
+
+    .readiness-wrap{display:grid;gap:13px}
+    .readiness-track{height:15px;border-radius:999px;background:rgba(21,25,34,.08);overflow:hidden}
+    .readiness-fill{height:100%;width:0;border-radius:inherit;background:linear-gradient(90deg,#2c6bea,#5e8cff,#1fa86f);transition:width .3s ease}
+    .readiness-row{display:flex;justify-content:space-between;gap:12px;color:var(--muted);font-size:.78rem;font-weight:750}
+
+    .stage-card{position:relative;overflow:hidden;min-height:132px}
+    .stage-card:before{content:"";position:absolute;inset:0 auto 0 0;width:5px;background:var(--stage-color,var(--primary))}
+    .stage-card strong{display:block;margin-top:10px;font-size:1.55rem;letter-spacing:-.05em}
+    .stage-badge{
+      display:inline-flex;align-items:center;padding:5px 9px;border-radius:999px;
+      color:var(--stage-color,var(--primary));background:color-mix(in srgb,var(--stage-color,var(--primary)) 10%,transparent);
+      font-size:.68rem;font-weight:850
+    }
+
+    .folder-card{display:flex;flex-direction:column;gap:12px;min-height:176px}
+    .folder-card-top{display:flex;align-items:flex-start;justify-content:space-between;gap:10px}
+    .folder-card h3{font-size:1.05rem;word-break:break-word}
+    .folder-meta{color:var(--muted);font-size:.73rem;line-height:1.5}
+    .folder-progress{height:9px;overflow:hidden;border-radius:999px;background:rgba(21,25,34,.08)}
+    .folder-progress span{display:block;height:100%;border-radius:inherit;background:linear-gradient(90deg,#2b6be9,#6b96ff,#24a46d)}
+    .folder-actions{display:flex;flex-wrap:wrap;gap:7px;margin-top:auto}
+    .active-week{
+      display:inline-flex;padding:5px 9px;border-radius:999px;color:var(--success);
+      background:var(--success-soft);font-size:.67rem;font-weight:850
+    }
+
+    .study-shell{width:min(930px,100%);margin:0 auto}
+    .study-card{padding:clamp(22px,5vw,42px)}
+    .study-controls{
+      display:grid;grid-template-columns:minmax(0,1fr) minmax(150px,.35fr) auto;gap:9px;align-items:end;
+      padding-bottom:18px;margin-bottom:18px;border-bottom:1px solid var(--line)
+    }
+    .stage-chip{
+      display:inline-flex;padding:8px 12px;border-radius:999px;color:var(--primary);
+      background:var(--primary-soft);font-size:.74rem;font-weight:850
+    }
+    .word-display{
+      margin:25px 0 8px;font-size:clamp(2.35rem,9vw,5rem);
+      line-height:1;letter-spacing:-.06em;word-break:break-word
+    }
+    .word-sub{margin:0;color:var(--muted);line-height:1.62}
+    .study-form{display:grid;gap:17px;margin-top:27px}
+
+    .field{display:grid;gap:8px}
+    .field label{font-size:.81rem;font-weight:780;color:#414958}
+    .input,.textarea,.select{
+      width:100%;min-height:49px;padding:13px 15px;border-radius:18px;border:1px solid var(--line);
+      outline:0;color:var(--text);background:rgba(255,255,255,.75)
+    }
+    .textarea{min-height:108px;resize:vertical;line-height:1.6}
+    .input:focus,.textarea:focus,.select:focus{
+      border-color:rgba(37,99,235,.44);box-shadow:0 0 0 4px rgba(37,99,235,.08)
+    }
+    .study-actions{display:flex;justify-content:flex-end;flex-wrap:wrap;gap:9px}
+    .reveal{
+      padding:20px;border-radius:24px;border:1px solid rgba(37,99,235,.14);
+      background:rgba(37,99,235,.06)
+    }
+    .reveal small{color:var(--primary);font-weight:850}
+    .reveal strong{display:block;margin-top:7px;font-size:clamp(1.2rem,4vw,1.85rem);letter-spacing:-.04em;line-height:1.42}
+    .reveal p{margin:12px 0 0;padding-top:12px;border-top:1px solid rgba(37,99,235,.12);color:#4b5563;line-height:1.6}
+    .progress-row{display:flex;align-items:center;gap:11px;margin-bottom:13px}
+    .progress-track{height:9px;flex:1;overflow:hidden;border-radius:999px;background:rgba(21,25,34,.08)}
+    .progress-bar{height:100%;width:0;border-radius:inherit;background:linear-gradient(90deg,#2c6bea,#6592ff)}
+    .progress-text{min-width:62px;text-align:right;color:var(--muted);font-size:.75rem;font-weight:750}
+
+    .quiz-home{display:grid;gap:14px}
+    .recommend-card{
+      padding:22px;border-radius:28px;border:1px solid rgba(37,99,235,.14);
+      background:linear-gradient(145deg,rgba(37,99,235,.09),rgba(255,255,255,.61))
+    }
+    .recommend-card h2{margin:9px 0 6px;font-size:1.55rem;letter-spacing:-.05em}
+    .recommend-card p{margin:0;color:var(--muted);line-height:1.65}
+    .setup-card{display:grid;gap:14px}
+    .setup-form{display:grid;gap:10px}
+    .check-line{display:flex;align-items:flex-start;gap:9px;color:var(--muted);font-size:.8rem;line-height:1.5}
+    .check-line input{margin-top:3px;accent-color:var(--primary)}
+
+    .quiz-meta{
+      display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:16px
+    }
+    .quiz-clock{display:flex;align-items:center;gap:8px;color:var(--muted);font-size:.77rem;font-weight:800}
+    .quiz-clock strong{color:var(--text);font-size:1rem}
+    .prompt-label{color:var(--muted);font-size:.76rem;font-weight:800}
+    .hint-box{
+      margin-top:14px;padding:14px;border-radius:19px;border:1px solid rgba(118,87,215,.18);
+      color:#57469b;background:var(--violet-soft);line-height:1.55;font-size:.84rem
+    }
+    .answer-summary{
+      margin-top:14px;padding:14px;border-radius:19px;border:1px solid var(--line);
+      background:rgba(255,255,255,.59);line-height:1.55
+    }
+    .answer-summary span{display:block;color:var(--muted);font-size:.73rem;font-weight:750;margin-bottom:4px}
+
+    .rating-grid{display:grid;gap:9px;margin-top:14px}
+    .rating{
+      min-height:72px;padding:10px;border-radius:22px;font-weight:850;position:relative;
+      display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px
+    }
+    .rating small{font-weight:700;opacity:.75}
+    .rating.fail{color:#a82a3a;background:var(--danger-soft)}
+    .rating.hint{color:#7657d7;background:var(--violet-soft)}
+    .rating.partial{color:#8a5a05;background:var(--warning-soft)}
+    .rating.full{color:#14714c;background:var(--success-soft)}
+    .suggested{outline:3px solid rgba(37,99,235,.23);outline-offset:2px}
+
+    .rubric-box{display:grid;gap:9px}
+    .rubric-group{padding:10px 12px;border-radius:16px;background:rgba(255,255,255,.62);border:1px solid var(--line)}
+    .rubric-group.matched{border-color:rgba(22,132,91,.28);background:var(--success-soft)}
+    .rubric-group.missed{border-color:rgba(207,51,70,.20);background:var(--danger-soft)}
+    .rubric-group strong{font-size:.86rem}
+
+    .delayed-notice{
+      padding:13px 15px;border-radius:19px;background:rgba(21,25,34,.055);
+      color:var(--muted);font-size:.8rem;line-height:1.55
+    }
+    .review-nav{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px}
+
+    .result-grid{display:grid;gap:10px;margin:18px 0}
+    .result-card{padding:16px;border-radius:21px;border:1px solid var(--line);background:rgba(255,255,255,.6);text-align:center}
+    .result-card span{display:block;color:var(--muted);font-size:.73rem}
+    .result-card strong{display:block;margin-top:5px;font-size:1.38rem}
+
+    .toolbar{display:flex;align-items:center;flex-wrap:wrap;gap:9px;margin-bottom:12px}
+    .search{min-width:220px;flex:1}
+    .selection-bar{
+      display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;
+      margin-bottom:12px;padding:10px 12px;border-radius:999px;border:1px solid var(--line);
+      background:rgba(255,255,255,.58)
+    }
+    .selection-left,.selection-actions{display:flex;align-items:center;flex-wrap:wrap;gap:8px}
+    .selection-count{min-width:72px;color:var(--muted);font-size:.8rem;font-weight:800}
+
+    .word-list{display:grid;gap:10px}
+    .word-row{
+      display:grid;grid-template-columns:28px minmax(125px,.72fr) minmax(160px,1.25fr) minmax(100px,.38fr) auto;
+      align-items:center;gap:13px;padding:15px;border-radius:21px;border:1px solid var(--line);
+      background:rgba(255,255,255,.56)
+    }
+    .word-check{width:19px;height:19px;accent-color:var(--primary)}
+    .word-term{font-weight:900;font-size:1.02rem;word-break:break-word}
+    .word-meta{margin-top:4px;color:var(--muted);font-size:.71rem;line-height:1.55}
+    .folder-pill,.status-pill{
+      display:inline-flex;align-items:center;max-width:100%;padding:4px 8px;margin:3px 3px 0 0;
+      border-radius:999px;font-size:.65rem;font-weight:800;vertical-align:middle
+    }
+    .folder-pill{color:var(--primary);background:var(--primary-soft)}
+    .status-pill{color:var(--success);background:var(--success-soft)}
+    .word-meaning{color:#414a58;line-height:1.5;word-break:break-word}
+    .word-stage{font-size:.77rem;font-weight:800;color:var(--muted)}
+    .row-actions{display:flex;gap:6px}
+    .mini-btn{
+      width:38px;height:38px;display:grid;place-items:center;border-radius:14px;
+      color:var(--muted);background:rgba(21,25,34,.055)
+    }
+    .mini-btn.delete{color:var(--danger);background:var(--danger-soft)}
+    .mini-btn .material-symbols-rounded{font-size:20px}
+    .button .material-symbols-rounded{font-size:20px}
+    .brand-mark .material-symbols-rounded{font-size:28px;font-variation-settings:"FILL" 1,"wght" 600,"GRAD" 0,"opsz" 28}
+    .icon-btn:hover{background:rgba(255,255,255,.9);transform:translateY(-1px)}
+    .icon-btn:active{transform:scale(.94)}
+
+    .stage-distribution{display:grid;gap:10px}
+    .distribution-row{display:grid;grid-template-columns:minmax(110px,.4fr) 1fr 42px;gap:10px;align-items:center}
+    .distribution-row span{font-size:.78rem;font-weight:800}
+    .distribution-track{height:10px;border-radius:999px;background:rgba(21,25,34,.08);overflow:hidden}
+    .distribution-track i{display:block;height:100%;border-radius:inherit;background:var(--bar-color,var(--primary))}
+    .distribution-row b{text-align:right;font-size:.78rem}
+
+    .weak-list{display:grid;gap:8px}
+    .weak-row{
+      display:grid;grid-template-columns:minmax(130px,.7fr) 1fr auto;gap:12px;align-items:center;
+      padding:13px 14px;border-radius:18px;border:1px solid var(--line);background:rgba(255,255,255,.58)
+    }
+    .weak-row strong{word-break:break-word}
+    .weak-row span{color:var(--muted);font-size:.78rem;line-height:1.5}
+
+    .empty{min-height:300px;padding:30px;display:grid;place-items:center;text-align:center}
+    .empty h3{margin:0 0 8px}
+    .empty p{max-width:520px;margin:0 auto 18px;color:var(--muted);line-height:1.65}
+
+    .modal-backdrop{
+      position:fixed;inset:0;z-index:100;display:none;align-items:flex-end;justify-content:center;
+      padding:16px;background:rgba(10,15,25,.36);backdrop-filter:blur(8px)
+    }
+    .modal-backdrop.open{display:flex}
+    .modal{
+      width:min(740px,100%);max-height:91vh;overflow:auto;padding:23px;border-radius:32px;
+      background:var(--surface-strong);border:1px solid rgba(255,255,255,.86);
+      box-shadow:0 28px 90px rgba(10,20,35,.28)
+    }
+    .modal-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:16px}
+    .modal-head h3{margin:0;letter-spacing:-.04em}
+    .help{color:var(--muted);font-size:.78rem;line-height:1.58}
+    .file-box{padding:14px;border-radius:22px;border:1px dashed rgba(37,99,235,.3);background:rgba(37,99,235,.055)}
+    .modal-actions{display:flex;justify-content:flex-end;flex-wrap:wrap;gap:9px;margin-top:17px}
+
+    .add-tabs{
+      display:grid;grid-template-columns:repeat(3,1fr);gap:6px;padding:6px;margin-bottom:18px;
+      border-radius:999px;background:rgba(21,25,34,.06)
+    }
+    .add-tab{min-height:42px;border-radius:999px;color:var(--muted);background:transparent;font-weight:800}
+    .add-tab.active{color:var(--primary);background:#fff;box-shadow:0 6px 16px rgba(31,45,68,.08)}
+    .add-pane{display:none}
+    .add-pane.active{display:block}
+    .inline-grid{display:grid;gap:10px}
+    .folder-manager-list{display:grid;gap:8px;margin-top:14px}
+    .folder-manager-row{
+      display:grid;grid-template-columns:1fr auto;gap:8px;align-items:center;
+      padding:11px 12px;border-radius:18px;border:1px solid var(--line);background:rgba(255,255,255,.65)
+    }
+    .folder-manager-row strong{word-break:break-word}
+    .folder-manager-row small{display:block;color:var(--muted);margin-top:3px}
+
+    .folder-choice-wrap{
+      padding:12px;border:1px solid var(--line);border-radius:24px;background:rgba(255,255,255,.55)
+    }
+    .folder-choice-head{
+      display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:10px
+    }
+    .folder-choice-head strong{font-size:.83rem}
+    .folder-choice-actions{display:flex;gap:6px;flex-wrap:wrap}
+    .folder-choice-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;max-height:310px;overflow:auto;padding:2px;scrollbar-width:thin}
+    .folder-choice{
+      position:relative;display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:10px;
+      min-height:52px;padding:10px 12px;border:1px solid var(--line);border-radius:18px;
+      background:rgba(255,255,255,.64);cursor:pointer;
+      transition:border-color 220ms ease,background 220ms ease,transform 260ms cubic-bezier(.22,1,.36,1),box-shadow 220ms ease
+    }
+    .folder-choice:hover{transform:translateY(-1px);border-color:rgba(37,99,235,.22)}
+    .folder-choice:has(input:checked){
+      border-color:rgba(37,99,235,.32);background:rgba(37,99,235,.075);
+      box-shadow:0 8px 22px rgba(37,99,235,.07)
+    }
+    .folder-choice input{width:19px;height:19px;accent-color:var(--primary)}
+    .folder-choice-name{min-width:0;font-size:.82rem;font-weight:800;line-height:1.4;word-break:break-word}
+    .folder-choice-meta{color:var(--muted);font-size:.7rem;white-space:nowrap}
+    .scope-summary{
+      display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:10px;color:var(--muted);font-size:.75rem;font-weight:750
+    }
+    .scope-summary .material-symbols-rounded{font-size:18px;color:var(--primary)}
+    .active-week{display:inline-flex;align-items:center;gap:4px}
+    .active-week .material-symbols-rounded{font-size:16px}
+
+    .bottom-nav{
+      position:fixed;left:50%;bottom:max(12px,env(safe-area-inset-bottom));z-index:50;
+      width:min(600px,calc(100% - 22px));height:var(--nav-size);padding:8px;
+      display:grid;grid-template-columns:repeat(5,1fr);gap:5px;transform:translateX(-50%);
+      border-radius:999px;border:1px solid rgba(255,255,255,.86);
+      background:rgba(250,252,255,.80);backdrop-filter:blur(30px) saturate(1.24);
+      box-shadow:0 18px 48px rgba(28,40,60,.18),inset 0 1px 0 rgba(255,255,255,.88);
+      overflow:hidden;
+      isolation:isolate
+    }
+    .nav-indicator{
+      position:absolute;left:0;top:0;z-index:0;pointer-events:none;
+      border-radius:999px;
+      background:linear-gradient(145deg,rgba(37,99,235,.145),rgba(37,99,235,.075));
+      box-shadow:inset 0 1px 0 rgba(255,255,255,.88),0 8px 20px rgba(37,99,235,.08);
+      transform:translate3d(0,0,0);
+      will-change:transform,width,height;
+      transition:
+        transform 560ms cubic-bezier(.22,1,.36,1),
+        width 420ms cubic-bezier(.22,1,.36,1),
+        height 420ms cubic-bezier(.22,1,.36,1),
+        opacity 180ms ease;
+      opacity:0
+    }
+    .bottom-nav.ready .nav-indicator{opacity:1}
+    .nav-btn{
+      position:relative;z-index:1;min-width:0;padding:7px 4px;border-radius:999px;
+      color:#727b89;background:transparent;
+      display:grid;place-items:center;align-content:center;gap:3px;font-size:.68rem;font-weight:850;
+      transition:color 300ms ease,transform 440ms cubic-bezier(.22,1,.36,1)
+    }
+    .nav-btn .material-symbols-rounded{
+      font-size:24px;
+      transition:transform 480ms cubic-bezier(.22,1,.36,1),font-variation-settings 340ms ease;
+      transform:translateY(0) scale(1)
+    }
+    .nav-btn span:last-child{transition:transform 440ms cubic-bezier(.22,1,.36,1),opacity 260ms ease}
+    .nav-btn.active{color:var(--primary)}
+    .nav-btn.active .material-symbols-rounded{
+      font-variation-settings:"FILL" 1,"wght" 650,"GRAD" 0,"opsz" 24;
+      transform:translateY(-1px) scale(1.09)
+    }
+    .nav-btn.active span:last-child{transform:translateY(1px)}
+    .nav-btn:active{transform:scale(.955)}
+
+    .toast{
+      position:fixed;left:50%;bottom:calc(var(--nav-size) + 26px);z-index:200;
+      max-width:calc(100% - 34px);padding:12px 16px;border-radius:999px;color:#fff;
+      background:rgba(20,27,38,.94);font-size:.82rem;font-weight:750;text-align:center;
+      opacity:0;pointer-events:none;transform:translate(-50%,14px);transition:.18s ease
+    }
+    .toast.show{opacity:1;transform:translate(-50%,0)}
+
+    :where(button,input,textarea,select,[tabindex]):focus-visible{
+      outline:3px solid rgba(37,99,235,.72);outline-offset:3px;box-shadow:0 0 0 6px rgba(37,99,235,.12)
+    }
+    kbd{
+      display:inline-flex;align-items:center;justify-content:center;min-width:24px;min-height:22px;
+      padding:2px 7px;margin-left:4px;border:1px solid rgba(21,25,34,.16);border-bottom-width:2px;
+      border-radius:8px;background:rgba(255,255,255,.78);font-family:ui-monospace,SFMono-Regular,Consolas,monospace;
+      font-size:.68rem;font-weight:800;line-height:1;white-space:nowrap
+    }
+    .rating kbd{position:absolute;top:8px;right:9px;margin:0}
+    .shortcut-grid{display:grid;gap:8px;margin-top:14px}
+    .shortcut-row{display:grid;grid-template-columns:minmax(122px,auto) 1fr;align-items:center;gap:14px;padding:12px 14px;border:1px solid var(--line);border-radius:18px;background:rgba(255,255,255,.62)}
+    .shortcut-keys{display:flex;align-items:center;flex-wrap:wrap;gap:5px}
+    .shortcut-row kbd{margin:0}
+    .shortcut-row span{color:var(--muted);font-size:.82rem;line-height:1.5}
+
+    @media(min-width:700px){
+      .app{padding:24px 22px calc(var(--nav-size) + 38px)}
+      .hero-grid{grid-template-columns:minmax(0,1.42fr) minmax(310px,.72fr)}
+      .plan-grid{grid-template-columns:repeat(3,1fr)}
+      .stage-grid{grid-template-columns:repeat(3,1fr)}
+      .folder-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+      .setup-grid{grid-template-columns:.8fr 1.2fr}
+      .setup-form{grid-template-columns:1fr 1fr}
+      .stats-grid{grid-template-columns:repeat(4,1fr)}
+      .rating-grid{grid-template-columns:repeat(4,1fr)}
+      .result-grid{grid-template-columns:repeat(4,1fr)}
+      .inline-grid{grid-template-columns:1fr 1fr}
+    }
+
+    @media(min-width:1100px){
+      .app{padding:30px 32px 44px 146px}
+      .folder-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
+      .stage-grid{grid-template-columns:repeat(5,1fr)}
+      .word-list{grid-template-columns:repeat(2,minmax(0,1fr));align-items:start}
+      .word-row{height:100%;grid-template-columns:28px minmax(115px,.7fr) minmax(150px,1.2fr) minmax(95px,.38fr) auto}
+      .bottom-nav{
+        left:24px;top:50%;bottom:auto;width:104px;height:auto;padding:10px;
+        grid-template-columns:1fr;gap:7px;transform:translateY(-50%);border-radius:54px
+      }
+      .nav-btn{min-height:68px;border-radius:35px}
+      .toast{bottom:28px}
+    }
+
+    @media(min-width:1450px){
+      .folder-grid{grid-template-columns:repeat(4,minmax(0,1fr))}
+      .word-list{grid-template-columns:repeat(3,minmax(0,1fr))}
+      .word-row{grid-template-columns:28px minmax(105px,.66fr) minmax(135px,1.05fr) auto}
+      .word-stage{grid-column:2/4}
+      .row-actions{grid-column:4;grid-row:1}
+    }
+
+    @media(max-width:700px){
+      .folder-choice-grid{grid-template-columns:1fr;max-height:330px}
+      .brand p{display:none}
+      .study-controls{grid-template-columns:1fr}
+      .word-row{grid-template-columns:28px 1fr auto}
+      .word-meaning{grid-column:2/-1}
+      .word-stage{grid-column:2}
+      .selection-bar{border-radius:28px}
+      .modal-backdrop{align-items:flex-end;padding:0}
+      .modal{border-radius:32px 32px 0 0;max-height:94vh}
+      .add-tabs{grid-template-columns:1fr}
+      .shortcut-row{grid-template-columns:1fr;gap:8px}
+    }
+
+    @media(max-width:430px){
+      .metric-grid{grid-template-columns:1fr}
+      .metric{text-align:left}
+      .stats-grid{grid-template-columns:1fr 1fr}
+      .bottom-nav{width:calc(100% - 14px)}
+      .result-grid{grid-template-columns:1fr 1fr}
+    }
+
+    @media(hover:none),(pointer:coarse){.button>kbd,.rating>kbd{display:none}}
+    @media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}
+  </style>
+</head>
+<body>
+  <main class="app">
+    <header class="topbar">
+      <div class="brand">
+        <div class="brand-mark"><span class="material-symbols-rounded" aria-hidden="true">neurology</span></div>
+        <div>
+          <h1>토요일 완전회상</h1>
+          <p>여러 학습 Day를 묶어 토요일 주관식까지 완전회상합니다.</p>
+        </div>
+      </div>
+      <div class="top-actions">
+        <button class="icon-btn" id="openAddTop" aria-label="단어 추가" title="단어 추가 (Ctrl/Cmd+N)"><span class="material-symbols-rounded" aria-hidden="true">add</span></button>
+        <button class="icon-btn" id="openKeyboardHelp" aria-label="키보드 단축키" title="키보드 단축키 (?)"><span class="material-symbols-rounded" aria-hidden="true">keyboard</span></button>
+        <button class="icon-btn" id="openSettings" aria-label="설정"><span class="material-symbols-rounded" aria-hidden="true">settings</span></button>
+      </div>
+    </header>
+
+    <section class="page active" id="page-today">
+      <div class="hero-grid">
+        <article class="card hero">
+          <div>
+            <div class="eyebrow" id="todayEyebrow">TODAY'S RECALL PLAN</div>
+            <h2 id="todayHeadline">토요일까지<br>완전회상으로.</h2>
+            <p id="todayDescription">오늘의 요일과 현재 숙달도를 기준으로 가장 필요한 세션을 자동으로 고릅니다.</p>
+          </div>
+          <div class="hero-actions">
+            <button class="button primary" id="startRecommended"><span class="material-symbols-rounded" aria-hidden="true">play_arrow</span>오늘 계획 시작</button>
+            <button class="button secondary" id="openActiveFolder"><span class="material-symbols-rounded" aria-hidden="true">library_books</span>토요일 시험 범위</button>
+          </div>
+        </article>
+
+        <aside class="card summary">
+          <div class="countdown">
+            <span>다음 시험까지</span>
+            <strong id="examCountdown">계산 중</strong>
+          </div>
+          <div class="readiness-wrap">
+            <div class="readiness-row"><span>시험 범위 준비도</span><strong id="readinessPercent">0%</strong></div>
+            <div class="readiness-track"><div class="readiness-fill" id="readinessFill"></div></div>
+          </div>
+          <div class="metric-grid">
+            <div class="metric"><span>시험 단어</span><strong id="homeTotal">0</strong></div>
+            <div class="metric"><span>신속 회상</span><strong id="homeFast">0</strong></div>
+            <div class="metric"><span>인증 완료</span><strong id="homeCertified">0</strong></div>
+          </div>
+        </aside>
+      </div>
+
+      <section class="card section">
+        <div class="section-head">
+          <div><h2>이번 주 역산 계획</h2><p>연상은 월요일에 만들고, 금요일에는 보이지 않게 사라집니다.</p></div>
+        </div>
+        <div class="plan-grid" id="weeklyPlanGrid"></div>
+      </section>
+
+      <section class="card section">
+        <div class="section-head">
+          <div><h2>숙달 단계</h2><p>한 번 맞힌 단어가 아니라, 여러 날에 걸쳐 단서 없이 꺼낸 단어를 높게 평가합니다.</p></div>
+        </div>
+        <div class="stage-grid" id="homeStageGrid"></div>
+      </section>
+
+      <section class="card section">
+        <div class="section-head">
+          <div><h2>학습 Day 폴더</h2><p>토요일에 함께 시험 보는 학습 Day를 여러 개 선택하면 추천 세션과 준비도를 합산해 계산합니다.</p></div>
+          <div class="head-actions"><button class="button secondary small" id="openFolderManagerToday"><span class="material-symbols-rounded" aria-hidden="true">folder_open</span>폴더 관리</button></div>
+        </div>
+        <div class="folder-grid" id="todayFolderGrid"></div>
+      </section>
+    </section>
+
+    <section class="page" id="page-learn">
+      <div class="study-shell">
+        <article class="card study-card">
+          <div class="study-controls">
+            <div class="field"><label for="learnFolderSelect">학습 폴더</label><select class="select" id="learnFolderSelect"></select></div>
+            <div class="field"><label for="learnBlockSelect">한 번에</label><select class="select" id="learnBlockSelect"><option value="10">10단어</option><option value="20">20단어</option><option value="all">남은 전체</option></select></div>
+            <button class="button secondary" id="openAddLearn">단어 추가</button>
+          </div>
+
+          <div id="learnEmpty" class="empty">
+            <div><h3>연결을 만들 새 단어가 없습니다.</h3><p>다른 폴더를 고르거나 새 단어를 추가하세요. 이미 학습한 단어는 주관식 회상 페이지에서 이어집니다.</p></div>
+          </div>
+
+          <div id="learnPanel" class="hidden">
+            <div class="progress-row"><div class="progress-track"><div class="progress-bar" id="learnProgressBar"></div></div><div class="progress-text" id="learnProgressText">0 / 0</div></div>
+
+            <div id="associationStage">
+              <span class="stage-chip">연결 생성 · 1단계</span>
+              <h2 class="word-display" id="learnWord">word</h2>
+              <p class="word-sub">뜻을 보지 말고 소리, 장면, 비슷한 표현 중 가장 먼저 떠오르는 것을 적으세요.</p>
+              <div class="study-form">
+                <div class="field"><label for="associationInput">첫 연상</label><textarea class="textarea" id="associationInput" placeholder="맞지 않아도 됩니다. 떠오른 것을 먼저 붙잡으세요."></textarea></div>
+                <div class="study-actions"><button class="button primary" id="revealLearnMeaning">뜻 확인 <kbd>Enter</kbd></button></div>
+              </div>
+            </div>
+
+            <div id="bridgeStage" class="hidden">
+              <span class="stage-chip">연결 생성 · 2단계</span>
+              <h2 class="word-display" id="bridgeWord">word</h2>
+              <div class="study-form">
+                <div class="reveal"><small>시험 정답</small><strong id="bridgeMeaning"></strong><p><b>첫 연상:</b> <span id="bridgeAssociation"></span></p></div>
+                <div class="field"><label for="bridgeInput">연상에서 뜻으로 가는 연결 문장</label><textarea class="textarea" id="bridgeInput" placeholder="짧고 선명하게 연결하세요. 이 문장은 실패했을 때만 힌트로 사용됩니다."></textarea></div>
+                <div class="study-actions"><button class="button secondary" id="backAssociation">이전</button><button class="button primary" id="saveLearning">저장하고 다음 <kbd>Enter</kbd></button></div>
+              </div>
+            </div>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section class="page" id="page-recall">
+      <div class="study-shell">
+        <section id="recallHome" class="quiz-home">
+          <article class="card recommend-card">
+            <span class="eyebrow">RECOMMENDED SESSION</span>
+            <h2 id="recommendedTitle">오늘의 주관식 세션</h2>
+            <p id="recommendedDescription">현재 요일과 취약 단어를 기준으로 구성합니다.</p>
+            <div class="hero-actions"><button class="button primary" id="startRecommendedRecall"><span class="material-symbols-rounded" aria-hidden="true">play_arrow</span>추천 세션 시작</button></div>
+          </article>
+
+          <div class="setup-grid">
+            <article class="card setup-card">
+              <div><span class="eyebrow">CUSTOM RECALL</span><h3>여러 Day 주관식 시험</h3><p>시험에 포함할 학습 Day를 여러 개 고르고 한 번에 섞어서 시험합니다.</p></div>
+              <div class="setup-form">
+                <div class="field" style="grid-column:1/-1">
+                  <label>시험에 포함할 학습 Day</label>
+                  <div class="folder-choice-wrap">
+                    <div class="folder-choice-head"><strong id="recallScopeTitle">선택된 Day</strong><div class="folder-choice-actions"><button class="button ghost small" type="button" id="selectAllRecallFolders">전체 선택</button><button class="button ghost small" type="button" id="clearRecallFolders">선택 해제</button></div></div>
+                    <div class="folder-choice-grid" id="recallFolderChecklist"></div>
+                    <div class="scope-summary"><span class="material-symbols-rounded" aria-hidden="true">library_books</span><span id="recallScopeSummary">0개 Day · 0단어</span></div>
+                  </div>
+                </div>
+                <div class="field"><label for="recallModeSelect">시험 방식</label><select class="select" id="recallModeSelect"><option value="practice">즉시 피드백 연습</option><option value="weak">취약 단어 집중</option><option value="diagnostic">전체 진단</option><option value="mock">실전 모의시험</option><option value="certification">토요일 인증시험</option></select></div>
+                <div class="field"><label for="recallCountSelect">문항 수</label><select class="select" id="recallCountSelect"><option value="10">10개</option><option value="20">20개</option><option value="40">40개</option><option value="all">전체</option></select></div>
+                <div class="field"><label for="recallScopeSelect">포함 범위</label><select class="select" id="recallScopeSelect"><option value="learned">연결 생성 완료만</option><option value="all">미학습 포함 전체</option></select></div>
+              </div>
+              <label class="check-line"><input type="checkbox" id="shuffleQuestions" checked><span>문제 순서를 무작위로 섞습니다.</span></label>
+              <button class="button primary block" id="startCustomRecall"><span class="material-symbols-rounded" aria-hidden="true">quiz</span>시험 시작</button>
+            </article>
+
+            <article class="card setup-card">
+              <div><span class="eyebrow">SATURDAY STANDARD</span><h3>완전회상 판정 기준</h3><p>주관식은 단순 정답 여부만으로는 충분하지 않습니다.</p></div>
+              <div class="reveal"><small>3등급 완전회상</small><p>힌트 없이 정답을 떠올리고, 첫 입력을 7초 안에 시작해야 합니다. 신속 회상 단계는 서로 다른 날의 완전회상 3회가 필요합니다.</p></div>
+              <div class="reveal"><small>토요일 인증</small><p>실전 모의 또는 인증시험에서 완전회상하고, 신속 회상 조건까지 충족해야 인증됩니다.</p></div>
+            </article>
+          </div>
+        </section>
+
+        <article class="card study-card hidden" id="recallPanel">
+          <div class="quiz-meta">
+            <div class="progress-row" style="margin:0;flex:1"><div class="progress-track"><div class="progress-bar" id="recallProgressBar"></div></div><div class="progress-text" id="recallProgressText">0 / 0</div></div>
+            <div class="quiz-clock"><span>회상 시작</span><strong id="recallClock">0.0초</strong></div>
+          </div>
+          <span class="stage-chip" id="recallModeChip">주관식 회상</span>
+          <div id="questionStage">
+            <span class="prompt-label">영단어를 보고 시험 답안을 직접 입력하세요.</span>
+            <h2 class="word-display" id="recallPrompt">word</h2>
+            <div id="hintBox" class="hint-box hidden"></div>
+            <div class="study-form">
+              <div class="field"><label for="recallAnswerInput">한국어 뜻</label><textarea class="textarea" id="recallAnswerInput" placeholder="떠오르는 시험 답안을 적으세요. Shift+Enter는 줄 바꿈입니다."></textarea></div>
+              <div class="study-actions"><button class="button ghost" id="showHint">연상 힌트 보기</button><button class="button primary" id="submitRecallAnswer">답 제출 <kbd>Enter</kbd></button></div>
+            </div>
+          </div>
+
+          <div id="feedbackStage" class="hidden" tabindex="-1">
+            <div class="answer-summary"><span>내 답</span><strong id="feedbackUserAnswer"></strong></div>
+            <div class="reveal"><small>시험 정답</small><strong id="feedbackCorrectAnswer"></strong><p id="feedbackBridge"></p></div>
+            <div class="rubric-box" id="rubricResult" style="margin-top:12px"></div>
+            <div class="field" style="margin-top:14px"><label for="errorTypeSelect">오류 유형</label><select class="select" id="errorTypeSelect"><option value="none">오류 없음</option><option value="blank">공백 오류 · 전혀 안 떠오름</option><option value="confusion">혼동 오류 · 다른 뜻을 떠올림</option><option value="partial">불완전 오류 · 뜻 일부 누락</option><option value="slow">속도 오류 · 맞지만 오래 걸림</option><option value="hint">단서 회상 · 힌트 사용</option></select></div>
+            <div class="rating-grid">
+              <button class="rating fail" data-rating="0">실패 <kbd>0</kbd><small>3분 뒤</small></button>
+              <button class="rating hint" data-rating="1">단서 회상 <kbd>1</kbd><small>20분 뒤</small></button>
+              <button class="rating partial" data-rating="2">부분·느림 <kbd>2</kbd><small>짧게 유지</small></button>
+              <button class="rating full" data-rating="3">완전회상 <kbd>3</kbd><small>다음 단계</small></button>
+            </div>
+          </div>
+
+          <div id="delayedNotice" class="delayed-notice hidden">실전 모드에서는 정답을 마지막까지 공개하지 않습니다. 입력한 답은 시험 종료 후 한꺼번에 검토합니다.</div>
+        </article>
+
+        <article class="card study-card hidden" id="delayedReviewPanel">
+          <div class="review-nav"><span class="stage-chip">시험 후 일괄 채점</span><strong id="delayedReviewProgress">1 / 1</strong></div>
+          <span class="prompt-label">문제</span><h2 class="word-display" id="reviewWord">word</h2>
+          <div class="answer-summary"><span>내 답</span><strong id="reviewUserAnswer"></strong></div>
+          <div class="reveal"><small>시험 정답</small><strong id="reviewCorrectAnswer"></strong><p id="reviewBridge"></p></div>
+          <div class="rubric-box" id="reviewRubric" style="margin-top:12px"></div>
+          <div class="field" style="margin-top:14px"><label for="reviewErrorType">오류 유형</label><select class="select" id="reviewErrorType"><option value="none">오류 없음</option><option value="blank">공백 오류</option><option value="confusion">혼동 오류</option><option value="partial">불완전 오류</option><option value="slow">속도 오류</option></select></div>
+          <div class="rating-grid">
+            <button class="rating fail" data-review-rating="0">실패 <kbd>0</kbd></button>
+            <button class="rating hint" data-review-rating="1">단서 회상 <kbd>1</kbd></button>
+            <button class="rating partial" data-review-rating="2">부분·느림 <kbd>2</kbd></button>
+            <button class="rating full" data-review-rating="3">완전회상 <kbd>3</kbd></button>
+          </div>
+        </article>
+
+        <article class="card study-card hidden" id="recallComplete">
+          <div class="empty" style="min-height:0"><div style="width:100%">
+            <span class="stage-chip">세션 완료</span>
+            <h2 style="margin:18px 0 6px;letter-spacing:-.05em">이번 주관식 결과</h2>
+            <p id="completeDescription" class="word-sub"></p>
+            <div class="result-grid">
+              <div class="result-card"><span>완전회상</span><strong id="resultFull">0</strong></div>
+              <div class="result-card"><span>부분·느림</span><strong id="resultPartial">0</strong></div>
+              <div class="result-card"><span>단서 회상</span><strong id="resultHint">0</strong></div>
+              <div class="result-card"><span>실패</span><strong id="resultFail">0</strong></div>
+            </div>
+            <div class="study-actions" style="justify-content:center"><button class="button secondary" id="backToRecallHome">시험 선택으로</button><button class="button primary" id="repeatLastRecall">같은 조건으로 다시</button></div>
+          </div></div>
+        </article>
+      </div>
+    </section>
+
+    <section class="page" id="page-words">
+      <section class="card section">
+        <div class="section-head">
+          <div><h2>학습 Day와 단어</h2><p>정답 규칙은 `/`로 동의어를 묶고, `;`로 반드시 따로 맞혀야 하는 의미를 나눕니다.</p></div>
+          <div class="head-actions"><button class="button secondary small" id="openFolderManagerWords"><span class="material-symbols-rounded" aria-hidden="true">folder_open</span>폴더 관리</button><button class="button secondary small" id="exportFolderTxt">TXT 내보내기</button><button class="button primary small" id="openAddWords"><span class="material-symbols-rounded" aria-hidden="true">add</span>단어 추가</button></div>
+        </div>
+
+        <div class="folder-grid" id="wordFolderGrid" style="margin-bottom:18px"></div>
+        <div class="toolbar"><input class="input search" id="wordSearch" type="search" placeholder="단어, 뜻, 연상 검색"><select class="select" id="wordFolderFilter"></select><select class="select" id="wordStageFilter"><option value="all">모든 단계</option><option value="-1">미학습</option><option value="0">연결 생성</option><option value="1">단서 회상</option><option value="2">독립 회상</option><option value="3">신속 회상</option><option value="4">토요일 인증</option></select></div>
+        <div class="selection-bar"><div class="selection-left"><span class="selection-count" id="selectionCount">0개 선택</span><button class="button ghost small" id="selectVisible">검색 결과 전체 선택</button><button class="button ghost small" id="clearSelection">선택 해제</button></div><div class="selection-actions"><button class="button danger small" id="deleteSelected" disabled>선택 삭제</button></div></div>
+        <div class="word-list" id="wordList"></div>
+      </section>
+    </section>
+
+    <section class="page" id="page-progress">
+      <section class="card section">
+        <div class="section-head"><div><h2>주간 완전회상 기록</h2><p>정확도와 함께 첫 입력까지 걸린 시간을 기록합니다.</p></div></div>
+        <div class="stats-grid">
+          <div class="stat-card"><span>오늘 답한 문항</span><strong id="statTodayAttempts">0</strong></div>
+          <div class="stat-card"><span>오늘 완전회상</span><strong id="statTodayFull">0</strong></div>
+          <div class="stat-card"><span>평균 회상 시작</span><strong id="statLatency">0초</strong></div>
+          <div class="stat-card"><span>이번 주 세션</span><strong id="statWeekSessions">0</strong></div>
+        </div>
+      </section>
+
+      <section class="card section">
+        <div class="section-head"><div><h2>단계 분포</h2><p>인증에 가까울수록 실제 시험에서 바로 꺼낼 가능성이 높습니다.</p></div></div>
+        <div class="stage-distribution" id="stageDistribution"></div>
+      </section>
+
+      <section class="card section">
+        <div class="section-head"><div><h2>우선 교정할 단어</h2><p>실패, 힌트 사용, 느린 회상이 반복된 단어를 위로 올립니다.</p></div></div>
+        <div class="weak-list" id="weakList"></div>
+      </section>
+    </section>
+  </main>
+
+  <nav class="bottom-nav" aria-label="주요 메뉴">
+    <span class="nav-indicator" aria-hidden="true"></span>
+    <button class="nav-btn active" data-page="today" title="오늘 (Alt+1)"><span class="material-symbols-rounded" aria-hidden="true">home</span><span>오늘</span></button>
+    <button class="nav-btn" data-page="learn" title="학습 (Alt+2)"><span class="material-symbols-rounded" aria-hidden="true">school</span><span>학습</span></button>
+    <button class="nav-btn" data-page="recall" title="주관식 (Alt+3)"><span class="material-symbols-rounded" aria-hidden="true">quiz</span><span>주관식</span></button>
+    <button class="nav-btn" data-page="words" title="단어 (Alt+4)"><span class="material-symbols-rounded" aria-hidden="true">dictionary</span><span>단어</span></button>
+    <button class="nav-btn" data-page="progress" title="기록 (Alt+5)"><span class="material-symbols-rounded" aria-hidden="true">monitoring</span><span>기록</span></button>
+  </nav>
+
+  <div class="modal-backdrop" id="addModal">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="addModalTitle">
+      <div class="modal-head"><h3 id="addModalTitle">단어 추가</h3><button class="icon-btn" data-close="addModal" aria-label="닫기"><span class="material-symbols-rounded" aria-hidden="true">close</span></button></div>
+      <div class="add-tabs"><button class="add-tab active" data-add-tab="single">한 단어</button><button class="add-tab" data-add-tab="paste">여러 단어</button><button class="add-tab" data-add-tab="files">TXT 파일</button></div>
+
+      <section class="add-pane active" data-add-pane="single">
+        <div class="study-form">
+          <div class="field"><label for="singleFolder">저장할 폴더</label><select class="select" id="singleFolder"></select></div>
+          <div class="inline-grid"><div class="field"><label for="singleWord">영단어</label><input class="input" id="singleWord"></div><div class="field"><label for="singleMeaning">책의 뜻</label><input class="input" id="singleMeaning"></div></div>
+          <div class="field"><label for="singleRubric">주관식 정답 규칙</label><input class="input" id="singleRubric" placeholder="예: 버리다/그만두다/단념하다 또는 처리하다/처분하다;배치하다/배열하다"><div class="help">`/` 안에서는 하나만 맞혀도 되고, `;`로 나눈 묶음은 각각 하나 이상 맞혀야 완전 정답입니다. 비워 두면 책의 뜻 전체를 동의어 한 묶음으로 봅니다.</div></div>
+          <div class="field"><label for="singleExample">예문 또는 추가 단서</label><textarea class="textarea" id="singleExample"></textarea></div>
+        </div>
+        <div class="modal-actions"><button class="button secondary" data-close="addModal">취소</button><button class="button primary" id="addSingleWord">추가</button></div>
+      </section>
+
+      <section class="add-pane" data-add-pane="paste">
+        <div class="study-form">
+          <div class="field"><label for="pasteFolder">기본 폴더</label><select class="select" id="pasteFolder"></select></div>
+          <div class="field"><label for="bulkInput">여러 단어 붙여넣기</label><textarea class="textarea" id="bulkInput" style="min-height:220px" placeholder="[학습 Day 15 · 원본 Day 29–30]&#10;abandon | 버리다, 그만두다, 단념하다&#10;dispose | 처리하다, 처분하다, 배치하다"></textarea><div class="help">형식은 `영단어 | 뜻 | 예문`입니다. 가져온 뒤 필요한 단어만 정답 규칙을 수정하면 됩니다.</div></div>
+        </div>
+        <div class="modal-actions"><button class="button secondary" data-close="addModal">취소</button><button class="button primary" id="addPastedWords">추가</button></div>
+      </section>
+
+      <section class="add-pane" data-add-pane="files">
+        <div class="study-form"><div class="field"><label for="fileFallbackFolder">폴더명이 없는 파일의 기본 폴더</label><select class="select" id="fileFallbackFolder"></select></div><div class="file-box"><div class="field"><label for="txtFiles">TXT 파일 여러 개</label><input class="input" id="txtFiles" type="file" accept=".txt,text/plain" multiple><div class="help">학습 Day 머리말과 기존 Day 파일명을 모두 인식합니다.</div></div></div></div>
+        <div class="modal-actions"><button class="button secondary" data-close="addModal">취소</button><button class="button primary" id="addTxtFiles">가져오기</button></div>
+      </section>
+    </div>
+  </div>
+
+  <div class="modal-backdrop" id="folderModal">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="folderModalTitle">
+      <div class="modal-head"><h3 id="folderModalTitle">폴더 관리</h3><button class="icon-btn" data-close="folderModal" aria-label="닫기"><span class="material-symbols-rounded" aria-hidden="true">close</span></button></div>
+      <div class="inline-grid"><div class="field"><label for="newFolderName">새 폴더 이름</label><input class="input" id="newFolderName" placeholder="예: 학습 Day 15 · 원본 Day 29–30"></div><div style="display:flex;align-items:end"><button class="button primary block" id="createFolder">폴더 만들기</button></div></div>
+      <div class="folder-manager-list" id="folderManagerList"></div>
+    </div>
+  </div>
+
+  <div class="modal-backdrop" id="editModal">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="editModalTitle">
+      <div class="modal-head"><h3 id="editModalTitle">단어 수정</h3><button class="icon-btn" data-close="editModal" aria-label="닫기"><span class="material-symbols-rounded" aria-hidden="true">close</span></button></div>
+      <div class="study-form">
+        <div class="field"><label for="editFolder">폴더</label><select class="select" id="editFolder"></select></div>
+        <div class="inline-grid"><div class="field"><label for="editWord">영단어</label><input class="input" id="editWord"></div><div class="field"><label for="editMeaning">책의 뜻</label><input class="input" id="editMeaning"></div></div>
+        <div class="field"><label for="editRubric">주관식 정답 규칙</label><input class="input" id="editRubric" placeholder="동의어 / 구분, 필수 의미 ; 구분"></div>
+        <div class="field"><label for="editAssociation">첫 연상</label><textarea class="textarea" id="editAssociation"></textarea></div>
+        <div class="field"><label for="editBridge">연결 문장</label><textarea class="textarea" id="editBridge"></textarea></div>
+        <div class="field"><label for="editConfusion">혼동 단어·차이 메모</label><textarea class="textarea" id="editConfusion" placeholder="예: adapt는 적응, adopt는 채택"></textarea></div>
+      </div>
+      <div class="modal-actions"><button class="button secondary" data-close="editModal">취소</button><button class="button primary" id="saveEdit">저장</button></div>
+    </div>
+  </div>
+
+  <div class="modal-backdrop" id="settingsModal">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="settingsModalTitle">
+      <div class="modal-head"><h3 id="settingsModalTitle">시험 및 저장 설정</h3><button class="icon-btn" data-close="settingsModal" aria-label="닫기"><span class="material-symbols-rounded" aria-hidden="true">close</span></button></div>
+      <div class="study-form">
+        <div class="field">
+          <label>토요일 시험 범위</label>
+          <div class="folder-choice-wrap">
+            <div class="folder-choice-head"><strong>함께 시험 볼 학습 Day</strong><div class="folder-choice-actions"><button class="button ghost small" type="button" id="selectAllExamFolders">전체 선택</button></div></div>
+            <div class="folder-choice-grid" id="examFolderSettingsList"></div>
+            <div class="scope-summary"><span class="material-symbols-rounded" aria-hidden="true">event_available</span><span id="examScopeSummary">0개 Day · 0단어</span></div>
+          </div>
+        </div>
+        <div class="inline-grid"><div class="field"><label for="examWeekday">시험 요일</label><select class="select" id="examWeekday"><option value="1">월요일</option><option value="2">화요일</option><option value="3">수요일</option><option value="4">목요일</option><option value="5">금요일</option><option value="6" selected>토요일</option><option value="0">일요일</option></select></div><div class="field"><label for="examTime">시험 시간</label><input class="input" id="examTime" type="time" value="10:00"></div></div>
+        <div class="inline-grid"><button class="button secondary" id="exportJson">전체 JSON 백업</button><div class="field"><label for="restoreJson">JSON 복원</label><input class="input" id="restoreJson" type="file" accept=".json,application/json"></div></div>
+        <button class="button secondary" id="restoreJsonButton">선택한 백업 복원</button>
+        <button class="button danger" id="resetStorage">로컬 데이터 완전 초기화</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-backdrop" id="keyboardModal">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="keyboardModalTitle">
+      <div class="modal-head"><h3 id="keyboardModalTitle">물리 키보드 단축키</h3><button class="icon-btn" data-close="keyboardModal" aria-label="닫기"><span class="material-symbols-rounded" aria-hidden="true">close</span></button></div>
+      <div class="shortcut-grid">
+        <div class="shortcut-row"><div class="shortcut-keys"><kbd>Alt</kbd><kbd>1</kbd>–<kbd>5</kbd></div><span>오늘, 학습, 주관식, 단어, 기록 이동</span></div>
+        <div class="shortcut-row"><div class="shortcut-keys"><kbd>Ctrl</kbd><span>또는</span><kbd>⌘</kbd><kbd>K</kbd></div><span>단어 검색</span></div>
+        <div class="shortcut-row"><div class="shortcut-keys"><kbd>Ctrl</kbd><span>또는</span><kbd>⌘</kbd><kbd>N</kbd></div><span>단어 추가</span></div>
+        <div class="shortcut-row"><div class="shortcut-keys"><kbd>Enter</kbd></div><span>뜻 확인, 학습 저장, 주관식 답 제출</span></div>
+        <div class="shortcut-row"><div class="shortcut-keys"><kbd>Shift</kbd><kbd>Enter</kbd></div><span>입력칸 줄 바꿈</span></div>
+        <div class="shortcut-row"><div class="shortcut-keys"><kbd>0</kbd><kbd>1</kbd><kbd>2</kbd><kbd>3</kbd></div><span>실패, 단서 회상, 부분·느림, 완전회상</span></div>
+        <div class="shortcut-row"><div class="shortcut-keys"><kbd>Esc</kbd></div><span>창 닫기 또는 시험 선택 화면으로</span></div>
+        <div class="shortcut-row"><div class="shortcut-keys"><kbd>?</kbd></div><span>단축키 안내</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script>
+    "use strict";
+
+    const STORAGE_KEY = "association-vocab-v7-multi-day";
+    const LEGACY_KEYS = ["association-vocab-v6-saturday", "association-vocab-v4", "association-vocab-v3", "association-vocab-v2", "association-vocab-v1"];
+    const STAGES = [
+      { value:-1, name:"미학습", color:"#7b8491", weight:0 },
+      { value:0, name:"연결 생성", color:"#7657d7", weight:18 },
+      { value:1, name:"단서 회상", color:"#a56a06", weight:38 },
+      { value:2, name:"독립 회상", color:"#2563eb", weight:62 },
+      { value:3, name:"신속 회상", color:"#16845b", weight:84 },
+      { value:4, name:"토요일 인증", color:"#08785b", weight:100 }
+    ];
+
+    const $ = (selector, root = document) => root.querySelector(selector);
+    const $$ = (selector, root = document) => Array.from(root.querySelectorAll(selector));
+
+    function uid(){
+      if(window.crypto && typeof window.crypto.randomUUID === "function") return window.crypto.randomUUID();
+      return "id-" + Date.now().toString(36) + "-" + Math.random().toString(36).slice(2);
+    }
+
+    function makeDefaultState(){
+      const folderId = uid();
+      return {
+        version:7,
+        folders:[{ id:folderId, name:"기본 폴더", createdAt:Date.now() }],
+        words:[],
+        attempts:[],
+        sessions:[],
+        settings:{ activeFolderId:folderId, examFolderIds:[folderId], examWeekday:6, examTime:"10:00" },
+        ui:{ learnFolderId:folderId, wordFolderFilter:"all", recallFolderIds:[folderId] }
+      };
+    }
+
+    function normalizeWordRecord(word, fallbackFolderId){
+      const learned = Boolean(word.learned || word.learnedAt || word.association || word.bridge);
+      let stage = Number.isInteger(word.stage) ? word.stage : (learned ? 0 : -1);
+      if(word.certification && word.certification.passed) stage = 4;
+      stage = Math.max(-1, Math.min(4, stage));
+      return {
+        id:word.id || uid(),
+        folderId:word.folderId || fallbackFolderId,
+        word:String(word.word || "").trim(),
+        meaning:String(word.meaning || "").trim(),
+        rubric:String(word.rubric || "").trim(),
+        example:String(word.example || "").trim(),
+        association:String(word.association || "").trim(),
+        bridge:String(word.bridge || "").trim(),
+        confusionNote:String(word.confusionNote || "").trim(),
+        stage,
+        createdAt:Number(word.createdAt) || Date.now(),
+        learnedAt:word.learnedAt ? Number(word.learnedAt) : null,
+        dueAt:word.dueAt ? Number(word.dueAt) : null,
+        fullRecallCount:Number(word.fullRecallCount) || 0,
+        fastRecallCount:Number(word.fastRecallCount) || 0,
+        recallDates:Array.isArray(word.recallDates) ? Array.from(new Set(word.recallDates)) : [],
+        attemptCount:Number(word.attemptCount || word.reviewCount) || 0,
+        lapseCount:Number(word.lapseCount) || 0,
+        lastRating:Number.isInteger(word.lastRating) ? word.lastRating : null,
+        lastAttemptAt:word.lastAttemptAt ? Number(word.lastAttemptAt) : null,
+        certifiedAt:word.certifiedAt ? Number(word.certifiedAt) : null
+      };
+    }
+
+    function normalizeState(raw){
+      const base = raw && typeof raw === "object" ? raw : {};
+      const folders = Array.isArray(base.folders) && base.folders.length
+        ? base.folders.filter(folder => folder && folder.id && folder.name).map(folder => ({ id:folder.id, name:String(folder.name), createdAt:Number(folder.createdAt)||Date.now() }))
+        : [{ id:uid(), name:"기본 폴더", createdAt:Date.now() }];
+      const folderIds = new Set(folders.map(folder => folder.id));
+      const fallbackFolderId = folders[0].id;
+      const words = (Array.isArray(base.words) ? base.words : [])
+        .map(word => normalizeWordRecord(word, fallbackFolderId))
+        .map(word => ({ ...word, folderId:folderIds.has(word.folderId) ? word.folderId : fallbackFolderId }))
+        .filter(word => word.word && word.meaning);
+      const settings = base.settings && typeof base.settings === "object" ? base.settings : {};
+      const legacyActive = folderIds.has(settings.activeFolderId) ? settings.activeFolderId : fallbackFolderId;
+      const examFolderIds = Array.isArray(settings.examFolderIds)
+        ? settings.examFolderIds.filter(id => folderIds.has(id))
+        : [legacyActive];
+      if(!examFolderIds.length) examFolderIds.push(legacyActive);
+      const ui = base.ui && typeof base.ui === "object" ? base.ui : {};
+      const recallFolderIds = Array.isArray(ui.recallFolderIds)
+        ? ui.recallFolderIds.filter(id => folderIds.has(id))
+        : examFolderIds.slice();
+      return {
+        version:7,
+        folders,
+        words,
+        attempts:Array.isArray(base.attempts) ? base.attempts : (Array.isArray(base.history) ? base.history.map(item => ({ ...item, at:item.at || item.reviewedAt || Date.now(), rating:Number.isInteger(item.rating) ? item.rating : (item.success ? 3 : 0) })) : []),
+        sessions:Array.isArray(base.sessions) ? base.sessions : (Array.isArray(base.tests) ? base.tests : []),
+        settings:{
+          activeFolderId:examFolderIds[0],
+          examFolderIds,
+          examWeekday:Number.isInteger(Number(settings.examWeekday)) ? Number(settings.examWeekday) : 6,
+          examTime:typeof settings.examTime === "string" ? settings.examTime : "10:00"
+        },
+        ui:{
+          learnFolderId:folderIds.has(ui.learnFolderId) ? ui.learnFolderId : examFolderIds[0],
+          wordFolderFilter:ui.wordFolderFilter || "all",
+          recallFolderIds:recallFolderIds.length ? recallFolderIds : examFolderIds.slice()
+        }
+      };
+    }
+
+    function loadState(){
+      try{
+        const current = localStorage.getItem(STORAGE_KEY);
+        if(current) return normalizeState(JSON.parse(current));
+        for(const key of LEGACY_KEYS){
+          const value = localStorage.getItem(key);
+          if(!value) continue;
+          const migrated = normalizeState(JSON.parse(value));
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(migrated));
+          return migrated;
+        }
+      }catch(error){ console.error("저장 데이터 불러오기 실패", error); }
+      return makeDefaultState();
+    }
+
+    let state = loadState();
+    let selectedIds = new Set();
+    let learnQueue = [];
+    let learnIndex = 0;
+    let activeSession = null;
+    let lastSessionOptions = null;
+    let editingId = null;
+    let questionShownAt = null;
+    let firstInputAt = null;
+    let clockTimer = null;
+    let toastTimer = null;
+    let focusBeforeModal = null;
+
+    function saveState(){
+      try{ localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }
+      catch(error){ console.error(error); showToast("브라우저 저장 공간이 부족하거나 저장이 차단되었습니다."); }
+    }
+
+    function showToast(message){
+      const toast = $("#toast");
+      toast.textContent = message;
+      toast.classList.add("show");
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => toast.classList.remove("show"), 2400);
+    }
+
+    function escapeHtml(value){
+      return String(value).replace(/[&<>"']/g, char => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"})[char]);
+    }
+
+    function normalizeText(value){
+      return String(value || "")
+        .normalize("NFC")
+        .toLowerCase()
+        .replace(/[\s.,·ㆍ，、/;:!?()[\]{}'"`~\-_=+]/g, "")
+        .replace(/(하다|되다|이다)$/g, "")
+        .trim();
+    }
+
+    function levenshtein(a,b){
+      const left = Array.from(a); const right = Array.from(b);
+      const matrix = Array.from({ length:left.length+1 }, () => Array(right.length+1).fill(0));
+      for(let i=0;i<=left.length;i++) matrix[i][0]=i;
+      for(let j=0;j<=right.length;j++) matrix[0][j]=j;
+      for(let i=1;i<=left.length;i++) for(let j=1;j<=right.length;j++){
+        const cost = left[i-1] === right[j-1] ? 0 : 1;
+        matrix[i][j] = Math.min(matrix[i-1][j]+1, matrix[i][j-1]+1, matrix[i-1][j-1]+cost);
+      }
+      return matrix[left.length][right.length];
+    }
+
+    function textMatches(answer, candidate){
+      const a = normalizeText(answer); const c = normalizeText(candidate);
+      if(!a || !c) return false;
+      if(a.includes(c) || c.includes(a)) return true;
+      return c.length >= 3 && levenshtein(a,c) <= 1;
+    }
+
+    function parseRubric(word){
+      const source = String(word.rubric || "").trim();
+      if(source){
+        return source.split(";").map(group => group.split("/").map(item => item.trim()).filter(Boolean)).filter(group => group.length);
+      }
+      const meaning = String(word.meaning || "").trim();
+      if(!meaning) return [];
+      if(meaning.includes(";")) return meaning.split(";").map(group => group.split(/[\/,，]/).map(item => item.trim()).filter(Boolean)).filter(group => group.length);
+      return [meaning.split(/[,，/]/).map(item => item.trim()).filter(Boolean)];
+    }
+
+    function evaluateAnswer(word, answer, hintUsed, latencyMs){
+      const groups = parseRubric(word);
+      const matched = groups.map(group => group.some(candidate => textMatches(answer,candidate)));
+      const matchedCount = matched.filter(Boolean).length;
+      let suggested = 0;
+      if(!String(answer || "").trim()) suggested = 0;
+      else if(hintUsed && matchedCount > 0) suggested = 1;
+      else if(groups.length && matchedCount === groups.length) suggested = latencyMs <= 7000 ? 3 : 2;
+      else if(matchedCount > 0) suggested = 2;
+      else suggested = 0;
+      const errorType = suggested === 3 ? "none" : suggested === 2 ? (matchedCount > 0 ? "partial" : "slow") : suggested === 1 ? "hint" : (String(answer || "").trim() ? "confusion" : "blank");
+      return { groups, matched, matchedCount, suggested, errorType };
+    }
+
+    function stageInfo(value){ return STAGES.find(stage => stage.value === value) || STAGES[0]; }
+    function getFolder(id){ return state.folders.find(folder => folder.id === id) || state.folders[0]; }
+    function getExamFolderIds(){
+      const valid=new Set(state.folders.map(folder=>folder.id));
+      let ids=Array.isArray(state.settings.examFolderIds)?state.settings.examFolderIds.filter(id=>valid.has(id)):[];
+      if(!ids.length){
+        const fallback=valid.has(state.settings.activeFolderId)?state.settings.activeFolderId:state.folders[0].id;
+        ids=[fallback]; state.settings.examFolderIds=ids.slice(); state.settings.activeFolderId=fallback;
+      }
+      return ids;
+    }
+    function getActiveFolder(){ return getFolder(getExamFolderIds()[0]); }
+    function activeWords(){ const ids=new Set(getExamFolderIds()); return state.words.filter(word => ids.has(word.folderId)); }
+    function selectedRecallFolderIds(){
+      const valid=new Set(state.folders.map(folder=>folder.id));
+      const ids=(Array.isArray(state.ui.recallFolderIds)?state.ui.recallFolderIds:[]).filter(id=>valid.has(id));
+      return ids.length?ids:getExamFolderIds().slice();
+    }
+    function dateKey(timestamp=Date.now()){ const d=new Date(timestamp); return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`; }
+    function isToday(timestamp){ return timestamp && dateKey(timestamp) === dateKey(); }
+    function startOfWeek(timestamp=Date.now()){
+      const date = new Date(timestamp); const day=date.getDay(); const diff = day===0 ? -6 : 1-day;
+      date.setHours(0,0,0,0); date.setDate(date.getDate()+diff); return date.getTime();
+    }
+    function shuffle(array){
+      const copy=array.slice();
+      for(let i=copy.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [copy[i],copy[j]]=[copy[j],copy[i]]; }
+      return copy;
+    }
+
+    function nextExamDate(){
+      const nowDate = new Date();
+      const [hour,minute] = String(state.settings.examTime || "10:00").split(":").map(Number);
+      const target = new Date(nowDate); target.setHours(hour||0,minute||0,0,0);
+      let diff = (Number(state.settings.examWeekday) - nowDate.getDay() + 7) % 7;
+      if(diff === 0 && target.getTime() <= nowDate.getTime()) diff = 7;
+      target.setDate(nowDate.getDate()+diff);
+      return target;
+    }
+
+    function getDayPlan(day=new Date().getDay()){
+      const plans = {
+        0:{ title:"다음 주 폴더 준비", desc:"시험 범위를 정하고 새 단어를 가져옵니다.", mode:"learn" },
+        1:{ title:"연결 생성", desc:"10단어씩 연상과 실제 뜻을 연결합니다.", mode:"learn" },
+        2:{ title:"단서 회상", desc:"먼저 답하고, 실패했을 때만 연상 힌트를 사용합니다.", mode:"practice" },
+        3:{ title:"혼동 교정", desc:"실패·혼동 단어를 집중적으로 주관식 회상합니다.", mode:"weak" },
+        4:{ title:"독립 회상", desc:"힌트 없이 전체 범위를 무작위로 회상합니다.", mode:"diagnostic" },
+        5:{ title:"실전 모의와 인증", desc:"첫 시험은 지연 피드백, 두 번째는 인증 기준으로 채점합니다.", mode:"friday" },
+        6:{ title:"취약 단어 최종 점검", desc:"금요일에 흔들린 단어만 짧게 확인합니다.", mode:"weak" }
+      };
+      return plans[day];
+    }
+
+    function getFridaySessions(){
+      const today = dateKey();
+      const expected=getExamFolderIds().slice().sort();
+      return state.sessions.filter(session => {
+        if(dateKey(session.completedAt || session.startedAt)!==today || !["mock","certification"].includes(session.mode)) return false;
+        const actual=(Array.isArray(session.folderIds)&&session.folderIds.length?session.folderIds:[session.folderId]).filter(Boolean).slice().sort();
+        return actual.length===expected.length && actual.every((id,index)=>id===expected[index]);
+      });
+    }
+
+    function recommendedSessionOptions(){
+      const folderIds = getExamFolderIds();
+      const plan = getDayPlan();
+      if(plan.mode === "friday"){
+        const sessions = getFridaySessions().sort((a,b)=>(a.completedAt||0)-(b.completedAt||0));
+        if(!sessions.length) return { mode:"mock", folderIds, count:"all", scope:"learned", shuffle:true };
+        const elapsed = Date.now() - (sessions[0].completedAt || sessions[0].startedAt);
+        if(elapsed >= 3*60*60*1000) return { mode:"certification", folderIds, count:"all", scope:"learned", shuffle:true };
+        return { mode:"weak", folderIds, count:"20", scope:"learned", shuffle:true };
+      }
+      if(plan.mode === "diagnostic") return { mode:"diagnostic", folderIds, count:"all", scope:"learned", shuffle:true };
+      if(plan.mode === "weak") return { mode:"weak", folderIds, count:"20", scope:"learned", shuffle:true };
+      return { mode:"practice", folderIds, count:"20", scope:"learned", shuffle:true };
+    }
+
+    function readinessForWords(words){
+      if(!words.length) return 0;
+      const total = words.reduce((sum,word)=>sum+stageInfo(word.stage).weight,0);
+      return Math.round(total / words.length);
+    }
+
+    function weakScore(word){
+      const recent = state.attempts.filter(item => item.wordId === word.id).slice(-8);
+      const bad = recent.reduce((sum,item)=>sum+(3-(Number(item.rating)||0)),0);
+      const overdue = word.dueAt && word.dueAt <= Date.now() ? 3 : 0;
+      return bad + word.lapseCount*2 + (3-Math.max(0,word.stage))*2 + overdue;
+    }
+
+    function updateFloatingNav(){
+      const nav=$(".bottom-nav"),active=$(".nav-btn.active",nav),indicator=$(".nav-indicator",nav);
+      if(!nav||!active||!indicator) return;
+      const navRect=nav.getBoundingClientRect(),buttonRect=active.getBoundingClientRect();
+      indicator.style.width=buttonRect.width+"px";
+      indicator.style.height=buttonRect.height+"px";
+      indicator.style.transform=`translate3d(${buttonRect.left-navRect.left}px,${buttonRect.top-navRect.top}px,0)`;
+      nav.classList.add("ready");
+    }
+    function goTo(pageName){
+      $$(".page").forEach(page => page.classList.toggle("active", page.id === "page-"+pageName));
+      $$(".nav-btn").forEach(button => button.classList.toggle("active", button.dataset.page === pageName));
+      if(pageName === "today") renderToday();
+      if(pageName === "learn"){ renderSelects(); prepareLearning(true); }
+      if(pageName === "recall"){ showRecallHome(); renderRecallHome(); }
+      if(pageName === "words"){ renderSelects(); renderFolders(); renderWordList(); }
+      if(pageName === "progress") renderProgress();
+      requestAnimationFrame(updateFloatingNav);
+      window.scrollTo({ top:0, behavior:"smooth" });
+    }
+
+    function getFocusable(container){
+      return $$("button:not([disabled]),input:not([disabled]),textarea:not([disabled]),select:not([disabled]),[tabindex]:not([tabindex='-1'])",container)
+        .filter(element => getComputedStyle(element).display !== "none" && getComputedStyle(element).visibility !== "hidden");
+    }
+    function openModal(id){
+      const modal=document.getElementById(id); if(!modal) return;
+      focusBeforeModal=document.activeElement; modal.classList.add("open");
+      requestAnimationFrame(()=>{ const first=getFocusable(modal)[0]; if(first) first.focus(); });
+    }
+    function closeModal(id){
+      const modal=document.getElementById(id); if(!modal) return;
+      modal.classList.remove("open"); const target=focusBeforeModal; focusBeforeModal=null;
+      if(target && typeof target.focus === "function") requestAnimationFrame(()=>target.focus());
+    }
+    function getOpenModal(){ return $(".modal-backdrop.open"); }
+    function trapFocus(event,modal){
+      if(event.key !== "Tab") return;
+      const items=getFocusable(modal); if(!items.length){event.preventDefault();return;}
+      const first=items[0],last=items[items.length-1];
+      if(event.shiftKey && document.activeElement===first){event.preventDefault();last.focus();}
+      else if(!event.shiftKey && document.activeElement===last){event.preventDefault();first.focus();}
+    }
+
+    function folderNameFromFilename(filename){
+      const base=String(filename||"").replace(/\.[^.]+$/,"").trim();
+      const canonical=base.match(/(?:학습|study)?[\s_-]*day[\s_-]*(\d{1,3}).*?(?:원본|original|book)?[\s_-]*day[\s_-]*(\d{1,3})[\s_-]*(?:-|–|~|to)[\s_-]*(\d{1,3})/i);
+      if(canonical) return `학습 Day ${String(Number(canonical[1])).padStart(2,"0")} · 원본 Day ${String(Number(canonical[2])).padStart(2,"0")}–${String(Number(canonical[3])).padStart(2,"0")}`;
+      const single=base.match(/day[\s_-]*(\d{1,3})/i);
+      if(single){ const original=Number(single[1]); const start=original%2?original:original-1; return `학습 Day ${String(Math.ceil(original/2)).padStart(2,"0")} · 원본 Day ${String(start).padStart(2,"0")}–${String(start+1).padStart(2,"0")}`; }
+      return base || "기본 폴더";
+    }
+
+    function ensureFolder(name){
+      const cleaned=String(name||"").trim()||"기본 폴더";
+      const existing=state.folders.find(folder=>folder.name.toLowerCase()===cleaned.toLowerCase());
+      if(existing) return existing.id;
+      const folder={ id:uid(), name:cleaned, createdAt:Date.now() }; state.folders.push(folder); return folder.id;
+    }
+
+    function parseImport(text,fallbackName){
+      const rows=[]; const invalid=[]; let folderName=fallbackName||"기본 폴더";
+      String(text||"").split(/\r?\n/).forEach((raw,index)=>{
+        const line=raw.trim(); if(!line) return;
+        const heading=line.match(/^\[(.+)\]$/);
+        if(heading){ folderName=folderNameFromFilename(heading[1]); return; }
+        let parts=line.includes("|")?line.split("|"):(line.includes("\t")?line.split("\t"):null);
+        if(!parts){invalid.push(index+1);return;}
+        const word=(parts.shift()||"").trim(); const meaning=(parts.shift()||"").trim(); const example=parts.join("|").trim();
+        if(!word||!meaning){invalid.push(index+1);return;}
+        rows.push({ folderName, word, meaning, example });
+      });
+      return { rows, invalid };
+    }
+
+    function addRows(rows){
+      const existing=new Set(state.words.map(word=>word.word.toLowerCase())); let added=0,duplicated=0;
+      rows.forEach(row=>{
+        const key=String(row.word).trim().toLowerCase(); if(!key||existing.has(key)){duplicated++;return;}
+        const folderId=row.folderId||ensureFolder(row.folderName);
+        state.words.push(normalizeWordRecord({ folderId, word:row.word, meaning:row.meaning, rubric:row.rubric||"", example:row.example||"", stage:-1 },folderId));
+        existing.add(key); added++;
+      });
+      if(!state.settings.activeFolderId && state.folders[0]) state.settings.activeFolderId=state.folders[0].id;
+      saveState(); refreshAll(); return { added,duplicated };
+    }
+
+    function addSingleWord(){
+      const word=$("#singleWord").value.trim(),meaning=$("#singleMeaning").value.trim();
+      if(!word||!meaning){showToast("영단어와 뜻을 모두 입력하세요.");return;}
+      const result=addRows([{ folderId:$("#singleFolder").value, word, meaning, rubric:$("#singleRubric").value.trim(), example:$("#singleExample").value.trim() }]);
+      if(!result.added){showToast("같은 영단어가 이미 있습니다.");return;}
+      ["singleWord","singleMeaning","singleRubric","singleExample"].forEach(id=>document.getElementById(id).value=""); closeModal("addModal"); showToast("단어를 추가했습니다.");
+    }
+
+    function addPastedWords(){
+      const parsed=parseImport($("#bulkInput").value,getFolder($("#pasteFolder").value).name);
+      if(!parsed.rows.length){showToast("추가할 단어를 찾지 못했습니다.");return;}
+      const result=addRows(parsed.rows); $("#bulkInput").value=""; closeModal("addModal");
+      showToast(`${result.added}개 추가, 중복 ${result.duplicated}개, 형식 오류 ${parsed.invalid.length}줄`);
+    }
+
+    async function addTxtFiles(){
+      const files=Array.from($("#txtFiles").files||[]); if(!files.length){showToast("TXT 파일을 선택하세요.");return;}
+      let rows=[],invalid=0;
+      for(const file of files){ const parsed=parseImport(await file.text(),folderNameFromFilename(file.name)); rows=rows.concat(parsed.rows); invalid+=parsed.invalid.length; }
+      const result=addRows(rows); $("#txtFiles").value=""; closeModal("addModal");
+      showToast(`${files.length}개 파일에서 ${result.added}개 추가, 중복 ${result.duplicated}개, 오류 ${invalid}줄`);
+    }
+
+    function renderFolderChoices(){
+      const render=(targetId,selectedIds,kind)=>{
+        const target=document.getElementById(targetId); if(!target) return;
+        const selected=new Set(selectedIds);
+        target.innerHTML=state.folders.map(folder=>{
+          const count=state.words.filter(word=>word.folderId===folder.id).length;
+          return `<label class="folder-choice"><input type="checkbox" data-${kind}-folder="${folder.id}" ${selected.has(folder.id)?"checked":""}><span class="folder-choice-name">${escapeHtml(folder.name)}</span><span class="folder-choice-meta">${count}단어</span></label>`;
+        }).join("");
+      };
+      render("recallFolderChecklist",selectedRecallFolderIds(),"recall");
+      render("examFolderSettingsList",getExamFolderIds(),"exam");
+      updateScopeSummaries();
+    }
+    function updateScopeSummaries(){
+      const recallIds=selectedRecallFolderIds();
+      const recallWords=state.words.filter(word=>recallIds.includes(word.folderId)).length;
+      const examIds=getExamFolderIds();
+      const examWords=state.words.filter(word=>examIds.includes(word.folderId)).length;
+      if($("#recallScopeSummary")) $("#recallScopeSummary").textContent=`${recallIds.length}개 Day · ${recallWords}단어`;
+      if($("#recallScopeTitle")) $("#recallScopeTitle").textContent=`선택된 Day ${recallIds.length}개`;
+      if($("#examScopeSummary")) $("#examScopeSummary").textContent=`${examIds.length}개 Day · ${examWords}단어`;
+    }
+    function renderSelects(){
+      const options=state.folders.map(folder=>`<option value="${folder.id}">${escapeHtml(folder.name)}</option>`).join("");
+      ["learnFolderSelect","singleFolder","pasteFolder","fileFallbackFolder","editFolder"].forEach(id=>{
+        const select=document.getElementById(id); if(!select) return; const previous=select.value; select.innerHTML=options;
+        if(state.folders.some(folder=>folder.id===previous)) select.value=previous;
+      });
+      $("#learnFolderSelect").value=state.folders.some(folder=>folder.id===state.ui.learnFolderId)?state.ui.learnFolderId:getExamFolderIds()[0];
+      const filter=$("#wordFolderFilter"); filter.innerHTML=`<option value="all">모든 폴더</option>`+options;
+      filter.value=state.ui.wordFolderFilter==="all"||state.folders.some(folder=>folder.id===state.ui.wordFolderFilter)?state.ui.wordFolderFilter:"all";
+      renderFolderChoices();
+    }
+
+    function renderFolders(){
+      const examIds=new Set(getExamFolderIds());
+      const make=(targetId,compact=false)=>{
+        const target=document.getElementById(targetId); if(!target) return;
+        target.innerHTML=state.folders.map(folder=>{
+          const words=state.words.filter(word=>word.folderId===folder.id); const readiness=readinessForWords(words);
+          const certified=words.filter(word=>word.stage===4).length; const active=examIds.has(folder.id);
+          return `<article class="folder-card"><div class="folder-card-top"><div><h3>${escapeHtml(folder.name)}</h3><div class="folder-meta">${words.length}개 · 인증 ${certified}개 · 준비도 ${readiness}%</div></div>${active?'<span class="active-week"><span class="material-symbols-rounded" aria-hidden="true">check_circle</span>시험 범위</span>':''}</div><div class="folder-progress"><span style="width:${readiness}%"></span></div>${compact?'':`<p>${active?'토요일 통합 시험 범위에 포함된 학습 Day입니다.':'필요한 Day를 여러 개 시험 범위에 함께 넣을 수 있습니다.'}</p>`}<div class="folder-actions"><button class="button ${active?'success':'secondary'} small" data-activate-folder="${folder.id}">${active?'범위 제외':'범위 추가'}</button><button class="button ghost small" data-learn-folder="${folder.id}">학습</button><button class="button primary small" data-recall-folder="${folder.id}">이 Day 시험</button></div></article>`;
+        }).join("");
+      };
+      make("todayFolderGrid"); make("wordFolderGrid",true);
+    }
+
+    function renderToday(){
+      const words=activeWords(); const readiness=readinessForWords(words); const exam=nextExamDate(); const diff=exam-Date.now();
+      const days=Math.floor(diff/86400000),hours=Math.floor((diff%86400000)/3600000);
+      $("#examCountdown").textContent=days>0?`${days}일 ${hours}시간`:`${Math.max(0,hours)}시간`;
+      $("#readinessPercent").textContent=readiness+"%"; $("#readinessFill").style.width=readiness+"%";
+      $("#homeTotal").textContent=words.length; $("#homeFast").textContent=words.filter(word=>word.stage>=3).length; $("#homeCertified").textContent=words.filter(word=>word.stage===4).length;
+      const plan=getDayPlan(); $("#todayHeadline").innerHTML=escapeHtml(plan.title)+"<br>토요일을 향해."; $("#todayDescription").textContent=plan.desc;
+      const dayNames=["일","월","화","수","목","금","토"];
+      const planOrder=[1,2,3,4,5,6,0];
+      $("#weeklyPlanGrid").innerHTML=planOrder.map((day,index)=>{ const info=getDayPlan(day); const current=day===new Date().getDay(); const done=planOrder.indexOf(new Date().getDay())>index; return `<article class="plan-card ${current?'current':''} ${done?'done':''}"><div class="plan-index">${dayNames[day]}</div><div><h3>${escapeHtml(info.title)}</h3><p>${escapeHtml(info.desc)}</p></div></article>`; }).join("");
+      renderStageCards("homeStageGrid",words); renderFolders();
+    }
+
+    function renderStageCards(targetId,words){
+      const target=document.getElementById(targetId); if(!target) return;
+      target.innerHTML=STAGES.filter(stage=>stage.value>=0).map(stage=>{ const count=words.filter(word=>word.stage===stage.value).length; return `<article class="stage-card" style="--stage-color:${stage.color}"><span class="stage-badge">${stage.name}</span><strong>${count}</strong><p>${stage.value===0?'연상과 뜻 연결 완료':stage.value===1?'힌트가 있으면 회상':stage.value===2?'힌트 없이 정확히 회상':stage.value===3?'여러 날, 7초 안에 회상':'실전 시험에서 최종 통과'}</p></article>`; }).join("");
+    }
+
+    function prepareLearning(reset=false){
+      const folderId=$("#learnFolderSelect").value||state.ui.learnFolderId||state.settings.activeFolderId;
+      state.ui.learnFolderId=folderId; saveState();
+      if(reset || !learnQueue.length){
+        const remaining=state.words.filter(word=>word.folderId===folderId && word.stage<0);
+        const count=$("#learnBlockSelect").value==="all"?remaining.length:Number($("#learnBlockSelect").value||10);
+        learnQueue=remaining.slice(0,count).map(word=>word.id); learnIndex=0;
+      }
+      if(learnIndex>=learnQueue.length || !learnQueue.length){ $("#learnEmpty").classList.remove("hidden"); $("#learnPanel").classList.add("hidden"); return; }
+      const word=state.words.find(item=>item.id===learnQueue[learnIndex]); if(!word){learnIndex++;prepareLearning();return;}
+      $("#learnEmpty").classList.add("hidden"); $("#learnPanel").classList.remove("hidden");
+      $("#learnWord").textContent=word.word; $("#bridgeWord").textContent=word.word; $("#bridgeMeaning").textContent=word.meaning;
+      $("#associationInput").value=""; $("#bridgeInput").value=""; $("#associationStage").classList.remove("hidden"); $("#bridgeStage").classList.add("hidden");
+      $("#learnProgressText").textContent=`${learnIndex+1} / ${learnQueue.length}`; $("#learnProgressBar").style.width=((learnIndex+1)/learnQueue.length*100)+"%";
+      requestAnimationFrame(()=>$("#associationInput").focus());
+    }
+
+    function revealLearnMeaning(){
+      const association=$("#associationInput").value.trim(); if(!association){showToast("먼저 떠오른 연상을 적으세요.");return;}
+      $("#bridgeAssociation").textContent=association; $("#associationStage").classList.add("hidden"); $("#bridgeStage").classList.remove("hidden"); requestAnimationFrame(()=>$("#bridgeInput").focus());
+    }
+
+    function saveLearning(){
+      const bridge=$("#bridgeInput").value.trim(); if(!bridge){showToast("연상과 뜻을 잇는 문장을 적으세요.");return;}
+      const word=state.words.find(item=>item.id===learnQueue[learnIndex]); if(!word) return;
+      word.association=$("#associationInput").value.trim(); word.bridge=bridge; word.stage=0; word.learnedAt=Date.now(); word.dueAt=Date.now()+5*60000;
+      saveState(); learnIndex++; refreshAll(); prepareLearning(); showToast("연결을 저장했습니다. 5분 뒤 첫 주관식 회상입니다.");
+    }
+
+    function renderRecallHome(){
+      renderSelects();
+      const plan=getDayPlan(); let title=plan.title,desc=plan.desc;
+      if(plan.mode==="friday"){
+        const sessions=getFridaySessions().sort((a,b)=>(a.completedAt||0)-(b.completedAt||0));
+        if(!sessions.length){title="금요일 1차 실전 모의";desc="정답을 마지막까지 공개하지 않고 전체 범위를 시험합니다.";}
+        else { const remain=3*60*60*1000-(Date.now()-(sessions[0].completedAt||sessions[0].startedAt)); if(remain>0){title="2차 인증 전 취약 교정";desc=`인증 시험 권장 간격까지 약 ${Math.ceil(remain/60000)}분 남았습니다.`;} else {title="금요일 2차 인증시험";desc="전체 범위를 다시 풀어 토요일 인증 단계를 확정합니다.";} }
+      }
+      $("#recommendedTitle").textContent=title; $("#recommendedDescription").textContent=desc;
+    }
+
+    function showRecallHome(){
+      stopClock(); activeSession=null;
+      $("#recallHome").classList.remove("hidden"); $("#recallPanel").classList.add("hidden"); $("#delayedReviewPanel").classList.add("hidden"); $("#recallComplete").classList.add("hidden"); renderRecallHome();
+    }
+
+    function selectSessionWords(options){
+      const folderIds=Array.isArray(options.folderIds)&&options.folderIds.length?options.folderIds:(options.folderId?[options.folderId]:selectedRecallFolderIds());
+      const folderSet=new Set(folderIds);
+      let words=state.words.filter(word=>folderSet.has(word.folderId));
+      if(options.scope==="learned") words=words.filter(word=>word.stage>=0);
+      if(options.mode==="weak") words=words.sort((a,b)=>weakScore(b)-weakScore(a));
+      else if(options.mode==="practice") words=words.sort((a,b)=>(a.dueAt||0)-(b.dueAt||0));
+      else if(options.shuffle) words=shuffle(words);
+      const count=options.count==="all"?words.length:Math.min(Number(options.count)||20,words.length);
+      return words.slice(0,count);
+    }
+
+    function startRecall(options){
+      const folderIds=Array.isArray(options.folderIds)&&options.folderIds.length?options.folderIds.slice():(options.folderId?[options.folderId]:selectedRecallFolderIds());
+      options={...options,folderIds};
+      const words=selectSessionWords(options); if(!words.length){showToast("선택한 Day에 시험할 단어가 없습니다. 먼저 연결 생성을 완료하세요.");return;}
+      lastSessionOptions={...options,folderIds:folderIds.slice()};
+      activeSession={ id:uid(), mode:options.mode, folderIds:folderIds.slice(), folderId:folderIds[0], delayed:["mock","certification"].includes(options.mode), startedAt:Date.now(), wordIds:words.map(word=>word.id), index:0, reviewIndex:0, items:[], ratings:{0:0,1:0,2:0,3:0} };
+      $("#recallHome").classList.add("hidden"); $("#recallComplete").classList.add("hidden"); $("#delayedReviewPanel").classList.add("hidden"); $("#recallPanel").classList.remove("hidden");
+      $("#delayedNotice").classList.toggle("hidden",!activeSession.delayed); renderQuestion();
+    }
+
+    function startRecommendedAction(){
+      const plan=getDayPlan();
+      if(plan.mode==="learn"){ state.ui.learnFolderId=getExamFolderIds()[0]; saveState(); goTo("learn"); return; }
+      goTo("recall"); requestAnimationFrame(()=>startRecall(recommendedSessionOptions()));
+    }
+
+    function renderQuestion(){
+      if(!activeSession) return;
+      if(activeSession.index>=activeSession.wordIds.length){ if(activeSession.delayed) startDelayedReview(); else finishSession(); return; }
+      const word=state.words.find(item=>item.id===activeSession.wordIds[activeSession.index]); if(!word){activeSession.index++;renderQuestion();return;}
+      $("#recallModeChip").textContent=(activeSession.mode==="mock"?"실전 모의시험":activeSession.mode==="certification"?"토요일 인증시험":"주관식 회상")+` · ${activeSession.folderIds.length}개 Day`;
+      $("#recallPrompt").textContent=word.word; $("#recallAnswerInput").value=""; $("#hintBox").classList.add("hidden"); $("#hintBox").textContent=""; $("#showHint").disabled=activeSession.delayed;
+      $("#questionStage").classList.remove("hidden"); $("#feedbackStage").classList.add("hidden");
+      const current=activeSession.index+1,total=activeSession.wordIds.length; $("#recallProgressText").textContent=`${current} / ${total}`; $("#recallProgressBar").style.width=(current/total*100)+"%";
+      questionShownAt=performance.now(); firstInputAt=null; startClock(); requestAnimationFrame(()=>$("#recallAnswerInput").focus());
+    }
+
+    function startClock(){
+      stopClock(); $("#recallClock").textContent="0.0초";
+      clockTimer=setInterval(()=>{ if(!questionShownAt) return; const elapsed=(firstInputAt||performance.now())-questionShownAt; $("#recallClock").textContent=(elapsed/1000).toFixed(1)+"초"; if(firstInputAt) stopClock(); },100);
+    }
+    function stopClock(){ if(clockTimer){clearInterval(clockTimer);clockTimer=null;} }
+
+    function showHint(){
+      if(!activeSession || activeSession.delayed) return;
+      const word=state.words.find(item=>item.id===activeSession.wordIds[activeSession.index]); if(!word) return;
+      const text=word.bridge||word.association||"저장된 연상 힌트가 없습니다."; $("#hintBox").textContent=text; $("#hintBox").classList.remove("hidden");
+    }
+
+    function submitAnswer(){
+      if(!activeSession) return;
+      const word=state.words.find(item=>item.id===activeSession.wordIds[activeSession.index]); if(!word) return;
+      const answer=$("#recallAnswerInput").value.trim(); const latencyMs=Math.max(0,(firstInputAt||performance.now())-questionShownAt); const totalMs=performance.now()-questionShownAt; const hintUsed=!$("#hintBox").classList.contains("hidden");
+      const evaluation=evaluateAnswer(word,answer,hintUsed,latencyMs);
+      const item={ wordId:word.id, answer, latencyMs, totalMs, hintUsed, evaluation, rating:null, errorType:evaluation.errorType };
+      activeSession.items.push(item); stopClock();
+      if(activeSession.delayed){ activeSession.index++; renderQuestion(); return; }
+      renderFeedback(item,word);
+    }
+
+    function rubricHtml(evaluation){
+      if(!evaluation.groups.length) return '<div class="help">정답 규칙이 없어 사용자가 직접 판정해야 합니다.</div>';
+      return evaluation.groups.map((group,index)=>`<div class="rubric-group ${evaluation.matched[index]?'matched':'missed'}"><strong>${evaluation.matched[index]?'인식됨':'누락 가능'}</strong><div class="help">${escapeHtml(group.join(" / "))}</div></div>`).join("");
+    }
+
+    function markSuggested(target,evaluation){
+      $$(".rating",target).forEach(button=>button.classList.toggle("suggested",Number(button.dataset.rating ?? button.dataset.reviewRating)===evaluation.suggested));
+    }
+
+    function renderFeedback(item,word){
+      $("#questionStage").classList.add("hidden"); $("#feedbackStage").classList.remove("hidden");
+      $("#feedbackUserAnswer").textContent=item.answer||"(빈 답)"; $("#feedbackCorrectAnswer").textContent=word.meaning;
+      $("#feedbackBridge").textContent=word.bridge?`연결 문장: ${word.bridge}`:"연결 문장이 없습니다."; $("#rubricResult").innerHTML=rubricHtml(item.evaluation); $("#errorTypeSelect").value=item.errorType;
+      markSuggested($("#feedbackStage"),item.evaluation); requestAnimationFrame(()=>$("#feedbackStage").focus());
+    }
+
+    function startDelayedReview(){
+      $("#recallPanel").classList.add("hidden"); $("#delayedReviewPanel").classList.remove("hidden"); activeSession.reviewIndex=0; renderDelayedReview();
+    }
+
+    function renderDelayedReview(){
+      const item=activeSession.items[activeSession.reviewIndex]; const word=state.words.find(record=>record.id===item.wordId);
+      $("#delayedReviewProgress").textContent=`${activeSession.reviewIndex+1} / ${activeSession.items.length}`; $("#reviewWord").textContent=word.word; $("#reviewUserAnswer").textContent=item.answer||"(빈 답)"; $("#reviewCorrectAnswer").textContent=word.meaning; $("#reviewBridge").textContent=word.bridge?`연결 문장: ${word.bridge}`:""; $("#reviewRubric").innerHTML=rubricHtml(item.evaluation); $("#reviewErrorType").value=item.errorType;
+      markSuggested($("#delayedReviewPanel"),item.evaluation);
+    }
+
+    function intervalForRating(rating){
+      const untilExam=Math.max(3*60000,nextExamDate().getTime()-Date.now());
+      if(rating===0) return 3*60000;
+      if(rating===1) return 20*60000;
+      if(rating===2) return Math.min(4*3600000,Math.max(30*60000,untilExam/4));
+      return Math.min(24*3600000,Math.max(4*3600000,untilExam/2));
+    }
+
+    function applyAttempt(item,rating,errorType,session){
+      const word=state.words.find(record=>record.id===item.wordId); if(!word) return;
+      word.attemptCount++; word.lastRating=rating; word.lastAttemptAt=Date.now(); word.dueAt=Date.now()+intervalForRating(rating);
+      const today=dateKey();
+      if(rating===3 && !item.hintUsed){
+        word.fullRecallCount++; if(!word.recallDates.includes(today)) word.recallDates.push(today); if(item.latencyMs<=7000) word.fastRecallCount++;
+        if(word.stage<1) word.stage=1;
+        if(word.stage<2) word.stage=2;
+        if(word.fullRecallCount>=3 && word.recallDates.length>=2 && word.fastRecallCount>=1) word.stage=Math.max(word.stage,3);
+        if(session.mode==="certification" && word.stage>=3 && item.latencyMs<=7000){ word.stage=4; word.certifiedAt=Date.now(); }
+      }else if(rating===2){
+        if(word.stage<1 && word.stage>=0) word.stage=1;
+      }else if(rating===1){
+        word.stage=Math.min(Math.max(word.stage,0),1);
+      }else{
+        word.lapseCount++; word.certifiedAt=null; word.stage=Math.max(0,word.stage-1);
+      }
+      state.attempts.push({ id:uid(), sessionId:session.id, wordId:word.id, folderId:word.folderId, mode:session.mode, answer:item.answer, rating, errorType, hintUsed:item.hintUsed, latencyMs:Math.round(item.latencyMs), totalMs:Math.round(item.totalMs), autoSuggested:item.evaluation.suggested, at:Date.now() });
+      session.ratings[rating]++;
+    }
+
+    function rateCurrent(rating){
+      if(!activeSession || activeSession.delayed) return;
+      const item=activeSession.items[activeSession.items.length-1]; item.rating=rating; item.errorType=$("#errorTypeSelect").value; applyAttempt(item,rating,item.errorType,activeSession); activeSession.index++; saveState(); renderQuestion();
+    }
+
+    function rateDelayed(rating){
+      if(!activeSession || !activeSession.delayed) return;
+      const item=activeSession.items[activeSession.reviewIndex]; item.rating=rating; item.errorType=$("#reviewErrorType").value; applyAttempt(item,rating,item.errorType,activeSession); activeSession.reviewIndex++; saveState();
+      if(activeSession.reviewIndex>=activeSession.items.length) finishSession(); else renderDelayedReview();
+    }
+
+    function finishSession(){
+      if(!activeSession) return;
+      const completed={ id:activeSession.id, mode:activeSession.mode, folderId:activeSession.folderId, folderIds:activeSession.folderIds?activeSession.folderIds.slice():[activeSession.folderId], startedAt:activeSession.startedAt, completedAt:Date.now(), total:activeSession.wordIds.length, ratings:{...activeSession.ratings}, delayed:activeSession.delayed };
+      state.sessions.push(completed); saveState();
+      $("#recallPanel").classList.add("hidden"); $("#delayedReviewPanel").classList.add("hidden"); $("#recallComplete").classList.remove("hidden");
+      $("#resultFull").textContent=completed.ratings[3]; $("#resultPartial").textContent=completed.ratings[2]; $("#resultHint").textContent=completed.ratings[1]; $("#resultFail").textContent=completed.ratings[0];
+      $("#completeDescription").textContent=`${completed.total}문항을 마쳤습니다. 완전회상은 서로 다른 날과 빠른 회상 기록이 쌓여야 단계가 올라갑니다.`;
+      activeSession=null; refreshAll();
+    }
+
+    function repeatLast(){ if(!lastSessionOptions){showRecallHome();return;} startRecall({...lastSessionOptions}); }
+
+    function renderWordList(){
+      const query=$("#wordSearch").value.trim().toLowerCase(); const folder=$("#wordFolderFilter").value; const stage=$("#wordStageFilter").value;
+      const words=state.words.filter(word=>(folder==="all"||word.folderId===folder)&&(stage==="all"||word.stage===Number(stage))&&(!query||word.word.toLowerCase().includes(query)||word.meaning.toLowerCase().includes(query)||word.association.toLowerCase().includes(query)));
+      const list=$("#wordList");
+      if(!words.length){list.innerHTML='<div class="card empty"><div><h3>표시할 단어가 없습니다.</h3><p>검색 조건을 바꾸거나 단어를 추가하세요.</p></div></div>';updateSelection();return;}
+      list.innerHTML=words.map(word=>{ const stageData=stageInfo(word.stage); return `<article class="word-row"><input class="word-check" type="checkbox" data-select-id="${word.id}" ${selectedIds.has(word.id)?'checked':''}><div><div class="word-term">${escapeHtml(word.word)}</div><div class="word-meta"><span class="folder-pill">${escapeHtml(getFolder(word.folderId).name)}</span>${word.certifiedAt?'<span class="status-pill">인증</span>':''}</div></div><div class="word-meaning">${escapeHtml(word.meaning)}</div><div class="word-stage" style="color:${stageData.color}">${stageData.name}<br><small>${word.fullRecallCount}회 · ${word.recallDates.length}일</small></div><div class="row-actions"><button class="mini-btn" data-edit-id="${word.id}" aria-label="수정"><span class="material-symbols-rounded" aria-hidden="true">edit</span></button><button class="mini-btn delete" data-delete-id="${word.id}" aria-label="삭제"><span class="material-symbols-rounded" aria-hidden="true">delete</span></button></div></article>`; }).join("");
+      updateSelection();
+    }
+
+    function updateSelection(){ Array.from(selectedIds).forEach(id=>{if(!state.words.some(word=>word.id===id)) selectedIds.delete(id);}); $("#selectionCount").textContent=selectedIds.size+"개 선택"; $("#deleteSelected").disabled=!selectedIds.size; }
+    function deleteWord(id){ const word=state.words.find(item=>item.id===id); if(!word||!confirm(`"${word.word}" 단어와 기록을 삭제할까요?`)) return; state.words=state.words.filter(item=>item.id!==id); state.attempts=state.attempts.filter(item=>item.wordId!==id); selectedIds.delete(id); saveState(); refreshAll(); }
+    function deleteSelected(){ if(!selectedIds.size||!confirm(`선택한 ${selectedIds.size}개 단어와 기록을 삭제할까요?`)) return; state.words=state.words.filter(word=>!selectedIds.has(word.id)); state.attempts=state.attempts.filter(item=>!selectedIds.has(item.wordId)); selectedIds.clear(); saveState(); refreshAll(); }
+
+    function openEdit(id){ const word=state.words.find(item=>item.id===id); if(!word) return; editingId=id; renderSelects(); $("#editFolder").value=word.folderId; $("#editWord").value=word.word; $("#editMeaning").value=word.meaning; $("#editRubric").value=word.rubric; $("#editAssociation").value=word.association; $("#editBridge").value=word.bridge; $("#editConfusion").value=word.confusionNote; openModal("editModal"); }
+    function saveEdit(){ const word=state.words.find(item=>item.id===editingId); if(!word) return; const next=$("#editWord").value.trim(),meaning=$("#editMeaning").value.trim(); if(!next||!meaning){showToast("영단어와 뜻을 입력하세요.");return;} if(state.words.some(item=>item.id!==editingId&&item.word.toLowerCase()===next.toLowerCase())){showToast("같은 영단어가 이미 있습니다.");return;} word.folderId=$("#editFolder").value; word.word=next; word.meaning=meaning; word.rubric=$("#editRubric").value.trim(); word.association=$("#editAssociation").value.trim(); word.bridge=$("#editBridge").value.trim(); word.confusionNote=$("#editConfusion").value.trim(); saveState(); closeModal("editModal"); refreshAll(); }
+
+    function createFolder(){ const name=$("#newFolderName").value.trim(); if(!name){showToast("폴더 이름을 입력하세요.");return;} const before=state.folders.length; const id=ensureFolder(name); if(before===state.folders.length){showToast("같은 이름의 폴더가 있습니다.");return;} $("#newFolderName").value=""; state.settings.examFolderIds=[...getExamFolderIds(),id]; state.settings.activeFolderId=state.settings.examFolderIds[0]; state.ui.recallFolderIds=state.settings.examFolderIds.slice(); saveState(); refreshAll(); renderFolderManager(); }
+    function renderFolderManager(){ const examIds=new Set(getExamFolderIds()); $("#folderManagerList").innerHTML=state.folders.map(folder=>`<div class="folder-manager-row"><div><strong>${escapeHtml(folder.name)}</strong><small>${state.words.filter(word=>word.folderId===folder.id).length}개 단어${examIds.has(folder.id)?' · 토요일 범위':''}</small></div><div class="row-actions"><button class="mini-btn" data-rename-folder="${folder.id}" aria-label="이름 변경"><span class="material-symbols-rounded" aria-hidden="true">edit</span></button><button class="mini-btn delete" data-delete-folder="${folder.id}" aria-label="폴더 삭제"><span class="material-symbols-rounded" aria-hidden="true">delete</span></button></div></div>`).join(""); }
+    function renameFolder(id){ const folder=getFolder(id); const name=prompt("새 폴더 이름",folder.name); if(name===null||!name.trim()) return; if(state.folders.some(item=>item.id!==id&&item.name.toLowerCase()===name.trim().toLowerCase())){showToast("같은 이름이 있습니다.");return;} folder.name=name.trim(); saveState(); refreshAll(); renderFolderManager(); }
+    function deleteFolder(id){ if(state.folders.length<=1){showToast("폴더는 하나 이상 필요합니다.");return;} const folder=getFolder(id),target=state.folders.find(item=>item.id!==id); if(!confirm(`"${folder.name}" 폴더를 삭제하고 단어를 "${target.name}"로 옮길까요?`)) return; state.words.forEach(word=>{if(word.folderId===id)word.folderId=target.id;}); state.folders=state.folders.filter(item=>item.id!==id); state.settings.examFolderIds=getExamFolderIds().filter(folderId=>folderId!==id); if(!state.settings.examFolderIds.length)state.settings.examFolderIds=[target.id]; state.settings.activeFolderId=state.settings.examFolderIds[0]; state.ui.recallFolderIds=selectedRecallFolderIds().filter(folderId=>folderId!==id); if(!state.ui.recallFolderIds.length)state.ui.recallFolderIds=state.settings.examFolderIds.slice(); if(state.ui.learnFolderId===id)state.ui.learnFolderId=target.id; saveState(); refreshAll(); renderFolderManager(); }
+
+    function activateFolder(id){
+      const ids=getExamFolderIds().slice(); const index=ids.indexOf(id);
+      if(index>=0){
+        if(ids.length===1){showToast("시험 범위에는 최소 한 개의 Day가 필요합니다.");return;}
+        ids.splice(index,1); showToast("토요일 시험 범위에서 제외했습니다.");
+      }else{
+        ids.push(id); showToast("토요일 시험 범위에 추가했습니다.");
+      }
+      state.settings.examFolderIds=ids; state.settings.activeFolderId=ids[0];
+      if(!ids.includes(state.ui.learnFolderId)) state.ui.learnFolderId=ids[0];
+      state.ui.recallFolderIds=ids.slice(); saveState(); refreshAll();
+    }
+
+    function renderProgress(){
+      const attemptsToday=state.attempts.filter(item=>isToday(item.at)); const fullToday=attemptsToday.filter(item=>item.rating===3); const latencies=attemptsToday.filter(item=>Number(item.latencyMs)>=0).map(item=>item.latencyMs); const weekStart=startOfWeek();
+      $("#statTodayAttempts").textContent=attemptsToday.length; $("#statTodayFull").textContent=fullToday.length; $("#statLatency").textContent=latencies.length?(latencies.reduce((a,b)=>a+b,0)/latencies.length/1000).toFixed(1)+"초":"0초"; $("#statWeekSessions").textContent=state.sessions.filter(item=>(item.completedAt||item.startedAt)>=weekStart).length;
+      const words=activeWords(); const total=Math.max(1,words.length);
+      $("#stageDistribution").innerHTML=STAGES.map(stage=>{const count=words.filter(word=>word.stage===stage.value).length;return `<div class="distribution-row" style="--bar-color:${stage.color}"><span>${stage.name}</span><div class="distribution-track"><i style="width:${count/total*100}%"></i></div><b>${count}</b></div>`;}).join("");
+      const weak=words.slice().sort((a,b)=>weakScore(b)-weakScore(a)).slice(0,12); $("#weakList").innerHTML=weak.length?weak.map(word=>`<div class="weak-row"><strong>${escapeHtml(word.word)}</strong><span>${escapeHtml(word.meaning)}<br>${word.confusionNote?escapeHtml(word.confusionNote):`최근 실패 ${word.lapseCount}회 · 단계 ${stageInfo(word.stage).name}`}</span><button class="button ghost small" data-weak-word="${word.id}">수정</button></div>`).join(""):'<div class="empty"><div><h3>아직 기록이 없습니다.</h3><p>주관식 세션을 진행하면 취약 단어가 나타납니다.</p></div></div>';
+    }
+
+    function exportFolderTxt(){ const folderId=$("#wordFolderFilter").value; const folders=folderId==="all"?state.folders:state.folders.filter(folder=>folder.id===folderId); const text=folders.map(folder=>{const lines=state.words.filter(word=>word.folderId===folder.id).map(word=>`${word.word} | ${word.meaning}${word.example?' | '+word.example:''}`);return lines.length?`[${folder.name}]\n${lines.join("\n")}`:"";}).filter(Boolean).join("\n\n"); if(!text){showToast("내보낼 단어가 없습니다.");return;} downloadBlob(text+"\n","text/plain;charset=utf-8","saturday-recall-words.txt"); }
+    function downloadBlob(content,type,name){ const blob=new Blob([content],{type}); const url=URL.createObjectURL(blob); const a=document.createElement("a"); a.href=url;a.download=name;document.body.appendChild(a);a.click();a.remove();URL.revokeObjectURL(url); }
+    function exportJson(){ downloadBlob(JSON.stringify(state,null,2),"application/json",`saturday-recall-backup-${dateKey()}.json`); }
+    async function restoreJson(){ const file=$("#restoreJson").files[0]; if(!file){showToast("복원할 JSON을 선택하세요.");return;} try{state=normalizeState(JSON.parse(await file.text()));selectedIds.clear();saveState();closeModal("settingsModal");refreshAll();showToast("백업을 복원했습니다.");}catch(error){console.error(error);showToast("올바른 백업 파일이 아닙니다.");} }
+    function resetStorage(){ if(!confirm("모든 폴더, 단어, 회상 기록을 완전히 삭제할까요?")) return; [STORAGE_KEY,...LEGACY_KEYS].forEach(key=>localStorage.removeItem(key)); state=makeDefaultState(); selectedIds.clear(); learnQueue=[]; activeSession=null; saveState(); closeModal("settingsModal"); refreshAll(); goTo("today"); }
+
+    function saveSettings(){ state.settings.examWeekday=Number($("#examWeekday").value); state.settings.examTime=$("#examTime").value||"10:00"; state.settings.activeFolderId=getExamFolderIds()[0]; saveState(); refreshAll(); }
+
+    function refreshAll(){ renderSelects(); renderToday(); renderFolders(); renderWordList(); renderRecallHome(); renderProgress(); renderFolderManager(); $("#examWeekday").value=String(state.settings.examWeekday); $("#examTime").value=state.settings.examTime; requestAnimationFrame(updateFloatingNav); }
+
+    $$(".nav-btn").forEach(button=>button.addEventListener("click",()=>goTo(button.dataset.page)));
+    $$('[data-close]').forEach(button=>button.addEventListener("click",()=>closeModal(button.dataset.close)));
+    $$(".modal-backdrop").forEach(backdrop=>backdrop.addEventListener("click",event=>{if(event.target===backdrop)closeModal(backdrop.id);}));
+    $$(".add-tab").forEach(button=>button.addEventListener("click",()=>{$$(".add-tab").forEach(item=>item.classList.toggle("active",item===button));$$(".add-pane").forEach(pane=>pane.classList.toggle("active",pane.dataset.addPane===button.dataset.addTab));}));
+
+    ["openAddTop","openAddLearn","openAddWords"].forEach(id=>document.getElementById(id).addEventListener("click",()=>{renderSelects();openModal("addModal");}));
+    ["openFolderManagerToday","openFolderManagerWords","openActiveFolder"].forEach(id=>document.getElementById(id).addEventListener("click",()=>{renderFolderManager();openModal("folderModal");}));
+    $("#openSettings").addEventListener("click",()=>{renderSelects();$("#examWeekday").value=String(state.settings.examWeekday);$("#examTime").value=state.settings.examTime;openModal("settingsModal");});
+    $("#openKeyboardHelp").addEventListener("click",()=>openModal("keyboardModal"));
+
+    $("#startRecommended").addEventListener("click",startRecommendedAction);
+    $("#startRecommendedRecall").addEventListener("click",()=>startRecall(recommendedSessionOptions()));
+    $("#startCustomRecall").addEventListener("click",()=>startRecall({ mode:$("#recallModeSelect").value, folderIds:selectedRecallFolderIds(), count:$("#recallCountSelect").value, scope:$("#recallScopeSelect").value, shuffle:$("#shuffleQuestions").checked }));
+    $("#backToRecallHome").addEventListener("click",showRecallHome); $("#repeatLastRecall").addEventListener("click",repeatLast);
+
+    $("#learnFolderSelect").addEventListener("change",()=>{state.ui.learnFolderId=$("#learnFolderSelect").value;learnQueue=[];saveState();prepareLearning(true);});
+    $("#learnBlockSelect").addEventListener("change",()=>{learnQueue=[];prepareLearning(true);});
+    $("#revealLearnMeaning").addEventListener("click",revealLearnMeaning); $("#backAssociation").addEventListener("click",()=>{$("#bridgeStage").classList.add("hidden");$("#associationStage").classList.remove("hidden");}); $("#saveLearning").addEventListener("click",saveLearning);
+
+    $("#recallAnswerInput").addEventListener("input",()=>{if(firstInputAt===null)firstInputAt=performance.now();});
+    $("#showHint").addEventListener("click",showHint); $("#submitRecallAnswer").addEventListener("click",submitAnswer);
+    $$('[data-rating]').forEach(button=>button.addEventListener("click",()=>rateCurrent(Number(button.dataset.rating))));
+    $$('[data-review-rating]').forEach(button=>button.addEventListener("click",()=>rateDelayed(Number(button.dataset.reviewRating))));
+
+    $("#addSingleWord").addEventListener("click",addSingleWord); $("#addPastedWords").addEventListener("click",addPastedWords); $("#addTxtFiles").addEventListener("click",addTxtFiles);
+    $("#createFolder").addEventListener("click",createFolder);
+    $("#folderManagerList").addEventListener("click",event=>{const rename=event.target.closest('[data-rename-folder]'),del=event.target.closest('[data-delete-folder]');if(rename)renameFolder(rename.dataset.renameFolder);if(del)deleteFolder(del.dataset.deleteFolder);});
+    $("#recallFolderChecklist").addEventListener("change",event=>{
+      const box=event.target.closest("[data-recall-folder]"); if(!box)return;
+      let ids=selectedRecallFolderIds().slice();
+      if(box.checked&&!ids.includes(box.dataset.recallFolder))ids.push(box.dataset.recallFolder);
+      if(!box.checked)ids=ids.filter(id=>id!==box.dataset.recallFolder);
+      if(!ids.length){box.checked=true;showToast("시험할 Day를 최소 한 개 선택하세요.");return;}
+      state.ui.recallFolderIds=ids;saveState();updateScopeSummaries();
+    });
+    $("#examFolderSettingsList").addEventListener("change",event=>{
+      const box=event.target.closest("[data-exam-folder]"); if(!box)return;
+      let ids=getExamFolderIds().slice();
+      if(box.checked&&!ids.includes(box.dataset.examFolder))ids.push(box.dataset.examFolder);
+      if(!box.checked)ids=ids.filter(id=>id!==box.dataset.examFolder);
+      if(!ids.length){box.checked=true;showToast("토요일 시험 범위에는 최소 한 개의 Day가 필요합니다.");return;}
+      state.settings.examFolderIds=ids;state.settings.activeFolderId=ids[0];state.ui.recallFolderIds=ids.slice();saveState();refreshAll();
+    });
+    $("#selectAllRecallFolders").addEventListener("click",()=>{state.ui.recallFolderIds=state.folders.map(folder=>folder.id);saveState();renderFolderChoices();});
+    $("#clearRecallFolders").addEventListener("click",()=>{state.ui.recallFolderIds=[getExamFolderIds()[0]];saveState();renderFolderChoices();});
+    $("#selectAllExamFolders").addEventListener("click",()=>{state.settings.examFolderIds=state.folders.map(folder=>folder.id);state.settings.activeFolderId=state.settings.examFolderIds[0];state.ui.recallFolderIds=state.settings.examFolderIds.slice();saveState();refreshAll();});
+    ["todayFolderGrid","wordFolderGrid"].forEach(id=>document.getElementById(id).addEventListener("click",event=>{const activate=event.target.closest('[data-activate-folder]'),learn=event.target.closest('[data-learn-folder]'),recall=event.target.closest('[data-recall-folder]');if(activate)activateFolder(activate.dataset.activateFolder);if(learn){state.ui.learnFolderId=learn.dataset.learnFolder;saveState();goTo("learn");}if(recall){state.ui.recallFolderIds=[recall.dataset.recallFolder];saveState();goTo("recall");}}));
+
+    $("#wordSearch").addEventListener("input",renderWordList); $("#wordFolderFilter").addEventListener("change",()=>{state.ui.wordFolderFilter=$("#wordFolderFilter").value;saveState();renderWordList();}); $("#wordStageFilter").addEventListener("change",renderWordList);
+    $("#wordList").addEventListener("change",event=>{const box=event.target.closest('[data-select-id]');if(!box)return;box.checked?selectedIds.add(box.dataset.selectId):selectedIds.delete(box.dataset.selectId);updateSelection();});
+    $("#wordList").addEventListener("click",event=>{const edit=event.target.closest('[data-edit-id]'),del=event.target.closest('[data-delete-id]');if(edit)openEdit(edit.dataset.editId);if(del)deleteWord(del.dataset.deleteId);});
+    $("#selectVisible").addEventListener("click",()=>{$$("#wordList [data-select-id]").forEach(box=>selectedIds.add(box.dataset.selectId));renderWordList();}); $("#clearSelection").addEventListener("click",()=>{selectedIds.clear();renderWordList();}); $("#deleteSelected").addEventListener("click",deleteSelected); $("#saveEdit").addEventListener("click",saveEdit);
+    $("#weakList").addEventListener("click",event=>{const button=event.target.closest('[data-weak-word]');if(button)openEdit(button.dataset.weakWord);});
+
+    $("#exportFolderTxt").addEventListener("click",exportFolderTxt); $("#exportJson").addEventListener("click",exportJson); $("#restoreJsonButton").addEventListener("click",restoreJson); $("#resetStorage").addEventListener("click",resetStorage);
+    ["examWeekday","examTime"].forEach(id=>document.getElementById(id).addEventListener("change",saveSettings));
+
+    function isEditable(target){return target instanceof HTMLElement&&(target.matches("input,textarea,select,[contenteditable='true']")||Boolean(target.closest("[contenteditable='true']")));}
+    function handleEnter(event,action){if(event.isComposing||event.key!=="Enter"||event.shiftKey)return;event.preventDefault();action();}
+    $("#associationInput").addEventListener("keydown",event=>handleEnter(event,revealLearnMeaning)); $("#bridgeInput").addEventListener("keydown",event=>handleEnter(event,saveLearning)); $("#recallAnswerInput").addEventListener("keydown",event=>handleEnter(event,submitAnswer));
+    $("#singleWord").addEventListener("keydown",event=>{if(!event.isComposing&&event.key==="Enter"){event.preventDefault();$("#singleMeaning").focus();}}); $("#singleMeaning").addEventListener("keydown",event=>{if(!event.isComposing&&event.key==="Enter"){event.preventDefault();addSingleWord();}});
+
+    document.addEventListener("keydown",event=>{
+      if(event.isComposing||event.defaultPrevented)return;
+      const modal=getOpenModal(); if(modal){trapFocus(event,modal);if(event.key==="Escape"){event.preventDefault();closeModal(modal.id);}return;}
+      const key=event.key.toLowerCase();
+      if((event.ctrlKey||event.metaKey)&&key==="k"){event.preventDefault();goTo("words");requestAnimationFrame(()=>{$("#wordSearch").focus();$("#wordSearch").select();});return;}
+      if((event.ctrlKey||event.metaKey)&&key==="n"){event.preventDefault();renderSelects();openModal("addModal");return;}
+      if(event.altKey&&["1","2","3","4","5"].includes(event.key)){event.preventDefault();goTo(["today","learn","recall","words","progress"][Number(event.key)-1]);return;}
+      if(!isEditable(event.target)&&(event.key==="?"||(event.shiftKey&&event.key==="/"))){event.preventDefault();openModal("keyboardModal");return;}
+      if(event.key==="Escape"&&$("#page-recall").classList.contains("active")&&(!$("#recallPanel").classList.contains("hidden")||!$("#delayedReviewPanel").classList.contains("hidden")||!$("#recallComplete").classList.contains("hidden"))){event.preventDefault();showRecallHome();return;}
+      if(isEditable(event.target))return;
+      if(!$("#feedbackStage").classList.contains("hidden")&&["0","1","2","3"].includes(event.key)){event.preventDefault();rateCurrent(Number(event.key));return;}
+      if(!$("#delayedReviewPanel").classList.contains("hidden")&&["0","1","2","3"].includes(event.key)){event.preventDefault();rateDelayed(Number(event.key));return;}
+    });
+
+    window.addEventListener("resize",()=>requestAnimationFrame(updateFloatingNav),{passive:true});
+    if(window.ResizeObserver){new ResizeObserver(()=>updateFloatingNav()).observe($(".bottom-nav"));}
+    window.addEventListener("error",event=>console.error("실행 오류",event.error||event.message));
+    refreshAll();
+    requestAnimationFrame(updateFloatingNav);
+  </script>
+</body>
+</html>
