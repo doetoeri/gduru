@@ -25,3 +25,7 @@ button:active,.btn:active{translate:0 1px}
 .txt span{font-size:11px}.section-note{font-size:12px}.settle{font-size:11px}.deadline{font-size:11px}.receipt-copy b{font-size:12px}.notification-note{font-size:10px}
 @media(max-width:680px){.txt b{font-size:14px}.tm{font-size:13px}.btn{font-size:12px}.next b{font-size:12px}.depart>span:not(.note-pin){font-size:11px}.place{font-size:11px}.foot>span{font-size:8px}.date-ticket{position:static;display:inline-flex;margin-top:13px;transform:rotate(-1deg)}.date-ticket>b{font-size:30px}}
 @media(max-width:380px){.btn{font-size:10px;padding:9px 6px;gap:4px;white-space:nowrap}}
+/* Visually hidden controls must also stay hidden in full-page capture/print. */
+.skip{transform:none;clip-path:inset(50%);width:1px;height:1px;padding:0;overflow:hidden;white-space:nowrap}
+.skip:focus{clip-path:none;width:auto;height:auto;padding:12px;overflow:visible;white-space:normal}
+.toast{visibility:hidden}.toast.on{visibility:visible}
