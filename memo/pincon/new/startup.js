@@ -37,4 +37,3 @@
       reduced.addEventListener("change", () => { if (reduced.matches) finish(); }, { signal: listeners.signal });
       window.addEventListener("pagehide", finish, { once: true, signal: listeners.signal });
     })();
-  

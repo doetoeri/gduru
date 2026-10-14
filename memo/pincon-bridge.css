@@ -3,7 +3,7 @@
 #library{display:block;height:100dvh;min-height:0;background:var(--pc-scene-background)}
 #library-status{display:none}
 .pc-startup-mark{stroke:none}
-#preferences{height:calc(100dvh - 32px)}
+#preferences{height:calc(100dvh - 32px);scrollbar-gutter:stable}
 #editor{width:min(980px,calc(100vw - 28px));max-width:none;height:calc(100dvh - 32px);max-height:calc(100dvh - 32px);min-height:0;margin:auto;padding:0;overflow:auto;border-radius:20px}
 #editor>.editor-header{padding:10px 24px;align-items:center;gap:16px}
 #editor .editor-navigation .icon-button,#editor .editor-status .icon-button{margin:0;padding:0;font-size:inherit}

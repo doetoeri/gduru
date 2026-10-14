@@ -12,4 +12,3 @@
     @keyframes pc-startup-out{from{opacity:1}to{opacity:0}}
     @keyframes pc-startup-ui{from{opacity:0}to{opacity:1}}
     @media(prefers-reduced-motion:reduce){.pc-startup{display:none!important}html[data-startup="full"] .tools,html[data-startup="full"] .connection,html[data-startup="full"] .pc-caption{opacity:1;animation:none}}
-  
