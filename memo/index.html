@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#f6f7fa">
+  <meta name="description" content="글, 표, 흐름도, 마인드맵. 생각을 한 문서에 담는 개인 문서함.">
+  <title>memo · gduru</title>
+  <link rel="icon" href="/memo/icon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/memo/memo.css?v=1">
+  <link rel="preload" href="/memo/fonts/memo-sans-regular.woff" as="font" type="font/woff" crossorigin>
+</head>
+<body>
+  <svg class="svg-library" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
+    <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+    <symbol id="i-grid" viewBox="0 0 24 24"><rect x="4" y="4" width="6" height="6" rx="1"/><rect x="14" y="4" width="6" height="6" rx="1"/><rect x="4" y="14" width="6" height="6" rx="1"/><rect x="14" y="14" width="6" height="6" rx="1"/></symbol>
+    <symbol id="i-flow" viewBox="0 0 24 24"><rect x="3" y="4" width="7" height="5" rx="1"/><rect x="14" y="15" width="7" height="5" rx="1"/><path d="M6.5 9v8.5H14M10 6.5h7.5V15"/></symbol>
+    <symbol id="i-map" viewBox="0 0 24 24"><rect x="8.5" y="9" width="7" height="6" rx="2"/><path d="M12 9V4M15.5 12H21M8.5 12H3M12 15v5M9 4h6M19 9v6M5 9v6M9 20h6"/></symbol>
+    <symbol id="i-table" viewBox="0 0 24 24"><rect x="3.5" y="4" width="17" height="16" rx="2"/><path d="M3.5 9h17M3.5 14.5h17M10 4v16"/></symbol>
+    <symbol id="i-text" viewBox="0 0 24 24"><path d="M5 6h14M12 6v14M8 20h8M5 6v3M19 6v3"/></symbol>
+    <symbol id="i-search" viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 4.5 4.5"/></symbol>
+    <symbol id="i-more" viewBox="0 0 24 24"><circle cx="5" cy="12" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/></symbol>
+    <symbol id="i-back" viewBox="0 0 24 24"><path d="m14 6-6 6 6 6"/></symbol>
+    <symbol id="i-close" viewBox="0 0 24 24"><path d="m6 6 12 12M18 6 6 18"/></symbol>
+    <symbol id="i-trash" viewBox="0 0 24 24"><path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13M10 10v7M14 10v7"/></symbol>
+    <symbol id="i-edit" viewBox="0 0 24 24"><path d="m5 16-1 4 4-1L20 7l-3-3ZM14.5 6.5l3 3"/></symbol>
+    <symbol id="i-upload" viewBox="0 0 24 24"><path d="M12 16V4m-5 5 5-5 5 5M4 15v5h16v-5"/></symbol>
+    <symbol id="i-download" viewBox="0 0 24 24"><path d="M12 4v12m-5-5 5 5 5-5M4 16v4h16v-4"/></symbol>
+    <symbol id="i-undo" viewBox="0 0 24 24"><path d="M5 11h9a5 5 0 0 1 0 10M5 11l5-5M5 11l5 5"/></symbol>
+  </svg>
+
+  <section id="library" aria-label="개인 문서함">
+    <header class="library-header">
+      <a class="wordmark" href="/" aria-label="gduru 홈">gduru<span>/</span><strong>memo</strong><span class="brand-dot"></span></a>
+      <div class="search-wrap"><input id="search" type="search" placeholder="문서 찾기" aria-label="문서 제목과 내용 검색" hidden><button id="search-toggle" class="icon-button" aria-label="문서 검색" aria-expanded="false"><svg><use href="#i-search"/></svg></button></div>
+    </header>
+    <div class="shelf-heading"><p class="eyebrow">A SPACE FOR YOUR THOUGHTS</p><h1>나만의 문서함</h1></div>
+    <main id="shelf" class="shelf" aria-label="문서 커버 플로우">
+      <div id="scene" class="scene" tabindex="0" role="region" aria-roledescription="캐러셀" aria-label="문서 표지. 좌우 방향키로 선택, Enter로 열기">
+        <div id="covers" class="covers"></div>
+      </div>
+      <div id="empty" class="empty" hidden><svg><use href="#i-text"/></svg><h2>첫 생각을 담아 볼까?</h2><p>짧은 글에서 시작해 표와 지도로 이어가세요.</p><button class="primary" data-action="create">새 문서</button></div>
+      <div class="shelf-caption" id="caption"><p id="selected-kind" class="eyebrow"></p><h2 id="selected-title"></h2><div class="shelf-nav"><button id="previous" class="icon-button" aria-label="이전 문서"><svg><use href="#i-back"/></svg></button><button id="open-document" class="open-button">문서 열기 <span aria-hidden="true">↗</span></button><button id="next" class="icon-button" aria-label="다음 문서"><svg class="flip"><use href="#i-back"/></svg></button></div></div>
+    </main>
+    <footer class="library-footer"><p id="library-status" role="status">이 기기에 저장</p><div class="dock"><button id="library-menu" class="icon-button" aria-label="백업과 가져오기"><svg><use href="#i-more"/></svg></button><button id="view-toggle" class="icon-button" aria-label="격자 보기" aria-pressed="false"><svg><use href="#i-grid"/></svg></button><button class="icon-button add-button" data-action="create" aria-label="새 문서"><svg><use href="#i-plus"/></svg></button></div></footer>
+  </section>
+
+  <section id="editor" class="editor" aria-label="문서 편집" hidden>
+    <header class="editor-header"><div class="editor-navigation"><button id="back-library" class="icon-button" aria-label="문서함으로"><svg><use href="#i-back"/></svg></button><span class="editor-brand">memo</span><span class="header-divider"></span><span id="editor-label">제목 없는 문서</span></div><div class="editor-status"><span id="save-status" role="status" aria-live="polite">저장됨</span><button id="document-menu" class="icon-button" aria-label="내보내기와 문서 설정"><svg><use href="#i-more"/></svg></button></div></header>
+    <nav class="toolbar" aria-label="문서 편집 도구">
+      <div class="toolbar-group"><select id="text-style" aria-label="선택한 글의 종류"><option value="paragraph">본문</option><option value="heading">큰 제목</option><option value="subheading">작은 제목</option><option value="bullet">글머리 목록</option><option value="ordered">번호 목록</option><option value="check">할 일</option><option value="quote">인용</option></select><button id="bold" class="format-button" aria-label="굵게" aria-pressed="false"><strong>B</strong></button><button id="italic" class="format-button" aria-label="기울임" aria-pressed="false"><em>I</em></button></div>
+      <span class="toolbar-divider"></span>
+      <div class="toolbar-group insert-tools"><button data-insert="text" title="본문 추가"><svg><use href="#i-text"/></svg><span>글</span></button><button data-insert="table" title="표 추가"><svg><use href="#i-table"/></svg><span>표</span></button><button data-insert="flow" title="흐름도 추가"><svg><use href="#i-flow"/></svg><span>흐름도</span></button><button data-insert="mindmap" title="마인드맵 추가"><svg><use href="#i-map"/></svg><span>마인드맵</span></button></div>
+      <span class="toolbar-spacer"></span><div class="toolbar-group history-tools"><button id="undo" class="icon-button" aria-label="실행 취소" title="실행 취소 (Ctrl+Z)"><svg><use href="#i-undo"/></svg></button><button id="redo" class="icon-button" aria-label="다시 실행" title="다시 실행 (Ctrl+Shift+Z)"><svg class="flip"><use href="#i-undo"/></svg></button></div>
+    </nav>
+    <main class="workspace" id="workspace"><article class="paper" id="paper"><div class="paper-heading"><div class="paper-kicker"><span id="document-category">PERSONAL DOCUMENT</span><button id="cover-color" class="color-dot" aria-label="문서 표지 색상 바꾸기"></button></div><label class="sr-only" for="document-title">문서 제목</label><input id="document-title" class="document-title" placeholder="제목 없는 문서" maxlength="160" autocomplete="off"><p id="document-meta" class="document-meta"></p></div><div id="blocks" class="blocks"></div><button id="append-text" class="append-text"><svg><use href="#i-plus"/></svg>생각을 이어 쓰세요</button><footer class="paper-footer"><span>gduru / memo</span><span id="word-count"></span></footer></article></main>
+  </section>
+
+  <dialog id="create-dialog" aria-labelledby="create-title"><header class="dialog-header"><div><p class="eyebrow">A NEW PAGE</p><h2 id="create-title">무엇부터 담을까?</h2></div><button class="icon-button" data-close aria-label="닫기"><svg><use href="#i-close"/></svg></button></header><div class="template-list"><button data-template="blank"><span class="template-icon blue"><svg><use href="#i-text"/></svg></span><span><strong>빈 문서</strong><small>가볍게 쓰고, 필요한 것만 더하기</small></span><span aria-hidden="true">↗</span></button><button data-template="table"><span class="template-icon mint"><svg><use href="#i-table"/></svg></span><span><strong>비교표</strong><small>항목을 나란히 놓고 정리하기</small></span><span aria-hidden="true">↗</span></button><button data-template="flow"><span class="template-icon amber"><svg><use href="#i-flow"/></svg></span><span><strong>흐름도</strong><small>순서와 연결을 한눈에 보기</small></span><span aria-hidden="true">↗</span></button><button data-template="mindmap"><span class="template-icon violet"><svg><use href="#i-map"/></svg></span><span><strong>마인드맵</strong><small>하나의 생각에서 가지 뻗기</small></span><span aria-hidden="true">↗</span></button></div></dialog>
+  <dialog id="diagram-dialog" class="diagram-dialog" aria-labelledby="diagram-title"><header class="dialog-header"><div><p class="eyebrow">MAKE THE CONNECTIONS</p><h2 id="diagram-title">도식 편집</h2></div><button class="icon-button" data-close aria-label="닫기"><svg><use href="#i-close"/></svg></button></header><div class="diagram-dialog-body"><div id="diagram-preview" class="diagram-preview" aria-label="도식 미리보기"></div><div class="diagram-fields"><div class="section-label"><h3>항목</h3><button id="add-node" class="text-button">＋ 항목 추가</button></div><div id="node-fields"></div><div id="connections-section"><div class="section-label"><h3>연결</h3><button id="add-edge" class="text-button">＋ 연결 추가</button></div><div id="edge-fields"></div></div><p id="diagram-error" class="field-error" role="status"></p></div></div><footer class="dialog-footer"><button class="secondary" data-close>취소</button><button id="apply-diagram" class="primary">문서에 적용</button></footer></dialog>
+  <dialog id="confirm-dialog" aria-labelledby="confirm-title"><header class="dialog-header"><h2 id="confirm-title">문서를 삭제할까요?</h2></header><div class="dialog-copy"><p>이 기기에서 문서가 삭제돼요. 필요한 문서는 먼저 내보내 주세요.</p></div><footer class="dialog-footer"><button class="secondary" data-close>취소</button><button id="confirm-delete" class="danger">삭제</button></footer></dialog>
+  <div id="menu" class="menu" role="menu" hidden></div>
+  <input id="import-file" type="file" accept=".json,.md,.txt,text/plain,application/json,text/markdown" multiple hidden>
+  <div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
+  <noscript>memo를 사용하려면 JavaScript를 켜 주세요.</noscript>
+  <script type="module" src="/memo/app.js?v=1"></script>
+</body>
+</html>
