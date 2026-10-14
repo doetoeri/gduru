@@ -18,7 +18,8 @@ const titleOf=doc=>doc.title||'제목 없는 문서';
 function el(tag,className,text){const node=document.createElement(tag);if(className)node.className=className;if(text!==undefined)node.textContent=text;return node;}
 function icon(name){const svg=document.createElementNS('http://www.w3.org/2000/svg','svg'),use=document.createElementNS('http://www.w3.org/2000/svg','use');use.setAttribute('href',`#i-${name}`);svg.append(use);svg.setAttribute('aria-hidden','true');return svg;}
 function iconButton(name,label){const button=el('button','icon-button');button.type='button';button.setAttribute('aria-label',label);button.append(icon(name));return button;}
-function toast(message,error=false){clearTimeout(toastTimer);$('toast').textContent=message;$('toast').hidden=false;$('toast').dataset.error=String(error);toastTimer=setTimeout(()=>{$('toast').hidden=true;},error?8000:4200);}
+function toastHost(){return document.activeElement?.closest('dialog[open]:not([data-dialog-motion="closing"])')||[...document.querySelectorAll('dialog[open]:not([data-dialog-motion="closing"])')].at(-1)||document.body;}
+function toast(message,error=false){clearTimeout(toastTimer);toastHost().append($('toast'));$('toast').textContent=message;$('toast').hidden=false;$('toast').dataset.error=String(error);toastTimer=setTimeout(()=>{$('toast').hidden=true;},error?8000:4200);}
 function saveStatus(message,state='saved'){$('save-status').textContent=message;$('save-status').dataset.state=state;}
 function activeBlock(){return current?.blocks.find(block=>block.id===activeBlockId);}
 function historyBefore(group=null){
@@ -258,7 +259,7 @@ async function importFiles(files){
 function bindEvents(){
   document.querySelectorAll('[data-action="create"]').forEach(button=>button.addEventListener('click',()=>{openDialog($('create-dialog'));}));
   document.querySelectorAll('[data-template]').forEach(button=>button.addEventListener('click',()=>createDocument(button.dataset.template)));
-  document.querySelectorAll('dialog').forEach(dialog=>{prepareDialog(dialog);dialog.querySelectorAll('[data-close]').forEach(button=>button.addEventListener('click',()=>closeDialog(dialog)));dialog.addEventListener('click',event=>{if(event.target!==dialog)return;const rect=dialog.getBoundingClientRect();if(event.clientX<rect.left||event.clientX>rect.right||event.clientY<rect.top||event.clientY>rect.bottom)closeDialog(dialog);});});
+  document.querySelectorAll('dialog').forEach(dialog=>{prepareDialog(dialog);dialog.querySelectorAll('[data-close]').forEach(button=>button.addEventListener('click',()=>closeDialog(dialog)));dialog.addEventListener('close',()=>{if(!dialog.open&&dialog.contains($('toast')))toastHost().append($('toast'));});dialog.addEventListener('click',event=>{if(event.target!==dialog)return;const rect=dialog.getBoundingClientRect();if(event.clientX<rect.left||event.clientX>rect.right||event.clientY<rect.top||event.clientY>rect.bottom)closeDialog(dialog);});});
   window.addEventListener('resize',()=>closeMenu());
   $('editor').addEventListener('close',async()=>{if($('editor').open)return;await flush();libraryAfterClose();});
   $('library-menu').addEventListener('click',()=>openMenu($('library-menu'),[
