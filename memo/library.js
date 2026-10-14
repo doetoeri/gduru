@@ -69,7 +69,7 @@ export class MemoLibrary {
       for(let i=0;i<6;i++)node.classList.remove(`pc-theme-${i}`);node.classList.add(`pc-theme-${themes[doc.color]}`);
       for(const face of node.querySelectorAll('.pc-face')){
         const badge=face.querySelector('.pc-deadline>span:last-child');if(badge)badge.textContent='수정';
-        const meta=face.querySelector('.pc-meta');if(meta){meta.children[0].textContent=`${doc.blocks.length}개 항목`;meta.children[1].textContent='이 기기에 저장';}
+        const meta=face.querySelector('.pc-meta');if(meta){meta.children[0].textContent=`${doc.blocks.length}개 항목`;meta.children[1].textContent=this.getStorageMode()==='memory'?'임시 문서 · 백업 필요':'이 기기에 저장';}
       }
     }
     root.querySelector('.pc-flow')?.setAttribute('aria-label','개인 문서');
@@ -81,7 +81,7 @@ export class MemoLibrary {
     const emptyDay=root.querySelector('.pc-calendar-agenda .muted');if(emptyDay)emptyDay.textContent='이날 수정한 문서가 없습니다.';
   }
   render({transition=false,focusId=''}={}){
-    const rows=this.rows(),next=JSON.stringify([this.view,this.month,this.selectedDay,this.anchor.id,this.anchor.date,$('search').value,rows.map(row=>[row.id,row.title,row.subject,row.dueDate,row.doc.updatedAt,row.doc.revision,row.doc.color,row.doc.blocks.length])]);
+    const rows=this.rows(),next=JSON.stringify([this.view,this.month,this.selectedDay,this.anchor.id,this.anchor.date,$('search').value,this.getStorageMode(),rows.map(row=>[row.id,row.title,row.subject,row.dueDate,row.doc.updatedAt,row.doc.revision,row.doc.color,row.doc.blocks.length])]);
     if(next!==this.signature){
       const before=transition?captureAssessmentTiles($('covers')):[];this.stopMotion();
       const scrollTop=$('covers').querySelector('.pc-calendar')?.scrollTop||0;this.signature=next;

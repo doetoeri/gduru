@@ -1,4 +1,4 @@
-import { MemoLibrary } from './library.js?v=2';
+import { MemoLibrary } from './library.js?v=3';
 import { prepareDialog, openDialog, closeDialog } from './pincon/next/assessments/dialog-motion.js?v=2';
 import { FORMAT, VERSION, uid, clone, COLORS, cleanHTML, plainHTML, textBlock, tableBlock, diagramBlock, makeDocument, starterDocuments, documentText, documentKind, normalizeDocument, parseBackup, hasPath } from './model.js';
 import { MemoStore, DRAFT_PREFIX, recoverDrafts } from './storage.js';
@@ -79,7 +79,7 @@ async function openDocument(id,{focusTitle=false,trigger=null}={}){
 function libraryAfterClose(){
   current=null;activeBlockId=null;$('editor').hidden=true;document.title='memo · gduru';closeMenu();document.body.append($('menu'));renderShelf({focusId:selectedId});$('covers').querySelector('.pc-scene')?.focus({preventScroll:true});
 }
-async function showLibrary(){await flush();closeMenu();if($('editor').open)closeDialog($('editor'));else libraryAfterClose();}
+async function showLibrary(){if(!await flush())return;closeMenu();if($('editor').open)closeDialog($('editor'));else libraryAfterClose();}
 async function createDocument(template){
   closeDialog($('create-dialog'));if(current)await flush();const doc=makeDocument(template);documents.set(doc.id,doc);
   try{const {doc:saved}=await store.save(doc);documents.set(saved.id,saved);}catch(error){toast(error.message,true);}
@@ -257,9 +257,10 @@ async function importFiles(files){
 }
 
 function bindEvents(){
+  prepareDialog($('editor'),()=>{showLibrary();return false;});
   document.querySelectorAll('[data-action="create"]').forEach(button=>button.addEventListener('click',()=>{openDialog($('create-dialog'));}));
   document.querySelectorAll('[data-template]').forEach(button=>button.addEventListener('click',()=>createDocument(button.dataset.template)));
-  document.querySelectorAll('dialog').forEach(dialog=>{prepareDialog(dialog);dialog.querySelectorAll('[data-close]').forEach(button=>button.addEventListener('click',()=>closeDialog(dialog)));dialog.addEventListener('close',()=>{if(!dialog.open&&dialog.contains($('toast')))toastHost().append($('toast'));});dialog.addEventListener('click',event=>{if(event.target!==dialog)return;const rect=dialog.getBoundingClientRect();if(event.clientX<rect.left||event.clientX>rect.right||event.clientY<rect.top||event.clientY>rect.bottom)closeDialog(dialog);});});
+  document.querySelectorAll('dialog').forEach(dialog=>{prepareDialog(dialog);dialog.querySelectorAll('[data-close]').forEach(button=>button.addEventListener('click',()=>closeDialog(dialog)));dialog.addEventListener('close',()=>{if(!dialog.open&&dialog.contains($('toast')))toastHost().append($('toast'));});dialog.addEventListener('click',event=>{if(event.target!==dialog)return;const rect=dialog.getBoundingClientRect();if(event.clientX<rect.left||event.clientX>rect.right||event.clientY<rect.top||event.clientY>rect.bottom){if(dialog===$('editor'))showLibrary();else closeDialog(dialog);}});});
   window.addEventListener('resize',()=>closeMenu());
   $('editor').addEventListener('close',async()=>{if($('editor').open)return;await flush();libraryAfterClose();});
   $('library-menu').addEventListener('click',()=>openMenu($('library-menu'),[
