@@ -1,0 +1,20 @@
+/* Domain adapter only. Cover geometry, reflections, calendar, motion and the
+   three switches are defined by the copied PinCon stylesheets. */
+#library{display:block;height:100dvh;min-height:0;background:var(--pc-scene-background)}
+#library-status{display:none}
+.pc-startup-mark{stroke:none}
+#preferences{height:calc(100dvh - 32px)}
+#editor{width:min(980px,calc(100vw - 28px));max-width:none;height:calc(100dvh - 32px);max-height:calc(100dvh - 32px);min-height:0;margin:auto;padding:0;overflow:auto;border-radius:20px}
+#editor>.editor-header{padding:10px 24px;align-items:center;gap:16px}
+#editor .editor-navigation .icon-button,#editor .editor-status .icon-button{margin:0;padding:0;font-size:inherit}
+#editor .document-title{font-size:clamp(28px,3vw,42px);font-weight:600;padding:0;border:0;background:transparent;border-radius:0}
+#editor .toolbar-group>select{padding:0 8px;border:0;background:transparent;font-size:13px;font-weight:400;min-height:40px;width:110px}
+#editor .toolbar-group>button.format-button{font-synthesis:style}
+#editor .workspace{padding-top:32px}
+#editor .text-content{font-synthesis:style}
+#editor .document-table{margin:8px 0}
+#preferences .dialog-actions{justify-content:flex-start}
+#preferences-status{min-height:20px}
+#menu:popover-open{display:block}
+@media(max-width:740px){#editor{width:calc(100vw - 20px);height:calc(100dvh - 20px);max-height:calc(100dvh - 20px);border-radius:16px}#editor>.editor-header{padding:8px 12px}#editor .document-title{font-size:30px}#editor .toolbar-group>select{width:96px;padding:0 3px}#editor .workspace{padding-top:18px}}
+@media print{html,body{overflow:visible!important;height:auto!important}#library,.tools,.notice-launch,.pc-startup,.pc-view-transition{display:none!important}#editor{position:static!important;display:block!important;width:100%!important;height:auto!important;max-height:none!important;min-height:0!important;border:0!important;border-radius:0!important;overflow:visible!important;margin:0!important;transform:none!important;padding:0!important}#editor::backdrop{display:none}#editor .workspace{padding:0!important}.text-content{font-family:"Memo Sans",system-ui,sans-serif}}

@@ -1,0 +1,57 @@
+/* Local Hangul variable face: copy the licensed WOFF2 into /fonts/.
+   Latin faces remain separate; U+ ranges keep the correct glyph source. */
+@font-face {
+  font-family: "PinCon OpenAI Sans";
+  src: url("./fonts/OpenAISansHangulVariable.woff2") format("woff2");
+  font-style: normal;
+  font-weight: 300 700;
+  font-display: swap;
+  unicode-range: U+1100-11FF,U+3130-318F,U+A960-A97F,U+AC00-D7A3,U+D7B0-D7FF,U+FFA0-FFDC;
+}
+
+/* PinCon shared UI typography. OpenAI Sans Latin is served from its public CDN.
+   Keep a native Hangul fallback until the licensed Hangul asset is hosted locally. */
+@font-face {
+  font-family: "PinCon OpenAI Sans";
+  src: url("./fonts/OpenAISans-Regular.woff2") format("woff2");
+  font-style: normal; font-weight: 400; font-display: swap;
+  unicode-range: U+0000-024F,U+1E00-1EFF,U+2000-206F,U+20A0-20CF;
+}
+@font-face {
+  font-family: "PinCon OpenAI Sans";
+  src: url("./fonts/OpenAISans-Medium.woff2") format("woff2");
+  font-style: normal; font-weight: 500; font-display: swap;
+  unicode-range: U+0000-024F,U+1E00-1EFF,U+2000-206F,U+20A0-20CF;
+}
+@font-face {
+  font-family: "PinCon OpenAI Sans";
+  src: url("./fonts/OpenAISans-Semibold.woff2") format("woff2");
+  font-style: normal; font-weight: 600 900; font-display: swap;
+  unicode-range: U+0000-024F,U+1E00-1EFF,U+2000-206F,U+20A0-20CF;
+}
+:root,body,button,input,select,textarea,dialog {
+  font-family:"PinCon OpenAI Sans","Apple SD Gothic Neo","Malgun Gothic",system-ui,sans-serif;
+}
+.material-symbols-rounded,md-icon { font-family:"Material Symbols Rounded" !important; }
+
+/* Assessment CoverFlow typography, shared by /next and /new.
+   Covers, reflections, captions, and deadline numerals use the same family.
+   Font sizes, layout, motion, and Material Symbols stay unchanged. */
+.pc-flow .pc-cover,
+.pc-flow .pc-face,
+.pc-flow .pc-head,
+.pc-flow .pc-head > span,
+.pc-flow .pc-subject,
+.pc-flow .pc-kind,
+.pc-flow .pc-title,
+.pc-flow .pc-bottom,
+.pc-flow .pc-deadline,
+.pc-flow .pc-date,
+.pc-flow .pc-due,
+.pc-flow .pc-meta,
+.pc-flow .pc-caption,
+.pc-flow .pc-caption-title,
+.pc-flow .pc-caption-subject,
+.pc-flow .pc-reflection .pc-face {
+  font-family: "PinCon OpenAI Sans", "Apple SD Gothic Neo", "Malgun Gothic", system-ui, sans-serif;
+}

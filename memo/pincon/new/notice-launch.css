@@ -1,0 +1,1 @@
+.notice-launch{position:fixed;left:max(20px,env(safe-area-inset-left));top:max(20px,env(safe-area-inset-top));z-index:2;display:flex;align-items:center;gap:8px;min-height:44px;padding:10px 14px;border:0;border-radius:999px;background:#e7ebf080;color:#536174;font-size:13px}.notice-launch:hover{background:#dfe5ed}.notice-launch svg{width:20px;height:20px}

@@ -1,3 +1,5 @@
+import { MemoLibrary } from './library.js?v=2';
+import { prepareDialog, openDialog, closeDialog } from './pincon/next/assessments/dialog-motion.js?v=2';
 import { FORMAT, VERSION, uid, clone, COLORS, cleanHTML, plainHTML, textBlock, tableBlock, diagramBlock, makeDocument, starterDocuments, documentText, documentKind, normalizeDocument, parseBackup, hasPath } from './model.js';
 import { MemoStore, DRAFT_PREFIX, recoverDrafts } from './storage.js';
 import { renderDiagram } from './diagrams.js';
@@ -5,11 +7,11 @@ import { download, fileName, backup, toMarkdown, importText, standaloneHTML } fr
 
 const $=id=>document.getElementById(id);
 const store=new MemoStore();
-let documents=new Map(),selectedId=null,current=null,activeBlockId=null,grid=false;
+let documents=new Map(),selectedId=null,current=null,activeBlockId=null,memoLibrary=null;
 let undoStack=[],redoStack=[],lastGroup=null,lastGroupTime=0;
 let editTick=0,savedTick=0,saveTimer=null,saving=null,composing=false,lastRange=null;
 let diagramDraft=null,diagramBlockId=null,pendingDelete=null,menuAnchor=null,toastTimer=null;
-let drag=null,lastDragAt=0,filtered=[],channel=null;
+let channel=null;
 const draftKey=DRAFT_PREFIX+uid();
 const dateShort=time=>new Date(time).toLocaleDateString('ko-KR',{month:'2-digit',day:'2-digit'}).replace(/\s/g,'').replace(/\.$/,'');
 const titleOf=doc=>doc.title||'제목 없는 문서';
@@ -66,58 +68,19 @@ function activate(id){
   activeBlockId=id;for(const node of $('blocks').children)node.classList.toggle('is-active',node.dataset.block===id);
   const block=activeBlock();$('text-style').value=block?.style||'paragraph';
 }
-function coverFace(doc){
-  const face=el('div','cover-face');const head=el('div','cover-heading');head.append(el('span','',documentKind(doc)),el('span','','MEMO'));face.append(head,el('h3','cover-title',titleOf(doc)));
-  const firstText=doc.blocks.find(block=>block.type==='text'&&plainHTML(block.html));face.append(el('p','cover-excerpt',firstText?plainHTML(firstText.html):'나만의 생각을 담는 한 장.'));
-  const preview=el('div','cover-miniature');const special=doc.blocks.find(block=>block.type!=='text');
-  if(special?.type==='diagram')preview.append(renderDiagram(special,{mini:true}));
-  else if(special?.type==='table'){const table=el('table','mini-table');table.setAttribute('aria-hidden','true');special.rows.slice(0,3).forEach(row=>{const tr=el('tr');row.slice(0,3).forEach(cell=>tr.append(el('td','',cell)));table.append(tr);});preview.append(table);}
-  else for(let i=0;i<4;i++)preview.append(el('div','mini-line'));
-  const meta=el('div','cover-meta');meta.append(el('span','cover-date',dateShort(doc.updatedAt)),el('span','',`${doc.blocks.length}개 항목`));face.append(preview,meta);return face;
-}
-function renderShelf(){
-  const query=$('search').value.trim().toLocaleLowerCase();filtered=[...documents.values()].sort((a,b)=>b.updatedAt-a.updatedAt).filter(doc=>!query||documentText(doc).toLocaleLowerCase().includes(query));
-  if(!filtered.some(doc=>doc.id===selectedId))selectedId=filtered[0]?.id||null;
-  $('shelf').classList.toggle('is-grid',grid);$('view-toggle').setAttribute('aria-pressed',String(grid));$('view-toggle').setAttribute('aria-label',grid?'커버 플로우 보기':'격자 보기');$('view-toggle').replaceChildren(icon(grid?'flow':'grid'));
-  const layout=grid?'grid':'flow';
-  if($('covers').dataset.layout!==layout){$('covers').replaceChildren();$('covers').dataset.layout=layout;}
-  const existing=new Map([...$('covers').children].map(node=>[node.dataset.id,node]));
-  const retained=new Set();
-  const index=filtered.findIndex(doc=>doc.id===selectedId);
-  filtered.forEach((doc,i)=>{
-    if(!grid&&Math.abs(i-index)>3)return;
-    let button=existing.get(doc.id);const fresh=!button;retained.add(doc.id);
-    if(fresh){button=el('button','cover');button.dataset.id=doc.id;button.style.transition='none';button.addEventListener('click',()=>{if(Date.now()-lastDragAt<350)return;if(grid||selectedId===doc.id)openDocument(doc.id);else{selectedId=doc.id;renderShelf();$('scene').focus({preventScroll:true});}});}
-    const signature=`${doc.updatedAt}:${doc.revision}:${doc.color}:${doc.title}`;
-    if(button.dataset.signature!==signature){
-      button.dataset.signature=signature;button.dataset.color=doc.color;button.setAttribute('aria-label',`${titleOf(doc)}, ${documentKind(doc)}`);button.replaceChildren(coverFace(doc));
-      if(!grid){const reflection=el('div','reflection');reflection.setAttribute('aria-hidden','true');reflection.append(coverFace(doc));button.append(reflection);}
-    }
-    $('covers').append(button);if(fresh)requestAnimationFrame(()=>requestAnimationFrame(()=>{button.style.transition='';}));
-  });
-  for(const [id,node] of existing)if(!retained.has(id))node.remove();
-  $('empty').hidden=filtered.length>0;$('scene').hidden=!filtered.length;$('caption').hidden=!filtered.length||grid;
-  if(!filtered.length){$('empty').querySelector('h2').textContent=query?'찾는 문서가 없어요.':'첫 생각을 담아 볼까?';$('empty').querySelector('p').textContent=query?'다른 제목이나 내용으로 찾아보세요.':'짧은 글에서 시작해 표와 지도로 이어가세요.';}
-  $('library-status').textContent=store.mode==='memory'?`임시 작업 중 · ${documents.size}개 · 백업 필요`:`이 기기에 저장 · ${documents.size}개`;
-  transformCovers();
-}
-function transformCovers(delta=0){
-  const index=filtered.findIndex(doc=>doc.id===selectedId);
-  for(const node of $('covers').children){const i=filtered.findIndex(doc=>doc.id===node.dataset.id),offset=i-index,distance=Math.abs(offset);const card=parseFloat(getComputedStyle(node).width);const x=offset===0?delta:Math.sign(offset)*(card*.65+(distance-1)*card*.35)+delta;
-    node.style.setProperty('--x',`${x}px`);node.style.setProperty('--z',`${offset===0?5:-card*.27-distance*8}px`);node.style.setProperty('--rotate',`${offset===0?0:-Math.sign(offset)*54}deg`);node.style.zIndex=String(60-distance);node.style.opacity=distance>3?'0':distance===3?'.5':'1';node.setAttribute('aria-pressed',String(!offset));node.tabIndex=grid||!offset?0:-1;
-  }
-  const selected=filtered[index];if(selected){$('selected-title').textContent=titleOf(selected);$('selected-kind').textContent=`${documentKind(selected)} · ${index+1} / ${filtered.length}`;}
-  $('previous').disabled=index<=0;$('next').disabled=index>=filtered.length-1;
-}
-function moveSelection(direction){const index=filtered.findIndex(doc=>doc.id===selectedId),next=Math.max(0,Math.min(filtered.length-1,index+direction)),focused=$('scene').contains(document.activeElement);if(filtered[next]&&next!==index){selectedId=filtered[next].id;renderShelf();if(focused)$('scene').focus({preventScroll:true});}}
-async function openDocument(id,{focusTitle=false}={}){
+function renderShelf(options={}){memoLibrary?.render(options);}
+async function openDocument(id,{focusTitle=false,trigger=null}={}){
   if(current)await flush();const doc=documents.get(id);if(!doc)return;closeMenu();current=clone(doc);selectedId=id;activeBlockId=null;undoStack=[];redoStack=[];lastGroup=null;editTick=0;savedTick=0;lastRange=null;
-  $('library').hidden=true;$('editor').hidden=false;$('document-title').value=current.title;document.title=`${titleOf(current)} · memo`;renderBlocks();updateMeta();saveStatus(store.mode==='memory'?'임시 작업 · 백업 필요':'이 기기에 저장됨',store.mode==='memory'?'error':'saved');window.scrollTo(0,0);
+  $('editor').hidden=false;$('document-title').value=current.title;document.title=`${titleOf(current)} · memo`;renderBlocks();updateMeta();saveStatus(store.mode==='memory'?'임시 작업 · 백업 필요':'이 기기에 저장됨',store.mode==='memory'?'error':'saved');
+  openDialog($('editor'),trigger);$('editor').scrollTop=0;
   if(focusTitle||!current.title)$('document-title').focus();else $('back-library').focus({preventScroll:true});
 }
-async function showLibrary(){await flush();current=null;activeBlockId=null;$('editor').hidden=true;$('library').hidden=false;document.title='memo · gduru';closeMenu();renderShelf();$('scene').focus({preventScroll:true});}
+function libraryAfterClose(){
+  current=null;activeBlockId=null;$('editor').hidden=true;document.title='memo · gduru';closeMenu();document.body.append($('menu'));renderShelf({focusId:selectedId});$('covers').querySelector('.pc-scene')?.focus({preventScroll:true});
+}
+async function showLibrary(){await flush();closeMenu();if($('editor').open)closeDialog($('editor'));else libraryAfterClose();}
 async function createDocument(template){
-  $('create-dialog').close();if(current)await flush();const doc=makeDocument(template);documents.set(doc.id,doc);
+  closeDialog($('create-dialog'));if(current)await flush();const doc=makeDocument(template);documents.set(doc.id,doc);
   try{const {doc:saved}=await store.save(doc);documents.set(saved.id,saved);}catch(error){toast(error.message,true);}
   await openDocument(doc.id,{focusTitle:true});
 }
@@ -184,7 +147,7 @@ function closeMenu({restore=false}={}){
 }
 function openMenu(anchor,items){
   if(!$('menu').hidden&&menuAnchor===anchor){closeMenu();return;}
-  closeMenu();menuAnchor=anchor;
+  closeMenu();if($('editor').open)$('editor').append($('menu'));else document.body.append($('menu'));menuAnchor=anchor;
   for(const item of items){
     if(!item){$('menu').append(el('hr'));continue;}
     const button=el('button',item.danger?'danger-item':'');button.setAttribute('role','menuitem');if(item.icon)button.append(icon(item.icon));button.append(el('span','',item.label));button.disabled=!!item.disabled;
@@ -226,7 +189,7 @@ function formatText(command){
 }
 function openDiagram(id){
   const block=current?.blocks.find(item=>item.id===id);if(block?.type!=='diagram')return;
-  diagramBlockId=id;diagramDraft=clone(block);$('diagram-title').textContent=block.mode==='mindmap'?'마인드맵 편집':'흐름도 편집';$('diagram-error').textContent='';renderDiagramFields();$('diagram-dialog').showModal();
+  diagramBlockId=id;diagramDraft=clone(block);$('diagram-title').textContent=block.mode==='mindmap'?'마인드맵 편집':'흐름도 편집';$('diagram-error').textContent='';renderDiagramFields();openDialog($('diagram-dialog'));
 }
 function diagramPreview(){$('diagram-preview').replaceChildren(renderDiagram(diagramDraft));}
 function option(node,index){const item=el('option','',`${index+1} · ${node.label}`);item.value=node.id;return item;}
@@ -277,7 +240,7 @@ async function duplicateDocument(){
   if(!current)return;await flush();const copy=clone(current);copy.id=uid();copy.title=`${titleOf(current)} (복사본)`;copy.revision=0;copy.createdAt=Date.now();copy.updatedAt=Date.now();
   const {doc}=await store.save(copy);documents.set(doc.id,doc);await openDocument(doc.id);toast('문서를 복제했어요.');
 }
-function askDelete(){if(!current)return;pendingDelete=current.id;$('confirm-title').textContent='문서를 삭제할까요?';$('confirm-dialog').showModal();}
+function askDelete(){if(!current)return;pendingDelete=current.id;$('confirm-title').textContent='문서를 삭제할까요?';openDialog($('confirm-dialog'));}
 async function importFiles(files){
   if(current)await flush();let count=0;
   for(const file of files){
@@ -289,26 +252,19 @@ async function importFiles(files){
       for(const doc of incoming){doc.updatedAt=Date.now();const {doc:saved}=await store.save(doc);documents.set(saved.id,saved);selectedId=saved.id;count+=1;}
     }catch(error){toast(`${file.name}: ${error.message}`,true);}
   }
-  $('import-file').value='';if(count){await showLibrary();toast(`${count}개 문서를 가져왔어요. 기존 문서는 그대로 보관돼요.`);}
+  $('import-file').value='';if(count){closeDialog($('preferences'));await showLibrary();toast(`${count}개 문서를 가져왔어요. 기존 문서는 그대로 보관돼요.`);}
 }
 
 function bindEvents(){
-  document.querySelectorAll('[data-action="create"]').forEach(button=>button.addEventListener('click',()=>{$('create-dialog').showModal();}));
+  document.querySelectorAll('[data-action="create"]').forEach(button=>button.addEventListener('click',()=>{openDialog($('create-dialog'));}));
   document.querySelectorAll('[data-template]').forEach(button=>button.addEventListener('click',()=>createDocument(button.dataset.template)));
-  document.querySelectorAll('dialog').forEach(dialog=>{dialog.querySelectorAll('[data-close]').forEach(button=>button.addEventListener('click',()=>dialog.close()));dialog.addEventListener('click',event=>{if(event.target!==dialog)return;const rect=dialog.getBoundingClientRect();if(event.clientX<rect.left||event.clientX>rect.right||event.clientY<rect.top||event.clientY>rect.bottom)dialog.close();});});
-  $('search-toggle').addEventListener('click',()=>{const open=$('search').hidden;$('search').hidden=!open;$('search-toggle').setAttribute('aria-expanded',String(open));if(open)$('search').focus();else{$('search').value='';renderShelf();}});
-  $('search').addEventListener('input',()=>renderShelf());$('search').addEventListener('keydown',event=>{if(event.key==='Escape'){$('search-toggle').click();$('search-toggle').focus();}});
-  $('view-toggle').addEventListener('click',()=>{grid=!grid;renderShelf();});$('previous').addEventListener('click',()=>moveSelection(-1));$('next').addEventListener('click',()=>moveSelection(1));$('open-document').addEventListener('click',()=>{if(selectedId)openDocument(selectedId);});
-  $('scene').addEventListener('keydown',event=>{if(grid)return;if(['ArrowLeft','ArrowRight','Home','End','Enter'].includes(event.key)){event.preventDefault();if(event.key==='Enter'&&event.target===$('scene'))openDocument(selectedId);else if(event.key==='Home'){selectedId=filtered[0]?.id;renderShelf();}else if(event.key==='End'){selectedId=filtered.at(-1)?.id;renderShelf();}else if(event.key.startsWith('Arrow'))moveSelection(event.key==='ArrowLeft'?-1:1);}});
-  $('scene').addEventListener('pointerdown',event=>{if(grid||event.button!==0)return;drag={id:event.pointerId,x:event.clientX,y:event.clientY,dx:0,horizontal:false};});
-  window.addEventListener('pointermove',event=>{if(!drag||event.pointerId!==drag.id)return;const dx=event.clientX-drag.x,dy=event.clientY-drag.y;if(!drag.horizontal&&Math.abs(dy)>Math.abs(dx)+10){drag=null;return;}if(Math.abs(dx)>10){drag.horizontal=true;drag.dx=dx;$('scene').classList.add('dragging');transformCovers(dx*.45);}});
-  function endDrag(event){if(!drag||event.pointerId!==drag.id)return;const state=drag;drag=null;$('scene').classList.remove('dragging');if(state.horizontal){lastDragAt=Date.now();if(event.type!=='pointercancel'&&Math.abs(state.dx)>42)moveSelection(state.dx<0?1:-1);else transformCovers();}}
-  window.addEventListener('pointerup',endDrag);window.addEventListener('pointercancel',endDrag);
-  let wheelAt=0;$('scene').addEventListener('wheel',event=>{if(grid||Math.abs(event.deltaX)<=Math.abs(event.deltaY)||Math.abs(event.deltaX)<8)return;event.preventDefault();if(Date.now()-wheelAt<260)return;wheelAt=Date.now();moveSelection(event.deltaX>0?1:-1);},{passive:false});
-  window.addEventListener('resize',()=>{transformCovers();closeMenu();});
+  document.querySelectorAll('dialog').forEach(dialog=>{prepareDialog(dialog);dialog.querySelectorAll('[data-close]').forEach(button=>button.addEventListener('click',()=>closeDialog(dialog)));dialog.addEventListener('click',event=>{if(event.target!==dialog)return;const rect=dialog.getBoundingClientRect();if(event.clientX<rect.left||event.clientX>rect.right||event.clientY<rect.top||event.clientY>rect.bottom)closeDialog(dialog);});});
+  window.addEventListener('resize',()=>closeMenu());
+  $('editor').addEventListener('close',async()=>{if($('editor').open)return;await flush();libraryAfterClose();});
   $('library-menu').addEventListener('click',()=>openMenu($('library-menu'),[
     {label:'파일 가져오기',icon:'upload',action:()=>$('import-file').click()},
-    {label:'전체 문서 백업',icon:'download',action:()=>exportBackup(true)},null,
+    {label:'전체 문서 백업',icon:'download',action:()=>exportBackup(true)},
+    {label:'문서 찾기',icon:'search',action:()=>{openDialog($('preferences'));$('search').focus();}},null,
     {label:'저장 위치 안내',icon:'text',action:()=>toast('문서는 이 브라우저에 자동 저장돼요. 다른 기기로 옮기거나 브라우저 데이터를 지우기 전, 전체 백업을 내려받으세요.')}
   ]));
   $('back-library').addEventListener('click',showLibrary);
@@ -330,19 +286,19 @@ function bindEvents(){
     {label:'문서 복제',icon:'plus',action:duplicateDocument},
     {label:'문서 삭제',icon:'trash',danger:true,action:askDelete}
   ]));
-  $('confirm-delete').addEventListener('click',async()=>{const id=pendingDelete;if(!id)return;await flush();try{await store.remove(id);documents.delete(id);try{localStorage.removeItem(draftKey);}catch{}current=null;pendingDelete=null;$('confirm-dialog').close();await showLibrary();channel?.postMessage({type:'changed',id});toast('문서를 삭제했어요.');}catch(error){toast(error.message,true);}});
+  $('confirm-delete').addEventListener('click',async()=>{const id=pendingDelete;if(!id)return;await flush();try{await store.remove(id);documents.delete(id);try{localStorage.removeItem(draftKey);}catch{}current=null;pendingDelete=null;closeDialog($('confirm-dialog'));await showLibrary();channel?.postMessage({type:'changed',id});toast('문서를 삭제했어요.');}catch(error){toast(error.message,true);}});
   $('add-node').addEventListener('click',()=>{if(!diagramDraft||diagramDraft.nodes.length>=36)return;diagramDraft.nodes.push({id:uid(),label:'새 항목',parent:diagramDraft.mode==='mindmap'?diagramDraft.nodes[0].id:null});renderDiagramFields();$('node-fields').lastElementChild?.querySelector('input')?.select();});
   $('add-edge').addEventListener('click',()=>{
     if(!diagramDraft)return;let candidate=null;
     for(const from of diagramDraft.nodes){for(const to of diagramDraft.nodes){if(from.id!==to.id&&!hasPath(diagramDraft,to.id,from.id)&&!diagramDraft.edges.some(edge=>edge.from===from.id&&edge.to===to.id)){candidate={from:from.id,to:to.id};break;}}if(candidate)break;}
     if(!candidate){$('diagram-error').textContent='추가할 수 있는 연결이 없어요. 항목을 더하거나 기존 연결을 바꿔 주세요.';return;}diagramDraft.edges.push(candidate);renderEdgeFields();diagramPreview();
   });
-  $('apply-diagram').addEventListener('click',()=>{try{const validated=normalizeDocument({...current,blocks:[diagramDraft]}).blocks[0];historyBefore();const index=current.blocks.findIndex(block=>block.id===diagramBlockId);if(index<0)return;current.blocks[index]=validated;renderBlocks();changed();$('diagram-dialog').close();}catch(error){$('diagram-error').textContent=error.message;}});
+  $('apply-diagram').addEventListener('click',()=>{try{const validated=normalizeDocument({...current,blocks:[diagramDraft]}).blocks[0];historyBefore();const index=current.blocks.findIndex(block=>block.id===diagramBlockId);if(index<0)return;current.blocks[index]=validated;renderBlocks();changed();closeDialog($('diagram-dialog'));}catch(error){$('diagram-error').textContent=error.message;}});
   $('import-file').addEventListener('change',event=>importFiles([...event.target.files]));
   document.addEventListener('pointerdown',event=>{if(!$('menu').hidden&&!$('menu').contains(event.target)&&!menuAnchor?.contains(event.target))closeMenu();});
   document.addEventListener('keydown',event=>{
     if(!$('menu').hidden){const buttons=[...$('menu').querySelectorAll('button:not(:disabled)')],index=buttons.indexOf(document.activeElement);if(event.key==='Escape'){event.preventDefault();closeMenu({restore:true});return;}if(['ArrowDown','ArrowUp','Home','End'].includes(event.key)){event.preventDefault();buttons[event.key==='Home'?0:event.key==='End'?buttons.length-1:(index+(event.key==='ArrowDown'?1:-1)+buttons.length)%buttons.length]?.focus();return;}if(event.key==='Tab')closeMenu();}
-    if(!current||document.querySelector('dialog[open]')||composing||event.isComposing)return;
+    if(!current||!$('editor').open||document.querySelector('dialog[open]:not(#editor)')||composing||event.isComposing)return;
     if((event.ctrlKey||event.metaKey)&&!event.altKey){const key=event.key.toLowerCase();if(key==='s'){event.preventDefault();flush();}else if(key==='z'){event.preventDefault();historyMove(event.shiftKey);}else if(key==='y'){event.preventDefault();historyMove(true);}else if(key==='b'||key==='i'){if(activeBlock()?.type==='text'){event.preventDefault();formatText(key==='b'?'bold':'italic');}}}
   });
   window.addEventListener('beforeunload',event=>{if(current&&editTick!==savedTick&&!draft()){event.preventDefault();event.returnValue='';}});
@@ -350,6 +306,7 @@ function bindEvents(){
   window.addEventListener('pagehide',()=>{if(current&&editTick!==savedTick)draft();});
 }
 async function initialise(){
+  memoLibrary=new MemoLibrary({getDocuments:()=>[...documents.values()],getStorageMode:()=>store.mode,onOpen:(id,trigger)=>openDocument(id,{trigger}),onNew:()=>openDialog($('create-dialog')),onSelected:id=>{selectedId=id;},onBackup:()=>exportBackup(true),onImport:()=>$('import-file').click()});
   bindEvents();
   try{
     await store.open();const docs=await store.load(starterDocuments());documents=new Map(docs.map(doc=>[doc.id,doc]));let recovered=0;

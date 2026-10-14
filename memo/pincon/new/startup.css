@@ -1,0 +1,15 @@
+
+    /* A self-contained greeting: no image, font or module download to await. */
+    .pc-startup{position:fixed;inset:0;z-index:10;pointer-events:none;background:var(--pc-scene-background,radial-gradient(ellipse at 50% 43%,#fff 0%,#f8f9fc 48%,#edf0f5 100%));animation:pc-startup-out 200ms 350ms cubic-bezier(.2,.7,.2,1) both;will-change:opacity}
+    .pc-startup[hidden]{display:none}
+    .pc-startup-mark{position:absolute;--startup-card:min(380px,calc(100vw - 82px),calc((100dvh - 150px) * .65));top:calc(50% - var(--startup-card) * .3);left:50%;width:min(174px,46vw);height:auto;overflow:visible;transform:translate(-50%,-50%);animation:pc-startup-mark 140ms cubic-bezier(.2,.7,.2,1) both}
+    .pc-startup-sheen{animation:pc-startup-sheen 260ms 160ms cubic-bezier(.3,0,.2,1) both}
+    html[data-startup-light="off"] .pc-startup-sheen{display:none}
+    html[data-startup="full"] .tools,html[data-startup="full"] .connection{animation:pc-startup-ui 160ms 620ms ease both}
+    html[data-startup="full"] .pc-caption{animation:pc-startup-ui 160ms calc(620ms - var(--pc-startup-elapsed,0ms)) ease both}
+    @keyframes pc-startup-mark{from{opacity:0;transform:translate(-50%,-50%) scale(.985)}to{opacity:1;transform:translate(-50%,-50%) scale(1)}}
+    @keyframes pc-startup-sheen{from{transform:translateX(0)}to{transform:translateX(var(--pc-startup-sweep))}}
+    @keyframes pc-startup-out{from{opacity:1}to{opacity:0}}
+    @keyframes pc-startup-ui{from{opacity:0}to{opacity:1}}
+    @media(prefers-reduced-motion:reduce){.pc-startup{display:none!important}html[data-startup="full"] .tools,html[data-startup="full"] .connection,html[data-startup="full"] .pc-caption{opacity:1;animation:none}}
+  
